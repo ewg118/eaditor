@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Based on tree-view example by delcyon on orbeon.com, heavily modified by Ethan Gruber
+	
+	Installation Location:
+	oxf:/xbl/eaditor/tree-view/tree-view.xbl
+-->
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:dlcn="http://www.delcyon.com/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors"
+	xmlns:ev="http://www.w3.org/2001/xml-events">
+
+	<xbl:script src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
+	<xbl:script src="/xbl/eaditor/tree-view/tree-view.js"/>
+
+	<xbl:binding element="eaditor|tree-view">
+
+		<xbl:resources>
+			<xbl:style src="/xbl/eaditor/tree-view/tree-view.css"/>
+		</xbl:resources>
+
+		<xbl:template xxbl:transform="oxf:xslt">
+			<xsl:transform version="2.0">
+				<xsl:template match="ead:dsc">
+					<xsl:copy>
+						<xsl:apply-templates select="ead:c"/>
+					</xsl:copy>
+				</xsl:template>
+				<xsl:template match="eaditor:tree-view">
+					<xhtml:div>
+						<xforms:group xbl:attr="ref" xxbl:scope="outer">
+							<!-- Start copying the variables over that we need -->
+
+							<xxforms:variable name="data" xxbl:scope="inner">
+								<xxforms:sequence select="." xxbl:scope="outer"/>
+							</xxforms:variable>
+
+							<!-- end external variable copying -->
+
+							<!-- START MAIN GROUP-->
+							<xforms:group xxbl:scope="inner">
+								<xforms:group ref="$data">
+									<xsl:choose>
+										<xsl:when test="exists(@depth)">
+											<xsl:call-template name="node">
+												<xsl:with-param name="depth" select="@depth"/>
+												<xsl:with-param name="current">1</xsl:with-param>
+											</xsl:call-template>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:call-template name="node">
+												<xsl:with-param name="depth">5</xsl:with-param>
+												<xsl:with-param name="current">1</xsl:with-param>
+											</xsl:call-template>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xforms:group>
+								<xforms:model id="model">
+									<xforms:instance id="c-copy">
+										<copy xmlns=""/>
+									</xforms:instance>
+								</xforms:model>
+							</xforms:group>
+							<!-- END MAIN GROUP -->
+						</xforms:group>
+					</xhtml:div>
+				</xsl:template>
+
+				<xsl:template name="node">
+					<xsl:param name="depth" as="xs:integer"/>
+					<xsl:param name="current" as="xs:integer"/>
+					<xhtml:ul class="{if ($current = 1) then 'expanded' else 'collapsed'}">
+						<xsl:if test="$current > 1">
+							<!--<xforms:output value="if (string-length(child::ead:c[1]/ead:did/ead:unittitle) &gt; 0) then 'true' else 'false'"/>-->
+
+							<xhtml:span class="nodename">
+								<xforms:group ref=".[count(ead:c) &gt; 0]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img alt="expand" src="/xbl/eaditor/tree-view/images/plus.gif" class="trigger-image"/>
+										</xforms:label>
+									</xforms:trigger>
+								</xforms:group>
+								<xforms:group ref=".[string-length(ead:did/ead:unittitle/@label) &gt; 0]">
+									<xforms:output value="concat(ead:did/ead:unittitle/@label, ':')"/>
+								</xforms:group>
+								<xforms:output value="ead:did/ead:unittitle"/>
+								<xforms:group ref=".[string-length(ead:did/ead:unitdate) &gt; 0]">
+									<xforms:output value="concat('(', ead:did/ead:unitdate, ')')"/>
+								</xforms:group>
+							</xhtml:span>
+							
+							<xforms:group ref=".[$position > 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img alt="up" src="/xbl/eaditor/tree-view/images/up.gif"/>
+									</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:insert origin="$data//ead:c[@id=$id]" context="instance('c-copy')"/>
+										<xforms:insert origin="instance('c-copy')//ead:c[@id=$id]" context="parent::node()" nodeset="ead:c" at="$position - 1" position="before"/>
+										<xforms:delete context="."/>
+										<xforms:delete context="instance('c-copy')//ead:c[@id=$id]"/>
+									</xforms:action>
+								</xforms:trigger>
+							</xforms:group>
+
+							<xforms:group ref=".[$position &lt; $count]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img alt="down" src="/xbl/eaditor/tree-view/images/down.gif"/>
+									</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:insert origin="$data//ead:c[@id=$id]" context="instance('c-copy')"/>
+										<xforms:insert origin="instance('c-copy')//ead:c[@id=$id]" context="parent::node()" nodeset="ead:c" at="$position + 1" position="after"/>
+										<xforms:delete context="."/>
+										<xforms:delete context="instance('c-copy')//ead:c[@id=$id]"/>
+									</xforms:action>
+								</xforms:trigger>
+							</xforms:group>
+						</xsl:if>
+						<!-- Repeat over each child node of the root node -->
+						<xsl:if test="$depth > 1">
+							<xforms:repeat nodeset="ead:c">
+								<xxforms:variable name="id" select="@id"/>
+								<xxforms:variable name="position" select="position()"/>
+								<xxforms:variable name="count" select="count(parent::node()/ead:c)"/>
+								<xhtml:li>
+									<!-- if this element has children recurse into it -->
+									<xsl:call-template name="node">
+										<xsl:with-param name="current" select="$current + 1"/>
+										<xsl:with-param name="depth" select="$depth - 1"/>
+									</xsl:call-template>
+								</xhtml:li>
+							</xforms:repeat>
+						</xsl:if>
+					</xhtml:ul>
+
+				</xsl:template>
+			</xsl:transform>
+		</xbl:template>
+	</xbl:binding>
+</xbl:xbl>

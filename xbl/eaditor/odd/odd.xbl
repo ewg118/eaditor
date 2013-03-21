@@ -1,0 +1,98 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<xbl:binding id="eaditor-odd" element="eaditor|odd">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+
+					<xhtml:div class="subsection">
+						<xhtml:h2>Other Descriptive Data</xhtml:h2>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+
+						<!-- include generic triggers -->
+						<eaditor:generic-elements ref="$binding"/>
+						<xhtml:div>
+							<xhtml:span>Specific Elements: </xhtml:span>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival Object</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('dao-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival Object Group</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('daogrp-template')"/>
+							</xforms:trigger>
+						</xhtml:div>
+
+						<xforms:group ref="$binding[count(child::node()) &lt; 1]">
+							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+						</xforms:group>
+
+						<xforms:group ref="$binding/ead:head">
+							<eaditor:head/>
+						</xforms:group>
+
+						<xforms:repeat nodeset="$binding/ead:address">
+							<eaditor:address/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:blockquote">
+							<eaditor:blockquote/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:chronlist">
+							<eaditor:chronlist/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:dao">
+							<eaditor:dao/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:daogrp">
+							<eaditor:daogrp/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:list">
+							<eaditor:list/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:note">
+							<eaditor:note/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:p">
+							<eaditor:p/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:table">
+							<eaditor:table/>
+						</xforms:repeat>
+					</xhtml:div>
+
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="odd-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<xforms:instance id="dao-template">
+							<dao xlink:label="" xlink:href=""/>
+						</xforms:instance>
+						<xforms:instance id="daogrp-template">
+							<daogrp/>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

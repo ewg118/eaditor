@@ -1,0 +1,207 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-index" element="eaditor|index">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+						
+					<xhtml:div class="subsection">
+						<xhtml:h2>Index</xhtml:h2>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+
+						<!-- include generic triggers -->
+						<eaditor:generic-elements ref="$binding"/>
+						
+						<xhtml:div>
+							<xhtml:span>Specific Elements: </xhtml:span>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Index Entry</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding"
+									nodeset="child::node()[last()]" origin="instance('indexentry-template')"/>
+							</xforms:trigger>
+						</xhtml:div>
+
+						<xforms:group
+							ref="$binding[count(child::node()) &lt; 1]">
+							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+						</xforms:group>
+
+						<xforms:group ref="$binding/ead:head">
+							<eaditor:head/>
+						</xforms:group>
+						
+						<!-- indexentry -->
+						
+						<xforms:repeat nodeset="$binding/ead:indexentry">
+							<xhtml:div class="subsection">
+								<xhtml:h4>Index Entry</xhtml:h4>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+								<xforms:group
+									ref=".[count(ead:corpname) &lt; 1 and count(ead:famname) &lt; 1 and count(ead:function) &lt; 1 and count(ead:genreform) &lt; 1 and count(ead:geogname) &lt; 1 and count(ead:name) &lt; 1 and count(ead:namegrp) &lt; 1 and count(ead:occupation) &lt; 1 and count(ead:persname) &lt; 1 and count(ead:subject) &lt; 1 and count(ead:title) &lt; 1]">
+									<!-- call access triggers -->
+									<eaditor:access-elements/>
+								</xforms:group>
+								<xforms:group
+									ref=".[count(ead:corpname) &lt; 1 and count(ead:famname) &lt; 1 and count(ead:function) &lt; 1 and count(ead:genreform) &lt; 1 and count(ead:geogname) &lt; 1 and count(ead:name) &lt; 1 and count(ead:namegrp) &lt; 1 and count(ead:occupation) &lt; 1 and count(ead:persname) &lt; 1 and count(ead:subject) &lt; 1 and count(ead:title) &lt; 1]">
+									<xhtml:div>
+										<xhtml:span>Specific Elements: </xhtml:span>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Name Group</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." origin="instance('namegrp-template')"/>
+										</xforms:trigger>
+									</xhtml:div>
+								</xforms:group>
+								
+								<xforms:group ref=".[count(ead:ptr) &lt; 1 and count(ead:ptrgrp) &lt; 1 and count(ead:ref) &lt; 1] ">
+									<xhtml:div>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Pointer</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="."
+												origin="instance('ptr-template')"/>
+										</xforms:trigger>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Pointer Group</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="."
+												origin="instance('ptrgrp-template')"/>
+										</xforms:trigger>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Reference</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="."
+												origin="instance('ref-template')"/>
+										</xforms:trigger>
+									</xhtml:div>
+								</xforms:group>
+								
+								
+								<!-- ACCESS ELEMENTS -->
+								<!-- corpname -->
+								<xforms:repeat nodeset="ead:corpname">
+									<eaditor:corpname/>
+								</xforms:repeat>
+								
+								<!-- famname -->
+								<xforms:repeat nodeset="ead:famname">
+									<eaditor:famname/>
+								</xforms:repeat>
+								
+								<!-- function -->
+								<xforms:repeat nodeset="ead:function">
+									<eaditor:function/>
+								</xforms:repeat>
+								
+								<!-- genreform -->
+								<xforms:repeat nodeset="ead:genreform">
+									<eaditor:genreform/>
+								</xforms:repeat>
+								
+								<!-- geogname -->
+								<xforms:repeat nodeset="ead:geogname">
+									<eaditor:geogname/>
+								</xforms:repeat>
+								
+								<!-- name -->
+								<xforms:repeat nodeset="ead:name">
+									<eaditor:name/>
+								</xforms:repeat>
+								
+								<!-- namegrp -->
+								<xforms:repeat nodeset="ead:namegrp">
+									<eaditor:namegrp/>
+								</xforms:repeat>
+								
+								<!-- occupation -->
+								<xforms:repeat nodeset="ead:occupation">
+									<eaditor:occupation/>
+								</xforms:repeat>
+								
+								<!-- persname -->
+								<xforms:repeat nodeset="ead:persname">
+									<eaditor:persname/>
+								</xforms:repeat>
+								
+								<!-- subject -->
+								<xforms:repeat nodeset="ead:subject">
+									<eaditor:subject/>
+								</xforms:repeat>
+								
+								<!-- title -->
+								<xforms:repeat nodeset="ead:title">
+									<eaditor:title/>
+								</xforms:repeat>
+							</xhtml:div>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:address">
+							<eaditor:address/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:blockquote">
+							<eaditor:blockquote/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:chronlist">
+							<eaditor:chronlist/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:list">
+							<eaditor:list/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:note">
+							<eaditor:note/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:p">
+							<eaditor:p/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:table">
+							<eaditor:table/>
+						</xforms:repeat>
+					</xhtml:div>
+						
+					<!-- ********************************************************************** -->		
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="index-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<xforms:instance id="ptr-template">
+							<ptr linktype="simple" actuate="onrequest" target=""/>
+						</xforms:instance>
+						<xforms:instance id="ptrgrp-template">
+							<ptrgrp/>
+						</xforms:instance>
+						<xforms:instance id="ref-template">
+							<ref linktype="simple" actuate="onrequest" target=""/>
+						</xforms:instance>
+						<xforms:instance id="indexentry-template">
+							<indexentry/>
+						</xforms:instance>
+						<xforms:instance id="namegrp-template">
+							<namegrp/>
+						</xforms:instance>
+					</xforms:model>					
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

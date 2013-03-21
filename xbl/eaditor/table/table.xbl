@@ -1,0 +1,120 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-table" element="eaditor|table">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
+					<xhtml:div class="subsection">
+						<xhtml:h3>Table</xhtml:h3>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+						<xhtml:div>
+							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding"
+										origin="instance('head-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Table Group</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding"
+									nodeset="child::node()[last()]" origin="instance('tgroup-template')"/>
+							</xforms:trigger>
+						</xhtml:div>
+						
+						<!-- header -->
+						<xforms:group ref="$binding/ead:head">
+							<eaditor:head/>
+						</xforms:group>
+						
+						<xforms:repeat nodeset="$binding/ead:tgroup">
+							<xhtml:div class="subsection">
+								<xhtml:h4>Table Group</xhtml:h4>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+								<xhtml:div>
+									<xforms:group ref=".[count(ead:thead/ead:row) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Table
+												Header</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="ead:thead"
+												origin="instance('row-template')"/>
+											<xforms:action while="count(ead:thead/ead:row/ead:entry) &lt;= number(@cols)">
+												<xforms:insert context="ead:thead/ead:row" origin="instance('entry-template')"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/add.gif"/>Row</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="ead:tbody"
+											nodeset="child::node()[last()]" origin="instance('row-template')"/>
+									</xforms:trigger>
+								</xhtml:div>
+								<xforms:input ref="@cols">
+									<xforms:label>Columns</xforms:label>
+									<xforms:alert>Required</xforms:alert>
+									<xforms:hint>This must be an integer</xforms:hint>
+								</xforms:input>
+								<xforms:group ref="ead:thead/ead:row">
+									<xhtml:div class="subsection">
+										<xhtml:h4>Table Header</xhtml:h4>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+										<xforms:repeat nodeset="ead:entry">
+											<xhtml:div>
+												<xforms:input ref=".">
+													<xforms:label>Cell</xforms:label>
+												</xforms:input>
+											</xhtml:div>
+										</xforms:repeat>
+									</xhtml:div>
+								</xforms:group>
+							</xhtml:div>
+						</xforms:repeat>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<xforms:model id="table-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<xforms:instance id="head-template">
+							<head/>
+						</xforms:instance>
+						<xforms:instance id="tgroup-template">
+							<tgroup cols="">
+								<thead/>
+								<tbody/>
+							</tgroup>
+						</xforms:instance>
+						<xforms:instance id="row-template">
+							<row/>
+						</xforms:instance>
+						<xforms:instance id="entry-template">
+							<entry/>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

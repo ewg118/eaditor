@@ -1,0 +1,266 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9"
+	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<xbl:binding id="eaditor-daogrp" element="eaditor|daogrp">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<xxforms:variable name="display_path">../../../</xxforms:variable>
+					<!-- only load config on new insertions or local images -->
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer" if="not(contains($binding/ead:daoloc[1]/@xlink:href, 'flickr.com'))">
+						<xforms:send submission="load-config"/>
+					</xforms:action>
+					<xforms:group ref="$binding">
+						<!-- just show thumbnail if it is a flickr thumbnail -->
+						<xforms:group ref=".[contains(ead:daoloc[1]/@xlink:href, 'flickr.com')]">
+							<xhtml:div class="subsection pair_div">
+								<xhtml:h3>Digital Archival Object Group</xhtml:h3>
+								<eaditor:attributes ref="."/>
+								<xforms:trigger appearance="minimal">
+									<xforms:action ev:event="DOMActivate">
+										<xforms:delete nodeset="."/>
+									</xforms:action>
+									<xforms:label>
+										<xhtml:img src="{$display_path}images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+								<xhtml:div>
+									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="{$display_path}images/add.gif"/>Description</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</xhtml:div>
+								<xhtml:div style="margin:10px 0">
+									<xhtml:h4>Reference flickr Image</xhtml:h4>
+									<xhtml:div>
+										<xforms:output mediatype="image/*" value="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
+									</xhtml:div>
+								</xhtml:div>
+								<xforms:group ref="ead:daodesc">
+									<eaditor:daodesc/>
+								</xforms:group>
+							</xhtml:div>
+						</xforms:group>
+						<!-- otherwise show controls -->
+						<xforms:group ref=".[not(contains(ead:daoloc[1]/@xlink:href, 'flickr.com'))]">
+							<xhtml:div class="subsection pair_div">
+								<xhtml:h3>Digital Archival Object Group</xhtml:h3>
+								<eaditor:attributes ref="."/>
+								<xforms:trigger appearance="minimal">
+									<xforms:action ev:event="DOMActivate">
+										<xforms:setvalue ref="instance('interface-type')">manual</xforms:setvalue>
+										<xforms:setvalue ref="instance('flickr-uri')"/>
+										<xforms:delete nodeset="."/>
+									</xforms:action>
+									<xforms:label>
+										<xhtml:img src="{$display_path}images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+
+								<xhtml:div>
+									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="{$display_path}images/add.gif"/>Description</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:group ref=".[instance('interface-type')='manual']">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="{$display_path}images/add.gif"/>Digital Archival Object</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('daoloc-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</xhtml:div>
+
+								<xhtml:div style="margin:10px 0">
+									<xforms:select1 ref="instance('interface-type')" appearance="full">
+										<xforms:label>Image Type</xforms:label>
+										<xforms:item>
+											<xforms:label>Manual</xforms:label>
+											<xforms:value>manual</xforms:value>
+										</xforms:item>
+										<xforms:item>
+											<xforms:label>Flickr</xforms:label>
+											<xforms:value>flickr</xforms:value>
+										</xforms:item>
+										<xforms:action ev:event="xforms-value-changed">
+											<xforms:action if=". = 'manual'">
+												<xforms:toggle case="manual"/>
+											</xforms:action>
+											<xforms:action if=". = 'flickr'">
+												<xforms:toggle case="flickr"/>
+											</xforms:action>
+										</xforms:action>
+									</xforms:select1>
+								</xhtml:div>
+
+								<xforms:switch>
+									<xforms:case id="manual">
+										<!-- daoloc -->
+										<xforms:group ref=".">
+											<xforms:repeat nodeset="ead:daoloc">
+												<eaditor:daoloc/>
+											</xforms:repeat>
+										</xforms:group>
+									</xforms:case>
+									<xforms:case id="flickr">
+										<xforms:group ref=".[count(ead:daoloc) = 0]">
+											<xhtml:h4>Reference flickr Image</xhtml:h4>
+											<xhtml:div style="margin:10px 0 20px 0">
+												<xforms:input ref="instance('flickr-uri')">
+													<xforms:label>URI</xforms:label>
+												</xforms:input>
+												<xforms:trigger>
+													<xforms:label>Attach</xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:setvalue ref="instance('photo_id')" value="tokenize(substring-after(instance('flickr-uri'), 'http://'), '/')[4]"/>
+														<xforms:send submission="query-flickr" if="number(instance('photo_id'))"/>
+														<xforms:dispatch target="parse-error-dialog" name="fr-show" if="not(number(instance('photo_id')))"/>
+
+														<!-- initiate flickr-to-mets processing after submission -->
+														<xforms:action ev:event="xforms-submit-done">
+															<xforms:action if="instance('flickr-sizes')/@stat='fail'">
+																<xforms:dispatch target="flickr-error-dialog" name="fr-show"/>
+															</xforms:action>
+															<xforms:action if="instance('flickr-sizes')/@stat='ok'">
+																<xforms:action xxforms:iterate="instance('flickr-sizes')//size">
+																	<xxforms:variable name="label" select="@label"/>
+																	<xxforms:variable name="href" select="@source"/>
+																	<xforms:insert origin="instance('daoloc-template')" context="$binding" nodeset="./child::node()[last()]"/>
+																	<xforms:setvalue ref="$binding/ead:daoloc[last()]/@xlink:label" value="$label"/>
+																	<xforms:setvalue ref="$binding/ead:daoloc[last()]/@xlink:href" value="$href"/>
+																</xforms:action>
+																<xforms:send submission="query-flickr-getInfo"/>
+																<xforms:action ev:event="xforms-submit-done" ev:observer="query-flickr-getInfo">
+																	<!-- add a daodesc if there is a title or description in flickr -->
+																	<xforms:action
+																		if="string(normalize-space(instance('flickr-info')/photo/title)) or string(normalize-space(instance('flickr-info')/photo/description))">
+																		<xforms:insert origin="instance('daodesc-template')" context="$binding"/>
+																		<xforms:action if="string(normalize-space(instance('flickr-info')/photo/title))">
+																			<xforms:insert origin="instance('head-template')" context="$binding/ead:daodesc"/>
+																			<xforms:setvalue ref="$binding/ead:daodesc/ead:head" value="instance('flickr-info')/photo/title"/>
+																		</xforms:action>
+																		<xforms:action if="string(normalize-space(instance('flickr-info')/photo/description))">
+																			<xforms:insert origin="instance('p-template')" context="$binding/ead:daodesc" nodeset="./child::node()[last()]"/>
+																			<xforms:setvalue ref="$binding/ead:daodesc/ead:p" value="instance('flickr-info')/photo/description"/>
+																		</xforms:action>
+																	</xforms:action>
+																</xforms:action>
+															</xforms:action>
+														</xforms:action>
+													</xforms:action>
+												</xforms:trigger>
+											</xhtml:div>
+										</xforms:group>
+
+										<fr:alert-dialog id="parse-error-dialog">
+											<fr:label>Parsing Error</fr:label>
+											<fr:message>Error parsing flickr URI.</fr:message>
+											<fr:neutral-choice/>
+										</fr:alert-dialog>
+
+										<fr:alert-dialog id="flickr-error-dialog">
+											<fr:label>flickr Service Error</fr:label>
+											<fr:message>
+												<xforms:output ref="instance('flickr-sizes')/err/@msg"/>
+											</fr:message>
+											<fr:neutral-choice/>
+										</fr:alert-dialog>
+									</xforms:case>
+								</xforms:switch>
+								<xforms:group ref="ead:daodesc">
+									<eaditor:daodesc/>
+								</xforms:group>
+							</xhtml:div>
+						</xforms:group>
+					</xforms:group>
+
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="daogrp-model">
+						<xforms:instance id="exist-url">
+							<xi:include href="../../../apps/eaditor/exist-url.xml"/>
+						</xforms:instance>
+
+						<xforms:instance id="config">
+							<config xmlns=""/>
+						</xforms:instance>
+
+						<xforms:instance id="interface-type">
+							<interface>manual</interface>
+						</xforms:instance>
+
+						<xforms:instance id="flickr-response">
+							<rsp xmlns=""/>
+						</xforms:instance>
+
+						<!-- URI for flickr image -->
+						<xforms:instance id="flickr-uri">
+							<uri xmlns=""/>
+						</xforms:instance>
+
+						<xforms:instance id="photo_id">
+							<photo_id xmlns=""/>
+						</xforms:instance>
+
+						<xforms:instance id="flickr-sizes">
+							<rsp xmlns=""/>
+						</xforms:instance>
+
+						<xforms:instance id="flickr-info">
+							<rsp xmlns=""/>
+						</xforms:instance>
+
+						<!-- daodesc and associated elements -->
+						<xforms:instance id="daodesc-template">
+							<daodesc/>
+						</xforms:instance>
+
+						<xforms:instance id="head-template">
+							<head/>
+						</xforms:instance>
+
+						<xforms:instance id="p-template">
+							<p/>
+						</xforms:instance>
+
+						<xforms:instance id="daoloc-template">
+							<daoloc xlink:href="" xlink:label=""/>
+						</xforms:instance>
+
+						<xforms:bind nodeset="instance('interface-type')" readonly="instance('flickr-response')/@stat='ok'"/>
+
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config" xxforms:username="admin"
+							xxforms:password=""/>
+
+						<!-- query flickr.photos.getSizes API -->
+						<xforms:submission id="query-flickr" serialization="none" method="get"
+							action="http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
+							replace="instance" instance="flickr-sizes"/>
+
+						<!-- query flickr.photos.getInfo API for title and description -->
+						<xforms:submission id="query-flickr-getInfo" serialization="none" method="get"
+							action="http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
+							replace="instance" instance="flickr-info"/>
+
+						<!-- test for flickr echo -->
+						<xforms:submission id="test-for-echo" serialization="none" method="get"
+							action="http://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance" instance="flickr-response">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
+						</xforms:submission>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

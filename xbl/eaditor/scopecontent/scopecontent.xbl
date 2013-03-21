@@ -1,0 +1,124 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-scopecontent" element="eaditor|scopecontent">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+						
+					<xhtml:div class="subsection">
+						<xhtml:h2>Scope and Content</xhtml:h2>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+
+						<!-- include generic triggers -->
+						<eaditor:generic-elements ref="$binding"/>
+						
+						<xhtml:div>
+							<xhtml:span>Specific Elements: </xhtml:span>
+							<!-- scopecontent may only contain one dao or daogrp, but not at the same time -->
+							
+							<xforms:group ref="$binding[count(ead:arrangement) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Arrangement</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding"
+										nodeset="child::node()[last()]"
+										origin="instance('arrangement-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:group ref="$binding[count(ead:dao) &lt; 1 and count(ead:daogrp) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival
+										Object</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding"
+										nodeset="child::node()[last()]" origin="instance('dao-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival Object
+										Group</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding"
+										nodeset="child::node()[last()]" origin="instance('daogrp-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+						</xhtml:div>
+
+						<xforms:group
+							ref="$binding[count(child::node()) &lt; 1]">
+							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+						</xforms:group>
+
+						<xforms:group ref="$binding/ead:head">
+							<eaditor:head/>
+						</xforms:group>
+						
+						<xforms:repeat nodeset="$binding/ead:address">
+							<eaditor:address/>
+						</xforms:repeat>
+						
+						<xforms:group ref="$binding/ead:arrangement">
+							<eaditor:arrangement/>
+						</xforms:group>
+						
+						<xforms:repeat nodeset="$binding/ead:blockquote">
+							<eaditor:blockquote/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:chronlist">
+							<eaditor:chronlist/>
+						</xforms:repeat>
+						
+						<xforms:group ref="$binding/ead:dao">
+							<eaditor:dao/>
+						</xforms:group>
+						
+						<xforms:group ref="$binding/ead:daogrp">
+							<eaditor:daogrp/>
+						</xforms:group>
+						
+						<xforms:repeat nodeset="$binding/ead:list">
+							<eaditor:list/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:note">
+							<eaditor:note/>
+						</xforms:repeat>
+						
+						<xforms:repeat nodeset="$binding/ead:p">
+							<eaditor:p/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:table">
+							<eaditor:table/>
+						</xforms:repeat>
+					</xhtml:div>
+						
+					<!-- ********************************************************************** -->	
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="scopecontent-model"  xmlns:xlink="http://www.w3.org/1999/xlink">
+						<xforms:instance id="arrangement-template">
+							<arrangement/>
+						</xforms:instance>
+						<xforms:instance id="dao-template">
+							<dao xlink:label="" xlink:href=""/>
+						</xforms:instance>
+						<xforms:instance id="daogrp-template">
+							<daogrp/>
+						</xforms:instance>
+					</xforms:model>					
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

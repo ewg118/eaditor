@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ead id="x" xmlns="urn:isbn:1-931666-22-9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd">
+	<eadheader langencoding="iso639-2b">
+		<eadid countrycode="US"/>
+		<filedesc>
+			<titlestmt>
+				<titleproper/>
+			</titlestmt>
+		</filedesc>
+	</eadheader>
+	<frontmatter/>
+	<archdesc level="collection">
+		<did>
+			<unittitle/>
+		</did>
+	</archdesc>
+</ead>

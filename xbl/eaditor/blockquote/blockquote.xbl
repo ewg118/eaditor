@@ -1,0 +1,131 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-blockquote" element="eaditor|blockquote">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:div class="subsection">
+						<xhtml:h3>Block Quote</xhtml:h3>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+						<xhtml:span class="add">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>
+								</xforms:label>
+								<xxforms:show ev:event="DOMActivate" dialog="blockquote-objects"/>
+							</xforms:trigger>
+						</xhtml:span>
+						<xxforms:dialog id="blockquote-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+							<xforms:label>Block Quote Elements</xforms:label>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Address</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('address-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Chronology List</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronlist-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>List</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('list-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Note</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('note-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Paragraph</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('p-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Table</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('table-template')"/>
+							</xforms:trigger>
+						</xxforms:dialog>
+
+						<xforms:group
+							ref="$binding[count(child::node()) &lt; 1]">
+							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+						</xforms:group>
+
+						<xforms:group ref="$binding/ead:address">
+							<eaditor:address/>
+						</xforms:group>
+
+						<xforms:group ref="$binding/ead:chronlist">
+							<eaditor:chronlist/>
+						</xforms:group>
+
+						<xforms:group ref="$binding/ead:list">
+							<eaditor:list/>
+						</xforms:group>
+
+						<xforms:repeat nodeset="$binding/ead:note">
+							<eaditor:note/>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:p">
+							<eaditor:p/>
+						</xforms:repeat>
+
+						<xforms:group ref="$binding/ead:table">
+							<eaditor:table/>
+						</xforms:group>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<xforms:model id="blockquote-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<!-- generic instances -->
+						<xforms:instance id="address-template">
+							<address>
+								<addressline/>
+							</address>
+						</xforms:instance>
+						<xforms:instance id="note-template">
+							<note/>
+						</xforms:instance>
+						<xforms:instance id="p-template">
+							<p/>
+						</xforms:instance>
+						<!-- table -->
+						<xforms:instance id="table-template">
+							<table>
+								<tgroup cols="">
+									<thead/>
+									<tbody/>
+								</tgroup>
+							</table>
+						</xforms:instance>
+						<!-- lists -->
+						<xforms:instance id="list-template">
+							<list/>
+						</xforms:instance>
+						<xforms:instance id="chronlist-template">
+							<chronlist>
+								<chronitem>
+									<date/>
+								</chronitem>
+							</chronlist>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

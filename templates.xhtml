@@ -1,0 +1,77 @@
+<!--
+	Copyright (C) 2010 Ethan Gruber
+	EADitor: http://code.google.com/p/eaditor/
+	Apache License 2.0: http://code.google.com/p/eaditor/
+	
+	Heavily modified from upload form developed by Orbeon	
+-->
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<xhtml:head>
+		<xhtml:title>EADitor: Upload EAD Finding Aid</xhtml:title>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+		<!-- EADitor styling -->
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
+
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
+		<xforms:model>
+			<xforms:instance id="exist-url">
+				<xi:include href="exist-url.xml"/>
+			</xforms:instance>
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
+
+			<!-- ************************ xforms-model-construct-done ****************************** -->
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:send submission="load-config"/>
+			</xforms:action>
+		</xforms:model>
+	</xhtml:head>
+	<xhtml:body class="yui-skin-sam">
+		<xhtml:div id="doc4">
+			<!-- header -->
+			<xxforms:variable name="display_path">../../</xxforms:variable>
+			<xi:include href="header-admin.xml"/>
+
+			<xhtml:div id="bd">
+				<xhtml:div id="form">
+					<xhtml:p>
+						<xhtml:a href="..">&lt; Return</xhtml:a>
+					</xhtml:p>
+					<xhtml:h2>Template Manager</xhtml:h2>
+					<xhtml:p> Use this feature to customize the default templates for the core of an EAD finding aid and its components. The prepackaged templates represent a bare-bones XML model with
+						inputs required by the schema or for machine processing purposes (e. g., the id attribute in &lt;ead&gt;). The template editor enables a site administrator or archivist to add
+						more elements or textual values. For example, the default EAD template only requires did/unititle in the Archival Description. An institution's best practices may require
+						further detail in the archdesc, such as did/unitdate, did/container, access or use restriction statements, or an abstract. The template interface is nearly identical in
+						functionality as the forms for editing EAD documents themselves.</xhtml:p>
+					<xhtml:p>In addition to EAD templating, this section offers forms for setting very restrictive controlled vocabulary (drop down menus in the EAD editor as opposed to open-ended
+						autocomplete for subject terms or personal names) that are more likely to vary from institution to institution. This includes institution names/codes and container
+						types.</xhtml:p>
+					<xhtml:h3> Options </xhtml:h3>
+					<xhtml:ul>
+						<xhtml:li>
+							<xhtml:a href="../edit/core-template/">EAD Core Template</xhtml:a>
+						</xhtml:li>
+						<xhtml:li>
+							<xhtml:a href="../edit/c-template/">EAD Component Template</xhtml:a>
+						</xhtml:li>
+						<xhtml:li>
+							<xhtml:a href="../edit/instance-templates/">Instance Templates (Agency Codes, Container Types)</xhtml:a>
+						</xhtml:li>
+					</xhtml:ul>
+				</xhtml:div>
+			</xhtml:div>
+
+			<!-- footer -->
+			<xi:include href="xslt/footer.xml"/>
+		</xhtml:div>
+	</xhtml:body>
+</xhtml:html>

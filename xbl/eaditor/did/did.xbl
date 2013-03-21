@@ -1,0 +1,478 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<xbl:binding id="eaditor-did" element="eaditor|did">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:h1>Descriptive Identification</xhtml:h1>
+					<xhtml:span class="add">
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>
+							</xforms:label>
+							<xxforms:show ev:event="DOMActivate" dialog="did-objects"/>
+						</xforms:trigger>
+					</xhtml:span>
+					<xxforms:dialog id="did-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+						<xforms:label>Descriptive Identification Elements</xforms:label>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Abstract</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('abstract-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Container</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('container-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival Object</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('dao-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival Object Group</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('daogrp-template')"/>
+						</xforms:trigger>
+						<xforms:group ref="$binding[count(ead:head) &lt; 1]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('head-template')"/>
+							</xforms:trigger>
+						</xforms:group>
+						<xforms:group ref="$binding[count(ead:langmaterial) &lt; 1]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Language Material</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('langmaterial-template')"/>
+							</xforms:trigger>
+						</xforms:group>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Material Specific Details</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('materialspec-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Note</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('note-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Origination</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('origination-template')"/>
+						</xforms:trigger>
+						<xforms:group ref="$binding[count(ead:physdesc) &lt; 1]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Physical Description</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('physdesc-template')"/>
+							</xforms:trigger>
+						</xforms:group>
+						<xforms:group ref="$binding[count(ead:physloc) &lt; 1]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Physical Location</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('physloc-template')"/>
+							</xforms:trigger>
+						</xforms:group>
+						<xforms:group ref="$binding[count(ead:repository) &lt; 1]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Repository</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('repository-template')"/>
+							</xforms:trigger>
+						</xforms:group>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Unit Date</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('unitdate-template')"/>
+						</xforms:trigger>
+						<xforms:group ref="$binding[count(ead:unitid) &lt; 1]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Unit ID</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('unitid-template')"/>
+							</xforms:trigger>
+						</xforms:group>
+					</xxforms:dialog>
+
+					<xforms:group ref="$binding/ead:unittitle">
+						<xhtml:div>
+							<xforms:input ref=".">
+								<xforms:label>Unit Title</xforms:label>
+								<xforms:alert>Required</xforms:alert>
+							</xforms:input>
+							<eaditor:attributes ref="."/>
+						</xhtml:div>
+					</xforms:group>
+
+
+					<!-- header -->
+					<xforms:group ref="$binding/ead:head">
+						<eaditor:head/>
+					</xforms:group>
+
+
+					<!-- unitdate -->
+					<xforms:repeat ref="$binding/ead:unitdate">
+						<eaditor:unitdate/>
+					</xforms:repeat>
+
+					<xforms:repeat nodeset="$binding/ead:abstract">
+						<xhtml:div>
+							<xforms:textarea ref=".">
+								<xforms:label>Abstract</xforms:label>
+							</xforms:textarea>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xhtml:div>
+					</xforms:repeat>
+					<xforms:repeat nodeset="$binding/ead:container">
+
+						<xhtml:div>
+							<xforms:input ref=".">
+								<xforms:label>Container</xforms:label>
+							</xforms:input>
+							<eaditor:attributes ref="."/>
+							<!--<xforms:select1 ref="@type">
+								<xforms:itemset nodeset="instance('containertype-template')/container">
+									<xforms:label ref="."/>
+									<xforms:value ref="@value"/>
+								</xforms:itemset>
+							</xforms:select1>-->
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xhtml:div>
+					</xforms:repeat>
+
+					<!-- dao -->
+					<xforms:repeat nodeset="$binding/ead:dao">
+						<eaditor:dao/>
+					</xforms:repeat>
+
+					<!-- daogrp -->
+					<xforms:repeat nodeset="$binding/ead:daogrp">
+						<eaditor:daogrp/>
+					</xforms:repeat>
+
+					<xforms:repeat nodeset="$binding/ead:langmaterial">
+						<xhtml:div class="subsection">
+							<xhtml:h3>Language of Material</xhtml:h3>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+							<xhtml:div>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Language</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('language-template')"/>
+								</xforms:trigger>
+							</xhtml:div>
+							<xforms:repeat nodeset="ead:language">
+								<xhtml:div style="margin-top:10px;display:table;width:90%">
+									<xforms:select1 ref=".">
+										<xforms:label>Language</xforms:label>
+										<xforms:item>
+											<xforms:label>Select Language...</xforms:label>
+											<xforms:value/>
+										</xforms:item>
+										<xforms:itemset nodeset="instance('languageselect-template')//language">
+											<xforms:label ref="name"/>
+											<xforms:value ref="name"/>
+										</xforms:itemset>
+										<xforms:alert>Required</xforms:alert>
+									</xforms:select1>
+									<xxforms:variable name="language" select="."/>
+									<xforms:setvalue ref="@langcode" value="instance('languageselect-template')//language[name = $language]/code" ev:event="xforms-value-changed"/>
+									<xforms:group ref=".[count(//ead:langmaterial/ead:language) &gt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</xforms:group>
+								</xhtml:div>
+							</xforms:repeat>
+						</xhtml:div>
+					</xforms:repeat>
+					<xforms:repeat nodeset="$binding/ead:materialspec">
+						<xhtml:div>
+							<xforms:input ref=".">
+								<xforms:label>Material Spec.</xforms:label>
+							</xforms:input>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xhtml:div>
+					</xforms:repeat>
+
+					<!-- note -->
+					<xforms:group ref="$binding/ead:note">
+						<eaditor:note/>
+					</xforms:group>
+
+					<xforms:repeat ref="$binding/ead:origination">
+						<xhtml:div>
+							<xforms:input ref=".">
+								<xforms:label>Origination</xforms:label>
+							</xforms:input>
+							<eaditor:attributes ref="."/>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xhtml:div>
+					</xforms:repeat>
+
+					<xforms:repeat nodeset="$binding/ead:physdesc">
+						<xhtml:div class="subsection">
+							<xhtml:h3>Physical Description</xhtml:h3>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+							<xhtml:span class="add">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>
+									</xforms:label>
+									<xxforms:show ev:event="DOMActivate" dialog="physdesc-objects"/>
+								</xforms:trigger>
+							</xhtml:span>
+							<xxforms:dialog id="physdesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+								<xforms:label>Physical Description Elements</xforms:label>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Dimensions</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('dimensions-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Extent</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extent-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Genreform</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('genreform-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Physical Facet</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('physfacet-template')"/>
+								</xforms:trigger>
+							</xxforms:dialog>
+
+							<xforms:repeat nodeset="ead:dimensions">
+								<xhtml:div>
+									<xforms:input ref=".">
+										<xforms:label>Dimensions</xforms:label>
+									</xforms:input>
+
+									<xforms:trigger appearance="minimal">
+										<xforms:delete ev:event="DOMActivate" nodeset="."/>
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										</xforms:label>
+									</xforms:trigger>
+								</xhtml:div>
+							</xforms:repeat>
+							<xforms:repeat nodeset="ead:extent">
+								<xhtml:div>
+									<xforms:input ref=".">
+										<xforms:label>Extent</xforms:label>
+									</xforms:input>
+
+									<xforms:trigger appearance="minimal">
+										<xforms:delete ev:event="DOMActivate" nodeset="."/>
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										</xforms:label>
+									</xforms:trigger>
+								</xhtml:div>
+							</xforms:repeat>
+
+							<!-- genreform -->
+							<!--<xforms:group ref="$binding/ead:genreform">
+								<eaditor:genreform/>
+							</xforms:group>-->
+
+							<xforms:repeat nodeset="ead:physfacet">
+								<xhtml:div class="pair_div">
+									<xhtml:div>
+										<xforms:input ref=".">
+											<xforms:label>Physical Facet</xforms:label>
+										</xforms:input>
+									</xhtml:div>
+									<xhtml:div>
+										<xforms:input ref="@type">
+											<xforms:label>Type</xforms:label>
+										</xforms:input>
+									</xhtml:div>
+									<xhtml:div style="float:right;">
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</xhtml:div>
+								</xhtml:div>
+							</xforms:repeat>
+						</xhtml:div>
+					</xforms:repeat>
+					<xhtml:div>
+						<xforms:input ref="$binding/ead:physloc">
+							<xforms:label>Physical Location</xforms:label>
+						</xforms:input>
+						<xforms:group ref="$binding[count(ead:physloc) &gt; 0]">
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding/ead:physloc"/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xforms:group>
+					</xhtml:div>
+
+					<xhtml:div>
+						<xforms:input ref="$binding/ead:repository">
+							<xforms:label>Repository</xforms:label>
+						</xforms:input>
+						<xforms:group ref="$binding[count(ead:repository) &gt; 0]">
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding/ead:repository"/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xforms:group>
+					</xhtml:div>
+					<xhtml:div>
+						<xforms:input ref="$binding/ead:unitid">
+							<xforms:label>Unit ID</xforms:label>
+						</xforms:input>
+						<xforms:group ref="$binding[count(ead:unitid) &gt; 0]">
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding/ead:unitid"/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xforms:group>
+					</xhtml:div>
+
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="did-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<!-- digital object elements -->
+						<xforms:instance id="dao-template">
+							<dao xlink:label="" xlink:href=""/>
+						</xforms:instance>
+						<xforms:instance id="daogrp-template">
+							<daogrp/>
+						</xforms:instance>
+
+						<!-- did elements -->
+						<xforms:instance id="abstract-template">
+							<abstract/>
+						</xforms:instance>
+						<xforms:instance id="container-template">
+							<container/>
+						</xforms:instance>
+						<xforms:instance id="langmaterial-template">
+							<langmaterial>
+								<language langcode=""/>
+							</langmaterial>
+						</xforms:instance>
+						<xforms:instance id="language-template">
+							<language langcode=""/>
+						</xforms:instance>
+						<xforms:instance id="materialspec-template">
+							<materialspec/>
+						</xforms:instance>
+						<xforms:instance id="origination-template">
+							<origination/>
+						</xforms:instance>
+						<xforms:instance id="physdesc-template">
+							<physdesc/>
+						</xforms:instance>
+						<xforms:instance id="physfacet-template">
+							<physfacet type=""/>
+						</xforms:instance>
+						<xforms:instance id="dimensions-template">
+							<dimensions/>
+						</xforms:instance>
+						<xforms:instance id="extent-template">
+							<extent/>
+						</xforms:instance>
+						<xforms:instance id="physloc-template">
+							<physloc/>
+						</xforms:instance>
+						<xforms:instance id="repository-template">
+							<repository/>
+						</xforms:instance>
+						<xforms:instance id="unitdate-template">
+							<unitdate/>
+						</xforms:instance>
+						<xforms:instance id="unitid-template">
+							<unitid/>
+						</xforms:instance>
+
+						<!-- shared/generic instance -->
+						<xforms:instance id="head-template">
+							<head/>
+						</xforms:instance>
+						<xforms:instance id="note-template">
+							<note/>
+						</xforms:instance>
+
+						<!-- controlled instances-->
+						<!-- languages -->
+						<xforms:instance id="languageselect-template" src="/apps/eaditor/instances/languages.xml"/>
+
+						<!-- container types -->
+						<!--<xforms:instance id="containertype-template">
+							<containertypes xmlns="">
+								<container value="">Select...</container>
+								<container value="box">Box</container>
+								<container value="box-folder">Box-Folder</container>
+								<container value="folder">Folder</container>
+								<container value="reel">Reel</container>
+								<container value="table">Tape</container>
+							</containertypes>
+						</xforms:instance>-->
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

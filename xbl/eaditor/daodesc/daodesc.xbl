@@ -1,0 +1,56 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-daodesc" element="eaditor|daodesc">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<xhtml:h4>Digital Archival Object Description</xhtml:h4>
+					<xforms:trigger appearance="minimal">
+						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+						<xforms:label>
+							<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+						</xforms:label>
+					</xforms:trigger>
+					<xhtml:div class="trigger_container">
+						<xforms:group ref="$binding[count(ead:head) = 0]">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+								<xforms:insert ev:event="DOMActivate" origin="instance('head-template')" context="$binding"/>								
+							</xforms:trigger>
+						</xforms:group>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Paragraph</xforms:label>
+							<xforms:insert ev:event="DOMActivate" origin="instance('p-template')" context="$binding" nodeset="./child::node()[last()]"/>								
+						</xforms:trigger>
+					</xhtml:div>
+					
+					<xforms:group ref="$binding/ead:head">
+						<eaditor:head/>
+					</xforms:group>
+					
+					<xforms:repeat ref="$binding/ead:p">
+						<eaditor:p/>
+					</xforms:repeat>					
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="daodesc-model">
+						<xforms:instance id="head-template">
+							<head/>
+						</xforms:instance>
+						
+						<xforms:instance id="p-template">
+							<p/>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

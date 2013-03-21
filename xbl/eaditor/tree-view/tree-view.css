@@ -1,0 +1,43 @@
+ul li{
+	list-style-type:none;	
+}
+/*.collapsed{
+	background-image: url(images/plus.gif);
+	background-repeat:no-repeat;	
+}
+.expanded {
+	background-image: url(images/minus.gif);
+	background-repeat:no-repeat;	
+}*/
+.collapsed li {
+	display:none;
+	 
+}
+/*
+   change bullet to
+  "collapse"
+ */
+.expanded li {
+	display:normal;
+	background-color:#EBEBEB;
+	padding:5px;
+	margin:5px;
+	border:1px solid silver;
+}
+
+span.nodename {
+	font-size: larger;
+	 
+}
+span.leafname {
+	font-size: larger;
+	 
+}
+.nodename {
+	cursor:pointer;
+	 
+}
+span.leafvalue {
+	font-weight: bold;
+	 
+}

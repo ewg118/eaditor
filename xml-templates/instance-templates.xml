@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+	<agencycodes>
+		<agencycode value="default">Default Agency: Edit Your Template!</agencycode>
+	</agencycodes>
+	<containertypes>					
+		<container value="box">Box</container>
+		<container value="box-folder">Box-Folder</container>
+		<container value="folder">Folder</container>
+		<container value="reel">Reel</container>
+		<container value="tape">Tape</container>
+	</containertypes>
+</templates>

@@ -1,0 +1,113 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-access-elements" element="eaditor|access-elements">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:span class="add">
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>
+							</xforms:label>
+							<xxforms:show ev:event="DOMActivate" dialog="access-objects"/>
+						</xforms:trigger>
+					</xhtml:span>
+					<xxforms:dialog id="access-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+						<xforms:label>Access Elements</xforms:label>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Corporate Name</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('corpname-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Family Name</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('famname-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Function</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('function-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Genreform</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('genreform-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Geographical Name</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('geogname-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Name</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('name-template')"/>
+						</xforms:trigger>						
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Occupation</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('occupation-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Personal Name</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('persname-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Subject</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('subject-template')"/>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/add.gif"/>Title</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('title-template')"/>
+						</xforms:trigger>
+					</xxforms:dialog>
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="access-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<!-- access elements -->
+						<xforms:instance id="corpname-template">
+							<corpname/>
+						</xforms:instance>
+						<xforms:instance id="famname-template">
+							<famname/>
+						</xforms:instance>
+						<xforms:instance id="function-template">
+							<function/>
+						</xforms:instance>
+						<xforms:instance id="genreform-template">
+							<genreform/>
+						</xforms:instance>
+						<xforms:instance id="geogname-template">
+							<geogname/>
+						</xforms:instance>
+						<xforms:instance id="name-template">
+							<name/>
+						</xforms:instance>						
+						<xforms:instance id="occupation-template">
+							<occupation/>
+						</xforms:instance>
+						<xforms:instance id="persname-template">
+							<persname/>
+						</xforms:instance>
+						<xforms:instance id="subject-template">
+							<subject/>
+						</xforms:instance>
+						<xforms:instance id="title-template">
+							<title/>
+						</xforms:instance>					
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

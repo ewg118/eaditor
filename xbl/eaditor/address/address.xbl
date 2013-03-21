@@ -1,0 +1,55 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-address" element="eaditor|address">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:div class="subsection">
+						<xhtml:h4>Address</xhtml:h4>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+						<xhtml:div>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Address Line</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('addressline-template')"/>
+							</xforms:trigger>
+						</xhtml:div>
+						<xforms:repeat nodeset="$binding/ead:addressline">
+							<xhtml:div>
+								<xforms:input ref=".">
+									<xforms:label>Address Line</xforms:label>
+								</xforms:input>
+								<xforms:group ref=".[count(parent::node()/child::ead:addressline) &gt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:delete ev:event="DOMActivate" nodeset="."/>
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										</xforms:label>
+									</xforms:trigger>
+								</xforms:group>
+							</xhtml:div>
+						</xforms:repeat>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<xforms:model id="address-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<!-- generic instances -->
+						<xforms:instance id="addressline-template">
+							<addressline/>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

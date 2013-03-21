@@ -1,0 +1,87 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9"
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+	<xbl:binding id="eaditor-linkgrp" element="eaditor|linkgrp">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:div class="subsection">
+						<xhtml:h3>Linking Group</xhtml:h3>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+						<xhtml:div>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Extended Pointer Location</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('extptrloc-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Extended Reference Location</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('extrefloc-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Pointer Location</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('ptrloc-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Referece Location</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('refloc-template')"/>
+							</xforms:trigger>
+						</xhtml:div>
+
+						<!-- extptrloc -->
+						<xforms:repeat nodeset="$binding/ead:extptrloc">
+							<eaditor:extptrloc/>
+						</xforms:repeat>
+
+						<!-- extrefloc -->
+						<xforms:repeat nodeset="$binding/ead:extrefloc">
+							<eaditor:extrefloc/>
+						</xforms:repeat>
+
+						<!-- ptrloc -->
+						<xforms:repeat nodeset="$binding/ead:ptrloc">
+							<eaditor:ptrloc/>
+						</xforms:repeat>
+
+						<!-- refloc -->
+						<xforms:repeat nodeset="$binding/ead:refloc">
+							<eaditor:refloc/>
+						</xforms:repeat>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="linkgrp-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<xforms:instance id="extptrloc-template">
+							<extptrloc linktype="locator" xlink:href=""/>
+						</xforms:instance>
+						<xforms:instance id="extrefloc-template">
+							<extrefloc linktype="locator" xlink:href="">
+								<archref/>
+							</extrefloc>
+						</xforms:instance>
+						<xforms:instance id="ptrloc-template">
+							<ptrloc linktype="locator" target=""/>
+						</xforms:instance>
+						<xforms:instance id="refloc-template">
+							<refloc linktype="locator" target=""/>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

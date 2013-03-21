@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2010 Ethan Gruber
+    EADitor: http://code.google.com/p/eaditor/
+    Apache License 2.0: http://code.google.com/p/eaditor/    
+-->
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
+	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:eaditor="http://code.google.com/p/eaditor/">
+	<xhtml:head>
+		<xhtml:title>EADitor: Reorder Components</xhtml:title>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+
+		<!-- EADitor styling -->
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
+		
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>		
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
+		<xforms:model>
+			<xforms:instance id="exist-url">
+				<xi:include href="exist-url.xml"/>
+			</xforms:instance>
+
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<!-- get template from exist -->
+			<xforms:instance id="guide">
+				<ead xmlns="urn:isbn:1-931666-22-9" id=""/>
+			</xforms:instance>
+
+			<xforms:instance id="status">
+				<status/>
+			</xforms:instance>
+			<!-- solr response for id query -->
+			<xforms:instance id="is-published">
+				<response xmlns=""/>
+			</xforms:instance>
+			<!-- send to Solr -->
+			<xforms:instance id="addIndex">
+				<add xmlns=""/>
+			</xforms:instance>
+			<!-- Instance for Solr commit-->
+			<xforms:instance id="sendCommit">
+				<commit/>
+			</xforms:instance>
+
+			<xforms:instance id="c-copy">
+				<copy xmlns=""/>
+			</xforms:instance>
+
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load configuration file.</xforms:message>
+			</xforms:submission>
+
+			<!-- Submission to get the document -->
+			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-url')}eaditor/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
+				xxforms:username="admin" xxforms:password="">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid.</xforms:message>
+			</xforms:submission>
+
+			<!-- Submission to save the document -->
+			<xforms:submission id="save-submission" ref="instance('guide')" action="{instance('exist-url')}eaditor/guides/{instance('guide')/@id}.xml" method="put" replace="none"
+				xxforms:username="admin" xxforms:password="">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('status')">EAD guide saved.</xforms:setvalue>
+					<!-- post to Solr unpublished core -->
+					<xforms:insert  nodeset="instance('addIndex')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/ead-unpublish.xpl', 'data', instance('guide'), 'data')"/>
+					<!-- check to see if the document is already published to Solr -->
+					<xforms:send submission="unpublish-submission"/>
+					<xforms:send submission="query-solr-for-publication"/>
+				</xforms:action>				
+			</xforms:submission>
+			<!-- submission to query solr to see if the document is published -->
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:{instance('guide')/@id}"
+				replace="instance" instance="is-published">
+				<!-- if the document is found in solr, get the updated solr doc -->
+				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="ead-publish"/>
+			</xforms:submission>
+			<!-- access service to read in pre-transformed solr doc -->
+			<xforms:submission id="ead-publish" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/solr/{instance('guide')/@id}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
+				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
+			</xforms:submission>
+			<!-- post instance to Solr -->
+			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
+				<xforms:send ev:event="xforms-submit-done" submission="submit-commit"/>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">EAD guide saved and updated to search index.</xforms:setvalue>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
+			</xforms:submission>
+			<!-- for unpublished documents, always save to unpublished core -->
+			<!-- post instance to Solr -->
+			<xforms:submission id="unpublish-submission" action="{instance('config')/solr_unpublished}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
+				<xforms:send ev:event="xforms-submit-done" submission="submit-unpublished-commit"/>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">EAD guide saved.</xforms:setvalue>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
+			</xforms:submission>
+			<!-- send commit -->
+			<xforms:submission id="submit-unpublished-commit" action="{instance('config')/solr_unpublished}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
+			<!-- send commit -->
+			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
+
+			<!-- ************************ xforms-model-construct-done ****************************** -->
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:setvalue ref="instance('guide')/@id" value="xxforms:get-request-parameter('guide')"/>
+				<xforms:send submission="load-config"/>
+				<xforms:send submission="load-submission"/>
+			</xforms:action>
+		</xforms:model>
+
+		<xi:include href="oxf:/xbl/eaditor/tree-view/tree-view.xbl" xxi:omit-xml-base="true"/>
+	</xhtml:head>
+
+	<xhtml:body class="yui-skin-sam">
+		<xhtml:div id="doc4">
+			<!-- header -->
+			<xxforms:variable name="display_path">../../</xxforms:variable><xi:include href="header-admin.xml"/>
+
+			<xhtml:div id="bd">
+				<xhtml:div id="form">
+					<xforms:group ref="instance('status')/text()">
+						<xhtml:div class="success">
+							<xforms:output ref="instance('status')"/>
+						</xhtml:div>
+					</xforms:group>
+					<p>
+						<a href="..">&lt; Return</a>
+					</p>
+					<xhtml:div class="submission">
+						<xforms:submit submission="save-submission" appearance="minimal">
+							<xforms:label><xhtml:img src="/apps/eaditor/images/save.gif" alt="Save"/> Save</xforms:label>
+						</xforms:submit>
+						<xforms:submit submission="load-submission" appearance="minimal">
+							<xforms:label><xhtml:img src="/apps/eaditor/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
+						</xforms:submit>
+					</xhtml:div>
+
+					<xhtml:h1>Reorder Components</xhtml:h1>
+					<xhtml:p>Expand the tree formed by the &lt;dsc&gt; and use the green arrows to move components up or down within its parent component.</xhtml:p>
+					<eaditor:tree-view ref="instance('guide')/ead:archdesc/ead:dsc" depth="6"/>
+				</xhtml:div>
+			</xhtml:div>
+
+			<!-- footer -->
+			<xi:include href="xslt/footer.xml"/>
+		</xhtml:div>
+	</xhtml:body>
+</xhtml:html>

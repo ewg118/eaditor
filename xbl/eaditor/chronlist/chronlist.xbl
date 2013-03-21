@@ -1,0 +1,168 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-chronlist" element="eaditor|chronlist">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:div class="subsection">
+						<xhtml:h3>Chronology List</xhtml:h3>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+						<xhtml:div>
+							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('head-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:group ref="$binding[count(ead:listhead) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>List Header</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('listhead-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/add.gif"/>Chronology Item</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronitem-template')"/>
+							</xforms:trigger>
+						</xhtml:div>
+
+						<!-- head -->
+						<xforms:group ref="$binding/ead:head">
+							<eaditor:head/>
+						</xforms:group>
+
+						<!-- listhead -->
+						<xforms:group ref="$binding/ead:listhead">
+							<eaditor:listhead/>
+						</xforms:group>
+
+						<xforms:repeat nodeset="$binding/ead:chronitem">
+							<xhtml:div class="pair_div">
+								<xhtml:h4>Chronology Item</xhtml:h4>
+								<xforms:group ref=".[count(parent::ead:chronlist/ead:chronitem) &gt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:delete ev:event="DOMActivate" nodeset="."/>
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										</xforms:label>
+									</xforms:trigger>
+								</xforms:group>
+								<!-- include attributes menu -->
+								<eaditor:attributes ref="$binding"/>
+								<xhtml:div>
+									<xforms:group ref=".[count(ead:eventgrp) &lt; 1 and count(ead:event) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Event</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('event-template')"/>
+										</xforms:trigger>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Event Group</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('eventgrp-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</xhtml:div>
+
+								<!-- date -->
+								<xforms:group ref="ead:date">
+									<eaditor:date/>
+								</xforms:group>
+								
+								<xforms:group
+									ref=".[count(child::ead:event) &lt; 1 and count(child::ead:eventgrp) &lt; 1]">
+									<xhtml:div class="warning"><b>Warning:</b> Chronology Item must contain either an Event or Event Group.</xhtml:div>
+								</xforms:group>
+
+
+								<xforms:group ref="ead:event">
+									<xhtml:div>
+										<xforms:input ref=".">
+											<xforms:label>Event</xforms:label>
+										</xforms:input>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</xhtml:div>
+								</xforms:group>
+
+								<xforms:group ref="ead:eventgrp">
+									<xhtml:h4>Event Group</xhtml:h4>
+									<xforms:trigger appearance="minimal">
+										<xforms:delete ev:event="DOMActivate" nodeset="."/>
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										</xforms:label>
+									</xforms:trigger>
+									<xhtml:div>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<xhtml:img src="/apps/eaditor/images/add.gif"/>Event</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('event-template')"/>
+										</xforms:trigger>
+									</xhtml:div>
+									<xforms:repeat nodeset="ead:event">
+										<xforms:input ref=".">
+											<xforms:label>Event</xforms:label>
+										</xforms:input>
+										<xforms:group ref=".[count(parent::node()/ead:event) &gt; 2]">
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:label>
+													<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
+										</xforms:group>
+									</xforms:repeat>
+								</xforms:group>
+							</xhtml:div>
+						</xforms:repeat>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<xforms:model id="chronlist-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<xforms:instance id="head-template">
+							<head/>
+						</xforms:instance>
+						<xforms:instance id="listhead-template">
+							<listhead>
+								<head01/>
+								<head02/>
+							</listhead>
+						</xforms:instance>
+						<xforms:instance id="chronitem-template">
+							<chronitem>
+								<date/>
+							</chronitem>
+						</xforms:instance>
+						<xforms:instance id="event-template">
+							<event/>
+						</xforms:instance>
+						<xforms:instance id="eventgrp-template">
+							<eventgrp>
+								<event/>
+								<event/>
+							</eventgrp>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

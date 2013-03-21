@@ -1,0 +1,169 @@
+<!--
+	Copyright (C) 2010 Ethan Gruber
+	EADitor: http://code.google.com/p/eaditor/
+	Apache License 2.0: http://code.google.com/p/eaditor/
+	
+	Heavily modified from upload form developed by Orbeon	
+-->
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<xhtml:head>
+		<xhtml:title>EADitor: Upload EAD Finding Aid</xhtml:title>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+		<!-- EADitor styling -->
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
+		
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
+		<xforms:model>
+			<xforms:instance id="exist-url">
+				<xi:include href="exist-url.xml"/>
+			</xforms:instance>
+
+			<xforms:instance id="files">
+				<!-- Start with placeholders for three files -->
+				<files xmlns="">
+					<file xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
+				</files>
+			</xforms:instance>
+			<xforms:instance id="status">
+				<selected/>
+			</xforms:instance>
+			<xforms:instance id="file-template">
+				<!-- Using xs:anyURI will cause the XForms engine to store a reference to
+                     a URI instead of inlining the content of the file -->
+				<file xmlns="" xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
+			</xforms:instance>
+			<xforms:instance id="control-instance">
+				<control xmlns="">
+					<simple-upload-trigger/>
+					<add-upload-trigger/>
+					<remove-upload-trigger/>
+				</control>
+			</xforms:instance>
+			<xforms:bind nodeset="instance('control-instance')">
+				<xforms:bind nodeset="add-upload-trigger" readonly="false()"/>
+				<xforms:bind nodeset="remove-upload-trigger" readonly="count(instance('files')/file) le 1"/>
+			</xforms:bind>
+
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="guide">
+				<ead xmlns="" id=""/>
+			</xforms:instance>
+
+			<xforms:instance id="new-guide">
+				<ead xmlns="" id=""/>
+			</xforms:instance>
+			
+			<!-- send to Solr -->
+			<xforms:instance id="addIndex">
+				<add xmlns=""/>
+			</xforms:instance>
+			<!-- Instance for Solr commit-->
+			<xforms:instance id="sendCommit">
+				<commit/>
+			</xforms:instance>
+
+			<xforms:submission id="background-submission" method="post" replace="none" resource="test:" ref="instance('control-instance')/simple-upload-trigger">
+				<!--get the temp file written to disk-->
+				<xforms:send ev:event="xforms-submit-done" submission="get-temp"/>
+			</xforms:submission>
+
+
+			<xforms:submission id="get-temp" method="get" replace="instance" instance="guide" serialization="none" action="{instance('files')/file}">
+				<xforms:insert ev:event="xforms-submit-done" nodeset="instance('new-guide')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/preprocess.xpl', 'source', instance('guide'), 'finalized')"/>
+				<!--get the temp file written to disk-->
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error preprocessing file in XSLT. Check validation.</xforms:message>				
+				<xforms:send ev:event="xforms-submit-done" submission="put-to-exist"/>
+			</xforms:submission>
+
+			<xforms:submission id="put-to-exist" method="put" replace="none" ref="instance('new-guide')" action="{instance('exist-url')}eaditor/guides/{instance('new-guide')/@id}.xml"
+				xxforms:username="admin" xxforms:password="">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error in writing file to eXist.  Preprocessing XSLT transformation was successful, but resulting document is invalid.</xforms:message>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('status')">File successfully uploaded.</xforms:setvalue>
+					<!-- post to Solr unpublished core -->
+					<xforms:insert nodeset="instance('addIndex')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/ead-unpublish.xpl', 'data', instance('new-guide'), 'data')"/>
+					<!-- check to see if the document is already published to Solr -->
+					<xforms:send submission="unpublish-submission"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
+
+			<!-- for unpublished documents, always save to unpublished core -->
+			<!-- post instance to Solr -->
+			<xforms:submission id="unpublish-submission" action="{instance('config')/solr_unpublished}update" ref="instance('addIndex')" instance="addIndex" replace="instance"
+				method="post">
+				<xforms:send ev:event="xforms-submit-done" submission="submit-unpublished-commit"/>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">File successfully uploaded.</xforms:setvalue>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
+			</xforms:submission>
+			<!-- send commit -->
+			<xforms:submission id="submit-unpublished-commit" action="{instance('config')/solr_unpublished}update" ref="instance('sendCommit')" instance="sendCommit" replace="none"
+				method="post"/>
+
+			<!-- ************************ xforms-model-construct-done ****************************** -->
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:send submission="load-config"/>
+			</xforms:action>
+		</xforms:model>
+	</xhtml:head>
+	<xhtml:body class="yui-skin-sam">
+		<xhtml:div id="doc4">
+			<!-- header -->
+			<xxforms:variable name="display_path">../../</xxforms:variable><xi:include href="header-admin.xml"/>
+
+			<xhtml:div id="bd">
+				<xhtml:div id="form">
+					<xforms:group ref="instance('status')/text()">
+						<xhtml:div class="success">
+							<xforms:output ref="instance('status')"/>
+						</xhtml:div>
+					</xforms:group>
+					<p>
+						<a href="..">&lt; Return</a>
+					</p>
+					<xhtml:h2>Upload EAD Finding Aid</xhtml:h2>
+					<p>This interface can be used to upload EAD Finding Aids into the eXist database for use in EADitor. A series of minor transformations are made to the file to improve encoding
+						consistency.</p>
+					<ol>
+						<li>Make all EAD 2002 DTD documents schema-compliant with dtd2schema.xsl</li>
+						<li>Whitespace normalized, document indented</li>
+						<li>Assign an xml:id to &lt;ead&gt; if none exists, from either &lt;eadid&gt; or the XSLT generate-id() function</li>
+						<li>Replace all numbered components (&lt;c01&gt; through &lt;c12&gt;) with unnumbered components (&lt;c&gt;)</li>
+						<li>Assign all components a unique xml:id</li>
+						<li>&lt;unitdate&gt; within &lt;unittitle&gt; moved up a level</li>
+						<li>Content of type attribute in container converted to lower case</li>
+						<li>&lt;controlaccess&gt; and &lt;index&gt; are semi-flattened. Organization and labeling of access terms happens in the processing level in the EADitor view</li>
+					</ol>
+					<p> Please select the files to upload: </p>
+					<xhtml:div class="section">
+						<fr:upload ref="instance('files')/file" xxforms:size="240">
+							<xforms:filename ref="@filename"/>
+							<xforms:mediatype ref="@mediatype"/>
+							<xxforms:size ref="@size"/>
+						</fr:upload>
+						<div style="margin:20px 0;">
+							<fr:button>
+								<xforms:send submission="background-submission" ev:event="DOMActivate"/>
+								<xforms:label>Upload</xforms:label>
+							</fr:button>
+						</div>
+					</xhtml:div>
+					<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector" xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
+				</xhtml:div>
+			</xhtml:div>
+
+			<!-- footer -->
+			<xi:include href="xslt/footer.xml"/>
+		</xhtml:div>
+	</xhtml:body>
+</xhtml:html>

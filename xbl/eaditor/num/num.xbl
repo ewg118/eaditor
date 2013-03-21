@@ -1,0 +1,38 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-num" element="eaditor|num">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
+					<xhtml:div class="pair_div">
+						<xhtml:div>
+							<xforms:input ref="$binding">
+								<xforms:label>Number</xforms:label>
+							</xforms:input>
+						</xhtml:div>
+						<xhtml:div>
+							<xforms:input ref="$binding/@type">
+								<xforms:label>Type</xforms:label>
+							</xforms:input>
+						</xhtml:div>
+						<xhtml:div style="float:right;">
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+								<xforms:label>
+									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</xhtml:div>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

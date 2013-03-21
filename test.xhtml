@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
+	xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns:exist="http://exist.sourceforge.net/NS/exist">
+	<xhtml:head>
+		<xhtml:title>EADitor: Conformance Testing</xhtml:title>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+
+		<!-- EADitor styling -->
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
+
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/get_components.js"/>
+		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
+
+
+		<xforms:model>
+			<xforms:instance id="exist-url">
+				<xi:include href="exist-url.xml"/>
+			</xforms:instance>
+
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="temp">
+				<temp xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="control-instance">
+				<controls xmlns="">
+					<errors>
+						<error code="001" label="Load EADitor Collection" test="">
+							<message/>
+						</error>
+						<error code="002" label="Load Config" test="">
+							<message/>
+						</error>
+						<error code="003" label="Load Guides Collection" test="" count="">
+							<message/>
+						</error>
+						<error code="004" label="Load EAD Component Template" test="">
+							<message/>
+						</error>
+						<error code="005" label="Load EAD Core Template" test="">
+							<message/>
+						</error>
+						<error code="006" label="Load Instance Template" test="">
+							<message/>
+						</error>
+						<error code="007" label="Testing Solr Vocabularies Core" test="">
+							<message/>
+						</error>
+						<error code="008" label="Testing Solr Unpublished Core" test="" count="">
+							<message/>
+						</error>
+						<error code="009" label="eXist - Solr Unpublished Comparison" test="">
+							<message/>
+						</error>
+						<error code="010" label="Testing Solr Published Core" test="" count="">
+							<message/>
+						</error>
+						<error code="011" label="Verify Published Documents" test="">
+							<message/>
+						</error>
+					</errors>
+				</controls>
+			</xforms:instance>
+
+			<!-- load eaditor collection -->
+			<xforms:submission id="load-eaditor-collection" serialization="none" method="get" action="{instance('exist-url')}eaditor/" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='001']/@test">Success</xforms:setvalue>
+					<xforms:send submission="load-guides-collection"/>
+					<xforms:send submission="load-c-template"/>
+					<xforms:send submission="load-ead-template"/>
+					<xforms:send submission="load-instance-template"/>
+					<xforms:send submission="load-config"/>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='001']/@test">Fail</xforms:setvalue>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- load config xml file -->
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/@test">Success</xforms:setvalue>
+					<xforms:send submission="test-solr-vocabularies"/>
+					<xforms:send submission="test-solr-unpublished"/>
+					<xforms:send submission="test-solr-published"/>
+					<!-- compare count of eXist files with count of unpublished Solr docs -->
+					<xforms:action if="instance('control-instance')/errors/error[@code='003']/@count = instance('control-instance')/errors/error[@code='008']/@count">
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/@test">Success</xforms:setvalue>
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/message">Number of files in eaditor/guides eXist collection matches Solr docs in ead-unpublished Solr core.</xforms:setvalue>
+					</xforms:action>
+					<xforms:action if="instance('control-instance')/errors/error[@code='003']/@count != instance('control-instance')/errors/error[@code='008']/@count">
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/@test">Fail</xforms:setvalue>
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/message">Mismatch between eaditor/guides collection in eXist and documents in eaditor-unpublished
+							Solr core. Be sure that all finding aids are EAD 2002 schema-compliant and reload the Admin Home page to reindex the collection into Solr.</xforms:setvalue>
+					</xforms:action>
+					<!-- be sure that the number of published Solr documents does not outnumber eXist or unpublished count -->
+					<xforms:action if="number(instance('control-instance')/errors/error[@code='010']/@count) &gt; number(instance('control-instance')/errors/error[@code='003']/@count) or number(instance('control-instance')/errors/error[@code='010']/@count) &gt; number(instance('control-instance')/errors/error[@code='008']/@count)">
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='011']/@test">Fail</xforms:setvalue>
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='011']/message">Number of published finding aids outnumbers unpublished Solr documents or eXist files.</xforms:setvalue>
+					</xforms:action>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/message" value="concat(instance('exist-url'), 'eaditor/config.xml not found.')"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- load eaditor/guides collection -->
+			<xforms:submission id="load-guides-collection" serialization="none" method="get" action="{instance('exist-url')}eaditor/guides" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@test">Success</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@count" value="count(instance('temp')//exist:resource)"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/message" value="concat(../@count, ' XML files found')"/>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/message" value="concat(instance('exist-url'), 'eaditor/guides eXist collection not found.')"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- load c template -->
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/@test">Success</xforms:setvalue>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/message" value="concat(instance('exist-url'), 'eaditor/c-template.xml not found.')"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- load ead template -->
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/ead-template.xml" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/@test">Success</xforms:setvalue>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/message" value="concat(instance('exist-url'), 'eaditor/ead-template.xml not found.')"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- load instance template -->
+			<xforms:submission id="load-instance-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/instance-templates.xml" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/@test">Success</xforms:setvalue>
+					<xforms:action xxforms:iterate="instance('temp')/*">
+						<xxforms:variable name="message" select="concat(name(), ' [', count(*), ' option(s)]', if (position()!=last()) then ', ' else '')"/>
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/message" value="concat(instance('control-instance')/errors/error[@code='006']/message, $message)"/>
+					</xforms:action>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/message" value="concat(instance('exist-url'), 'eaditor/instance-templates.xml not found.')"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- test Solr cores -->
+			<xforms:submission id="test-solr-vocabularies" serialization="none" method="get" action="{instance('config')/solr_vocabularies}select/?q=*:*&amp;rows=0" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/@test">Success</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/message" value="concat(instance('temp')//result[@name='response']/@numFound, ' terms found.')"/>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/message" value="concat('No response from ', instance('config')/solr_vocabularies)"/>
+				</xforms:action>
+			</xforms:submission>
+			<xforms:submission id="test-solr-unpublished" serialization="none" method="get" action="{instance('config')/solr_unpublished}select/?q=*:*&amp;rows=0" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/@test">Success</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/@count" value="instance('temp')//result[@name='response']/@numFound"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/message" value="concat(../@count, ' finding aids indexed into unpublished index.')"/>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/message" value="concat('No response from ', instance('config')/solr_unpublished)"/>
+				</xforms:action>
+			</xforms:submission>
+			<xforms:submission id="test-solr-published" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=*:*&amp;rows=0" replace="instance" instance="temp">
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/@test">Success</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/@count" value="instance('temp')//result[@name='response']/@numFound"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/message"
+						value="concat(../@count, ' published finding aids.')"/>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/@test">Fail</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/message" value="concat('No response from ', instance('config')/solr_published)"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- load eaditor config file on xforms construction -->
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:send submission="load-eaditor-collection"/>
+			</xforms:action>
+		</xforms:model>
+	</xhtml:head>
+
+	<xhtml:body class="yui-skin-sam">
+		<xhtml:div id="doc4">
+			<!-- header -->
+			<xxforms:variable name="display_path">../../</xxforms:variable>
+			<xi:include href="header-admin.xml"/>
+
+			<xhtml:div id="bd">
+				<xhtml:div id="form">
+					<xhtml:p>
+						<a href="..">&lt; Return</a>
+					</xhtml:p>
+					<xhtml:h1>EADitor Conformance Testing</xhtml:h1>
+					<xhtml:p>This page checks for the existence of required files based on the eXist URL in exist-url.xml in the EADitor folder in Orbeon's apps directory. Upon successful load of
+						EADitor's configuration file, config.xml, in the eXist database, Solr and other configurations are verified.</xhtml:p>
+					<xforms:group ref="instance('control-instance')/errors">
+						<xhtml:table class="error-table" style="border-collapse:separate;border-spacing:10px;">
+							<xhtml:tr>
+								<xhtml:th class="indicator">Status</xhtml:th>
+								<xhtml:th>Description</xhtml:th>
+							</xhtml:tr>
+
+							<xforms:repeat nodeset="error[string(@test)]">
+								<xxforms:variable name="status" select="if (@test='Success') then 'test-success' else 'test-fail'"/>
+								<xhtml:tr>
+									<xhtml:td class="indicator {$status}">
+										<xforms:output ref="@code"/>
+									</xhtml:td>
+									<xhtml:td style="border-bottom:1px solid silver;">
+										<xhtml:b>
+											<xforms:output ref="concat(@test, ':')"/>
+										</xhtml:b>
+										<xforms:output ref="@label"/>
+										<xforms:group ref=".[string(message)]">
+											<xhtml:span> - </xhtml:span>
+											<xforms:output ref="message"/>
+										</xforms:group>
+									</xhtml:td>
+								</xhtml:tr>
+							</xforms:repeat>
+						</xhtml:table>
+					</xforms:group>
+					<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector" xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
+				</xhtml:div>
+			</xhtml:div>
+
+			<!-- footer -->
+			<xi:include href="xslt/footer.xml"/>
+		</xhtml:div>
+	</xhtml:body>
+</xhtml:html>

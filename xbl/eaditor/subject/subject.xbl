@@ -1,0 +1,134 @@
+<!-- 	author: Ethan Gruber, American Numismatic Society 
+	last modified: June, 2011
+	function: EAD subject component; user taps into LCSH or local vocabulary for subjects
+-->
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns="urn:isbn:1-931666-22-9" xmlns:eaditor="http://code.google.com/p/eaditor/">
+
+
+	<xbl:binding id="eaditor-subject" element="eaditor|subject">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">					
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
+						<xforms:send submission="load-config"/>
+						<xforms:action if="string($binding/text())">
+							<xforms:insert context="instance('suggestions')" nodeset="response" origin="instance('response-temp')"/>
+							<xforms:setvalue ref="instance('suggestions')/lst[@name='terms']/lst/@name" value="'subject'"/>
+							<xforms:setvalue ref="instance('suggestions')/lst[@name='terms']/lst[@name='subject']/int/@name" value="$binding/text()"/>
+							<xforms:dispatch target="subject-autocomplete-control" name="fr-set-label">
+								<xxforms:context name="label" select="$binding/text()"/>
+							</xforms:dispatch>							
+						</xforms:action>
+						<xforms:setvalue ref="instance('test')" value="concat(instance('test'), '-test')"/>						
+					</xforms:action>
+					
+					<xhtml:div style="margin-top:10px;display:table;width:100%">
+						<fr:autocomplete ref="$binding" dynamic-itemset="true" id="subject-autocomplete-control">
+							<xforms:action ev:event="fr-search-changed">
+								<xxforms:variable name="search-value" select="event('fr-search-value')"/>
+								<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
+								<xforms:action if="$make-suggestion">
+									<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
+									<xforms:send submission="suggest-subject"/>									
+									<!-- always insert currently typed item into the itemset -->
+									<xforms:action ev:event="xforms-value-changed">
+										<xforms:insert context="instance('suggestions')/lst[@name='terms']/lst[@name='subject']" origin="instance('facet-result-template')"/>
+										<xforms:setvalue ref="instance('suggestions')/lst[@name='terms']/lst[@name='subject']/int[1]/@name" value="$search-value"/>										
+										<xforms:send submission="query-terms"/>
+										<xforms:action ev:event="xforms-submit-done">
+											<xforms:action if="number(instance('term-doc')/result[@name='response']/@numFound) = 1">
+												<xforms:insert context="$binding"
+													origin="xxforms:attribute('source', instance('term-doc')/result[@name='response']/doc/str[@name='source'])"/>
+												<xforms:insert context="$binding"
+													origin="xxforms:attribute('authfilenumber', instance('term-doc')/result[@name='response']/doc/str[@name='id'])"/>
+											</xforms:action>
+											<xforms:action if="number(instance('term-doc')/result[@name='response']/@numFound) = 0">
+												<xforms:delete context="$binding" nodeset="@source"/>
+												<xforms:delete context="$binding" nodeset="@authfilenumber"/>
+											</xforms:action>
+										</xforms:action>
+									</xforms:action>
+								</xforms:action>
+							</xforms:action>
+							<xforms:label style="float:left">Subject</xforms:label>
+							<!-- get response from current position in suggestions-aggregate instance -->
+							<xforms:itemset nodeset="instance('suggestions')//lst[@name='subject']/int">
+								<xforms:label ref="@name"/>
+								<xforms:value ref="@name"/>
+							</xforms:itemset>
+						</fr:autocomplete>
+
+						<eaditor:attributes ref="$binding"/>
+						
+						<xforms:trigger appearance="minimal" style="float:left">							
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
+					<xforms:model id="subject-authorities-model" xmlns:xi="http://www.w3.org/2001/XInclude">
+						<xforms:instance id="exist-url">
+							<xi:include href="../../../apps/eaditor/exist-url.xml"/>
+						</xforms:instance>
+						<xforms:instance id="config">
+							<config xmlns=""/>
+						</xforms:instance>		
+						<xforms:instance id="test">
+							<test/>
+						</xforms:instance>						
+						<!-- LOC subject autosuggest  -->
+						<!-- Instance containing the query string -->
+						<xforms:instance id="suggest-query">
+							<query/>
+						</xforms:instance>
+						<!-- Instance with the suggestions we get back from Solr -->
+						<xforms:instance id="suggestions">
+							<suggestions/>
+						</xforms:instance>
+						<!-- serves to aggregate current itemsets for each autocomplete in repetition -->						
+						<xforms:instance id="facet-result-template">
+							<int name="" xmlns=""/>
+						</xforms:instance>
+						<xforms:instance id="response-temp">
+							<response xmlns="">
+								<lst name="responseHeader">
+									<int name="status">0</int>
+									<int name="QTime">0</int>
+								</lst>
+								<lst name="terms">
+									<lst name="">
+										<int name="">1</int>
+									</lst>
+								</lst>
+							</response>
+						</xforms:instance>
+						
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
+						</xforms:submission>
+						
+						<xforms:submission id="suggest-subject" serialization="none" method="get"
+							action="{instance('config')/solr_vocabularies}terms?terms.fl=subject&amp;terms.limit=10&amp;terms.sort=index&amp;terms.prefix={instance('suggest-query')}"
+							instance="suggestions" replace="instance"/>
+
+						<!-- query solr for the id of a controlled access term, if it exists -->						
+						<xforms:instance id="term-doc">
+							<response xmlns=""/>
+						</xforms:instance>
+						<xforms:submission id="query-terms" serialization="none" method="get"
+							action="{instance('config')/solr_vocabularies}select?q=subject:&#x022;{instance('suggest-query')}&#x022;" instance="term-doc" replace="instance"/>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+</xbl:xbl>

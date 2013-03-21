@@ -1,0 +1,130 @@
+<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-list" element="eaditor|list">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xhtml:div class="subsection">
+						<xhtml:h3>List</xhtml:h3>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+							</xforms:label>
+						</xforms:trigger>
+						<xhtml:div>
+							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding" at="1" position="before" origin="instance('head-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:group ref="$binding[count(child::ead:item) &lt; 1 and count(child::ead:listhead) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>List Header</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="if (ead:head) then ead:head else ./child::node()[position() = 1]" origin="instance('listhead-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:group ref="$binding[count(child::ead:defitem) &lt; 1 and count(child::ead:listhead) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Item</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('item-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+							<xforms:group ref="$binding[count(ead:item) &lt; 1]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/add.gif"/>Definition Item</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('defitem-template')"/>
+								</xforms:trigger>
+							</xforms:group>
+						</xhtml:div>
+
+						<!-- head -->
+						<xforms:group ref="$binding/ead:head">
+							<eaditor:head/>
+						</xforms:group>
+						
+						<xforms:group
+							ref="$binding[count(child::ead:item) &lt; 1 and count(child::ead:defitem) &lt; 1]">
+							<xhtml:div class="warning"><b>Warning:</b> List must contain either at least one Item or Definition Item.</xhtml:div>
+						</xforms:group>
+
+						<!-- listhead -->
+						<xforms:group ref="$binding/ead:listhead">
+							<eaditor:listhead/>
+						</xforms:group>
+
+						<xforms:repeat nodeset="$binding/ead:item">
+							<xhtml:div>
+								<xforms:input ref=".">
+									<xforms:label>Item</xforms:label>
+								</xforms:input>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+							</xhtml:div>
+						</xforms:repeat>
+
+						<xforms:repeat nodeset="$binding/ead:defitem">
+							<xhtml:div class="pair_div">
+								<xhtml:h4>Definition Item</xhtml:h4>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+								<xhtml:div>
+									<xforms:input ref="ead:label">
+										<xforms:label>Label</xforms:label>
+										<xforms:alert>Required</xforms:alert>
+									</xforms:input>
+								</xhtml:div>
+								<xhtml:div>
+									<xforms:input ref="ead:item">
+										<xforms:label>Item</xforms:label>
+										<xforms:alert>Required</xforms:alert>
+									</xforms:input>
+								</xhtml:div>
+							</xhtml:div>
+						</xforms:repeat>
+					</xhtml:div>
+					<!-- ********************************************************************** -->
+					<xforms:model id="list-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+						<xforms:instance id="head-template">
+							<head/>
+						</xforms:instance>
+						<xforms:instance id="listhead-template">
+							<listhead>
+								<head01/>
+								<head02/>
+							</listhead>
+						</xforms:instance>
+						<xforms:instance id="item-template">
+							<item/>
+						</xforms:instance>
+						<xforms:instance id="defitem-template">
+							<defitem>
+								<label/>
+								<item/>
+							</defitem>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>
