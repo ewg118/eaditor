@@ -456,7 +456,7 @@
 
 						<!-- controlled instances-->
 						<!-- languages -->
-						<xforms:instance id="languageselect-template" src="/apps/eaditor/instances/languages.xml"/>
+						<xforms:instance id="languageselect-template" src="oxf:/apps/eaditor/instances/languages.xml"/>
 
 						<!-- container types -->
 						<!--<xforms:instance id="containertype-template">

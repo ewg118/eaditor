@@ -5,20 +5,19 @@
 	Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
 <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude">
 	<xhtml:head>
 		<xhtml:title>EADitor: Edit Component</xhtml:title>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+		<xhtml:link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<xhtml:link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<xhtml:link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<xhtml:link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<xhtml:link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
 		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
 
 		<xforms:model>
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -286,138 +285,130 @@
 		<xi:include href="oxf:/xbl/eaditor/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="oxf:/xbl/eaditor/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
 	</xhtml:head>
-	<xhtml:body class="yui-skin-sam">
-		<xhtml:div id="doc4" class="yui-t2">
-			<!-- header -->
-			<xxforms:variable name="display_path">../../../</xxforms:variable>
-			<xi:include href="header-admin.xml"/>
-
-			<xhtml:div id="bd">
-				<xforms:group ref="instance('status')/text()">
-					<xhtml:div class="success">
-						<xforms:output ref="instance('status')"/>
-					</xhtml:div>
-				</xforms:group>
-				<xhtml:p>
-					<xhtml:a href="../../">&lt; Return</xhtml:a>
-				</xhtml:p>
-				<xhtml:div id="yui-main">
-					<xhtml:div class="yui-b">
-						<xhtml:div id="form">
-							<!-- This table contains the main actions for the page  -->
-							<xhtml:div class="submission">
-								<xforms:submit submission="save-submission" appearance="minimal">
-									<xforms:label><xhtml:img src="/apps/eaditor/images/save.gif" alt="Save"/> Save</xforms:label>
-								</xforms:submit>
-								<xforms:submit submission="load-submission" appearance="minimal">
-									<xforms:label><xhtml:img src="/apps/eaditor/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
-								</xforms:submit>
-							</xhtml:div>
-
-
-							<xforms:group ref="instance('guide')/descendant::ead:c[@id=instance('identifier')]">
-								<xxforms:variable name="level" select="@level"/>
-								<xhtml:h2>Edit Component</xhtml:h2>
-								<eaditor:attributes ref="."/>
-								<xhtml:div class="section">
-									<xhtml:div>
-										<xforms:input ref="@id">
-											<xforms:label>Component ID</xforms:label>
-											<xforms:alert>Required</xforms:alert>
-										</xforms:input>
-									</xhtml:div>
-									<xhtml:div>
-										<xforms:select1 ref="@level">
-											<xforms:label>Level</xforms:label>
-											<xforms:itemset nodeset="instance('level-template')/level">
-												<xforms:label ref="."/>
-												<xforms:value ref="@value"/>
-											</xforms:itemset>
-											<!-- create otherlevel attribute or delete it, depending on @level value -->
-											<xforms:action ev:event="xforms-value-changed">
-												<xforms:insert if="$level='otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]"
-													origin="xxforms:attribute('otherlevel', '')"/>
-												<xforms:delete if="$level != 'otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]" nodeset="@otherlevel"/>
-											</xforms:action>
-										</xforms:select1>
-									</xhtml:div>
-									<xforms:group ref=".[@level='otherlevel']">
-										<xhtml:div>
-											<xforms:input ref="@otherlevel">
-												<xforms:label>Other Level</xforms:label>
-												<xforms:alert>Must be a valid nametoken</xforms:alert>
-											</xforms:input>
-										</xhtml:div>
-									</xforms:group>
-									<xforms:group ref=".[string(@audience)]">
-										<xhtml:div>
-											<xforms:output ref="@audience">
-												<xforms:label>Audience</xforms:label>
-											</xforms:output>
-										</xhtml:div>
-									</xforms:group>
-								</xhtml:div>
-								<widget:tabs>
-									<!--**************************************** DESCRIPTIVE INFORMATION - DID **********************************-->
-									<widget:tab id="did">
-										<widget:label>Descriptive Identification</widget:label>
-										<!-- did-level instances -->
-										<xhtml:div class="section">
-											<xforms:group ref="ead:did">
-												<eaditor:did/>
-											</xforms:group>
-										</xhtml:div>
-									</widget:tab>
-									<!--**************************************** END DESCRIPTIVE INFORMATION - DID **********************************-->
-									<!--**************************************** COMPONENT-LEVEL INFORMATION **********************************-->
-									<widget:tab id="c-level">
-										<widget:label>C-level Information</widget:label>
-										<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the top-level ead form -->
-										<xhtml:div class="section">
-											<eaditor:component-level/>
-										</xhtml:div>
-									</widget:tab>
-									<!--**************************************** END COMPONENT-LEVEL INFORMATION **********************************-->
-									<!--**************************************** SUB COMPONENTS **********************************-->
-									<widget:tab id="subcomponents">
-										<widget:label>Subcomponents</widget:label>
-										<xhtml:h1>Subcomponents</xhtml:h1>
-										<xhtml:div>
-											<xforms:trigger appearance="minimal">
-												<xforms:label>
-													<xhtml:img src="/apps/eaditor/images/add.gif"/>Subcomponent</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
-												<xforms:action ev:event="DOMActivate">
-													<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
-												</xforms:action>
-											</xforms:trigger>
-										</xhtml:div>
-
-										<xhtml:div class="section">
-											<xforms:repeat nodeset="ead:c">
-												<eaditor:c/>
-											</xforms:repeat>
-										</xhtml:div>
-									</widget:tab>
-									<!--**************************************** END SUB COMPONENTS **********************************-->
-									<!--<widget:tab id="preview">
-										<widget:label>XML Preview</widget:label>
-										<xhtml:h1>XML Preview</xhtml:h1>
-										<widget:xforms-instance-inspector id="orbeon-xforms-inspector"
-										xmlns:widget="http://orbeon.org/oxf/xml/widget"/>
-										</widget:tab>-->
-								</widget:tabs>
-							</xforms:group>
+	<xhtml:body>
+		<xxforms:variable name="display_path">../../../</xxforms:variable>
+		<xhtml:div class="yui3-g">
+			<xhtml:div class="yui3-u-1">
+				<xhtml:div class="content">
+					<xforms:group ref="instance('status')/text()">
+						<xhtml:div class="success">
+							<xforms:output ref="instance('status')"/>
 						</xhtml:div>
-					</xhtml:div>
-				</xhtml:div>
-				<xhtml:div class="yui-b">
-					<eaditor:navigation ref="instance('toc')" depth="8"/>
+					</xforms:group>
+					<xhtml:p>
+						<xhtml:a href="../../">&lt; Return</xhtml:a>
+					</xhtml:p>
 				</xhtml:div>
 			</xhtml:div>
+			<xhtml:div class="yui3-u-1-5">
+				<eaditor:navigation ref="instance('toc')" depth="8"/>
+			</xhtml:div>
+			<xhtml:div class="yui3-u-4-5">
+				<xhtml:div id="form">
+					<!-- This table contains the main actions for the page  -->
+					<xhtml:div class="submission">
+						<xforms:submit submission="save-submission" appearance="minimal">
+							<xforms:label><xhtml:img src="/apps/eaditor/images/save.gif" alt="Save"/> Save</xforms:label>
+						</xforms:submit>
+						<xforms:submit submission="load-submission" appearance="minimal">
+							<xforms:label><xhtml:img src="/apps/eaditor/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
+						</xforms:submit>
+					</xhtml:div>
 
-			<!-- footer -->
-			<xi:include href="xslt/footer.xml"/>
+
+					<xforms:group ref="instance('guide')/descendant::ead:c[@id=instance('identifier')]">
+						<xxforms:variable name="level" select="@level"/>
+						<xhtml:h2>Edit Component</xhtml:h2>
+						<eaditor:attributes ref="."/>
+						<xhtml:div class="section">
+							<xhtml:div>
+								<xforms:input ref="@id">
+									<xforms:label>Component ID</xforms:label>
+									<xforms:alert>Required</xforms:alert>
+								</xforms:input>
+							</xhtml:div>
+							<xhtml:div>
+								<xforms:select1 ref="@level">
+									<xforms:label>Level</xforms:label>
+									<xforms:itemset nodeset="instance('level-template')/level">
+										<xforms:label ref="."/>
+										<xforms:value ref="@value"/>
+									</xforms:itemset>
+									<!-- create otherlevel attribute or delete it, depending on @level value -->
+									<xforms:action ev:event="xforms-value-changed">
+										<xforms:insert if="$level='otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]" origin="xxforms:attribute('otherlevel', '')"/>
+										<xforms:delete if="$level != 'otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]" nodeset="@otherlevel"/>
+									</xforms:action>
+								</xforms:select1>
+							</xhtml:div>
+							<xforms:group ref=".[@level='otherlevel']">
+								<xhtml:div>
+									<xforms:input ref="@otherlevel">
+										<xforms:label>Other Level</xforms:label>
+										<xforms:alert>Must be a valid nametoken</xforms:alert>
+									</xforms:input>
+								</xhtml:div>
+							</xforms:group>
+							<xforms:group ref=".[string(@audience)]">
+								<xhtml:div>
+									<xforms:output ref="@audience">
+										<xforms:label>Audience</xforms:label>
+									</xforms:output>
+								</xhtml:div>
+							</xforms:group>
+						</xhtml:div>
+						<fr:tabview>
+							<!--**************************************** DESCRIPTIVE INFORMATION - DID **********************************-->
+							<fr:tab id="did">
+								<fr:label>Descriptive Identification</fr:label>
+								<!-- did-level instances -->
+								<xhtml:div class="section">
+									<xforms:group ref="ead:did">
+										<eaditor:did/>
+									</xforms:group>
+								</xhtml:div>
+							</fr:tab>
+							<!--**************************************** END DESCRIPTIVE INFORMATION - DID **********************************-->
+							<!--**************************************** COMPONENT-LEVEL INFORMATION **********************************-->
+							<fr:tab id="c-level">
+								<fr:label>C-level Information</fr:label>
+								<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the top-level ead form -->
+								<xhtml:div class="section">
+									<eaditor:component-level/>
+								</xhtml:div>
+							</fr:tab>
+							<!--**************************************** END COMPONENT-LEVEL INFORMATION **********************************-->
+							<!--**************************************** SUB COMPONENTS **********************************-->
+							<fr:tab id="subcomponents">
+								<fr:label>Subcomponents</fr:label>
+								<xhtml:h1>Subcomponents</xhtml:h1>
+								<xhtml:div>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<xhtml:img src="/apps/eaditor/images/add.gif"/>Subcomponent</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+										</xforms:action>
+									</xforms:trigger>
+								</xhtml:div>
+
+								<xhtml:div class="section">
+									<xforms:repeat nodeset="ead:c">
+										<eaditor:c/>
+									</xforms:repeat>
+								</xhtml:div>
+							</fr:tab>
+							<!--**************************************** END SUB COMPONENTS **********************************-->
+							<!--<fr:tab id="preview">
+								<fr:label>XML Preview</fr:label>
+								<xhtml:h1>XML Preview</xhtml:h1>
+								<fr:xforms-inspector id="orbeon-xforms-inspector"/>
+							</fr:tab>-->
+						</fr:tabview>
+					</xforms:group>
+				</xhtml:div>
+			</xhtml:div>
 		</xhtml:div>
 	</xhtml:body>
 </xhtml:html>

@@ -6,7 +6,7 @@
 
 <xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns="urn:isbn:1-931666-22-9">
+	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-geogname" element="eaditor|geogname">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -25,7 +25,7 @@
 						</xforms:action>
 						<xforms:action if="not($binding/@source) and not(string($binding/text()))">
 							<xforms:setvalue ref="instance('interface-type')" value="'geonames'"/>
-						</xforms:action>						
+						</xforms:action>
 					</xforms:action>
 					<xhtml:div class="pair_div">
 						<xhtml:h3>Geographical Name</xhtml:h3>
@@ -111,7 +111,7 @@
 									<xforms:select1 ref="$binding/@authfilenumber" appearance="compact" id="select-list">
 										<xforms:label>Location</xforms:label>
 										<xforms:itemset nodeset="instance('geonames')//geoname">
-											<xforms:label ref="label"/>											
+											<xforms:label ref="label"/>
 											<xforms:value ref="geonameId"/>
 										</xforms:itemset>
 									</xforms:select1>
@@ -268,7 +268,7 @@
 						</xforms:instance>
 						<xforms:instance id="geonameId">
 							<geonameId/>
-						</xforms:instance>						
+						</xforms:instance>
 						<xforms:instance id="geonames">
 							<geonames xmlns=""/>
 						</xforms:instance>
@@ -301,7 +301,7 @@
 						<xforms:instance id="interface-type">
 							<interface/>
 						</xforms:instance>
-						
+
 						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
 
 						<!-- search for matching keywords -->
@@ -329,10 +329,10 @@
 
 						<!-- get XML representation of single geoname, initiated on xforms-enabled -->
 						<xforms:submission id="get-geonameId" serialization="none" method="get"
-							action="http://api.geonames.org/get?geonameId={instance('geonameId')}&amp;username=anscoins&amp;style=full" instance="geoname-query-response" replace="instance">	
+							action="http://api.geonames.org/get?geonameId={instance('geonameId')}&amp;username=anscoins&amp;style=full" instance="geoname-query-response" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:insert context="instance('geoname-temp')" origin="instance('geoname-query-response')"/>
-								<xforms:action xxforms:iterate="instance('geoname-temp')//geoname" >
+								<xforms:action xxforms:iterate="instance('geoname-temp')//geoname">
 									<xxforms:variable name="countryCode" select="countryCode"/>
 									<xxforms:variable name="countryName" select="countryName"/>
 									<xxforms:variable name="name" select="name"/>
@@ -345,7 +345,7 @@
 									<xforms:setvalue ref="instance('geoname-template')/geonameId" value="$geonameId"/>
 									<xforms:insert context="instance('geonames')" origin="instance('geoname-template')" nodeset="./child::node()[last()]"/>
 								</xforms:action>
-							</xforms:action>				
+							</xforms:action>
 						</xforms:submission>
 
 						<!-- local vocabulary query -->

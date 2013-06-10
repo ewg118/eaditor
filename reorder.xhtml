@@ -9,17 +9,15 @@
 	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:eaditor="http://code.google.com/p/eaditor/">
 	<xhtml:head>
 		<xhtml:title>EADitor: Reorder Components</xhtml:title>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+		<xhtml:link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<xhtml:link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<xhtml:link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<xhtml:link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<xhtml:link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<xhtml:link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
 		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
-		
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>		
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
 		<xforms:model>
 			<xforms:instance id="exist-url">
 				<xi:include href="exist-url.xml"/>
@@ -117,38 +115,35 @@
 		<xi:include href="oxf:/xbl/eaditor/tree-view/tree-view.xbl" xxi:omit-xml-base="true"/>
 	</xhtml:head>
 
-	<xhtml:body class="yui-skin-sam">
-		<xhtml:div id="doc4">
-			<!-- header -->
-			<xxforms:variable name="display_path">../../</xxforms:variable><xi:include href="header-admin.xml"/>
-
-			<xhtml:div id="bd">
-				<xhtml:div id="form">
-					<xforms:group ref="instance('status')/text()">
-						<xhtml:div class="success">
-							<xforms:output ref="instance('status')"/>
+	<xhtml:body>
+		<xxforms:variable name="display_path">../../</xxforms:variable>
+		<xhtml:div class="yui3-g">
+			<xhtml:div class="yui3-u-1">
+				<xhtml:div class="content">
+					<xhtml:div id="form">
+						<xforms:group ref="instance('status')/text()">
+							<xhtml:div class="success">
+								<xforms:output ref="instance('status')"/>
+							</xhtml:div>
+						</xforms:group>
+						<xhtml:p>
+							<xhtml:a href="{$display_path}">&lt; Return</xhtml:a>
+						</xhtml:p>
+						<xhtml:div class="submission">
+							<xforms:submit submission="save-submission" appearance="minimal">
+								<xforms:label><xhtml:img src="/apps/eaditor/images/save.gif" alt="Save"/> Save</xforms:label>
+							</xforms:submit>
+							<xforms:submit submission="load-submission" appearance="minimal">
+								<xforms:label><xhtml:img src="/apps/eaditor/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
+							</xforms:submit>
 						</xhtml:div>
-					</xforms:group>
-					<p>
-						<a href="..">&lt; Return</a>
-					</p>
-					<xhtml:div class="submission">
-						<xforms:submit submission="save-submission" appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/images/save.gif" alt="Save"/> Save</xforms:label>
-						</xforms:submit>
-						<xforms:submit submission="load-submission" appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
-						</xforms:submit>
+						
+						<xhtml:h1>Reorder Components</xhtml:h1>
+						<xhtml:p>Expand the tree formed by the &lt;dsc&gt; and use the green arrows to move components up or down within its parent component.</xhtml:p>
+						<eaditor:tree-view ref="instance('guide')/ead:archdesc/ead:dsc" depth="6"/>
 					</xhtml:div>
-
-					<xhtml:h1>Reorder Components</xhtml:h1>
-					<xhtml:p>Expand the tree formed by the &lt;dsc&gt; and use the green arrows to move components up or down within its parent component.</xhtml:p>
-					<eaditor:tree-view ref="instance('guide')/ead:archdesc/ead:dsc" depth="6"/>
 				</xhtml:div>
 			</xhtml:div>
-
-			<!-- footer -->
-			<xi:include href="xslt/footer.xml"/>
-		</xhtml:div>
+		</xhtml:div>		
 	</xhtml:body>
 </xhtml:html>

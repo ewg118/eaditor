@@ -7,12 +7,12 @@
 -->
 <xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:dlcn="http://www.delcyon.com/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors"
-	xmlns:ev="http://www.w3.org/2001/xml-events">
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="http://code.google.com/p/eaditor/">
 
 	<xbl:binding element="eaditor|permissions">
 
 		<xbl:resources>
-			<xbl:style src="/xbl/eaditor/permissions/permissions.css"/>
+			<xbl:style src="oxf:/xbl/eaditor/permissions/permissions.css"/>
 		</xbl:resources>
 
 		<xbl:template xxbl:transform="oxf:xslt">
@@ -50,7 +50,8 @@
 									<xxforms:variable name="audience" select="@audience"/>
 									<xforms:setvalue ref="instance('c-template')/@id" value="$id"/>
 									<xforms:setvalue ref="instance('c-template')/@audience" value="if(string($audience)) then $audience else ''"/>
-									<xforms:insert origin="instance('c-template')" context="instance('components')" nodeset="./child::node()[last()]" if="count(instance('components')//c[@id=$id]) = 0"/>									
+									<xforms:insert origin="instance('c-template')" context="instance('components')" nodeset="./child::node()[last()]" if="count(instance('components')//c[@id=$id]) = 0"
+									/>
 								</xforms:action>
 							</xforms:group>
 							<xforms:model id="model">
