@@ -11,8 +11,18 @@
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
 	
-	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="data" href="#data"/>		
+	<p:processor name="oxf:request">
+		<p:input name="config">
+			<config>
+				<include>/request/parameters</include>
+			</config>
+		</p:input>
+		<p:output name="data" id="params"/>
+	</p:processor>
+	
+	<p:processor name="oxf:unsafe-xslt">		
+		<p:input name="data" href="#data"/>
+		<p:input name="params" href="#params"/>		
 		<p:input name="config" href="../xslt/maps.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>

@@ -80,10 +80,6 @@
 	<page path-info="/eaditor/get_facets/" model="exist-url.xml" view="xpl/get_facets.xpl"/>
 	<!-- decades results for nested checkbox -->
 	<page path-info="/eaditor/get_decades/" model="exist-url.xml" view="xpl/get_decades.xpl"/>
-	<!-- for maps page -->
-	<page path-info="/eaditor/maps_get_facets/" model="exist-url.xml" view="xpl/maps_get_facets.xpl"/>
-	<page path-info="/eaditor/maps_remove_facets/" model="exist-url.xml" view="xpl/maps_remove_facets.xpl"/>
-	<page path-info="/eaditor/maps_update_filters/" model="exist-url.xml" view="xpl/maps_update_filters.xpl"/>
 	<page path-info="/eaditor/results_ajax/" model="exist-url.xml" view="xpl/results_ajax.xpl"/>
 
 	<epilogue url="oxf:/config/epilogue.xpl"/>

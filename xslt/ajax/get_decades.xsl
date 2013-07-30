@@ -19,7 +19,7 @@
 
 	<!-- Solr query URL -->
 	<xsl:variable name="service">
-		<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=0&amp;rows=0&amp;facet.field=decade_sint&amp;facet.sort=index&amp;fq=century_sint:', $century)"/>
+		<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
 	</xsl:variable>
 
 	<xsl:template match="/">
@@ -29,17 +29,17 @@
 			</head>
 			<body>
 				<ul>
-					<xsl:apply-templates select="document($service)/response//lst[@name='decade_sint']"/>
+					<xsl:apply-templates select="document($service)/response//lst[@name='decade_num']"/>
 				</ul>
 			</body>
 		</html>		
 	</xsl:template>
 
-	<xsl:template match="lst[@name='decade_sint']">
+	<xsl:template match="lst[@name='decade_num']">
 		<xsl:for-each select="int[$century = substring(@name, 1, 2)]">
 			<li>
 				<xsl:choose>
-					<xsl:when test="contains($q, concat('decade_sint:', @name))">
+					<xsl:when test="contains($q, concat('decade_num:', @name))">
 						<input type="checkbox" value="{@name}" checked="checked" class="decade_checkbox"/>
 					</xsl:when>
 					<xsl:otherwise>

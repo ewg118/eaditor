@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor exsl xs xi" version="2.0"
-	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:exsl="http://exslt.org/common" xmlns:eaditor="http://code.google.com/p/eaditor/">
-	<xsl:include href="header-public.xsl"/>
-	<xsl:include href="footer-public.xsl"/>
-	<xsl:include href="results_functions.xsl"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="http://code.google.com/p/eaditor/" exclude-result-prefixes="#all"
+	version="2.0">
+	<xsl:output method="xhtml" encoding="UTF-8" indent="yes"/>
+	<xsl:include href="templates.xsl"/>
+	<xsl:include href="functions.xsl"/>
 
 	<!-- change eXist URL if running on a server other than localhost -->
 	<xsl:variable name="exist-url" select="/exist-url"/>
 	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	<xsl:variable name="flickr-api-key" select="exsl:node-set($config)/config/flickr_api_key"/>
+	<xsl:variable name="config" as="node()*">
+		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
+	</xsl:variable>
+	<xsl:variable name="flickr-api-key" select="$config/config/flickr_api_key"/>
 	<xsl:variable name="facets">
-		<xsl:for-each select="tokenize(exsl:node-set($config)/config/theme/facets, ',')">
+		<xsl:for-each select="tokenize($config/config/theme/facets, ',')">
 			<xsl:text>&amp;facet.field=</xsl:text>
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="url" select="exsl:node-set($config)/config/url"/>
-	<xsl:variable name="solr-url" select="concat(exsl:node-set($config)/config/solr_published, 'select/')"/>
-	<xsl:variable name="ui-theme" select="exsl:node-set($config)/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="url" select="$config/config/url"/>
+	<xsl:variable name="solr-url" select="concat($config/config/solr_published, 'select/')"/>
+	<xsl:variable name="ui-theme" select="$config/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
@@ -51,14 +53,10 @@
 	<xsl:variable name="service">
 		<xsl:choose>
 			<xsl:when test="string($sort)">
-				<xsl:value-of
-					select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, '&amp;sort=', $encoded_sort, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"
-				/>
+				<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, '&amp;sort=', $encoded_sort, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of
-					select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"
-				/>
+				<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -67,32 +65,45 @@
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="exsl:node-set($config)/config/title"/>
+					<xsl:value-of select="$config/config/title"/>
 					<xsl:text>: Search Results</xsl:text>
-				</title>				
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/grids/grids-min.css"/>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css"/>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/base/base-min.css"/>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/fonts/fonts-min.css"/>
-
+				</title>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
 				<link rel="stylesheet" href="{$display_path}css/style.css"/>
 				<link rel="stylesheet" href="{$display_path}css/themes/{$ui-theme}.css"/>
+
+				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
+				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
+
+				<!-- menu -->
+				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/menu.js"/>
+
+				<!-- page js/style -->
 				<link rel="stylesheet" href="{$display_path}css/jquery.multiselect.css"/>
-				<link rel="stylesheet" href="{$display_path}css/jquery.fancybox-1.3.4.css"/>				
-				<script type="text/javascript" src="{$display_path}javascript/jquery-1.4.2.min.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/jquery-ui-1.8.12.custom.min.js"/>
+				<link rel="stylesheet" href="{$display_path}css/jquery.fancybox-1.3.4.css"/>
+
 				<script type="text/javascript" src="{$display_path}javascript/jquery.multiselect.min.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/jquery.multiselectfilter.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/jquery.fancybox-1.3.4.min.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
+
+
 				<script type="text/javascript" src="{$display_path}javascript/get_facets.js"/>
+				<script type="text/javascript" src="{$display_path}javascript/facet_functions.js"/>
 				<script type="text/javascript" src="{$display_path}javascript/result_map_functions.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/quick_search.js"/>
+				<!--<script type="text/javascript" src="{$display_path}javascript/quick_search.js"/>-->
 				<script type="text/javascript" src="{$display_path}javascript/sort_results.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/menu.js"/>
 				<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
 				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
+				<!--<xsl:copy-of select="$config/config/google_analytics/*"/>-->
+
 
 				<script type="text/javascript">
 					$(document).ready(function() {
@@ -111,34 +122,47 @@
 							window.open(href, '_blank');
 						});
 					});
-				</script>				
+				</script>
 			</head>
-			<body class="yui-skin-sam">
-				<div id="backgroundPopup"/>
-				<div id="doc4" class="{exsl:node-set($config)/config/theme/layouts/*[name()=$pipeline]/yui_class}">
-					<!-- header -->
-					<xsl:call-template name="header-public"/>
-
-					<div id="bd">
-						<xsl:apply-templates select="document($service)/response"/>
-						<select style="display:none" id="ajax-temp"/>
-						<ul style="display:none" id="decades-temp"/>
-					</div>
-
-					<!-- footer -->
-					<xsl:copy-of select="document('footer.xml')/*[local-name()='div'][@id='ft']"/>
-				</div>
-				<xsl:copy-of select="exsl:node-set($config)/config/google_analytics/*"/>
+			<body>
+				<xsl:call-template name="header"/>
+				<xsl:call-template name="results"/>
+				<xsl:call-template name="footer"/>
 			</body>
 		</html>
 
 
 	</xsl:template>
 
+	<xsl:template name="results">
+		<xsl:apply-templates select="document($service)/response"/>
+	</xsl:template>
+
 	<xsl:template match="response">
-		<div id="yui-main">
-			<div class="yui-b">
-				<div style="{if (exsl:node-set($config)/config/theme/layouts/*[name()=$pipeline]/yui_class = 'yui-t2') then 'margin-left:20px' else ''}">
+		<div class="yui3-g">
+			<div id="backgroundPopup"/>
+			<div class="yui3-u-1-5">
+				<div class="content">
+					<xsl:if test="//result[@name='response']/@numFound &gt; 0">
+						<div class="data_options">
+							<h3>Data Options</h3>
+							<a href="{$display_path}feed/?q=*:*">
+								<img alt="Atom" title="Atom" src="{$display_path}images/atom-medium.png"/>
+							</a>
+							<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
+								<a href="{$display_path}query.kml?q={$q}">
+									<img src="{$display_path}images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
+								</a>
+							</xsl:if>
+						</div>
+						<h3>Refine Results</h3>
+						<!--<xsl:call-template name="quick_search"/>-->
+						<xsl:apply-templates select="descendant::lst[@name='facet_fields']"/>
+					</xsl:if>
+				</div>
+			</div>
+			<div class="yui3-u-4-5">
+				<div class="content">
 					<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
 						<div style="display:none">
 							<div id="resultMap"/>
@@ -156,26 +180,13 @@
 							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start over.</a></h2>
 						</xsl:otherwise>
 					</xsl:choose>
+					<span style="display:none" id="pipeline">
+						<xsl:value-of select="$pipeline"/>
+					</span>
+					<select style="display:none" id="ajax-temp"/>
+					<ul style="display:none" id="decades-temp"/>
 				</div>
 			</div>
-		</div>
-		<div class="yui-b">
-			<xsl:if test="//result[@name='response']/@numFound &gt; 0">
-				<div class="data_options">
-					<h3>Data Options</h3>
-					<a href="{$display_path}feed/?q=*:*">
-						<img alt="Atom" title="Atom" src="{$display_path}images/atom-medium.png"/>
-					</a>
-					<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
-						<a href="{$display_path}query.kml?q={$q}">
-							<img src="{$display_path}images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
-						</a>
-					</xsl:if>
-				</div>
-				<h3>Refine Results</h3>
-				<xsl:call-template name="quick_search"/>
-				<xsl:apply-templates select="descendant::lst[@name='facet_fields']"/>
-			</xsl:if>
 		</div>
 	</xsl:template>
 
@@ -268,7 +279,8 @@
 						<xsl:for-each select="ancestor::doc/arr[@name='thumb_image']/str">
 							<xsl:variable name="dao_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
 							<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($dao_id)"/>
-							<a class="image-gallery" rel="{ancestor::doc/str[@name='id']}-gallery" href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $dao_id)][1]}" title="{$title}: {position() + count(ancestor::doc/arr[@name='collection_thumb']/str)} of {$photo_count}">
+							<a class="image-gallery" rel="{ancestor::doc/str[@name='id']}-gallery" href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $dao_id)][1]}"
+								title="{$title}: {position() + count(ancestor::doc/arr[@name='collection_thumb']/str)} of {$photo_count}">
 								<img src="{.}" alt="image"/>
 							</a>
 						</xsl:for-each>
@@ -516,7 +528,7 @@
 
 	<xsl:template name="sort">
 		<xsl:variable name="sort_categories_string">
-			<xsl:text>agency_facet,genreform_facet,language_facet,timestamp,unittitle_display,year_sint</xsl:text>
+			<xsl:text>agency_facet,genreform_facet,language_facet,timestamp,unittitle_display,year_num</xsl:text>
 		</xsl:variable>
 		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
 
@@ -572,14 +584,8 @@
 	</xsl:template>
 
 	<xsl:template name="quick_search">
-		<div class="quick_search">
-			<h4>Quick Search</h4>
-			<form action="{$display_path}results/" method="GET">
-				<input type="text" id="qs_text"/>
-				<input type="hidden" name="q" id="qs_query" value="{$q}"/>
-				<input id="qs_button" type="submit" value="Search"/>
-			</form>
-		</div>
+		<h3>Keyword</h3>
+		<input type="text" id="qs_text"/>
 	</xsl:template>
 
 	<xsl:template match="lst[@name='facet_fields']">
@@ -608,7 +614,7 @@
 			</xsl:variable>
 
 			<xsl:choose>
-				<xsl:when test="@name='century_sint'">
+				<xsl:when test="@name='century_num'">
 					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 180px;" id="{@name}_link" label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
@@ -660,13 +666,11 @@
 			</xsl:choose>
 			<br/>
 		</xsl:for-each>
-		<form action="." id="facet_form">
-			<input type="hidden" name="q" id="facet_form_query" value="{if (string($q)) then $q else '*:*'}"/>
-			<br/>
-			<div class="submit_div">
-				<input type="submit" value="Refine Search" id="search_button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-focus"/>
-			</div>
-		</form>
+		<input type="hidden" name="q" id="facet_form_query" value="{if (string($q)) then $q else '*:*'}"/>
+		<br/>
+		<div class="submit_div">
+			<input type="submit" value="Refine Search" id="search_button"/>
+		</div>
 	</xsl:template>
 
 	<xsl:template name="remove_facets">
@@ -723,7 +727,7 @@
 						<div class="ui-widget ui-state-default ui-corner-all stacked_term">
 							<span class="term">
 								<b><xsl:value-of select="$name"/>: </b>
-								<xsl:value-of select="if ($field = 'century_sint') then eaditor:normalize_century($term) else $term"/>
+								<xsl:value-of select="if ($field = 'century_num') then eaditor:normalize_century($term) else $term"/>
 							</span>
 							<a class="ui-icon ui-icon-closethick remove_filter" href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
 						</div>
@@ -806,7 +810,7 @@
 										<xsl:value-of select="eaditor:normalize_fields($field)"/>
 										<xsl:text>: </xsl:text>
 									</b>
-									<xsl:value-of select="if ($field='century_sint') then eaditor:normalize_century($value) else $value"/>
+									<xsl:value-of select="if ($field='century_num') then eaditor:normalize_century($value) else $value"/>
 
 
 

@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor exsl xs xi" version="2.0"
 	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:exsl="http://exslt.org/common"
 	xmlns:eaditor="http://code.google.com/p/eaditor/">
-	<xsl:include href="../results_functions.xsl"/>
+	<xsl:include href="../functions.xsl"/>
 
 	<!-- change eXist URL if running on a server other than localhost -->
 	<xsl:variable name="exist-url" select="/exist-url"/>
@@ -15,10 +15,9 @@
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
-	<xsl:param name="q">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	</xsl:param>
-	<xsl:param name="tokenized_q" select="tokenize($q, ' AND ')"/>
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
+	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 	<xsl:variable name="encoded_q" select="encode-for-uri($q)"/>
 	<xsl:param name="sort">
 		<xsl:if test="string(doc('input:params')/request/parameters/parameter[name='sort']/value)">
@@ -73,7 +72,7 @@
 								<xsl:text>, </xsl:text>
 							</xsl:if>
 						</xsl:for-each>
-						<a id="clear_results" href="#">clear</a>
+						<a id="clear_all" href="#">clear</a>
 					</h1>
 					<xsl:call-template name="paging"/>
 					<xsl:apply-templates select="exsl:node-set($response)//doc"/>
