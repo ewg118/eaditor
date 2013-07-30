@@ -23,7 +23,7 @@
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="#data"/>
 		<p:input name="params" href="#params"/>		
-		<p:input name="config" href="../xslt/ajax/results_ajax.xsl"/>
+		<p:input name="config" href="../ui/xslt/ajax/results_ajax.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 </p:config>

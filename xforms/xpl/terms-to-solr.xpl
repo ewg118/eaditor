@@ -13,7 +13,7 @@
 
 	<p:processor name="oxf:xslt">
 		<p:input name="data" href="#data"/>
-		<p:input name="config" href="../xslt/vocab/terms-to-solr.xsl"/>
+		<p:input name="config" href="../xforms/xslt/vocab/terms-to-solr.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 	

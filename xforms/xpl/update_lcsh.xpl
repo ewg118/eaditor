@@ -16,7 +16,7 @@
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<!-- This is the stylesheet to pass parameters to -->
-				<xsl:import href="../xslt/vocab/update-lcsh.xsl"/>
+				<xsl:import href="../xforms/xslt/vocab/update-lcsh.xsl"/>
 				<!-- Here we assign a value to the "start" parameter -->
 				<xsl:param name="date">
 					<xsl:choose>

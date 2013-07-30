@@ -33,7 +33,7 @@
 		<p:input name="data" href="#data"/>
 		<p:input name="params" href="#params"/>
 		<p:input name="url" href="#url"/>
-		<p:input name="config" href="../xslt/results.xsl"/>
+		<p:input name="config" href="../ui/xslt/results.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 </p:config>

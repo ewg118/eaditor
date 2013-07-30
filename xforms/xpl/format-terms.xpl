@@ -16,7 +16,7 @@
 		<p:input name="data" href="#data"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0">
-				<xsl:import href="../xslt/vocab/formatting.xsl"/>
+				<xsl:import href="../xforms/xslt/vocab/formatting.xsl"/>
 				<xsl:param name="name" select="name(//report/*[1])"/>
 			</xsl:stylesheet>
 		</p:input>

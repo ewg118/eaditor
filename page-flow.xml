@@ -17,70 +17,70 @@
 	<!-- ****************
 	* ADMIN INTERFACE *
 	***************** -->
-	<page path-info="/eaditor/admin/edit/core-template/" view="ead-template.xhtml"/>
-	<page path-info="/eaditor/admin/edit/c-template/" view="c-template.xhtml"/>
-	<page path-info="/eaditor/admin/edit/instance-templates/" view="instance-templates.xhtml"/>
-	<page path-info="/eaditor/admin/edit/core/" view="ead.xhtml"/>
-	<page path-info="/eaditor/admin/edit/component/" view="component.xhtml"/>
-	<page path-info="/eaditor/admin/upload/" view="upload.xhtml"/>
-	<page path-info="/eaditor/admin/vocab/" view="vocab.xhtml"/>
-	<page path-info="/eaditor/admin/eac-cpf/" view="eac-cpf.xhtml"/>
-	<page path-info="/eaditor/admin/templates/" view="templates.xhtml"/>
-	<page path-info="/eaditor/admin/reorder/" view="reorder.xhtml"/>
-	<page path-info="/eaditor/admin/permissions/" view="permissions.xhtml"/>
-	<page path-info="/eaditor/admin/settings/" view="settings.xhtml"/>
-	<page path-info="/eaditor/admin/" id="admin" view="admin.xhtml"/>
+	<page path-info="/eaditor/admin/edit/core-template/" view="xforms/ead-template.xhtml"/>
+	<page path-info="/eaditor/admin/edit/c-template/" view="xforms/c-template.xhtml"/>
+	<page path-info="/eaditor/admin/edit/instance-templates/" view="xforms/instance-templates.xhtml"/>
+	<page path-info="/eaditor/admin/edit/core/" view="xforms/ead.xhtml"/>
+	<page path-info="/eaditor/admin/edit/component/" view="xforms/component.xhtml"/>
+	<page path-info="/eaditor/admin/upload/" view="xforms/upload.xhtml"/>
+	<page path-info="/eaditor/admin/vocab/" view="xforms/vocab.xhtml"/>
+	<page path-info="/eaditor/admin/eac-cpf/" view="xforms/eac-cpf.xhtml"/>
+	<page path-info="/eaditor/admin/templates/" view="xforms/templates.xhtml"/>
+	<page path-info="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
+	<page path-info="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
+	<page path-info="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
+	<page path-info="/eaditor/admin/" id="admin" view="xforms/admin.xhtml"/>
 
 	<!-- test page -->
-	<page path-info="/eaditor/admin/test/" view="test.xhtml"/>
+	<page path-info="/eaditor/admin/test/" view="xforms/test.xhtml"/>
 	<!-- dsc navigation service for forms via ajax -->
-	<page path-info="/eaditor/admin/navigation/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xpl/navigation.xpl"/>
-	<page path-info="/eaditor/admin/toc/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xpl/toc.xpl"/>
+	<page path-info="/eaditor/admin/navigation/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xforms/xpl/navigation.xpl"/>
+	<page path-info="/eaditor/admin/toc/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xforms/xpl/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
-	<page path-info="/eaditor/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
+	<!--<page path-info="/eaditor/get_attributes/" model="xml/empty.xml" view="xforms/xpl/xsd-get-attributes.xpl"/>-->
 
 	<!-- private xml (all elements shown) -->
-	<page path-info="/eaditor/admin/xml/(.*)" matcher="oxf:perl5-matcher" view="xpl/xml-private.xpl"/>
+	<page path-info="/eaditor/admin/xml/(.*)" matcher="oxf:perl5-matcher" view="xforms/xpl/xml-private.xpl"/>
 
 	<!-- private html view -->
-	<page path-info="/eaditor/admin/show/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/display.xpl"/>
+	<page path-info="/eaditor/admin/show/(.*)" matcher="oxf:perl5-matcher" model="xforms/xpl/xml-private.xpl" view="xforms/xpl/display.xpl"/>
 
 	<!-- ****************
 	* PUBLIC INTERFACE *
 	***************** -->
 	<!-- public xml view (internal elements supressed) -->
-	<page path-info="/eaditor/xml/(.*)" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
+	<page path-info="/eaditor/xml/(.*)" matcher="oxf:perl5-matcher" view="xforms/xpl/xml-public.xpl"/>
 
 	<!-- public html view -->
-	<page path-info="/eaditor/show/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
+	<page path-info="/eaditor/show/(.*)" matcher="oxf:perl5-matcher" model="xforms/xpl/xml-public.xpl" view="xforms/xpl/display.xpl"/>
 
 	<!-- solr doc service -->
-	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xpl/ead-publish.xpl"/>
+	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xforms/xpl/ead-publish.xpl"/>
 
 	<!-- index -->
-	<page path-info="/eaditor/" model="exist-url.xml" view="xpl/index.xpl"/>
+	<page path-info="/eaditor/" model="exist-url.xml" view="xforms/xpl/index.xpl"/>
 
 	<!-- public search/browse interface -->
-	<page path-info="/eaditor/results/" model="exist-url.xml" view="xpl/results.xpl"/>
-	<page path-info="/eaditor/search/" model="exist-url.xml" view="xpl/search.xpl"/>
-	<page path-info="/eaditor/maps/" model="exist-url.xml" view="xpl/maps.xpl"/>
+	<page path-info="/eaditor/results/" model="exist-url.xml" view="xforms/xpl/results.xpl"/>
+	<page path-info="/eaditor/search/" model="exist-url.xml" view="xforms/xpl/search.xpl"/>
+	<page path-info="/eaditor/maps/" model="exist-url.xml" view="xforms/xpl/maps.xpl"/>
 
 	<!-- Atom feed -->
-	<page path-info="/eaditor/feed/" model="exist-url.xml" view="xpl/feed.xpl"/>
+	<page path-info="/eaditor/feed/" model="exist-url.xml" view="xforms/xpl/feed.xpl"/>
 
 	<!-- OAI-PMH feed -->
-	<page path-info="/eaditor/oai/" model="exist-url.xml" view="xpl/oai-pmh.xpl"/>
+	<page path-info="/eaditor/oai/" model="exist-url.xml" view="xforms/xpl/oai-pmh.xpl"/>
 
 	<!-- KML service -->
-	<page path-info="/eaditor/query.kml" model="exist-url.xml" view="xpl/solr-to-kml.xpl"/>
+	<page path-info="/eaditor/query.kml" model="exist-url.xml" view="xforms/xpl/solr-to-kml.xpl"/>
 
 	<!-- AJAX CALLS -->
 	<!-- facet results -->
-	<page path-info="/eaditor/get_facets/" model="exist-url.xml" view="xpl/get_facets.xpl"/>
+	<page path-info="/eaditor/get_facets/" model="exist-url.xml" view="xforms/xpl/get_facets.xpl"/>
 	<!-- decades results for nested checkbox -->
-	<page path-info="/eaditor/get_decades/" model="exist-url.xml" view="xpl/get_decades.xpl"/>
-	<page path-info="/eaditor/results_ajax/" model="exist-url.xml" view="xpl/results_ajax.xpl"/>
+	<page path-info="/eaditor/get_decades/" model="exist-url.xml" view="xforms/xpl/get_decades.xpl"/>
+	<page path-info="/eaditor/results_ajax/" model="exist-url.xml" view="xforms/xpl/results_ajax.xpl"/>
 
 	<epilogue url="oxf:/config/epilogue.xpl"/>
 </config>

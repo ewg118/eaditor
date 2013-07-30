@@ -14,7 +14,7 @@
 	
 	<p:processor name="oxf:xslt">
 		<p:input name="data" href="#data"/>
-		<p:input name="config" href="../xslt/vocab/agencycodes.xsl"/>
+		<p:input name="config" href="../xforms/xslt/vocab/agencycodes.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 

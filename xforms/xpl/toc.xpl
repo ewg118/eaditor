@@ -24,7 +24,7 @@
 	<p:processor name="oxf:xslt">
 		<p:input name="data" href="#data"/>
 		<p:input name="request" href="#request"/>
-		<p:input name="config" href="../xslt/ajax/toc.xsl"/>
+		<p:input name="config" href="../ui/xslt/ajax/toc.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 	

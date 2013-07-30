@@ -23,7 +23,7 @@
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="request" href="#request"/>
 		<p:input name="data" href="aggregate('content', #data, ../exist-url.xml)"/>		
-		<p:input name="config" href="../xslt/display.xsl"/>
+		<p:input name="config" href="../ui/xslt/display.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 </p:config>

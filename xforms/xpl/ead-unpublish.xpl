@@ -13,7 +13,7 @@
 	
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="#data"/>		
-		<p:input name="config" href="../xslt/publish/ead-unpublish.xsl"/>
+		<p:input name="config" href="../xforms/xslt/publish/ead-unpublish.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 	

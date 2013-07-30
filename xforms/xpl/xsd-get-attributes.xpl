@@ -22,9 +22,9 @@
 	</p:processor>
 	
 	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="data" href="../schema/ead.xsd"/>
+		<p:input name="data" href="../xforms/schema/ead.xsd"/>
 		<p:input name="request" href="#request"/>		
-		<p:input name="config" href="../xslt/xsd-get-attributes.xsl"/>
+		<p:input name="config" href="../xforms/xslt/xsd-get-attributes.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 	

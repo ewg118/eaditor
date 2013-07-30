@@ -19,7 +19,7 @@
 	
 	<p:processor name="oxf:xslt">
 		<p:input name="data" href="#schematized"/>
-		<p:input name="config" href="../xslt/import/preprocess.xsl"/>
+		<p:input name="config" href="../xforms/xslt/import/preprocess.xsl"/>
 		<p:output name="data" ref="finalized"/>
 	</p:processor>
 	
