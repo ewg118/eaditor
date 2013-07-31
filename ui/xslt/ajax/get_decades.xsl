@@ -2,22 +2,10 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor xs xi" version="2.0"
 	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:eaditor="http://code.google.com/p/eaditor/">
 	<xsl:output method="xml" encoding="UTF-8"/>
-	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
-
 	<!-- URL parameters -->
-	<xsl:param name="q">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	</xsl:param>
-	<xsl:variable name="encoded_q" select="encode-for-uri($q)"/>
-	<xsl:param name="century">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='century']/value"/>
-	</xsl:param>
-
-	<!-- Solr query URL -->
-	<xsl:variable name="service">
-		<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
-	</xsl:variable>
-
+	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>	
+	<xsl:param name="century" select="doc('input:params')/request/parameters/parameter[name='century']/value"/>
+	
 	<xsl:template match="/">
 		<html>
 			<head>
@@ -25,7 +13,7 @@
 			</head>
 			<body>
 				<ul>
-					<xsl:apply-templates select="document($service)/response//lst[@name='decade_num']"/>
+					<xsl:apply-templates select="/response//lst[@name='decade_num']"/>
 				</ul>
 			</body>
 		</html>

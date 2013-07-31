@@ -2,69 +2,27 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:datetime="http://exslt.org/dates-and-times" exclude-result-prefixes="xs datetime" version="2.0">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
-
-	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
-	<xsl:param name="site-url" select="/config/url"/>
-	<!-- request URL -->
-	<xsl:param name="base-url" select="substring-before(doc('input:url')/request/request-url, 'feed/')"/>
-
-	<xsl:param name="verb">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='verb']/value"/>
-	</xsl:param>
-	<xsl:param name="metadataPrefix">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='metadataPrefix']/value"/>
-	</xsl:param>
-	<xsl:param name="set">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='set']/value"/>
-	</xsl:param>
-	<xsl:param name="identifier" as="xs:anyURI">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='identifier']/value"/>
-	</xsl:param>
-	<xsl:param name="from">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='from']/value"/>
-	</xsl:param>
-	<xsl:param name="until">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='until']/value"/>
-	</xsl:param>
-	<xsl:param name="resumptionToken">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='resumptionToken']/value"/>
-	</xsl:param>
+	<xsl:variable name="url" select="/content/config/url"/>
+	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
+	
+	<!-- request params -->
+	<xsl:param name="verb" select="doc('input:params')/request/parameters/parameter[name='verb']/value"/>
+	<xsl:param name="metadataPrefix" select="doc('input:params')/request/parameters/parameter[name='metadataPrefix']/value"/>
+	<xsl:param name="set" select="doc('input:params')/request/parameters/parameter[name='set']/value"/>
+	<xsl:param name="identifier" select="doc('input:params')/request/parameters/parameter[name='identifier']/value"/>
+	<xsl:param name="from" select="doc('input:params')/request/parameters/parameter[name='from']/value"/>
+	<xsl:param name="until" select="doc('input:params')/request/parameters/parameter[name='until']/value"/>
+	<xsl:param name="resumptionToken" select="doc('input:params')/request/parameters/parameter[name='resumptionToken']/value"/>
 
 	<!-- validate from, until, resumptionToken -->
 	<xsl:variable name="from-validate" as="xs:boolean" select="$from castable as xs:date"/>
 	<xsl:variable name="until-validate" as="xs:boolean" select="$until castable as xs:date"/>
 
-
-	<xsl:variable name="q">
-		<xsl:choose>
-			<xsl:when test="string($identifier)">
-				<xsl:text>oai_id:%22</xsl:text>
-				<xsl:value-of select="normalize-space($identifier)"/>
-				<xsl:text>%22</xsl:text>
-			</xsl:when>
-			<xsl:when test="string($from) or string($until)">
-				<xsl:if test="$from-validate=true() or $until-validate=true()">
-					<xsl:text>timestamp:[</xsl:text>
-					<xsl:value-of select="if($from-validate=true()) then concat($from, 'T00:00:00.000Z') else '*'"/>
-					<xsl:text>+TO+</xsl:text>
-					<xsl:value-of select="if($until-validate=true()) then concat($until, 'T23:59:59.999Z') else '*'"/>
-					<xsl:text>]</xsl:text>
-				</xsl:if>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:text>*:*</xsl:text>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="service">
-		<xsl:value-of select="concat($solr-url, '?q=', $q, '&amp;sort=timestamp%20desc&amp;rows=500')"/>
-	</xsl:variable>
-
 	<xsl:variable name="resumptionToken-validate" as="xs:boolean">
 		<xsl:choose>
 			<xsl:when test="string($resumptionToken)">
 				<xsl:choose>
-					<xsl:when test="document(concat($solr-url, '?q=', encode-for-uri(concat('oai_id:&#x022;', $resumptionToken, '&#x022;'))))/response/result/@numFound = 1">true</xsl:when>
+					<xsl:when test="descendant::doc[str[@name='oai_id']=$resumptionToken]">true</xsl:when>
 					<xsl:otherwise>false</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
@@ -90,7 +48,7 @@
 				<xsl:if test="string($identifier)">
 					<xsl:attribute name="identifier" select="$identifier"/>
 				</xsl:if>
-				<xsl:value-of select="concat($site-url, 'oai/')"/>
+				<xsl:value-of select="concat($url, 'oai/')"/>
 			</request>
 			<xsl:choose>
 				<xsl:when test="$verb='Identify'">
@@ -99,14 +57,14 @@
 							<xsl:value-of select="//repositoryName"/>
 						</repositoryName>
 						<baseURL>
-							<xsl:value-of select="concat($site-url, 'oai/')"/>
+							<xsl:value-of select="concat($url, 'oai/')"/>
 						</baseURL>
 						<protocolVersion>2.0</protocolVersion>
 						<adminEmail>
 							<xsl:value-of select="//adminEmail"/>
 						</adminEmail>
 						<earliestDatestamp>
-							<xsl:value-of select="substring-before(document(concat($solr-url, '?q=*:*&amp;rows=1&amp;sort=timestamp+asc'))/descendant::doc/date[@name='timestamp'], 'T')"/>
+							<xsl:value-of select="substring-before(descendant::doc[last()]/date[@name='timestamp'], 'T')"/>
 						</earliestDatestamp>
 						<deletedRecord>no</deletedRecord>
 						<granularity>YYYY-MM-DD</granularity>
@@ -120,7 +78,7 @@
 								</repositoryIdentifier>
 								<delimiter>:</delimiter>
 								<sampleIdentifier>
-									<xsl:value-of select="document(concat($solr-url, '?q=*:*&amp;rows=1'))/descendant::doc/str[@name='oai_id']"/>
+									<xsl:value-of select="descendant::doc[1]/str[@name='oai_id']"/>
 								</sampleIdentifier>
 							</oai-identifier>
 						</description>
@@ -269,7 +227,7 @@
 									<xsl:choose>
 										<xsl:when test="$metadataPrefix='oai_dc'">
 											<GetRecord>
-												<xsl:apply-templates select="document($service)/descendant::doc" mode="ListRecords"/>
+												<xsl:apply-templates select="descendant::doc" mode="ListRecords"/>
 											</GetRecord>
 										</xsl:when>
 										<xsl:otherwise>
@@ -329,7 +287,7 @@
 						<xsl:value-of select="//repositoryName"/>
 					</dc:publisher>
 					<dc:identifier>
-						<xsl:value-of select="concat($site-url, 'show/', str[@name='id'])"/>
+						<xsl:value-of select="concat($url, 'show/', str[@name='id'])"/>
 					</dc:identifier>
 					<xsl:if test="string(str[@name='unitdate_display'])">
 						<dc:date>
@@ -436,24 +394,24 @@
 
 	<xsl:template name="list-records">
 		<xsl:choose>
-			<xsl:when test="count(document($service)/descendant::doc)=0">
+			<xsl:when test="count(descendant::doc)=0">
 				<error code="noRecordsMatch">No matching records in date range</error>
 			</xsl:when>
 			<xsl:otherwise>
 				<ListRecords>
-					<xsl:apply-templates select="document($service)/descendant::doc" mode="ListRecords"/>
+					<xsl:apply-templates select="descendant::doc" mode="ListRecords"/>
 				</ListRecords>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template name="list-identifiers">
 		<xsl:choose>
-			<xsl:when test="count(document($service)/descendant::doc)=0">
+			<xsl:when test="count(descendant::doc)=0">
 				<error code="noRecordsMatch">No matching records in date range</error>
 			</xsl:when>
 			<xsl:otherwise>
 				<ListIdentifiers>
-					<xsl:apply-templates select="document($service)/descendant::doc" mode="ListIdentifiers"/>
+					<xsl:apply-templates select="descendant::doc" mode="ListIdentifiers"/>
 				</ListIdentifiers>
 			</xsl:otherwise>
 		</xsl:choose>

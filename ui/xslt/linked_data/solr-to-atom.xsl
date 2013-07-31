@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2005/Atom" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
-
-	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
-	<!-- request URL -->
-	<xsl:param name="base-url" select="substring-before(doc('input:url')/request/request-url, 'feed/')"/>
-
-	<xsl:param name="q">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	</xsl:param>
-	<xsl:param name="start">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='start']/value"/>
-	</xsl:param>
+	
+	<!-- config variable -->
+	<xsl:variable name="url" select="/content/config/url"/>
+	
+	<!-- request params -->
+	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>	
+	<xsl:param name="start" select="doc('input:params')/request/parameters/parameter[name='start']/value"/>	
 	<xsl:variable name="start_var" as="xs:integer">
 		<xsl:choose>
 			<xsl:when test="number($start)">
@@ -20,12 +16,7 @@
 			<xsl:otherwise>0</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	<xsl:variable name="service">
-		<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;sort=timestamp%20desc&amp;start=',$start, '&amp;rows=100')"/>
-	</xsl:variable>
 	<xsl:param name="rows" as="xs:integer">100</xsl:param>
-
-
 
 	<xsl:template match="/">
 		<xsl:variable name="numFound">
@@ -37,24 +28,24 @@
 
 		<feed xmlns="http://www.w3.org/2005/Atom">
 			<title>
-				<xsl:value-of select="/config/title"/>
+				<xsl:value-of select="/content/config/title"/>
 			</title>
 			<link href="/"/>
 			<link href="../feed/?q={$q}" rel="self"/>
 			<id>Feed ID</id>
 
 			<xsl:if test="not($next = $last)">
-				<link rel="next" href="{$base-url}feed/?q={$q}&amp;start={$next}"/>
+				<link rel="next" href="{$url}feed/?q={$q}&amp;start={$next}"/>
 			</xsl:if>
-			<link rel="last" href="{$base-url}feed/?q={$q}&amp;start={$last}"/>
+			<link rel="last" href="{$url}feed/?q={$q}&amp;start={$last}"/>
 
 			<author>
 				<name>
-					<xsl:value-of select="/config/title"/>
+					<xsl:value-of select="/content/config/title"/>
 				</name>
 			</author>
 
-			<xsl:apply-templates select="document($service)/descendant::doc"/>
+			<xsl:apply-templates select="descendant::doc"/>
 		</feed>
 
 	</xsl:template>
@@ -64,8 +55,8 @@
 			<title>
 				<xsl:value-of select="str[@name='unittitle_display']"/>
 			</title>
-			<link href="{$base-url}show/{str[@name='id']}"/>
-			<link rel="alternate xml" type="text/xml" href="{$base-url}xml/{str[@name='id']}"/>
+			<link href="{$url}show/{str[@name='id']}"/>
+			<link rel="alternate xml" type="text/xml" href="{$url}xml/{str[@name='id']}"/>
 
 			<id>
 				<xsl:value-of select="str[@name='id']"/>

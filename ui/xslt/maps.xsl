@@ -5,15 +5,8 @@
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 	
-	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>
-	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
-	<xsl:variable name="facets">
-		<xsl:for-each select="tokenize(/config/theme/facets, ',')">
-			<xsl:text>&amp;facet.field=</xsl:text>
-			<xsl:value-of select="."/>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>	
+	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">maps</xsl:variable>
 
@@ -21,20 +14,11 @@
 	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 
-	<!-- initial solr_query -->
-	<xsl:variable name="service">
-		<xsl:value-of select="concat($solr-url, '?q=georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1', $facets)"/>
-	</xsl:variable>
-
-	<xsl:variable name="response" as="node()*">
-		<xsl:copy-of select="document($service)/response"/>
-	</xsl:variable>
-
 	<xsl:template match="/">
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="/config/title"/>
+					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: Maps</xsl:text>
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
@@ -55,7 +39,7 @@
 				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
 
 				<!-- map functions -->
-				<xsl:if test="$response//result[@name='response']/@numFound &gt; 0">
+				<xsl:if test="/content//result[@name='response']/@numFound &gt; 0">
 					<!-- fancybox -->
 					<link rel="stylesheet" href="{$display_path}ui/css/jquery.fancybox-1.3.4.css"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
@@ -88,10 +72,10 @@
 				<div class="content">
 					<h1>Maps</h1>
 					<xsl:choose>
-						<xsl:when test="$response//result[@name='response']/@numFound &gt; 0">
+						<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
 							<div style="display:table;width:100%">
 								<ul id="filter_list" section="maps">
-									<xsl:apply-templates select="$response//lst[@name='facet_fields']/lst[descendant::int]"/>
+									<xsl:apply-templates select="/content//lst[@name='facet_fields']/lst[descendant::int]"/>
 								</ul>
 							</div>
 							<div id="mapcontainer"/>

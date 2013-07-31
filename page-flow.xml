@@ -64,25 +64,25 @@
 	<page path-info="/eaditor/" model="xpl/config.xpl" view="xpl/index.xpl"/>
 
 	<!-- public search/browse interface -->
-	<page path-info="/eaditor/results/" model="xpl/config.xpl" view="xpl/results.xpl"/>
+	<page path-info="/eaditor/results/" model="xpl/solr-results.xpl" view="xpl/results.xpl"/>
 	<page path-info="/eaditor/search/" model="xpl/config.xpl" view="xpl/search.xpl"/>
-	<page path-info="/eaditor/maps/" model="xpl/config.xpl" view="xpl/maps.xpl"/>
+	<page path-info="/eaditor/maps/" model="xpl/solr-maps.xpl" view="xpl/maps.xpl"/>
 
 	<!-- Atom feed -->
-	<page path-info="/eaditor/feed/" model="xpl/config.xpl" view="xpl/feed.xpl"/>
+	<page path-info="/eaditor/feed/" model="xpl/solr-feed.xpl" view="xpl/feed.xpl"/>
 
 	<!-- OAI-PMH feed -->
-	<page path-info="/eaditor/oai/" model="xpl/config.xpl" view="xpl/oai-pmh.xpl"/>
+	<page path-info="/eaditor/oai/" model="xpl/solr-oai-pmh.xpl" view="xpl/oai-pmh.xpl"/>
 
 	<!-- KML service -->
-	<page path-info="/eaditor/query.kml" model="xpl/config.xpl" view="xpl/solr-to-kml.xpl"/>
+	<page path-info="/eaditor/query.kml" model="xpl/solr-kml.xpl" view="xpl/kml.xpl"/>
 
 	<!-- AJAX CALLS -->
 	<!-- facet results -->
-	<page path-info="/eaditor/get_facets/" model="xpl/config.xpl" view="xpl/get_facets.xpl"/>
+	<page path-info="/eaditor/get_facets/" model="xpl/solr-get_facets.xpl" view="xpl/get_facets.xpl"/>
 	<!-- decades results for nested checkbox -->
-	<page path-info="/eaditor/get_decades/" model="xpl/config.xpl" view="xpl/get_decades.xpl"/>
-	<page path-info="/eaditor/results_ajax/" model="xpl/config.xpl" view="xpl/results_ajax.xpl"/>
+	<page path-info="/eaditor/get_decades/" model="xpl/solr-get_decades.xpl" view="xpl/get_decades.xpl"/>
+	<page path-info="/eaditor/results_ajax/" model="xpl/solr-results_ajax.xpl" view="xpl/results_ajax.xpl"/>
 
 	<epilogue url="oxf:/config/epilogue.xpl"/>
 </config>

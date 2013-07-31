@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor exsl xs xi" version="2.0"
-	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:exsl="http://exslt.org/common"
-	xmlns:eaditor="http://code.google.com/p/eaditor/">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:eaditor="http://code.google.com/p/eaditor/" exclude-result-prefixes="xs eaditor xs xi" version="2.0">
 	<xsl:include href="../functions.xsl"/>
-	
-	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>
-	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
-	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
+
+	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>	
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
-	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
-	<xsl:variable name="encoded_q" select="encode-for-uri($q)"/>
 	<xsl:param name="sort">
 		<xsl:if test="string(doc('input:params')/request/parameters/parameter[name='sort']/value)">
 			<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='sort']/value"/>
 		</xsl:if>
 	</xsl:param>
-	<xsl:variable name="encoded_sort" select="encode-for-uri($sort)"/>
 	<xsl:param name="rows" as="xs:integer">10</xsl:param>
 	<xsl:param name="start" as="xs:integer">
 		<xsl:choose>
@@ -30,22 +25,6 @@
 			<xsl:otherwise>0</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
-
-	<!-- request URL -->
-	<xsl:param name="base-url" select="substring-before(doc('input:url')/request/request-url, 'results/')"/>
-
-	<!-- Solr query URL -->
-	<xsl:variable name="service">
-		<xsl:choose>
-			<xsl:when test="string($sort)">
-				<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, '&amp;sort=', $encoded_sort, '&amp;rows=', $rows)"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, '&amp;rows=', $rows)"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="response" select="document($service)"/>
 
 	<xsl:template match="/">
 		<html>
@@ -62,7 +41,7 @@
 							<xsl:text>s</xsl:text>
 						</xsl:if>
 						<xsl:text>: </xsl:text>
-						<xsl:for-each select="$georefs">							
+						<xsl:for-each select="$georefs">
 							<xsl:value-of select="tokenize(., '\|')[2]"/>
 							<xsl:if test="not(position() = last())">
 								<xsl:text>, </xsl:text>
@@ -71,7 +50,7 @@
 						<a id="clear_all" href="#">clear</a>
 					</h1>
 					<xsl:call-template name="paging"/>
-					<xsl:apply-templates select="exsl:node-set($response)//doc"/>
+					<xsl:apply-templates select="//doc"/>
 					<xsl:call-template name="paging"/>
 				</div>
 			</body>
@@ -179,7 +158,7 @@
 		</xsl:variable>
 
 		<xsl:variable name="numFound">
-			<xsl:value-of select="number(exsl:node-set($response)/response/result[@name='response']/@numFound)"/>
+			<xsl:value-of select="number(/response/result[@name='response']/@numFound)"/>
 		</xsl:variable>
 
 		<xsl:variable name="next">

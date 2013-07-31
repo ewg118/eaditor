@@ -5,31 +5,27 @@
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
-	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="facets">
-		<xsl:for-each select="tokenize(/config/theme/facets, ',')">
+		<xsl:for-each select="tokenize(/content/config/theme/facets, ',')">
 			<xsl:text>&amp;facet.field=</xsl:text>
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="url" select="/config/url"/>
-	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
-	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="url" select="/content/config/url"/>
+	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
+	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
-	<xsl:param name="q">
-		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	</xsl:param>
-	<xsl:param name="tokenized_q" select="tokenize($q, ' AND ')"/>
-	<xsl:variable name="encoded_q" select="encode-for-uri($q)"/>
+	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
+	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 	<xsl:param name="sort">
 		<xsl:if test="string(doc('input:params')/request/parameters/parameter[name='sort']/value)">
 			<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='sort']/value"/>
 		</xsl:if>
 	</xsl:param>
-	<xsl:variable name="encoded_sort" select="encode-for-uri($sort)"/>
 	<xsl:param name="rows">10</xsl:param>
 	<xsl:param name="start">
 		<xsl:choose>
@@ -40,26 +36,11 @@
 		</xsl:choose>
 	</xsl:param>
 
-	<!-- request URL -->
-	<xsl:param name="base-url" select="substring-before(doc('input:url')/request/request-url, 'results/')"/>
-
-	<!-- Solr query URL -->
-	<xsl:variable name="service">
-		<xsl:choose>
-			<xsl:when test="string($sort)">
-				<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, '&amp;sort=', $encoded_sort, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="concat($solr-url, '?q=', $encoded_q, '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-
 	<xsl:template match="/">
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="/config/title"/>
+					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: Search Results</xsl:text>
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
@@ -96,7 +77,7 @@
 				<script type="text/javascript" src="{$display_path}ui/javascript/sort_results.js"/>
 				<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
 				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
-				<!--<xsl:copy-of select="/config/google_analytics/*"/>-->
+				<!--<xsl:copy-of select="/content/config/google_analytics/*"/>-->
 
 
 				<script type="text/javascript">
@@ -129,7 +110,7 @@
 	</xsl:template>
 
 	<xsl:template name="results">
-		<xsl:apply-templates select="document($service)/response"/>
+		<xsl:apply-templates select="/content/response"/>
 	</xsl:template>
 
 	<xsl:template match="response">
