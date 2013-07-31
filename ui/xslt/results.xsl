@@ -70,36 +70,36 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/menu.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
 
 				<!-- page js/style -->
-				<link rel="stylesheet" href="{$display_path}css/jquery.multiselect.css"/>
-				<link rel="stylesheet" href="{$display_path}css/jquery.fancybox-1.3.4.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/jquery.multiselect.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/jquery.fancybox-1.3.4.css"/>
 
-				<script type="text/javascript" src="{$display_path}javascript/jquery.multiselect.min.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/jquery.multiselectfilter.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/jquery.fancybox-1.3.4.min.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.multiselect.min.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.multiselectfilter.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
 
 
-				<script type="text/javascript" src="{$display_path}javascript/get_facets.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/facet_functions.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/result_map_functions.js"/>
-				<!--<script type="text/javascript" src="{$display_path}javascript/quick_search.js"/>-->
-				<script type="text/javascript" src="{$display_path}javascript/sort_results.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/get_facets.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/facet_functions.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/result_map_functions.js"/>
+				<!--<script type="text/javascript" src="{$display_path}ui/javascript/quick_search.js"/>-->
+				<script type="text/javascript" src="{$display_path}ui/javascript/sort_results.js"/>
 				<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
 				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
 				<!--<xsl:copy-of select="$config/config/google_analytics/*"/>-->
@@ -147,11 +147,11 @@
 						<div class="data_options">
 							<h3>Data Options</h3>
 							<a href="{$display_path}feed/?q=*:*">
-								<img alt="Atom" title="Atom" src="{$display_path}images/atom-medium.png"/>
+								<img alt="Atom" title="Atom" src="{$display_path}ui/images/atom-medium.png"/>
 							</a>
 							<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
 								<a href="{$display_path}query.kml?q={$q}">
-									<img src="{$display_path}images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
+									<img src="{$display_path}ui/images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
 								</a>
 							</xsl:if>
 						</div>
@@ -633,7 +633,7 @@
 							<xsl:for-each select="int">
 								<li>
 									<span class="expand_century" century="{@name}" q="{$q}">
-										<img src="{$display_path}images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
+										<img src="{$display_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
 									</span>
 									<xsl:choose>
 										<xsl:when test="contains($q, concat(':',@name))">

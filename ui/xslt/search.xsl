@@ -18,24 +18,24 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/menu.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
 				
-				<script type="text/javascript" src="{$display_path}javascript/jquery.livequery.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/search.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/toggle_search_options.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/search.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/toggle_search_options.js"/>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>

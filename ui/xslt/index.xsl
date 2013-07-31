@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="html" encoding="UTF-8"/>
+	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="xhtml" encoding="UTF-8"/>
 	<xsl:include href="templates.xsl"/>
 
 	<xsl:variable name="exist-url" select="/exist-url"/>
@@ -18,20 +18,20 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}javascript/menu.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -81,11 +81,11 @@
 					<div id="linked_data">
 						<h3>Linked Data</h3>
 						<a href="{$display_path}feed/?q=*:*">
-							<img src="{$display_path}images/atom-large.png" title="Atom" alt="Atom"/>
+							<img src="{$display_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
 						<xsl:if test="$config/config/oai-pmh/@active='true'">
 							<a href="{$display_path}oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead">
-								<img src="{$display_path}images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
+								<img src="{$display_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
 							</a>
 						</xsl:if>
 					</div>
