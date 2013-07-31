@@ -2,18 +2,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="html" encoding="UTF-8"/>
 	<xsl:include href="templates.xsl"/>
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<xsl:variable name="config" as="node()*">
-		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	</xsl:variable>
-	<xsl:variable name="ui-theme" select="$config/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 
 	<xsl:template match="/">
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="$config/config/title"/>
+					<xsl:value-of select="/config/title"/>
 					<xsl:text>: Search</xsl:text>
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>

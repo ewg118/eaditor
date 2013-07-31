@@ -34,8 +34,8 @@
 	<!-- test page -->
 	<page path-info="/eaditor/admin/test/" view="xforms/test.xhtml"/>
 	<!-- dsc navigation service for forms via ajax -->
-	<page path-info="/eaditor/admin/navigation/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xpl/navigation.xpl"/>
-	<page path-info="/eaditor/admin/toc/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xpl/toc.xpl"/>
+	<page path-info="/eaditor/admin/navigation/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/navigation.xpl"/>
+	<page path-info="/eaditor/admin/toc/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
 	<!--<page path-info="/eaditor/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>-->
@@ -48,7 +48,9 @@
 
 	<!-- ****************
 	* PUBLIC INTERFACE *
-	***************** -->
+	***************** -->	
+	<page path-info="/eaditor/config.xml" view="xpl/config.xpl"/>
+	
 	<!-- public xml view (internal elements supressed) -->
 	<page path-info="/eaditor/xml/(.*)" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
 
@@ -56,31 +58,31 @@
 	<page path-info="/eaditor/show/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
 
 	<!-- solr doc service -->
-	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="exist-url.xml" view="xpl/ead-publish.xpl"/>
+	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="xpl/config.xpl" view="xpl/ead-publish.xpl"/>
 
 	<!-- index -->
-	<page path-info="/eaditor/" model="exist-url.xml" view="xpl/index.xpl"/>
+	<page path-info="/eaditor/" model="xpl/config.xpl" view="xpl/index.xpl"/>
 
 	<!-- public search/browse interface -->
-	<page path-info="/eaditor/results/" model="exist-url.xml" view="xpl/results.xpl"/>
-	<page path-info="/eaditor/search/" model="exist-url.xml" view="xpl/search.xpl"/>
-	<page path-info="/eaditor/maps/" model="exist-url.xml" view="xpl/maps.xpl"/>
+	<page path-info="/eaditor/results/" model="xpl/config.xpl" view="xpl/results.xpl"/>
+	<page path-info="/eaditor/search/" model="xpl/config.xpl" view="xpl/search.xpl"/>
+	<page path-info="/eaditor/maps/" model="xpl/config.xpl" view="xpl/maps.xpl"/>
 
 	<!-- Atom feed -->
-	<page path-info="/eaditor/feed/" model="exist-url.xml" view="xpl/feed.xpl"/>
+	<page path-info="/eaditor/feed/" model="xpl/config.xpl" view="xpl/feed.xpl"/>
 
 	<!-- OAI-PMH feed -->
-	<page path-info="/eaditor/oai/" model="exist-url.xml" view="xpl/oai-pmh.xpl"/>
+	<page path-info="/eaditor/oai/" model="xpl/config.xpl" view="xpl/oai-pmh.xpl"/>
 
 	<!-- KML service -->
-	<page path-info="/eaditor/query.kml" model="exist-url.xml" view="xpl/solr-to-kml.xpl"/>
+	<page path-info="/eaditor/query.kml" model="xpl/config.xpl" view="xpl/solr-to-kml.xpl"/>
 
 	<!-- AJAX CALLS -->
 	<!-- facet results -->
-	<page path-info="/eaditor/get_facets/" model="exist-url.xml" view="xpl/get_facets.xpl"/>
+	<page path-info="/eaditor/get_facets/" model="xpl/config.xpl" view="xpl/get_facets.xpl"/>
 	<!-- decades results for nested checkbox -->
-	<page path-info="/eaditor/get_decades/" model="exist-url.xml" view="xpl/get_decades.xpl"/>
-	<page path-info="/eaditor/results_ajax/" model="exist-url.xml" view="xpl/results_ajax.xpl"/>
+	<page path-info="/eaditor/get_decades/" model="xpl/config.xpl" view="xpl/get_decades.xpl"/>
+	<page path-info="/eaditor/results_ajax/" model="xpl/config.xpl" view="xpl/results_ajax.xpl"/>
 
 	<epilogue url="oxf:/config/epilogue.xpl"/>
 </config>

@@ -10,16 +10,6 @@
 	<xsl:output encoding="utf-8" indent="yes" method="xml"/>
 	<xsl:strip-space elements="*"/>
 	
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-
-	<xsl:template match="/">
-		<xsl:variable name="id" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
-		<xsl:apply-templates select="document(concat($exist-url, 'eaditor/guides/', $id, '.xml'))/ead:ead"/>
-	</xsl:template>
-	
 	<xsl:template match="@*|node()">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()"/>

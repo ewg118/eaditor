@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor exsl xs xi" version="2.0"
-	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:exsl="http://exslt.org/common" xmlns:eaditor="http://code.google.com/p/eaditor/">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor xs xi" version="2.0"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:eaditor="http://code.google.com/p/eaditor/">
 	<xsl:output method="xml" encoding="UTF-8"/>
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	<xsl:variable name="solr-url" select="concat(exsl:node-set($config)/config/solr_published, 'select/')"/>
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
 	<!-- URL parameters -->
 	<xsl:param name="q">
@@ -32,7 +28,7 @@
 					<xsl:apply-templates select="document($service)/response//lst[@name='decade_num']"/>
 				</ul>
 			</body>
-		</html>		
+		</html>
 	</xsl:template>
 
 	<xsl:template match="lst[@name='decade_num']">

@@ -22,8 +22,16 @@
 	
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="request" href="#request"/>
-		<p:input name="data" href="../exist-url.xml"/>		
-		<p:input name="config" href="../ui/xslt/xml-public.xsl"/>
+		<p:input name="data" href="../exist-url.xml"/>
+		<p:input name="config">
+			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9">
+				<xsl:include href="../ui/xslt/xml-public.xsl"/>				
+				<xsl:template match="/">
+					<xsl:variable name="id" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
+					<xsl:apply-templates select="document(concat(/exist-url, 'eaditor/guides/', $id, '.xml'))/ead:ead"/>
+				</xsl:template>
+			</xsl:stylesheet>
+		</p:input>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 	

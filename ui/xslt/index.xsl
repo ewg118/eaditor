@@ -3,18 +3,14 @@
 	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="xhtml" encoding="UTF-8"/>
 	<xsl:include href="templates.xsl"/>
 
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<xsl:variable name="config" as="node()*">
-		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	</xsl:variable>
-	<xsl:variable name="ui-theme" select="$config/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path"/>
 
 	<xsl:template match="/">
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="$config/config/title"/>
+					<xsl:value-of select="/config/title"/>
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
@@ -83,7 +79,7 @@
 						<a href="{$display_path}feed/?q=*:*">
 							<img src="{$display_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
-						<xsl:if test="$config/config/oai-pmh/@active='true'">
+						<xsl:if test="/config/oai-pmh/@active='true'">
 							<a href="{$display_path}oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead">
 								<img src="{$display_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
 							</a>

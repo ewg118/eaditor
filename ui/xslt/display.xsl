@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="html" encoding="UTF-8"/>
+	xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns:xlink="http://www.w3.org/1999/xlink">	
 	<xsl:include href="templates.xsl"/>
 
-	<xsl:variable name="exist-url" select="//exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" as="node()*">
-		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	</xsl:variable>
-	<xsl:variable name="flickr-api-key" select="$config/config/flickr_api_key"/>
-	<xsl:variable name="ui-theme" select="$config/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
+	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:param name="mode">
 		<xsl:choose>
 			<xsl:when test="contains(doc('input:request')/request/request-url, 'admin/')">private</xsl:when>
@@ -33,10 +27,10 @@
 	</xsl:template>
 
 	<xsl:template match="ead:ead">
-		<html xml:lang="en" lang="en">
+		<html>
 			<head>
 				<title>
-					<xsl:value-of select="$config/config/title"/>
+					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
 				</title>
@@ -59,21 +53,25 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
-				<div class="yui3-g">
-					<div class="yui3-u-1-5">
-						<div class="content">
-							<xsl:call-template name="toc"/>
-						</div>
-					</div>
-					<div class="yui3-u-4-5">
-						<div class="content">
-							<xsl:call-template name="body"/>
-						</div>
-					</div>
-				</div>
+				<xsl:call-template name="content"/>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
+	</xsl:template>
+	
+	<xsl:template name="content">
+		<div class="yui3-g">
+			<div class="yui3-u-1-5">
+				<div class="content">
+					<xsl:call-template name="toc"/>
+				</div>
+			</div>
+			<div class="yui3-u-4-5">
+				<div class="content">
+					<xsl:call-template name="body"/>
+				</div>
+			</div>
+		</div>
 	</xsl:template>
 
 	<xsl:template name="toc">

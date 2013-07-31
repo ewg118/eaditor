@@ -4,20 +4,16 @@
 	<xsl:output method="xhtml" encoding="UTF-8" indent="yes"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
-
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<xsl:variable name="config" as="node()*">
-		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	</xsl:variable>
-	<xsl:variable name="flickr-api-key" select="$config/config/flickr_api_key"/>
-	<xsl:variable name="solr-url" select="concat($config/config/solr_published, 'select/')"/>
+	
+	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 	<xsl:variable name="facets">
-		<xsl:for-each select="tokenize($config/config/theme/facets, ',')">
+		<xsl:for-each select="tokenize(/config/theme/facets, ',')">
 			<xsl:text>&amp;facet.field=</xsl:text>
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="ui-theme" select="$config/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">maps</xsl:variable>
 
@@ -38,7 +34,7 @@
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="$config/config/title"/>
+					<xsl:value-of select="/config/title"/>
 					<xsl:text>: Maps</xsl:text>
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:exsl="http://exslt.org/common"
-	xmlns:datetime="http://exslt.org/dates-and-times" exclude-result-prefixes="xs datetime exsl" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:datetime="http://exslt.org/dates-and-times" exclude-result-prefixes="xs datetime" version="2.0">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	<xsl:variable name="solr-url" select="concat(exsl:node-set($config)/config/solr_published, 'select/')"/>
-	<xsl:param name="site-url" select="exsl:node-set($config)/config/url"/>
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
+	<xsl:param name="site-url" select="/config/url"/>
 	<!-- request URL -->
 	<xsl:param name="base-url" select="substring-before(doc('input:url')/request/request-url, 'feed/')"/>
 
@@ -79,7 +75,7 @@
 	<xsl:template match="/">
 		<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
-			http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">			
+			http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
 			<responseDate>
 				<xsl:variable name="timestamp" select="concat(substring-before(datetime:dateTime(), '.'), 'Z')"/>
 				<xsl:value-of select="$timestamp"/>
@@ -100,13 +96,15 @@
 				<xsl:when test="$verb='Identify'">
 					<Identify>
 						<repositoryName>
-							<xsl:value-of select="exsl:node-set($config)//repositoryName"/>
+							<xsl:value-of select="//repositoryName"/>
 						</repositoryName>
 						<baseURL>
 							<xsl:value-of select="concat($site-url, 'oai/')"/>
 						</baseURL>
 						<protocolVersion>2.0</protocolVersion>
-						<adminEmail><xsl:value-of select="exsl:node-set($config)//adminEmail"/></adminEmail>
+						<adminEmail>
+							<xsl:value-of select="//adminEmail"/>
+						</adminEmail>
 						<earliestDatestamp>
 							<xsl:value-of select="substring-before(document(concat($solr-url, '?q=*:*&amp;rows=1&amp;sort=timestamp+asc'))/descendant::doc/date[@name='timestamp'], 'T')"/>
 						</earliestDatestamp>
@@ -118,7 +116,7 @@
 								http://www.openarchives.org/OAI/2.0/oai-identifier.xsd">
 								<scheme>oai</scheme>
 								<repositoryIdentifier>
-									<xsl:value-of select="substring-before(substring-after(exsl:node-set($config)//url, 'http://'), '/')"/>
+									<xsl:value-of select="substring-before(substring-after(//url, 'http://'), '/')"/>
 								</repositoryIdentifier>
 								<delimiter>:</delimiter>
 								<sampleIdentifier>
@@ -132,14 +130,14 @@
 					<ListSets>
 						<set>
 							<setSpec>ead</setSpec>
-							<setName>Encoded Archival Description (EAD) collection of <xsl:value-of select="exsl:node-set($config)//repositoryName"/></setName>
+							<setName>Encoded Archival Description (EAD) collection of <xsl:value-of select="//repositoryName"/></setName>
 							<setDescription>
 								<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 									xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ 
 									http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-									<dc:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="exsl:node-set($config)//repositoryName"/></dc:title>
+									<dc:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="//repositoryName"/></dc:title>
 									<dc:creator>
-										<xsl:value-of select="exsl:node-set($config)//repositoryName"/>
+										<xsl:value-of select="//repositoryName"/>
 									</dc:creator>
 								</oai_dc:dc>
 							</setDescription>
@@ -257,13 +255,15 @@
 								<xsl:choose>
 									<xsl:when test="$identifier-validate=true()">
 										<xsl:choose>
-											<xsl:when test="contains($identifier, '!') or contains($identifier, '&#x022;') or contains($identifier, '#') or contains($identifier, '[') or contains($identifier, ']') or contains($identifier, '(') or contains($identifier, ')') or contains($identifier, '{') or contains($identifier, '}')">false</xsl:when>
+											<xsl:when
+												test="contains($identifier, '!') or contains($identifier, '&#x022;') or contains($identifier, '#') or contains($identifier, '[') or contains($identifier, ']') or contains($identifier, '(') or contains($identifier, ')') or contains($identifier, '{') or contains($identifier, '}')"
+												>false</xsl:when>
 											<xsl:otherwise>true</xsl:otherwise>
-										</xsl:choose>								
+										</xsl:choose>
 									</xsl:when>
 									<xsl:otherwise>false</xsl:otherwise>
 								</xsl:choose>
-							</xsl:variable>					
+							</xsl:variable>
 							<xsl:choose>
 								<xsl:when test="string($metadataPrefix) and $character-pass=true()">
 									<xsl:choose>
@@ -286,7 +286,7 @@
 							<error code="badArgument">Bad OAI Argument: No identifier</error>
 						</xsl:otherwise>
 					</xsl:choose>
-					
+
 				</xsl:when>
 				<xsl:otherwise>
 					<error code="badVerb">Illegal OAI verb</error>
@@ -326,7 +326,7 @@
 						<xsl:value-of select="str[@name='unittitle_display']"/>
 					</dc:title>
 					<dc:publisher>
-						<xsl:value-of select="exsl:node-set($config)//repositoryName"/>
+						<xsl:value-of select="//repositoryName"/>
 					</dc:publisher>
 					<dc:identifier>
 						<xsl:value-of select="concat($site-url, 'show/', str[@name='id'])"/>

@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:exsl="http://exslt.org/common" xmlns="http://www.w3.org/1999/xhtml">
-	
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	<xsl:variable name="solr-url" select="concat(exsl:node-set($config)/config/solr_published, 'select/')"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 	<!-- request URL -->
 	<xsl:param name="base-url" select="substring-before(doc('input:url')/request/request-url, 'feed/')"/>
-	
+
 	<xsl:param name="q">
 		<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
 	</xsl:param>

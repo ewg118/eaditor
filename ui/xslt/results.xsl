@@ -5,22 +5,16 @@
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" as="node()*">
-		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	</xsl:variable>
-	<xsl:variable name="flickr-api-key" select="$config/config/flickr_api_key"/>
+	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>
 	<xsl:variable name="facets">
-		<xsl:for-each select="tokenize($config/config/theme/facets, ',')">
+		<xsl:for-each select="tokenize(/config/theme/facets, ',')">
 			<xsl:text>&amp;facet.field=</xsl:text>
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="url" select="$config/config/url"/>
-	<xsl:variable name="solr-url" select="concat($config/config/solr_published, 'select/')"/>
-	<xsl:variable name="ui-theme" select="$config/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="url" select="/config/url"/>
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
+	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
@@ -65,7 +59,7 @@
 		<html>
 			<head>
 				<title>
-					<xsl:value-of select="$config/config/title"/>
+					<xsl:value-of select="/config/title"/>
 					<xsl:text>: Search Results</xsl:text>
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
@@ -102,7 +96,7 @@
 				<script type="text/javascript" src="{$display_path}ui/javascript/sort_results.js"/>
 				<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
 				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
-				<!--<xsl:copy-of select="$config/config/google_analytics/*"/>-->
+				<!--<xsl:copy-of select="/config/google_analytics/*"/>-->
 
 
 				<script type="text/javascript">

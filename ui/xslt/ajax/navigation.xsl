@@ -14,7 +14,7 @@
 	<xsl:variable name="id" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
 	
 	<xsl:template match="/">		
-		<xsl:apply-templates select="document(concat($exist-url, 'eaditor/guides/', $id, '.xml'))/ead:ead"/>
+		<xsl:apply-templates select="/ead:ead"/>
 	</xsl:template>
 	
 	<xsl:template match="ead:ead">		

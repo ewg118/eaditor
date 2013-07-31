@@ -3,14 +3,10 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:exsl="http://exslt.org/common"
 	xmlns:eaditor="http://code.google.com/p/eaditor/">
 	<xsl:include href="../functions.xsl"/>
-
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	<xsl:variable name="flickr-api-key" select="exsl:node-set($config)/config/flickr_api_key"/>
-	<xsl:variable name="solr-url" select="concat(exsl:node-set($config)/config/solr_published, 'select/')"/>
-	<xsl:variable name="ui-theme" select="exsl:node-set($config)/config/theme/jquery_ui_theme"/>
+	
+	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
+	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 

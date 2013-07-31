@@ -4,13 +4,13 @@
 	<xsl:template name="header">
 		<div id="hd">
 			<div id="banner">
-				<xsl:if test="string($config/config/banner_text)">
+				<xsl:if test="string(/config/banner_text)">
 					<div class="banner_text">
-						<xsl:value-of select="$config/config/banner_text"/>
+						<xsl:value-of select="/config/banner_text"/>
 					</div>
 				</xsl:if>
-				<xsl:if test="string($config/config/banner_image/@xlink:href)">
-					<img src="{$display_path}ui/images/{$config/config/banner_image/@xlink:href}" alt="banner image"/>
+				<xsl:if test="string(/config/banner_image/@xlink:href)">
+					<img src="{$display_path}ui/images/{/config/banner_image/@xlink:href}" alt="banner image"/>
 				</xsl:if>
 			</div>
 			<ul role="menubar" id="menu">

@@ -2,18 +2,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
 	<xsl:output method="xml" encoding="UTF-8"/>
 	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" as="node()*">
-		<xsl:copy-of select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	</xsl:variable>
-	<xsl:variable name="solr-url" select="concat($config/config/solr_published, 'select/')"/>
+	<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
 	<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
 	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:param name="category" select="doc('input:request')/request/parameters/parameter[name='category']/value"/>
 	<xsl:param name="pipeline" select="doc('input:request')/request/parameters/parameter[name='pipeline']/value"/>
 	<xsl:param name="sort" select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
+	
 	<xsl:variable name="service">
 		<xsl:choose>
 			<xsl:when test="$pipeline='results'">
