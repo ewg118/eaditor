@@ -113,11 +113,11 @@
 			</xsl:variable>
 
 			<xsl:variable name="title">
-				<xsl:value-of select="eaditor:normalize_fields(@name)"/>
+				<xsl:value-of select="eaditor:normalize_fields(@name, $lang)"/>
 			</xsl:variable>
 			<xsl:choose>
 				<xsl:when test="contains(@name, '_hier')">
-					<xsl:variable name="title" select="eaditor:normalize_fields(@name)"/>
+					<xsl:variable name="title" select="eaditor:normalize_fields(@name, $lang)"/>
 
 					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all hierarchical-facet" type="button" title="{$title}" aria-haspopup="true" style="width: 200px;"
 						id="{@name}_link" label="{$q}">

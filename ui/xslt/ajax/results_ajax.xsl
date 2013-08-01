@@ -60,7 +60,7 @@
 	<xsl:template match="doc">
 		<xsl:variable name="sort_category" select="substring-before($sort, ' ')"/>
 		<xsl:variable name="regularized_sort">
-			<xsl:value-of select="eaditor:normalize_fields($sort_category)"/>
+			<xsl:value-of select="eaditor:normalize_fields($sort_category, $lang)"/>
 		</xsl:variable>
 
 		<div class="result_div">
@@ -379,69 +379,4 @@
 			</div>
 		</div>
 	</xsl:template>
-
-	<!--<xsl:template name="sort">
-		<xsl:variable name="sort_categories_string">
-			<xsl:text>agency_facet,unitdate_display,genreform_facet,language_facet</xsl:text>
-		</xsl:variable>
-		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
-
-		<div class="sort_div">
-			<form class="sortForm" action="{$display_path}results/">
-				<select class="sortForm_categories">
-					<option value="null">Select from list...</option>
-					<xsl:for-each select="$sort_categories">
-						<xsl:choose>
-							<xsl:when test="contains($sort, .)">
-								<option value="{.}" selected="selected">
-									<xsl:value-of select="eaditor:normalize_fields(.)"/>
-								</option>
-							</xsl:when>
-							<xsl:otherwise>
-								<option value="{.}">
-									<xsl:value-of select="eaditor:normalize_fields(.)"/>
-								</option>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:for-each>
-				</select>
-				<select class="sortForm_order">
-					<xsl:choose>
-						<xsl:when test="contains($sort, 'asc')">
-							<option value="asc" selected="selected">Ascending</option>
-						</xsl:when>
-						<xsl:otherwise>
-							<option value="asc">Ascending</option>
-						</xsl:otherwise>
-					</xsl:choose>
-					<xsl:choose>
-						<xsl:when test="contains($sort, 'desc')">
-							<option value="desc" selected="selected">Descending</option>
-						</xsl:when>
-						<xsl:otherwise>
-							<option value="desc">Descending</option>
-						</xsl:otherwise>
-					</xsl:choose>
-				</select>
-				<input type="hidden" name="q" value="{$q}"/>
-				<input type="hidden" name="sort" value="" class="sort_param"/>
-				<xsl:choose>
-					<xsl:when test="string($sort)">
-						<input id="sort_button" type="submit" value="Sort Results"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<input id="sort_button" type="submit" value="Sort Results"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</form>
-		</div>
-	</xsl:template>-->
-
-	<!-- ********************************** FUNCTIONS ************************************ -->
-	<xsl:function name="eaditor:get_flickr_uri">
-		<xsl:param name="photo_id"/>
-		<xsl:value-of
-			select="document(concat('http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', $flickr-api-key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
-		/>
-	</xsl:function>
 </xsl:stylesheet>

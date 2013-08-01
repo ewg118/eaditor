@@ -20,6 +20,7 @@
 
 	<!-- URL parameters -->
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
+	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 	<xsl:param name="sort">
 		<xsl:if test="string(doc('input:params')/request/parameters/parameter[name='sort']/value)">
@@ -168,7 +169,7 @@
 	<xsl:template match="doc">
 		<xsl:variable name="sort_category" select="substring-before($sort, ' ')"/>
 		<xsl:variable name="regularized_sort">
-			<xsl:value-of select="eaditor:normalize_fields($sort_category)"/>
+			<xsl:value-of select="eaditor:normalize_fields($sort_category, $lang)"/>
 		</xsl:variable>
 
 		<div class="result_div">
@@ -503,24 +504,24 @@
 
 	<xsl:template name="sort">
 		<xsl:variable name="sort_categories_string">
-			<xsl:text>agency_facet,genreform_facet,language_facet,timestamp,unittitle_display,year_num</xsl:text>
+			<xsl:text>agency,genreform,language,timestamp,unittitle_display,year_num</xsl:text>
 		</xsl:variable>
 		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
 
 		<div class="sort_div">
 			<form class="sortForm" action="{$display_path}results/">
 				<select class="sortForm_categories">
-					<option value="null">Select from list...</option>
+					<option>Select from list...</option>
 					<xsl:for-each select="$sort_categories">
 						<xsl:choose>
 							<xsl:when test="contains($sort, .)">
 								<option value="{.}" selected="selected">
-									<xsl:value-of select="eaditor:normalize_fields(.)"/>
+									<xsl:value-of select="eaditor:normalize_fields(., $lang)"/>
 								</option>
 							</xsl:when>
 							<xsl:otherwise>
 								<option value="{.}">
-									<xsl:value-of select="eaditor:normalize_fields(.)"/>
+									<xsl:value-of select="eaditor:normalize_fields(., $lang)"/>
 								</option>
 							</xsl:otherwise>
 						</xsl:choose>
@@ -528,7 +529,7 @@
 				</select>
 				<select class="sortForm_order">
 					<xsl:choose>
-						<xsl:when test="contains($sort, 'asc')">
+						<xsl:when test="contains(substring-after($sort, ' '), 'asc')">
 							<option value="asc" selected="selected">Ascending</option>
 						</xsl:when>
 						<xsl:otherwise>
@@ -536,7 +537,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					<xsl:choose>
-						<xsl:when test="contains($sort, 'desc')">
+						<xsl:when test="contains(substring-after($sort, ' '), 'desc')">
 							<option value="desc" selected="selected">Descending</option>
 						</xsl:when>
 						<xsl:otherwise>
@@ -544,6 +545,9 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</select>
+				<xsl:if test="string($lang)">
+					<input type="hidden" name="lang" value="{$lang}"/>
+				</xsl:if>
 				<input type="hidden" name="q" value="{$q}"/>
 				<input type="hidden" name="sort" value="" class="sort_param"/>
 				<xsl:choose>
@@ -575,7 +579,7 @@
 				</xsl:for-each>
 			</xsl:variable>
 			<xsl:variable name="title">
-				<xsl:value-of select="eaditor:normalize_fields(@name)"/>
+				<xsl:value-of select="eaditor:normalize_fields(@name, $lang)"/>
 			</xsl:variable>
 			<xsl:variable name="select_new_query">
 				<xsl:choose>
@@ -683,7 +687,7 @@
 						<xsl:variable name="name">
 							<xsl:choose>
 								<xsl:when test="string($field)">
-									<xsl:value-of select="eaditor:normalize_fields($field)"/>
+									<xsl:value-of select="eaditor:normalize_fields($field, $lang)"/>
 								</xsl:when>
 								<xsl:otherwise>Keyword</xsl:otherwise>
 							</xsl:choose>
@@ -782,7 +786,7 @@
 
 									<!-- display either the term or the regularized name for the century -->
 									<b>
-										<xsl:value-of select="eaditor:normalize_fields($field)"/>
+										<xsl:value-of select="eaditor:normalize_fields($field, $lang)"/>
 										<xsl:text>: </xsl:text>
 									</b>
 									<xsl:value-of select="if ($field='century_num') then eaditor:normalize_century($value) else $value"/>
@@ -818,7 +822,7 @@
 			<xsl:if test="string($sort)">
 				<xsl:variable name="field" select="substring-before($sort, ' ')"/>
 				<xsl:variable name="name">
-					<xsl:value-of select="eaditor:normalize_fields($field)"/>
+					<xsl:value-of select="eaditor:normalize_fields($field, $lang)"/>
 				</xsl:variable>
 
 				<xsl:variable name="order">
@@ -847,12 +851,4 @@
 			</xsl:if>
 		</div>
 	</xsl:template>
-
-	<!-- ********************************** FUNCTIONS ************************************ -->
-	<xsl:function name="eaditor:get_flickr_uri">
-		<xsl:param name="photo_id"/>
-		<xsl:value-of
-			select="document(concat('http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', $flickr-api-key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
-		/>
-	</xsl:function>
 </xsl:stylesheet>
