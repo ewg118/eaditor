@@ -1,5 +1,18 @@
 /*
   ****************************************
+  GLOBAL
+  ****************************************
+ */
+ body {
+	margin:20px auto;
+	min-width:960px;
+	max-width:90%;
+}
+.content {
+	padding:5px;
+}
+/*
+  ****************************************
   FORM LAYOUT
   ****************************************
  */
@@ -112,4 +125,26 @@
 	margin:20px auto;
 	width:400px;
 	font-size:12px;
+}
+/*
+  ****************************************
+  PAGINATION
+  ****************************************
+ */
+.paging_div {
+	width:100%;
+	display:table;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.pagingBtn, .pagingSep {
+	padding:2px;
+	text-decoration:none;
+}
+.pagingBtn {
+	font-weight:bold;
+}
+.pagingBtn:hover {
+	background-color:#DDDDDD;
+	text-decoration:underline;
 }
