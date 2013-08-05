@@ -17,7 +17,7 @@
 		<xhtml:link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
+		<xhtml:link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model>
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -36,7 +36,7 @@
 
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-url">
-				<xi:include href="exist-url.xml"/>
+				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -296,10 +296,7 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('status')">EAD guide saved.</xforms:setvalue>
-					<!-- post to Solr unpublished core -->
-					<xforms:insert nodeset="instance('addIndex')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/ead-unpublish.xpl', 'data', instance('guide'), 'data')"/>
-					<xforms:send submission="unpublish-submission"/>
-					<!-- check to see if the document is already published to Solr -->
+										<!-- check to see if the document is already published to Solr -->
 					<xforms:send submission="query-solr-for-publication"/>
 					<!-- reload toc -->
 					<xforms:send submission="load-toc"/>
@@ -324,17 +321,6 @@
 			</xforms:submission>
 			<!-- send commit -->
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
-
-			<!-- for unpublished documents, always save to unpublished core -->
-			<!-- post instance to Solr -->
-			<xforms:submission id="unpublish-submission" action="{instance('config')/solr_unpublished}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
-				<xforms:send ev:event="xforms-submit-done" submission="submit-unpublished-commit"/>
-				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">EAD guide saved.</xforms:setvalue>
-				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
-			</xforms:submission>
-			<!-- send commit -->
-			<xforms:submission id="submit-unpublished-commit" action="{instance('config')/solr_unpublished}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
-
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<!-- load id parameter from url into @id attribute for EAD guide -->
 			<xforms:action ev:event="xforms-model-construct-done">
@@ -354,87 +340,88 @@
 		</xforms:model>
 
 		<!-- xbl components -->
-		<xi:include href="oxf:/xbl/eaditor/access-elements/access-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/accruals/accruals.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/address/address.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/altformavail/altformavail.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/author/author.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/blockquote/blockquote.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/c/c.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/chronlist/chronlist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/component-level/component-level.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/corpname/corpname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/creation/creation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/custodhist/custodhist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/dao/dao.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/daogrp/daogrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/daodesc/daodesc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/date/date.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/did/did.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/descgrp/descgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/extref/extref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/famname/famname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/fileplan/fileplan.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/function/function.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/genreform/genreform.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/geogname/geogname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/head/head.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/index/index.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/list/list.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/listhead/listhead.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/name/name.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/namegrp/namegrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/navigation/navigation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/note/note.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/num/num.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/occupation/occupation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/odd/odd.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/p/p.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/persname/persname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/phystech/phystech.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/prefercite/prefercite.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/processinfo/processinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/publisher/publisher.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ref/ref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/sponsor/sponsor.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/subject/subject.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/subtitle/subtitle.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/table/table.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/title/title.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/access-elements/access-elements.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/accruals/accruals.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/address/address.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/altformavail/altformavail.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/author/author.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/blockquote/blockquote.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/c/c.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/chronlist/chronlist.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/component-level/component-level.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/corpname/corpname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/creation/creation.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/custodhist/custodhist.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/dao/dao.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/daogrp/daogrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/daodesc/daodesc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/date/date.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/did/did.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/descgrp/descgrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/extref/extref.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/famname/famname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/fileplan/fileplan.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/function/function.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/genreform/genreform.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/geogname/geogname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/head/head.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/index/index.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/list/list.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/listhead/listhead.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/name/name.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/namegrp/namegrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/navigation/navigation.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/note/note.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/num/num.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/occupation/occupation.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/odd/odd.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/p/p.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/persname/persname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/phystech/phystech.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/prefercite/prefercite.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/processinfo/processinfo.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/publisher/publisher.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/ref/ref.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/sponsor/sponsor.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/subject/subject.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/subtitle/subtitle.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/table/table.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/title/title.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/eaditor/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
 
 		<!-- navigation -->
-		<!--<xi:include href="oxf:/xbl/eaditor/navigation/navigation.xbl" xxi:omit-xml-base="true"/>-->
+		<!--<xi:include href="xbl/eaditor/navigation/navigation.xbl" xxi:omit-xml-base="true"/>-->
 	</xhtml:head>
 	<xhtml:body>
-		<xxforms:variable name="display_path">../../../</xxforms:variable>
+		<xxforms:variable name="display_path">../../</xxforms:variable>
 		<xhtml:div class="yui3-g">
 			<xhtml:div class="yui3-u-1">
+				<xi:include href="header.xml"/>				
 				<xhtml:div class="content">
 					<xforms:group ref="instance('status')/text()">
 						<xhtml:div class="success">
@@ -442,7 +429,7 @@
 						</xhtml:div>
 					</xforms:group>
 					<xhtml:p>
-						<xhtml:a href="../../">&lt; Return</xhtml:a>
+						<xhtml:a href="{$display_path}">&lt; Return</xhtml:a>
 					</xhtml:p>
 				</xhtml:div>
 			</xhtml:div>

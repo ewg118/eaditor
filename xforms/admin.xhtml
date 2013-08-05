@@ -137,31 +137,16 @@
 					<exist:text/>
 				</exist:query>
 			</xforms:instance>
-			
+
 			<xforms:instance id="xqueries">
 				<queries>
 					<query id="collection-count">&lt;report&gt;{count(collection())}&lt;/report&gt;</query>
-					<query id="get-objects">
-						&lt;report>
-						{ for $record in subsequence(collection(), START, END)
-						let $type := $record/*/local-name()	
-						return
-						if ($type='ead') then &lt;record>
-						&lt;type>{ $type }&lt;/type>
-						&lt;id>{ $record//*[local-name()='eadid']/text() }&lt;/id>
-						&lt;title>{ $record//*[local-name()='archdesc']/*[local-name()='did']/*[local-name()='unittitle']/text() }&lt;/title>
-						&lt;components>{ if (count($record//*[local-name()='c']) &gt; 0) then 'true' else 'false' }&lt;/components>
-						&lt;published/>
-						&lt;/record>
-						else &lt;record>
-						&lt;type>{ $type }&lt;/type>
-						&lt;id>{ $record//*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier']/text() }&lt;/id>
-						&lt;title>{ $record//*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title']/text() }&lt;/title>
-						&lt;published/>
-						&lt;/record>
-						}
-						&lt;/report>
-					</query>
+					<query id="get-objects"> &lt;report> { for $record in subsequence(collection(), START, END) let $type := $record/*/local-name() return if ($type='ead') then &lt;record> &lt;type>{
+						$type }&lt;/type> &lt;id>{ $record//*[local-name()='eadid']/text() }&lt;/id> &lt;title>{
+						$record//*[local-name()='archdesc']/*[local-name()='did']/*[local-name()='unittitle']/text() }&lt;/title> &lt;components>{ if (count($record//*[local-name()='c']) &gt; 0) then
+						'true' else 'false' }&lt;/components> &lt;published/> &lt;/record> else &lt;record> &lt;type>{ $type }&lt;/type> &lt;id>{
+						$record//*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier']/text() }&lt;/id> &lt;title>{
+						$record//*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> } &lt;/report> </query>
 					<query id="create-collection">xmldb:create-collection('/db/eaditor', 'guides')</query>
 				</queries>
 			</xforms:instance>
@@ -226,7 +211,7 @@
 					<xforms:send submission="xquery-collection"/>
 					<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('collection-result'))"/>
 					<!-- set value in control instance -->
-					
+
 					<xxforms:variable name="end" select="if(instance('control-instance')/numFound &gt; 20) then 20 else instance('control-instance')/numFound"/>
 					<!-- get list of files for page 1, replacing START and END -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '1'), 'END', string($end))"/>
@@ -236,7 +221,7 @@
 					<xforms:setvalue ref="instance('config-template')/firstrun">true</xforms:setvalue>
 				</xforms:action>
 			</xforms:submission>
-			
+
 			<!-- xquery for getting and processing query results into pages of items -->
 			<xforms:submission id="xquery-pagination" ref="instance('eXist-xquery')" action="{instance('exist-url')}eaditor/guides/" method="post" replace="instance" instance="collection-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
@@ -244,7 +229,7 @@
 					<!--iterate through docs, check for publication -->
 					<xforms:action xxforms:iterate="instance('collection-result')//record">
 						<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
-						<xforms:setvalue ref="instance('control-instance')/id" value="context()/id"/>						
+						<xforms:setvalue ref="instance('control-instance')/id" value="context()/id"/>
 						<xforms:send submission="query-solr-for-publication"/>
 					</xforms:action>
 				</xforms:action>
@@ -259,8 +244,8 @@
 			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('control-instance')/solr-core}select/?q=id:{instance('control-instance')/id}"
 				replace="instance" instance="published-response">
 				<!-- if the document is found in solr, get the updated solr doc -->
-				<xforms:setvalue ev:event="xforms-submit-done" if="instance('published-response')/result[@name='response']/@numFound = '1'" ref="instance('collection-result')//record[id=instance('control-instance')/id]/published" value="'true'"
-				/>
+				<xforms:setvalue ev:event="xforms-submit-done" if="instance('published-response')/result[@name='response']/@numFound = '1'"
+					ref="instance('collection-result')//record[id=instance('control-instance')/id]/published" value="'true'"/>
 			</xforms:submission>
 
 			<!-- save templates and add guides collection to eXist on the first run of EADitor -->
@@ -358,6 +343,7 @@
 		<xxforms:variable name="display_path"/>
 		<xhtml:div class="yui3-g">
 			<xhtml:div class="yui3-u-1">
+				<xi:include href="header.xml"/>				
 				<xhtml:div class="content">
 					<xforms:group ref="instance('control-instance')/status/text()">
 						<xhtml:div class="success">
@@ -379,21 +365,9 @@
 							<xhtml:a href="upload/">Upload Guide</xhtml:a>
 						</xhtml:li>
 					</xhtml:ul>
-					<xhtml:h2>Options</xhtml:h2>
-					<xhtml:ul>
-						<xhtml:li>
-							<xhtml:a href="settings/">Modify EADitor Settings</xhtml:a>
-						</xhtml:li>
-						<xhtml:li>
-							<xhtml:a href="test/">Run Conformance Tests</xhtml:a>
-						</xhtml:li>
-						<xhtml:li>
-							<xhtml:a href="templates/">Edit Templates</xhtml:a>
-						</xhtml:li>
-						<xhtml:li>
-							<xhtml:a href="vocab/">Manage Controlled Vocabularies</xhtml:a>
-						</xhtml:li>
-						<xforms:group ref=".[number(instance('collection-result')) &gt; 0]">
+					<xhtml:h3>Batch Operations</xhtml:h3>
+					<xforms:group ref=".[count(instance('collection-result')//record) &gt; 0]">
+						<xhtml:ul>
 							<xhtml:li>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>Publish All Finding Aids</xforms:label>
@@ -409,36 +383,11 @@
 									<xforms:dispatch target="unpublish-all" name="fr-show" ev:event="DOMActivate"/>
 								</xforms:trigger>
 							</xhtml:li>
-						</xforms:group>
-					</xhtml:ul>
-
+						</xhtml:ul>
+					</xforms:group>
 					<xforms:group ref="instance('collection-result')">
 						<xforms:group ref=".[count(//record) &gt; 0]">
-							<xhtml:h3>List of Guides</xhtml:h3>
-							<!--<xhtml:div>
-								<xforms:input ref="instance('control-instance')/solr-query"/>
-								<xforms:trigger>
-									<xforms:label>Search</xforms:label>
-									<xforms:action ev:event="DOMActivate">
-										<xforms:delete nodeset="instance('list')/*"/>
-										<xforms:setvalue ref="instance('control-instance')/page">1</xforms:setvalue>
-										<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_unpublished"/>
-										<xforms:send submission="query-solr"/>
-									</xforms:action>
-								</xforms:trigger>
-								<xforms:group ref=".[instance('control-instance')/solr-query != '*:*']">
-									<xforms:trigger>
-										<xforms:label>Clear</xforms:label>
-										<xforms:action ev:event="DOMActivate">
-											<xforms:delete nodeset="instance('list')/*"/>
-											<xforms:setvalue ref="instance('control-instance')/solr-query">*:*</xforms:setvalue>
-											<xforms:setvalue ref="instance('control-instance')/page">1</xforms:setvalue>
-											<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_unpublished"/>
-											<xforms:send submission="query-solr"/>
-										</xforms:action>
-									</xforms:trigger>
-								</xforms:group>
-							</xhtml:div>-->
+							<xhtml:h3>List of Guides</xhtml:h3>							
 							<!-- pagination variables -->
 							<xxforms:variable name="numFound" select="number(instance('control-instance')/numFound)"/>
 							<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
@@ -448,8 +397,8 @@
 							<xxforms:variable name="total" select="ceiling($numFound div 20)"/>
 							<!-- pagination -->
 							<xhtml:div class="paging_div">
-								<xhtml:div style="float:left;"> Displaying records <xhtml:b><xforms:output value="$start"/></xhtml:b> to <xhtml:b><xforms:output
-											value="$end"/></xhtml:b> of <xhtml:b><xforms:output value="$numFound"/>
+								<xhtml:div style="float:left;"> Displaying records <xhtml:b><xforms:output value="$start"/></xhtml:b> to <xhtml:b><xforms:output value="$end"/></xhtml:b> of
+											<xhtml:b><xforms:output value="$numFound"/>
 									</xhtml:b> total results.</xhtml:div>
 								<xhtml:div style="float:right;">
 									<xforms:group ref=".[$page &gt; 1]">
@@ -457,7 +406,8 @@
 											<xforms:label>«Previous</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$page - 1"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start - 20)), 'END', string($end - 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start - 20)), 'END', string($end - 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -471,7 +421,8 @@
 											<xforms:label>1</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="1"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '1'), 'END', '20')"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '1'), 'END', '20')"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -481,7 +432,8 @@
 											<xforms:label>2</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="2"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '21'), 'END', '40')"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '21'), 'END', '40')"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -496,9 +448,10 @@
 											<xforms:label>
 												<xforms:output value="$page - 2"/>
 											</xforms:label>
-											<xforms:action ev:event="DOMActivate">												
+											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$page - 2"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($page - 3) * 20) + 1)), 'END', string(($page - 2) * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($page - 3) * 20) + 1)), 'END', string(($page - 2) * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -508,9 +461,10 @@
 											<xforms:label>
 												<xforms:output value="$page - 1"/>
 											</xforms:label>
-											<xforms:action ev:event="DOMActivate">												
+											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$page - 1"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($page - 2) * 20) + 1)), 'END', string(($page - 1) * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($page - 2) * 20) + 1)), 'END', string(($page - 1) * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -525,9 +479,10 @@
 											<xforms:label>
 												<xforms:output value="$page + 1"/>
 											</xforms:label>
-											<xforms:action ev:event="DOMActivate">												
+											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$page + 1"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string(($page * 20) + 1)), 'END', string($page + 1 * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string(($page * 20) + 1)), 'END', string($page + 1 * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -537,9 +492,10 @@
 											<xforms:label>
 												<xforms:output value="$page + 2"/>
 											</xforms:label>
-											<xforms:action ev:event="DOMActivate">												
+											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$page + 2"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($page +1) * 20) + 1)), 'END', string(($page + 2) * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($page +1) * 20) + 1)), 'END', string(($page + 2) * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -554,9 +510,10 @@
 											<xforms:label>
 												<xforms:output value="$total - 1"/>
 											</xforms:label>
-											<xforms:action ev:event="DOMActivate">												
+											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$total - 1"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($total -2) * 20) + 1)), 'END', string(($total-1) * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($total -2) * 20) + 1)), 'END', string(($total-1) * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -568,7 +525,8 @@
 											</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$total"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($total - 1) * 20) + 1)), 'END', string(($total) * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string((($total - 1) * 20) + 1)), 'END', string(($total) * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -577,9 +535,10 @@
 									<xforms:group ref=".[$total &gt; $page]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>Next»</xforms:label>
-											<xforms:action ev:event="DOMActivate">												
+											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('control-instance')/page" value="$page + 1"/>
-												<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($next)), 'END', string(($page + 1) * 20))"/>
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($next)), 'END', string(($page + 1) * 20))"/>
 												<xforms:send submission="xquery-pagination"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -606,9 +565,7 @@
 										<xxforms:variable name="id" select="id"/>
 										<xxforms:variable name="class" select="if (position() mod 2 = 0) then 'even-row' else 'odd-row'"/>
 										<xhtml:tr>
-											<xhtml:td class="{$class}">
-												
-											</xhtml:td>
+											<xhtml:td class="{$class}"> </xhtml:td>
 											<xhtml:td class="{$class}">
 												<xhtml:h4>
 													<xhtml:a href="edit/core/?guide={$id}">
@@ -643,7 +600,7 @@
 													<xforms:trigger appearance="minimal">
 														<xforms:label>unpublish</xforms:label>
 														<xforms:action ev:event="DOMActivate">
-															<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>																														
+															<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>
 															<xforms:dispatch target="unpublish" name="fr-show"/>
 														</xforms:action>
 													</xforms:trigger>
@@ -675,7 +632,7 @@
 							</xhtml:table>
 						</xforms:group>
 						<xforms:group ref=".[count(//record)=0]">
-							<xhtml:h1>No finding aids in collection.</xhtml:h1>						
+							<xhtml:h1>No finding aids in collection.</xhtml:h1>
 						</xforms:group>
 					</xforms:group>
 
@@ -848,7 +805,7 @@
 					<xforms:send submission="save-instance-templates"/>
 					<xforms:send submission="save-ead-template"/>
 					<xforms:send submission="save-c-template"/>
-					
+
 					<!-- set value and add collection -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='create-collection']"/>
 					<xforms:send submission="add-collection"/>
