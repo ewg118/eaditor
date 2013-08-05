@@ -15,28 +15,28 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:div>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Extended Pointer Location</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Extended Pointer Location</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('extptrloc-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Extended Reference Location</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Extended Reference Location</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('extrefloc-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Pointer Location</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Pointer Location</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('ptrloc-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Referece Location</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Referece Location</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('refloc-template')"/>
 							</xforms:trigger>
 						</xhtml:div>

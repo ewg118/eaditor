@@ -15,7 +15,7 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 
@@ -29,7 +29,7 @@
 							<xforms:group ref="$binding[count(ead:arrangement) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Arrangement</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Arrangement</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										nodeset="child::node()[last()]"
 										origin="instance('arrangement-template')"/>
@@ -38,14 +38,14 @@
 							<xforms:group ref="$binding[count(ead:dao) &lt; 1 and count(ead:daogrp) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival
 										Object</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										nodeset="child::node()[last()]" origin="instance('dao-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Digital Archival Object
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object
 										Group</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										nodeset="child::node()[last()]" origin="instance('daogrp-template')"/>

@@ -18,7 +18,7 @@
 						<xforms:group ref="$binding[count(@role) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>@role</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>@role</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding"
 									origin="xxforms:attribute('role', '')"/>
 							</xforms:trigger>
@@ -31,7 +31,7 @@
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" context="$binding/@role"/>
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
 								</xforms:trigger>
 							</xforms:group>
@@ -40,7 +40,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+									<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
 						</xhtml:div>

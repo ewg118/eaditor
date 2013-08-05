@@ -16,6 +16,12 @@
   FORM LAYOUT
   ****************************************
  */
+ #form h1,#form h2, #form h3, #form h4,#form h5,#form h6 {
+	display:inline;
+}
+#form ul li {
+	list-style-type:none;
+}
 .submission {
 	text-align:center;
 	margin:10px 0;

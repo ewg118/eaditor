@@ -15,7 +15,7 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 
@@ -26,14 +26,14 @@
 							<xhtml:span>Specific Elements: </xhtml:span>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Bibliographic Reference</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Bibliographic Reference</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding"
 									nodeset="child::node()[last()]" origin="instance('bibref-template')"/>
 							</xforms:trigger>
 							<xforms:group ref="$binding[count(ead:extref) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Extended Reference</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Extended Reference</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										nodeset="child::node()[last()]" origin="instance('extref-template')"/>
 								</xforms:trigger>
@@ -42,7 +42,7 @@
 								ref="$binding[count(ead:linkgrp) &lt; 1 and count(ead:extref) &lt; 1 and count(ead:ref) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Linking Group</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Linking Group</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										nodeset="child::node()[last()]" origin="instance('linkgrp-template')"/>
 								</xforms:trigger>
@@ -50,7 +50,7 @@
 							<xforms:group ref="$binding[count(ead:ref) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Reference</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Reference</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										nodeset="child::node()[last()]" origin="instance('ref-template')"/>
 								</xforms:trigger>

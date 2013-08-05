@@ -129,10 +129,10 @@
 				<!-- This table contains the main actions for the page  -->
 				<xhtml:div class="submission">
 					<xforms:submit submission="save-instance-templates" appearance="minimal">
-						<xforms:label><xhtml:img src="/apps/eaditor/images/save.gif" alt="Save"/> Save</xforms:label>
+						<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
 					</xforms:submit>
 					<xforms:submit submission="load-instance-templates" appearance="minimal">
-						<xforms:label><xhtml:img src="/apps/eaditor/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
+						<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
 					</xforms:submit>
 				</xhtml:div>
 				<xhtml:h1>Edit Instance Templates</xhtml:h1>
@@ -142,11 +142,11 @@
 						<xhtml:h2>Agency Codes</xhtml:h2>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/add.gif"/>New Agency</xforms:label>
+								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/images/add.gif"/>Import Local Agencies</xforms:label>
+							<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Agencies</xforms:label>
 							<xforms:action ev:event="DOMActivate">
 								<xforms:send submission="agencycodes-submission"/>
 							</xforms:action>
@@ -169,7 +169,7 @@
 									<xforms:trigger appearance="minimal" style="float:right">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
-											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
@@ -181,11 +181,11 @@
 						<xhtml:h2>Container Types</xhtml:h2>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/add.gif"/>New Agency</xforms:label>
+								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('container-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/images/add.gif"/>Import Local Container Types</xforms:label>
+							<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Container Types</xforms:label>
 							<xforms:action ev:event="DOMActivate">
 								<xforms:send submission="containertypes-submission"/>
 							</xforms:action>
@@ -208,7 +208,7 @@
 									<xforms:trigger appearance="minimal" style="float:right">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
-											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>

@@ -188,7 +188,7 @@
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="daogrp-model">
 						<xforms:instance id="exist-url">
-							<xi:include href="../../../apps/eaditor/exist-url.xml"/>
+							<xi:include href="../../../exist-url.xml"/>
 						</xforms:instance>
 
 						<xforms:instance id="config">

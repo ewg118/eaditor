@@ -14,35 +14,35 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:div>
 							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Header</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding" at="1" position="before" origin="instance('head-template')"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:group ref="$binding[count(child::ead:item) &lt; 1 and count(child::ead:listhead) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>List Header</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>List Header</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="if (ead:head) then ead:head else ./child::node()[position() = 1]" origin="instance('listhead-template')"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:group ref="$binding[count(child::ead:defitem) &lt; 1 and count(child::ead:listhead) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Item</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Item</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('item-template')"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:group ref="$binding[count(ead:item) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Definition Item</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Definition Item</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('defitem-template')"/>
 								</xforms:trigger>
 							</xforms:group>
@@ -71,7 +71,7 @@
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
 								</xforms:trigger>
 							</xhtml:div>
@@ -83,7 +83,7 @@
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+										<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
 								</xforms:trigger>
 								<xhtml:div>

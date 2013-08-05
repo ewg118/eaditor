@@ -15,7 +15,7 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 
@@ -26,7 +26,7 @@
 							<xhtml:span>Specific Elements: </xhtml:span>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Reference</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Reference</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('bibref-template')"/>
 							</xforms:trigger>
 						</xhtml:div>

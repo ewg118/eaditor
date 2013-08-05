@@ -14,13 +14,13 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>						
 						<xhtml:div>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Paragraph</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding"
 									nodeset="child::node()[last()]" origin="instance('p-template')"/>
 							</xforms:trigger>

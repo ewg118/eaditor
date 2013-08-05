@@ -14,27 +14,27 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:div>
 							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>Header</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Header</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('head-template')"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:group ref="$binding[count(ead:listhead) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/images/add.gif"/>List Header</xforms:label>
+										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>List Header</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('listhead-template')"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Chronology Item</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Chronology Item</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronitem-template')"/>
 							</xforms:trigger>
 						</xhtml:div>
@@ -56,7 +56,7 @@
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
-											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
@@ -66,12 +66,12 @@
 									<xforms:group ref=".[count(ead:eventgrp) &lt; 1 and count(ead:event) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/apps/eaditor/images/add.gif"/>Event</xforms:label>
+												<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Event</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('event-template')"/>
 										</xforms:trigger>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/apps/eaditor/images/add.gif"/>Event Group</xforms:label>
+												<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Event Group</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('eventgrp-template')"/>
 										</xforms:trigger>
 									</xforms:group>
@@ -96,7 +96,7 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+												<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 											</xforms:label>
 										</xforms:trigger>
 									</xhtml:div>
@@ -107,13 +107,13 @@
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
-											<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+											<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 										</xforms:label>
 									</xforms:trigger>
 									<xhtml:div>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/apps/eaditor/images/add.gif"/>Event</xforms:label>
+												<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Event</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('event-template')"/>
 										</xforms:trigger>
 									</xhtml:div>
@@ -125,7 +125,7 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
 												<xforms:label>
-													<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+													<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 												</xforms:label>
 											</xforms:trigger>
 										</xforms:group>

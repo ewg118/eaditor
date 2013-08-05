@@ -14,13 +14,13 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/images/remove.gif"/>
+								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:span class="add">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>
 								</xforms:label>
 								<xxforms:show ev:event="DOMActivate" dialog="blockquote-objects"/>
 							</xforms:trigger>
@@ -29,32 +29,32 @@
 							<xforms:label>Block Quote Elements</xforms:label>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Address</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Address</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('address-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Chronology List</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Chronology List</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronlist-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>List</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>List</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('list-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Note</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('note-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Paragraph</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('p-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/images/add.gif"/>Table</xforms:label>
+									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Table</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('table-template')"/>
 							</xforms:trigger>
 						</xxforms:dialog>
