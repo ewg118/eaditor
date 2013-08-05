@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:datetime="http://exslt.org/dates-and-times" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:exsl="http://exslt.org/common" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="xs datetime" version="2.0">
-
 	<xsl:output encoding="UTF-8" indent="yes" method="xml"/>
 	<xsl:strip-space elements="*"/>
-
-	<!-- change eXist URL if running on a server other than localhost -->
-	<xsl:variable name="exist-url" select="/exist-url"/>
-	<!-- load config.xml from eXist into a variable which is later processed with exsl:node-set -->
-	<xsl:variable name="config" select="document(concat($exist-url, 'eaditor/config.xml'))"/>
-	<xsl:param name="site-url" select="exsl:node-set($config)/config/url"/>
+	<xsl:variable name="url" select="/content/config/url"/>
 	
 	<!-- load ead finding aid into variable -->
 	<!--<xsl:variable name="guide" select="document(concat($exist-url, 'eaditor/guides.xml'))"/>-->
@@ -18,9 +12,8 @@
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
 
-	<xsl:template match="/">
-		<xsl:variable name="id" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
-		<xsl:apply-templates select="document(concat($exist-url, 'eaditor/guides/', $id, '.xml'))/ead:ead"/>		
+	<xsl:template match="/">		
+		<xsl:apply-templates select="//ead:ead"/>		
 	</xsl:template>
 	
 	<xsl:template match="ead:ead">
@@ -29,9 +22,12 @@
 				<field name="id">
 					<xsl:value-of select="@id"/>
 				</field>
+				<field name="eadid">
+					<xsl:value-of select="@id"/>
+				</field>
 				<field name="oai_id">
 					<xsl:text>oai:</xsl:text>
-					<xsl:value-of select="substring-before(substring-after(exsl:node-set($config)//url, 'http://'), '/')"/>
+					<xsl:value-of select="substring-before(substring-after($url, 'http://'), '/')"/>
 					<xsl:text>:</xsl:text>
 					<xsl:value-of select="@id"/>
 				</field>

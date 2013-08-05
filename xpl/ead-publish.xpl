@@ -9,23 +9,17 @@
 	xmlns:oxf="http://www.orbeon.com/oxf/processors">
 
 	<p:param type="input" name="data"/>
-	<p:param type="output" name="data"/>
+	<p:param type="output" name="data"/>	
 	
-	<p:processor name="oxf:request">
-		<p:input name="config">
-			<config>
-				<include>/request/request-url</include>
-			</config>
-		</p:input>
-		<p:output name="data" id="request"/>
+	<p:processor name="oxf:pipeline">
+		<p:input name="config" href="config.xpl"/>		
+		<p:output name="data" id="config"/>
 	</p:processor>
 	
 	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="request" href="#request"/>
-		<p:input name="data" href="#data"/>		
+		<p:input name="data" href="aggregate('content', #config, #data)"/>		
 		<p:input name="config" href="../xforms/xslt/publish/ead-publish.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
-	
 
 </p:config>

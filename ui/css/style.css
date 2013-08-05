@@ -74,46 +74,6 @@ a:hover {
 }
 /*
   ****************************************
-  ADMIN PAGE
-  ****************************************
- */
-.page_toc {
-	font-size:12px;
-}
-.browse_table {
-	width:100%;
-}
-.odd-row {
-	background-color:white;
-	margin:10px 0;
-	padding:10px 0;
-	vertical-align:top;
-}
-.even-row {
-	background-color:#EFEFEF;
-	margin:10px 0;
-	padding:10px 0px;
-	vertical-align:top;
-}
-.center {
-	text-align:center;
-}
-.expand {
-	margin-left:25px;
-	font-size:12px;
-	color:#8BADCF;
-	cursor:pointer;
-	text-decoration:underline;
-}
-.reorder {
-	margin-left:25px;
-	font-size:12px;
-	color:#8BADCF;
-	text-decoration:underline;
-}
-
-/*
-  ****************************************
   TEST PAGE
   ****************************************
  */
