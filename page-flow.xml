@@ -38,7 +38,7 @@
 	<page path-info="/eaditor/admin/toc/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
-	<!--<page path-info="/eaditor/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>-->
+	<page path-info="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
 
 	<!-- private xml (all elements shown) -->
 	<page path-info="/eaditor/admin/xml/(.*)" matcher="oxf:perl5-matcher" view="xpl/xml-private.xpl"/>

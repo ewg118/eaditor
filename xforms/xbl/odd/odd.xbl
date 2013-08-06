@@ -83,10 +83,10 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="odd-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="dao-template">
+						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="daogrp-template">
+						<xforms:instance id="daogrp-template" xxforms:exclude-result-prefixes="#all">
 							<daogrp/>
 						</xforms:instance>
 					</xforms:model>

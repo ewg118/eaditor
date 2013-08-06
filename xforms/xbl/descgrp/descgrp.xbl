@@ -300,85 +300,85 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="descgrp-model"  xmlns:xlink="http://www.w3.org/1999/xlink">
-						<xforms:instance id="accessrestrict-template">
+						<xforms:instance id="accessrestrict-template" xxforms:exclude-result-prefixes="#all">
 							<accessrestrict/>
 						</xforms:instance>
-						<xforms:instance id="accruals-template">
+						<xforms:instance id="accruals-template" xxforms:exclude-result-prefixes="#all">
 							<accruals/>
 						</xforms:instance>
-						<xforms:instance id="acqinfo-template">
+						<xforms:instance id="acqinfo-template" xxforms:exclude-result-prefixes="#all">
 							<acqinfo/>
 						</xforms:instance>
-						<xforms:instance id="altformavail-template">
+						<xforms:instance id="altformavail-template" xxforms:exclude-result-prefixes="#all">
 							<altformavail/>
 						</xforms:instance>
-						<xforms:instance id="appraisal-template">
+						<xforms:instance id="appraisal-template" xxforms:exclude-result-prefixes="#all">
 							<appraisal/>
 						</xforms:instance>
-						<xforms:instance id="arrangement-template">
+						<xforms:instance id="arrangement-template" xxforms:exclude-result-prefixes="#all">
 							<arrangement/>
 						</xforms:instance>
-						<xforms:instance id="bioghist-template">
+						<xforms:instance id="bioghist-template" xxforms:exclude-result-prefixes="#all">
 							<bioghist/>
 						</xforms:instance>
-						<xforms:instance id="bibliography-template">
+						<xforms:instance id="bibliography-template" xxforms:exclude-result-prefixes="#all">
 							<bibliography/>
 						</xforms:instance>
-						<xforms:instance id="controlaccess-template">
+						<xforms:instance id="controlaccess-template" xxforms:exclude-result-prefixes="#all">
 							<controlaccess/>
 						</xforms:instance>
-						<xforms:instance id="custodhist-template">
+						<xforms:instance id="custodhist-template" xxforms:exclude-result-prefixes="#all">
 							<custodhist/>
 						</xforms:instance>
-						<xforms:instance id="descgrp-template">
+						<xforms:instance id="descgrp-template" xxforms:exclude-result-prefixes="#all">
 							<descgrp/>
 						</xforms:instance>
-						<xforms:instance id="dao-template">
+						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="daogrp-template">
+						<xforms:instance id="daogrp-template" xxforms:exclude-result-prefixes="#all">
 							<daogrp/>
 						</xforms:instance>
-						<xforms:instance id="fileplan-template">
+						<xforms:instance id="fileplan-template" xxforms:exclude-result-prefixes="#all">
 							<fileplan/>
 						</xforms:instance>
-						<xforms:instance id="head-template">
+						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
 							<head/>
 						</xforms:instance>
-						<xforms:instance id="index-template">
+						<xforms:instance id="index-template" xxforms:exclude-result-prefixes="#all">
 							<index/>
 						</xforms:instance>
-						<xforms:instance id="indexentry-template">
+						<xforms:instance id="indexentry-template" xxforms:exclude-result-prefixes="#all">
 							<indexentry/>
 						</xforms:instance>
-						<xforms:instance id="odd-template">
+						<xforms:instance id="odd-template" xxforms:exclude-result-prefixes="#all">
 							<odd/>
 						</xforms:instance>
-						<xforms:instance id="originalsloc-template">
+						<xforms:instance id="originalsloc-template" xxforms:exclude-result-prefixes="#all">
 							<originalsloc/>
 						</xforms:instance>
-						<xforms:instance id="otherfindaid-template">
+						<xforms:instance id="otherfindaid-template" xxforms:exclude-result-prefixes="#all">
 							<otherfindaid/>
 						</xforms:instance>
-						<xforms:instance id="phystech-template">
+						<xforms:instance id="phystech-template" xxforms:exclude-result-prefixes="#all">
 							<phystech/>
 						</xforms:instance>
-						<xforms:instance id="prefercite-template">
+						<xforms:instance id="prefercite-template" xxforms:exclude-result-prefixes="#all">
 							<prefercite/>
 						</xforms:instance>
-						<xforms:instance id="processinfo-template">
+						<xforms:instance id="processinfo-template" xxforms:exclude-result-prefixes="#all">
 							<processinfo/>
 						</xforms:instance>
-						<xforms:instance id="relatedmaterial-template">
+						<xforms:instance id="relatedmaterial-template" xxforms:exclude-result-prefixes="#all">
 							<relatedmaterial/>
 						</xforms:instance>
-						<xforms:instance id="scopecontent-template">
+						<xforms:instance id="scopecontent-template" xxforms:exclude-result-prefixes="#all">
 							<scopecontent/>
 						</xforms:instance>
-						<xforms:instance id="separatedmaterial-template">
+						<xforms:instance id="separatedmaterial-template" xxforms:exclude-result-prefixes="#all">
 							<separatedmaterial/>
 						</xforms:instance>
-						<xforms:instance id="userestrict-template">
+						<xforms:instance id="userestrict-template" xxforms:exclude-result-prefixes="#all">
 							<userestrict/>
 						</xforms:instance>
 					</xforms:model>

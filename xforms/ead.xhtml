@@ -19,7 +19,7 @@
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
-		<xforms:model>
+		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
 				<xs:simpleType name="iso8601date">
 					<xs:restriction base="xs:string">
@@ -267,8 +267,9 @@
 				</xforms:bind>
 			</xforms:bind>
 
-			<!-- bind frontmatter tab to frontmatter element -->
+			<!-- bind tabs -->
 			<xforms:bind id="frontmatter-tab" nodeset="instance('guide')/ead:frontmatter"/>
+			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"/>			
 
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
@@ -440,25 +441,7 @@
 							<xforms:submit submission="load-submission" appearance="minimal">
 								<xforms:label><img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
 							</xforms:submit>
-						</div>
-						<div class="trigger_container">
-							<xforms:group ref=".[count(instance('guide')/ead:frontmatter) = 0]">
-								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Frontmatter</xforms:label>
-									<xforms:insert ev:event="DOMActivate" origin="instance('frontmatter-template')" context="instance('guide')" at="ead:eadheader" position="after"/>
-									<xforms:dispatch ev:event="DOMActivate" targetid="eadheader" name="fr-toggle"/>
-								</xforms:trigger>
-							</xforms:group>
-						</div>
-
-						<div>
-							<xforms:input ref="instance('guide')/@id">
-								<xforms:label>Document ID</xforms:label>
-								<xforms:alert>The id is required</xforms:alert>
-								<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="instance('guide')/@id" ev:event="xforms-value-changed"/>
-							</xforms:input>
-						</div>
+						</div>						
 					</div>
 				</div>
 			</div>
@@ -470,6 +453,23 @@
 			<div class="yui3-u-4-5">
 				<div class="content">
 					<div id="form">
+						<div class="trigger_container">
+							<xforms:group ref=".[count(instance('guide')/ead:frontmatter) = 0]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>Frontmatter</xforms:label>
+									<xforms:insert ev:event="DOMActivate" origin="instance('frontmatter-template')" context="instance('guide')" at="ead:eadheader" position="after"/>
+									<xforms:dispatch ev:event="DOMActivate" targetid="eadheader" name="fr-toggle"/>
+								</xforms:trigger>
+							</xforms:group>
+						</div>
+						<div>
+							<xforms:input ref="instance('guide')/@id">
+								<xforms:label>Document ID</xforms:label>
+								<xforms:alert>The id is required</xforms:alert>
+								<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="instance('guide')/@id" ev:event="xforms-value-changed"/>
+							</xforms:input>
+						</div>
 						<fr:tabview>
 							<!--**************************************** EADHEADER **********************************-->
 							<fr:tab id="eadheader-tab">
@@ -949,17 +949,107 @@
 									</xforms:group>
 								</xforms:group>
 							</fr:tab>
-							<!--**************************************** END EADHEADER **********************************-->
+							<!--**************************************** END EADHEADER **********************************-->							
+							<!--**************************************** ARCHDESC **********************************-->
+							<fr:tab bind="archdesc-tab">
+								<fr:label>Archival Description</fr:label>								
+								<div class="yui3-g">
+									<div class="yui3-u-1">
+										<h1>Archival Description</h1>
+										<div>
+											<xforms:group ref=".[count(ead:dsc) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Description of Subordinate Components</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('dsc-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+										</div>
+										<div>
+											<xforms:select1 ref="@level">
+												<xforms:label>Level</xforms:label>
+												<xforms:itemset nodeset="instance('level-template')/level">
+													<xforms:label ref="."/>
+													<xforms:value ref="@value"/>
+												</xforms:itemset>
+											</xforms:select1>
+										</div>
+									</div>
+									<div class="yui3-u-1-2">
+										<xforms:group ref="ead:did">
+											<eaditor:did/>
+										</xforms:group>
+									</div>
+									<div class="yui3-u-1-2">
+										<eaditor:component-level/>
+									</div>
+									<div class="yui3-u-1">
+										<xforms:group ref="ead:dsc">
+											<h1>Description of Subordinate Components</h1>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:delete nodeset="."/>
+												</xforms:action>
+											</xforms:trigger>
+											<div>
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Component</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+													</xforms:action>
+												</xforms:trigger>
+											</div>
+											<xforms:repeat nodeset="ead:c">
+												<eaditor:c/>
+											</xforms:repeat>
+										</xforms:group>
+									</div>
+								</div>
+							</fr:tab>
+							<!--**************************************** DSC **********************************-->
+							<fr:tab bind="dsc-tab">
+								<fr:label>Description of Subordinate Components</fr:label>
+								<h2>Description of Subordinate Components</h2>									
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:dispatch targetid="archdesc-tab" name="fr-toggle"/>
+										<xforms:delete nodeset="."/>
+									</xforms:action>
+								</xforms:trigger>
+								<div>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Component</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+										</xforms:action>
+									</xforms:trigger>
+								</div>
+								<xforms:repeat nodeset="ead:c">
+									<eaditor:c/>
+								</xforms:repeat>
+							</fr:tab>
 							<!--**************************************** FRONTMATTER **********************************-->
 							<fr:tab bind="frontmatter-tab">
 								<fr:label>Front Matter</fr:label>
 								<h1>Front Matter</h1>
 								<xforms:trigger appearance="minimal">
-									<xforms:delete ev:event="DOMActivate" nodeset="."/>
-									<xforms:dispatch ev:event="DOMActivate" targetid="eadheader-tab" name="fr-toggle"/>
 									<xforms:label>
 										<img src="/apps/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:delete nodeset="."/>
+										<xforms:dispatch targetid="eadheader-tab" name="fr-toggle"/>
+									</xforms:action>
 								</xforms:trigger>
 								<div>
 									<xforms:group ref=".[count(ead:titlepage) &lt; 1]">
@@ -1198,75 +1288,14 @@
 										</xforms:repeat>
 									</div>
 								</xforms:repeat>
-
+								
 							</fr:tab>
 							<!--**************************************** END FRONTMATTER **********************************-->
-							<!--**************************************** ARCHDESC **********************************-->
-							<fr:tab id="archdesc-tab">
-								<fr:label>Archival Description</fr:label>
-								<h1>Archival Description</h1>
-								<div>
-									<xforms:group ref=".[count(//ead:dsc) &lt; 1]">
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Description of Subordinate Components</xforms:label>
-											<xforms:insert ev:event="DOMActivate" context="ead:archdesc" nodeset="./child::node()[last()]" origin="instance('dsc-template')"/>
-										</xforms:trigger>
-									</xforms:group>
-								</div>
-								<xforms:group ref="instance('guide')/ead:archdesc">
-									<div class="section">
-										<div>
-											<xforms:select1 ref="@level">
-												<xforms:label>Level</xforms:label>
-												<xforms:itemset nodeset="instance('level-template')/level">
-													<xforms:label ref="."/>
-													<xforms:value ref="@value"/>
-												</xforms:itemset>
-											</xforms:select1>
-										</div>
-									</div>
-									<!-- include did -->
-									<div class="section">
-										<xforms:group ref="ead:did">
-											<eaditor:did/>
-										</xforms:group>
-									</div>
-									<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the component form -->
-									<div class="section">
-										<eaditor:component-level/>
-									</div>
-									<xforms:repeat nodeset="ead:dsc">
-										<div class="section">
-											<h1>Description of Subordinate Components</h1>
-											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" nodeset="."/>
-												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
-												</xforms:label>
-											</xforms:trigger>
-											<div>
-												<xforms:trigger appearance="minimal">
-													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Component</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
-													</xforms:action>
-												</xforms:trigger>
-											</div>
-											<xforms:repeat nodeset="ead:c">
-												<eaditor:c/>
-											</xforms:repeat>
-										</div>
-									</xforms:repeat>
-								</xforms:group>
-							</fr:tab>
-							<!--<fr:tab id="preview">
+							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>-->
+							</fr:tab>
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>

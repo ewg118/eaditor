@@ -106,13 +106,13 @@
 					<!-- ********************************************************************** -->	
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="scopecontent-model"  xmlns:xlink="http://www.w3.org/1999/xlink">
-						<xforms:instance id="arrangement-template">
+						<xforms:instance id="arrangement-template" xxforms:exclude-result-prefixes="#all">
 							<arrangement/>
 						</xforms:instance>
-						<xforms:instance id="dao-template">
+						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="daogrp-template">
+						<xforms:instance id="daogrp-template" xxforms:exclude-result-prefixes="#all">
 							<daogrp/>
 						</xforms:instance>
 					</xforms:model>					

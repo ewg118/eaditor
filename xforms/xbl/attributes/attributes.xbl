@@ -179,7 +179,7 @@
 							<xforms:bind nodeset="attribute[@name='type']" type="xs:NMTOKEN"/>
 						</xforms:bind>
 
-						<xforms:submission id="get-attributes" serialization="none" method="get" action="/eaditor/get_attributes/?element={instance('attributes')/@element-name}" replace="instance"
+						<xforms:submission id="get-attributes" serialization="none" method="get" action="/eaditor/admin/get_attributes/?element={instance('attributes')/@element-name}" replace="instance"
 							instance="attributes">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to process EAD schema.</xforms:message>
 						</xforms:submission>

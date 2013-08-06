@@ -42,7 +42,7 @@
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="dao-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<xforms:instance id="daodesc-template">
-							<daodesc>
+							<daodesc xxforms:exclude-result-prefixes="#all">
 								<p/>
 							</daodesc>
 						</xforms:instance>

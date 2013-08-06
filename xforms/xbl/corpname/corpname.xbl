@@ -2,9 +2,10 @@
 	last modified: June, 2011
 	function: EAD corpname component; user taps into VIAF APIs or local vocabulary for personal names
 -->
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns="urn:isbn:1-931666-22-9" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:eaditor="https://github.com/ewg118/eaditor">
+	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:eaditor="https://github.com/ewg118/eaditor">
+
 	<xbl:binding id="eaditor-corpname" element="eaditor|corpname">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -13,140 +14,157 @@
 					<xxforms:variable name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xxforms:variable>
-					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:send submission="load-config"/>
-						<xforms:action if="$binding/@source = 'viaf'">
-							<xforms:setvalue ref="instance('interface-type')" value="'viaf'"/>
-						</xforms:action>
-						<xforms:action if="not($binding/@source) and string($binding/text())">
-							<xforms:setvalue ref="instance('interface-type')" value="'local'"/>
-						</xforms:action>
-						<xforms:action if="not($binding/@source) and not(string($binding/text()))">
-							<xforms:setvalue ref="instance('interface-type')" value="'viaf'"/>
-						</xforms:action>						
-					</xforms:action>
+					<xxforms:variable name="display_path">../../../</xxforms:variable>
 					
-					<xhtml:div class="pair_div">
-						<xhtml:h3>Corporate Name</xhtml:h3>
-						<eaditor:attributes ref="$binding"/>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/remove.gif"/>
-							</xforms:label>
-						</xforms:trigger>
-						
-						<xhtml:div style="display:table;width:100%;">
-							<radiogroup>
-								<xforms:select1 ref="instance('interface-type')" appearance="full">
-									<xforms:label>Interface Type</xforms:label>
-									<xforms:item>
-										<xforms:label>VIAF</xforms:label>
-										<xforms:value>viaf</xforms:value>
-									</xforms:item>
-									<xforms:item>
-										<xforms:label>Local Vocabulary</xforms:label>
-										<xforms:value>local</xforms:value>
-									</xforms:item>
-									<xforms:action ev:event="xforms-value-changed">
-										<xforms:action if=". = 'viaf'">
-											<!-- remove temporary values, applicable when switching back to corpnames from local -->
-											<xforms:delete context="instance('rss')/*"/>
-											<xforms:setvalue ref="instance('search-query')" value="''"/>
-											
-											<!-- create attributes, clear $binding text when applicable -->
-											<xforms:setvalue ref="$binding" value="''" if="not($binding/@authfilenumber)"/>
-											<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'viaf')"/>
-											<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-											
-											<!-- pre-populate the select list -->
-											<xforms:setvalue ref="instance('viafId')" value="$binding/@authfilenumber"/>
-											<xforms:send submission="get-viafId"/>
-											<xforms:toggle case="viaf-search"/>
-										</xforms:action>
-										<xforms:action if=". = 'local'">
-											<!-- delete attributes, clear $binding text when applicable -->
-											<xforms:delete if="not(string($binding/text()))" context="instance('solr-response')/*"/>
-											<xforms:dispatch target="corpname-autocomplete-control" name="fr-set-label">
-												<xxforms:context name="label" select="''"/>
-											</xforms:dispatch>
-											<xforms:setvalue if="$binding/@authfilenumber" ref="$binding" value="''"/>
-											<xforms:delete if="$binding/@source" context="$binding/@source"/>
-											<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
-											
-											<!-- set the label if there is text -->
-											<xforms:action if="string($binding/text())">
-												<xforms:insert context="instance('solr-response')" origin="instance('terms-temp')"/>
-												<xforms:setvalue ref="instance('solr-response')/lst[@name='terms']/lst[@name='corpname']/int/@name" value="$binding/text()"/>
-												<xforms:dispatch target="corpname-autocomplete-control" name="fr-set-label">
-													<xxforms:context name="label" select="$binding/text()"/>
-												</xforms:dispatch>
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
+						<xforms:action if="not($binding/@source) and not(string($binding/text()))">
+							<xforms:send submission="load-config"/>
+							<xforms:setvalue ref="instance('interface-type')" value="'viaf'"/>
+						</xforms:action>
+					</xforms:action>
+
+					<xforms:group ref=".[string($binding)]">
+						<div>
+							<xforms:output ref="$binding">
+								<xforms:label>Corporate Name</xforms:label>
+							</xforms:output>
+							<xforms:group ref=".[string($binding/@authfilenumber)]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/external.png"/>
+									</xforms:label>
+									<xforms:load ev:event="DOMActivate" show="new" ref="concat('http://viaf.org/viaf/', $binding/@authfilenumber)"/>
+								</xforms:trigger>
+							</xforms:group>
+							<eaditor:attributes ref="$binding"/>
+							<xforms:trigger appearance="minimal">
+								<xforms:action ev:event="DOMActivate">
+									<xforms:setvalue ref="instance('suggest-query')"/>
+									<xforms:setvalue ref="instance('search-query')"/>
+									<xforms:delete nodeset="$binding"/>
+								</xforms:action>
+								<xforms:label>
+									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+						</div>
+					</xforms:group>
+					<xforms:group ref=".[not(string($binding))]">
+						<div style="display:table;width:100%">
+							<h4>Corporate Name</h4>
+							<eaditor:attributes ref="$binding"/>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<img src="{$display_path}images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>							
+							<div>
+								<radiogroup>
+									<xforms:select1 ref="instance('interface-type')" appearance="full">
+										<xforms:label>Interface Type</xforms:label>
+										<xforms:item>
+											<xforms:label>VIAF</xforms:label>
+											<xforms:value>viaf</xforms:value>
+										</xforms:item>
+										<xforms:item>
+											<xforms:label>Local Vocabulary</xforms:label>
+											<xforms:value>local</xforms:value>
+										</xforms:item>
+										<xforms:action ev:event="xforms-value-changed">
+											<xforms:action if=". = 'viaf'">
+												<!-- remove temporary values, applicable when switching back to corpnames from local -->
+												<xforms:delete context="instance('rss')/*"/>
+												<xforms:setvalue ref="instance('search-query')" value="''"/>
+												
+												<!-- create attributes, clear $binding text when applicable -->
+												<xforms:setvalue ref="$binding" if="not($binding/@authfilenumber)"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'viaf')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
+												
+												<!-- pre-populate the select list -->
+												<xforms:toggle case="viaf-search"/>
 											</xforms:action>
-											<xforms:toggle case="local-autosuggest"/>
+											<xforms:action if=". = 'local'">
+												<!-- clear temp -->
+												<xforms:setvalue ref="instance('temp')"/>
+												<xforms:setvalue ref="instance('temp')/@href"/>	
+												<!-- remove attributes -->
+												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
+												<xforms:delete if="$binding/@source" context="$binding/@source"/>
+												<xforms:toggle case="local-autosuggest"/>
+											</xforms:action>
 										</xforms:action>
-									</xforms:action>
-								</xforms:select1>
-							</radiogroup>
-						</xhtml:div>
-						
-						<xforms:switch>
-							<xforms:case id="default"/>
-							<xforms:case id="viaf-search">
-								<xhtml:div>
-									<xforms:input ref="instance('search-query')">
-										<xforms:label>Search</xforms:label>
-									</xforms:input>
-									<xforms:trigger>
-										<xforms:action ev:event="DOMActivate">
-											<xforms:delete context="instance('rss')/*"/>
-											<xforms:send submission="query-viaf"/>
-										</xforms:action>
-										<xforms:label>Search</xforms:label>
-									</xforms:trigger>
-								</xhtml:div>
-								
-								<xforms:group ref=".[count(instance('rss')//item) &gt; 0]">
-									<xforms:output ref="instance('search-results')"/>
-									<xhtml:br/>
-									<xforms:select1 ref="$binding/@authfilenumber" appearance="compact" id="select-list">
-										<xforms:label>Name</xforms:label>
-										<xforms:itemset nodeset="instance('rss')//item">
-											<xforms:label ref="title"/>
-											<xforms:value ref="substring-after(link, 'http://viaf.org/viaf/')"/>
-										</xforms:itemset>
 									</xforms:select1>
-								</xforms:group>
-							</xforms:case>
-							<xforms:case id="local-autosuggest">
-								<fr:autocomplete ref="instance('temp')" dynamic-itemset="true" id="corpname-autocomplete-control">
-									<xforms:action ev:event="fr-search-changed">
-										<xxforms:variable name="search-value" select="event('fr-search-value')"/>
-										<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
-										<xforms:action if="$make-suggestion">
-											<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
-											<xforms:send submission="suggest-corpname"/>
-											<!-- always insert currently typed item into the itemset -->
+								</radiogroup>
+							</div>
+							
+							<xforms:switch>
+								<xforms:case id="default"/>
+								<xforms:case id="viaf-search">
+									<div>
+										<xforms:input ref="instance('search-query')">
+											<xforms:label>Search</xforms:label>
+										</xforms:input>
+										<xforms:trigger>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:delete context="instance('rss')/*"/>
+												<xforms:send submission="query-viaf"/>
+											</xforms:action>
+											<xforms:label>Search</xforms:label>
+										</xforms:trigger>
+									</div>
+									
+									<xforms:group ref=".[count(instance('rss')//item) &gt; 0]">
+										<xforms:output ref="instance('search-results')"/>
+										<br/>
+										<xforms:select1 ref="instance('temp')/@href" appearance="compact" id="select-list">
+											<xforms:label>Name</xforms:label>
+											<xforms:itemset nodeset="instance('rss')//item">
+												<xforms:label ref="title"/>
+												<xforms:value ref="link"/>
+											</xforms:itemset>
+										</xforms:select1>
+										<xforms:trigger>
+											<xforms:label>Select</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="$binding/@authfilenumber" value="substring-after(instance('temp')/@href, 'http://viaf.org/viaf/')"/>
+												<xforms:setvalue ref="$binding" value="instance('rss')//item[link = instance('temp')/@href]/title"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+								</xforms:case>
+								<xforms:case id="local-autosuggest">
+									<fr:autocomplete ref="instance('temp')" dynamic-itemset="true">
+										<xforms:action ev:event="fr-search-changed">
+											<xxforms:variable name="search-value" select="event('fr-search-value')"/>
+											<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
+											<xforms:action if="$make-suggestion">
+												<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
+												<xforms:send submission="suggest-term"/>
+											</xforms:action>
 										</xforms:action>
-									</xforms:action>
-									<xforms:label style="float:left">Term</xforms:label>
-									<!-- get response from current position in suggestions-aggregate instance -->
-									<xforms:itemset nodeset="instance('solr-response')//lst[@name='corpname']/int">
-										<xforms:label ref="@name"/>
-										<xforms:value ref="@name"/>
-									</xforms:itemset>
-								</fr:autocomplete>
-							</xforms:case>
-						</xforms:switch>
-						
-						<!-- observe inputs, write instance('temp') to $binding -->
-						<xforms:action ev:observer="corpname-autocomplete-control" ev:event="xforms-value-changed">
-							<xforms:setvalue ref="$binding" value="instance('temp')"/>
-						</xforms:action>
-						
-						<xforms:action ev:observer="select-list" ev:event="xforms-value-changed">
-							<xforms:setvalue ref="$binding" value="instance('rss')//item[substring-after(link, 'http://viaf.org/viaf/') = $binding/@authfilenumber]/title"/>
-						</xforms:action>
-					</xhtml:div>
+										<xforms:label style="float:left">Term</xforms:label>
+										<xforms:itemset nodeset="instance('solr-response')//lst[@name='corpname_facet']/int">
+											<xforms:label ref="@name"/>
+											<xforms:value ref="@name"/>
+										</xforms:itemset>
+									</fr:autocomplete>
+									<xforms:group ref=".[string-length(instance('temp')) &gt; 0]">
+										<xforms:trigger>
+											<xforms:label>Select</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+								</xforms:case>
+							</xforms:switch>
+						</div>
+					</xforms:group>
+
+					<!--<fr:xforms-inspector id="orbeon-xforms-inspector"/>-->
+
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="corpname-authorities-model" xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -156,16 +174,17 @@
 						<xforms:instance id="config">
 							<config xmlns=""/>
 						</xforms:instance>
-						<!-- temp instance used by both interfaces to avoid inconsistent referencing to $binding -->
+
 						<xforms:instance id="temp">
-							<temp/>
+							<temp href=""/>
 						</xforms:instance>
-						
+
+
 						<!-- total results -->
 						<xforms:instance id="search-results">
 							<results/>
 						</xforms:instance>
-						
+
 						<!-- Instances containing the query string -->
 						<xforms:instance id="suggest-query">
 							<query/>
@@ -173,18 +192,15 @@
 						<xforms:instance id="search-query">
 							<query/>
 						</xforms:instance>
-						
+
 						<!-- corpnames specific instances -->
 						<xforms:instance id="viaf-temp">
 							<rss/>
 						</xforms:instance>
-						<xforms:instance id="viafId">
-							<viafId/>
-						</xforms:instance>
 						<xforms:instance id="rss">
 							<rss/>
 						</xforms:instance>
-						
+
 						<!-- local vocabulary -->
 						<xforms:instance id="facet-result-template">
 							<int name="" xmlns=""/>
@@ -194,38 +210,39 @@
 						</xforms:instance>
 						<xforms:instance id="terms-temp">
 							<lst name="terms" xmlns="">
-								<lst name="corpname">
+								<lst name="corpname_facet">
 									<int name="">1</int>
 								</lst>
 							</lst>
 						</xforms:instance>
-						
+
 						<!-- corpname type radio button -->
 						<xforms:instance id="interface-type">
 							<interface/>
 						</xforms:instance>
-						
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
-						
+
 						<!-- search for matching keywords -->
 						<xforms:submission id="query-viaf" serialization="none" method="get"
 							action="http://viaf.org/viaf/search?query=local.corporateNames+all+%22{instance('search-query')}%22&amp;maximumRecords=100&amp;httpAccept=application/rss%2bxml"
 							instance="rss" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:message if="number(instance('rss')//opensearch:totalResults) = 0" level="modal">No results found for query.</xforms:message>
-								<xforms:setvalue if="number(instance('rss')//opensearch:totalResults) != 0" ref="instance('search-results')" value="concat('Displaying first 100 of ', instance('rss')//opensearch:totalResults, ' result(s).')"/>																
+								<xforms:setvalue if="number(instance('rss')//opensearch:totalResults) != 0" ref="instance('search-results')"
+									value="concat('Displaying first 100 of ', instance('rss')//opensearch:totalResults, ' result(s).')"/>
 							</xforms:action>
 						</xforms:submission>
-						
-						<!-- get XML representation of single corpname, initiated on xforms-enabled -->
-						<xforms:submission id="get-viafId" serialization="none" method="get" action="http://viaf.org/viaf/{instance('viafId')}/rss.xml" instance="rss" replace="instance"/>
-						
-						<xforms:submission id="suggest-corpname" serialization="none" method="get"
-							action="{instance('config')/solr_vocabularies}terms?terms.fl=corpname&amp;terms.limit=10&amp;terms.sort=index&amp;terms.prefix={instance('suggest-query')}"
+
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
+						</xforms:submission>
+
+						<xforms:submission id="suggest-term" serialization="none" method="get"
+							action="{instance('config')/solr_published}terms?terms.fl=corpname_facet&amp;terms.limit=10&amp;terms.sort=index&amp;terms.prefix={instance('suggest-query')}"
 							instance="solr-response" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:insert context="instance('solr-response')/lst[@name='terms']/lst[@name='corpname']" origin="instance('facet-result-template')"/>
-								<xforms:setvalue ref="instance('solr-response')/lst[@name='terms']/lst[@name='corpname']/int[1]/@name" value="instance('suggest-query')"/>
+								<!-- always insert currently typed item into the itemset -->
+								<xforms:insert context="instance('solr-response')/lst[@name='terms']/lst[@name='corpname_facet']" origin="instance('facet-result-template')"/>
+								<xforms:setvalue ref="instance('solr-response')/lst[@name='terms']/lst[@name='corpname_facet']/int[1]/@name" value="instance('suggest-query')"/>
 							</xforms:action>
 						</xforms:submission>
 					</xforms:model>
@@ -233,5 +250,5 @@
 			</xforms:group>
 		</xbl:template>
 	</xbl:binding>
-	
+
 </xbl:xbl>

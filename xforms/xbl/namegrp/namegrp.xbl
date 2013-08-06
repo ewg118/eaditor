@@ -138,34 +138,34 @@
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="namegrp-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<!-- access elements -->
-						<xforms:instance id="corpname-template">
+						<xforms:instance id="corpname-template" xxforms:exclude-result-prefixes="#all">
 							<corpname/>
 						</xforms:instance>
-						<xforms:instance id="famname-template">
+						<xforms:instance id="famname-template" xxforms:exclude-result-prefixes="#all">
 							<famname/>
 						</xforms:instance>
-						<xforms:instance id="function-template">
+						<xforms:instance id="function-template" xxforms:exclude-result-prefixes="#all">
 							<function/>
 						</xforms:instance>
-						<xforms:instance id="genreform-template">
+						<xforms:instance id="genreform-template" xxforms:exclude-result-prefixes="#all">
 							<genreform/>
 						</xforms:instance>
-						<xforms:instance id="geogname-template">
+						<xforms:instance id="geogname-template" xxforms:exclude-result-prefixes="#all">
 							<geogname/>
 						</xforms:instance>
-						<xforms:instance id="name-template">
+						<xforms:instance id="name-template" xxforms:exclude-result-prefixes="#all">
 							<name/>
 						</xforms:instance>						
-						<xforms:instance id="occupation-template">
+						<xforms:instance id="occupation-template" xxforms:exclude-result-prefixes="#all">
 							<occupation/>
 						</xforms:instance>
-						<xforms:instance id="persname-template">
+						<xforms:instance id="persname-template" xxforms:exclude-result-prefixes="#all">
 							<persname/>
 						</xforms:instance>
-						<xforms:instance id="subject-template">
+						<xforms:instance id="subject-template" xxforms:exclude-result-prefixes="#all">
 							<subject/>
 						</xforms:instance>
-						<xforms:instance id="title-template">
+						<xforms:instance id="title-template" xxforms:exclude-result-prefixes="#all">
 							<title/>
 						</xforms:instance>					
 					</xforms:model>

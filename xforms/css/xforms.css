@@ -76,9 +76,6 @@
 	padding:10px 0 10px 25px;
 	width:95%;
 }
-.add {
-	display:inline;	
-}
 /*
   ****************************************
   ORBEON XFORM SPECIFIC STYLE
@@ -134,6 +131,9 @@
 	margin:20px auto;
 	width:400px;
 	font-size:12px;
+}
+.add {
+	display:inline;	
 }
 /*
   ****************************************

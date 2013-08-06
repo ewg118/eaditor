@@ -183,19 +183,19 @@
 					<!-- ********************************************************************** -->		
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="index-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="ptr-template">
+						<xforms:instance id="ptr-template" xxforms:exclude-result-prefixes="#all">
 							<ptr linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
-						<xforms:instance id="ptrgrp-template">
+						<xforms:instance id="ptrgrp-template" xxforms:exclude-result-prefixes="#all">
 							<ptrgrp/>
 						</xforms:instance>
-						<xforms:instance id="ref-template">
+						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
 							<ref linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
-						<xforms:instance id="indexentry-template">
+						<xforms:instance id="indexentry-template" xxforms:exclude-result-prefixes="#all">
 							<indexentry/>
 						</xforms:instance>
-						<xforms:instance id="namegrp-template">
+						<xforms:instance id="namegrp-template" xxforms:exclude-result-prefixes="#all">
 							<namegrp/>
 						</xforms:instance>
 					</xforms:model>					

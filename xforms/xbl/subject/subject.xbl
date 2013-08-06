@@ -21,8 +21,8 @@
 							<xforms:setvalue ref="instance('interface-type')" value="'lcsh'"/>
 						</xforms:action>
 						<xforms:action if="string($binding)">
-							<xforms:setvalue ref="instance('interface-type')" value="'lcsh'" if="$binding/@source='lcsh'"/>
-							<xforms:setvalue ref="instance('interface-type')" value="'local'" if="$binding/@source!='lcsh'"/>
+							<xforms:setvalue ref="instance('interface-type')" value="'lcsh'" if="$binding/@source = 'lcsh'"/>
+							<xforms:setvalue ref="instance('interface-type')" value="'local'" if="$binding/@source != 'lcsh'"/>
 						</xforms:action>
 					</xforms:action>
 
@@ -31,14 +31,15 @@
 							<xforms:output ref="$binding">
 								<xforms:label>Subject</xforms:label>
 							</xforms:output>
-							<xforms:group ref=".[string($binding/@xlink:href)]">
+							<!--<xforms:group ref=".[string($binding/@authfilenumber)]">
 								<xforms:trigger appearance="xxforms:link">
 									<xforms:label>
 										<img src="/apps/eaditor/xforms/images/external.png"/>
 									</xforms:label>
 									<xforms:load ev:event="DOMActivate" ref="$binding/@authfilenumber" show="new"/>
 								</xforms:trigger>
-							</xforms:group>
+								</xforms:group>-->
+							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:setvalue ref="instance('suggest-query')"/>
@@ -71,7 +72,7 @@
 											<xforms:value>lcsh</xforms:value>
 										</xforms:item>
 										<xforms:item>
-											<xforms:label>local vocabulary</xforms:label>
+											<xforms:label>Local Vocabulary</xforms:label>
 											<xforms:value>local</xforms:value>
 										</xforms:item>
 										<xforms:action ev:event="xforms-value-changed">
@@ -80,7 +81,7 @@
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>												
 												<!-- add attributes -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('identifier', '')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
 												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'lcsh')"/>
 												<xforms:toggle case="lcsh-search"/>
 											</xforms:action>
@@ -108,13 +109,13 @@
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:delete context="instance('feed')/*"/>
-												<xforms:send submission="query-lcsh"/>
+												<xforms:send submission="query-lc"/>
 											</xforms:action>
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
 									</div>
 									<xforms:group ref=".[count(instance('feed')//atom:entry) &gt; 0]">
-										<xforms:select1 ref="instance('temp')/@href" appearance="compact" id="lcsh-list" length="20">
+										<xforms:select1 ref="instance('temp')/@href" appearance="compact" size="10">
 											<xforms:label>Location</xforms:label>
 											<xforms:itemset nodeset="instance('feed')//atom:entry">
 												<xforms:label ref="atom:title"/>
@@ -132,18 +133,16 @@
 									</xforms:group>
 								</xforms:case>
 								<xforms:case id="local-autosuggest">
-									<fr:autocomplete ref="instance('temp')" dynamic-itemset="true" id="autocomplete-control">
+									<fr:autocomplete ref="instance('temp')" dynamic-itemset="true">
 										<xforms:action ev:event="fr-search-changed">
 											<xxforms:variable name="search-value" select="event('fr-search-value')"/>
 											<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
 											<xforms:action if="$make-suggestion">
 												<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
 												<xforms:send submission="suggest-term"/>
-												<!-- always insert currently typed item into the itemset -->
 											</xforms:action>
 										</xforms:action>
 										<xforms:label style="float:left">Term</xforms:label>
-										<!-- get response from current position in suggestions-aggregate instance -->
 										<xforms:itemset nodeset="instance('solr-response')//lst[@name='subject_facet']/int">
 											<xforms:label ref="@name"/>
 											<xforms:value ref="@name"/>
@@ -208,10 +207,10 @@
 							<interface/>
 						</xforms:instance>
 
-						<xforms:submission id="query-lcsh" serialization="none" method="get"
+						<xforms:submission id="query-lc" serialization="none" method="get"
 							action="http://id.loc.gov/search/?q={instance('search-query')} memberOf:http://id.loc.gov/authorities/subjects/collection_LCSHAuthorizedHeadings&amp;start=1&amp;format=atom"
 							instance="feed" replace="instance">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with nomisma.org Atom feed.</xforms:message>
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with id.loc.gov Atom feed.</xforms:message>
 						</xforms:submission>
 
 						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
@@ -222,6 +221,7 @@
 							action="{instance('config')/solr_published}terms?terms.fl=subject_facet&amp;terms.limit=10&amp;terms.sort=index&amp;terms.prefix={instance('suggest-query')}"
 							instance="solr-response" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">
+								<!-- always insert currently typed item into the itemset -->
 								<xforms:insert context="instance('solr-response')/lst[@name='terms']/lst[@name='subject_facet']" origin="instance('facet-result-template')"/>
 								<xforms:setvalue ref="instance('solr-response')/lst[@name='terms']/lst[@name='subject_facet']/int[1]/@name" value="instance('suggest-query')"/>
 							</xforms:action>

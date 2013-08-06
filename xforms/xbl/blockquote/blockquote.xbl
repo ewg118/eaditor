@@ -91,19 +91,19 @@
 					<!-- ********************************************************************** -->
 					<xforms:model id="blockquote-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<!-- generic instances -->
-						<xforms:instance id="address-template">
+						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
 							<address>
 								<addressline/>
 							</address>
 						</xforms:instance>
-						<xforms:instance id="note-template">
+						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
 							<note/>
 						</xforms:instance>
-						<xforms:instance id="p-template">
+						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
 							<p/>
 						</xforms:instance>
 						<!-- table -->
-						<xforms:instance id="table-template">
+						<xforms:instance id="table-template" xxforms:exclude-result-prefixes="#all">
 							<table>
 								<tgroup cols="">
 									<thead/>
@@ -112,7 +112,7 @@
 							</table>
 						</xforms:instance>
 						<!-- lists -->
-						<xforms:instance id="list-template">
+						<xforms:instance id="list-template" xxforms:exclude-result-prefixes="#all">
 							<list/>
 						</xforms:instance>
 						<xforms:instance id="chronlist-template">

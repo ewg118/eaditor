@@ -76,7 +76,7 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="bibliography-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="bibref-template">
+						<xforms:instance id="bibref-template" xxforms:exclude-result-prefixes="#all">
 							<bibref/>
 						</xforms:instance>
 					</xforms:model>

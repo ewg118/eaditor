@@ -221,19 +221,19 @@
 						</xforms:instance>
 
 						<!-- daodesc and associated elements -->
-						<xforms:instance id="daodesc-template">
+						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all">
 							<daodesc/>
 						</xforms:instance>
 
-						<xforms:instance id="head-template">
+						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
 							<head/>
 						</xforms:instance>
 
-						<xforms:instance id="p-template">
+						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
 							<p/>
 						</xforms:instance>
 
-						<xforms:instance id="daoloc-template">
+						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all">
 							<daoloc xlink:href="" xlink:label=""/>
 						</xforms:instance>
 

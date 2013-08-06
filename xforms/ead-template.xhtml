@@ -5,8 +5,8 @@
     Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns="urn:isbn:1-931666-22-9"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
 	<head>
 		<title>EADitor: Edit Core Template</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -19,7 +19,7 @@
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
-		<xforms:model>
+		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
 				<xs:simpleType name="iso8601date">
 					<xs:restriction base="xs:string">
@@ -215,8 +215,9 @@
 				<xforms:bind nodeset="//ead:date/@normal" type="xs:date"/>
 			</xforms:bind>
 
-			<!-- bind frontmatter tab to frontmatter element -->
+			<!-- bind tabs -->
 			<xforms:bind id="frontmatter-tab" nodeset="instance('ead-template')/ead:frontmatter"/>
+			<xforms:bind id="archdesc-tab" nodeset="instance('ead-template')/ead:archdesc"/>
 
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance" instance="c-template"
@@ -843,6 +844,67 @@
 								</xforms:group>
 							</fr:tab>
 							<!--**************************************** END EADHEADER **********************************-->
+							<!--**************************************** ARCHDESC **********************************-->
+							<fr:tab bind="archdesc-tab">
+								<fr:label>Archival Description</fr:label>
+								<div class="yui3-g">
+									<div class="yui3-u-1">
+										<h1>Archival Description</h1>
+										<div>
+											<xforms:group ref=".[count(ead:dsc) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Description of Subordinate Components</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('dsc-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+										</div>
+										<div>
+											<xforms:select1 ref="@level">
+												<xforms:label>Level</xforms:label>
+												<xforms:itemset nodeset="instance('level-template')/level">
+													<xforms:label ref="."/>
+													<xforms:value ref="@value"/>
+												</xforms:itemset>
+											</xforms:select1>
+										</div>
+									</div>
+									<div class="yui3-u-1-2">
+										<xforms:group ref="ead:did">
+											<eaditor:did/>
+										</xforms:group>
+									</div>
+									<div class="yui3-u-1-2">
+										<eaditor:component-level/>
+									</div>
+									<div class="yui3-u-1">
+										<xforms:group ref="ead:dsc">
+											<h1>Description of Subordinate Components</h1>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:delete nodeset="."/>
+												</xforms:action>
+											</xforms:trigger>
+											<div>
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Component</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+													</xforms:action>
+												</xforms:trigger>
+											</div>
+											<xforms:repeat nodeset="ead:c">
+												<eaditor:c/>
+											</xforms:repeat>
+										</xforms:group>
+									</div>
+								</div>
+							</fr:tab>
 							<!--**************************************** FRONTMATTER **********************************-->
 							<fr:tab bind="frontmatter-tab">
 								<fr:label>Front Matter</fr:label>
@@ -1094,67 +1156,6 @@
 								</xforms:group>
 							</fr:tab>
 							<!--**************************************** END FRONTMATTER **********************************-->
-							<!--**************************************** ARCHDESC **********************************-->
-							<fr:tab id="archdesc-tab">
-								<fr:label>Archival Description</fr:label>
-								<h1>Archival Description</h1>
-								<div>
-									<xforms:group ref=".[count(//ead:dsc) &lt; 1]">
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Description of Subordinate Components</xforms:label>
-											<xforms:insert ev:event="DOMActivate" context="ead:archdesc" nodeset="./child::node()[last()]" origin="instance('dsc-template')"/>
-										</xforms:trigger>
-									</xforms:group>
-								</div>
-								<xforms:group ref="instance('ead-template')/ead:archdesc">
-									<div class="section">
-										<div>
-											<xforms:select1 ref="@level">
-												<xforms:label>Level</xforms:label>
-												<xforms:itemset nodeset="instance('level-template')/level">
-													<xforms:label ref="."/>
-													<xforms:value ref="@value"/>
-												</xforms:itemset>
-											</xforms:select1>
-										</div>
-									</div>
-									<!-- include did -->
-									<div class="section">
-										<xforms:group ref="ead:did">
-											<eaditor:did/>
-										</xforms:group>
-									</div>
-									<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the component form -->
-									<div class="section">
-										<eaditor:component-level/>
-									</div>
-									<xforms:repeat nodeset="ead:dsc">
-										<div class="section">
-											<h1>Description of Subordinate Components</h1>
-											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" nodeset="."/>
-												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
-												</xforms:label>
-											</xforms:trigger>
-											<div>
-												<xforms:trigger appearance="minimal">
-													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Component</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
-													</xforms:action>
-												</xforms:trigger>
-											</div>
-											<xforms:repeat nodeset="ead:c">
-												<eaditor:c/>
-											</xforms:repeat>
-										</div>
-									</xforms:repeat>
-								</xforms:group>
-							</fr:tab>
 							<!--<fr:tab id="preview">
 							<fr:label>XML Preview</fr:label>
 							<h1>XML Preview</h1>

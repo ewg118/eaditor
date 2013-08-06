@@ -43,7 +43,7 @@
 					<!-- ********************************************************************** -->
 					<xforms:model id="address-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<!-- generic instances -->
-						<xforms:instance id="addressline-template">
+						<xforms:instance id="addressline-template" xxforms:exclude-result-prefixes="#all">
 							<addressline/>
 						</xforms:instance>
 					</xforms:model>

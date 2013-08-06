@@ -9,7 +9,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xxforms:variable>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:h1>Descriptive Identification</xhtml:h1>
+					<xhtml:h2>Descriptive Identification</xhtml:h2>
 					<xhtml:span class="add">
 						<xforms:trigger appearance="minimal">
 							<xforms:label>

@@ -136,24 +136,24 @@
 					</xhtml:div>
 					<!-- ********************************************************************** -->
 					<xforms:model id="chronlist-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="head-template">
+						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
 							<head/>
 						</xforms:instance>
-						<xforms:instance id="listhead-template">
+						<xforms:instance id="listhead-template" xxforms:exclude-result-prefixes="#all">
 							<listhead>
 								<head01/>
 								<head02/>
 							</listhead>
 						</xforms:instance>
-						<xforms:instance id="chronitem-template">
+						<xforms:instance id="chronitem-template" xxforms:exclude-result-prefixes="#all">
 							<chronitem>
 								<date/>
 							</chronitem>
 						</xforms:instance>
-						<xforms:instance id="event-template">
+						<xforms:instance id="event-template" xxforms:exclude-result-prefixes="#all">
 							<event/>
 						</xforms:instance>
-						<xforms:instance id="eventgrp-template">
+						<xforms:instance id="eventgrp-template" xxforms:exclude-result-prefixes="#all">
 							<eventgrp>
 								<event/>
 								<event/>

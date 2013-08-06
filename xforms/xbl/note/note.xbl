@@ -38,7 +38,7 @@
 					<!-- ********************************************************************** -->
 					<xforms:model id="note-elements-model">
 						<!-- generic instances -->
-						<xforms:instance id="p-template">
+						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
 							<p/>
 						</xforms:instance>
 					</xforms:model>

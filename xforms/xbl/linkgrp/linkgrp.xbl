@@ -64,18 +64,18 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="linkgrp-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="extptrloc-template">
+						<xforms:instance id="extptrloc-template" xxforms:exclude-result-prefixes="#all">
 							<extptrloc linktype="locator" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="extrefloc-template">
+						<xforms:instance id="extrefloc-template" xxforms:exclude-result-prefixes="#all">
 							<extrefloc linktype="locator" xlink:href="">
 								<archref/>
 							</extrefloc>
 						</xforms:instance>
-						<xforms:instance id="ptrloc-template">
+						<xforms:instance id="ptrloc-template" xxforms:exclude-result-prefixes="#all">
 							<ptrloc linktype="locator" target=""/>
 						</xforms:instance>
-						<xforms:instance id="refloc-template">
+						<xforms:instance id="refloc-template" xxforms:exclude-result-prefixes="#all">
 							<refloc linktype="locator" target=""/>
 						</xforms:instance>
 					</xforms:model>

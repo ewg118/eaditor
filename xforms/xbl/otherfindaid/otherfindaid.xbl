@@ -114,16 +114,16 @@
 					<!-- ********************************************************************** -->		
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="otherfindaid-model"  xmlns:xlink="http://www.w3.org/1999/xlink">
-						<xforms:instance id="bibref-template">
+						<xforms:instance id="bibref-template" xxforms:exclude-result-prefixes="#all">
 							<bibref/>
 						</xforms:instance>
-						<xforms:instance id="extref-template">
+						<xforms:instance id="extref-template" xxforms:exclude-result-prefixes="#all">
 							<extref linktype="simple" actuate="onrequest" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="linkgrp-template">
+						<xforms:instance id="linkgrp-template" xxforms:exclude-result-prefixes="#all">
 							<linkgrp/>
 						</xforms:instance>
-						<xforms:instance id="ref-template">
+						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
 							<ref linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
 					</xforms:model>					

@@ -92,7 +92,7 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="accessrestrict-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="legalstatus-template">
+						<xforms:instance id="legalstatus-template" xxforms:exclude-result-prefixes="#all">
 							<legalstatus/>
 						</xforms:instance>
 					</xforms:model>

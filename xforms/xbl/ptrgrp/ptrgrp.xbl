@@ -42,10 +42,10 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="component-level-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="ptr-template">
+						<xforms:instance id="ptr-template" xxforms:exclude-result-prefixes="#all">
 							<ptr linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
-						<xforms:instance id="ref-template">
+						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
 							<ref linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
 					</xforms:model>

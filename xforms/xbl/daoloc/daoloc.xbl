@@ -55,7 +55,7 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="daoloc-model" xmlns:xforms="http://www.w3.org/2002/xforms">
-						<xforms:instance id="daodesc-template">
+						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all">
 							<daodesc>
 								<p/>
 							</daodesc>
