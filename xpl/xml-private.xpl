@@ -26,7 +26,7 @@
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9">
 				<xsl:template match="/">
 					<xsl:variable name="id" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
-					<xsl:copy-of select="document(concat(/exist-url, 'eaditor/guides/', $id, '.xml'))/ead:ead"/>
+					<xsl:copy-of select="document(concat(/exist-url, 'eaditor/guides/', $id, '.xml'))/*"/>
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>

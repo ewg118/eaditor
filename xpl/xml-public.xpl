@@ -28,7 +28,7 @@
 				<xsl:include href="../ui/xslt/xml-public.xsl"/>				
 				<xsl:template match="/">
 					<xsl:variable name="id" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
-					<xsl:apply-templates select="document(concat(/exist-url, 'eaditor/guides/', $id, '.xml'))/ead:ead"/>
+					<xsl:apply-templates select="document(concat(/exist-url, 'eaditor/guides/', $id, '.xml'))/*"/>
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>

@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div id="hd" xmlns="http://www.w3.org/1999/xhtml"> EADitor Administration | <a href="{$display_path}.">File Manager</a> | <a href="{$display_path}settings/">Modify EADitor Settings</a> | <a
-		href="{$display_path}test/">Run Conformance Tests</a> | <a href="{$display_path}templates/">Edit Templates</a> | <a href="{$display_path}vocab/">Manage Controlled Vocabularies</a>
+<div id="hd" xmlns="http://www.w3.org/1999/xhtml">
+	<span><b>EADitor Administration</b> | </span>
+	<a href="{$display_path}.">File Manager</a>
+	<span> | </span>
+	<a href="{$display_path}settings/">Modify EADitor Settings</a>
+	<span> | </span>
+	<a href="{$display_path}test/">Run Conformance Tests</a>
+	<span> | </span>
+	<a href="{$display_path}templates/">Edit Templates</a>
+	<span> | </span>
+	<!--<a href="{$display_path}vocab/">Manage Controlled Vocabularies</a><span> | </span>-->
+	<a href="{instance('config')/url}" target="_blank">View Public Site</a>
 </div>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:ead="urn:isbn:1-931666-22-9" xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:eaditor="https://github.com/ewg118/eaditor">
 	<xsl:template match="ead:dsc">
 		<a name="{generate-id(.)}"/>
 		<h1>
@@ -93,9 +94,7 @@
 					<xsl:value-of select="@label"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:call-template name="regularize-name">
-						<xsl:with-param name="name" select="name()"/>
-					</xsl:call-template>
+					<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
 					<xsl:text>: </xsl:text>
 				</xsl:otherwise>
 			</xsl:choose>

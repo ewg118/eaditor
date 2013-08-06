@@ -18,7 +18,7 @@
 	
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="aggregate('content', #config, #data)"/>		
-		<p:input name="config" href="../xforms/xslt/publish/ead-publish.xsl"/>
+		<p:input name="config" href="../xforms/xslt/publish/publish.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 

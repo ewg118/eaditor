@@ -6,7 +6,7 @@
  body {
 	margin:20px auto;
 	min-width:960px;
-	max-width:90%;
+	max-width:100%;
 }
 .content {
 	padding:5px;
@@ -75,6 +75,9 @@
 .subsection {
 	padding:10px 0 10px 25px;
 	width:95%;
+}
+.add {
+	display:inline;	
 }
 /*
   ****************************************

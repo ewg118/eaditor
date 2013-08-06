@@ -8,7 +8,7 @@
 -->
 <xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<xbl:binding element="eaditor|navigation">
 		<xbl:template xxbl:transform="oxf:xslt">
@@ -32,7 +32,7 @@
 							</xforms:action>
 							<xforms:group ref="$data">
 								<xxforms:variable name="guide_id" select="@id"/>
-								<xhtml:h3>
+								<xhtml:h4>
 									<xforms:group ref=".[string(instance('c-id'))]">
 										<xhtml:a href="../core/?guide={'{$guide_id}'}">
 											<xforms:output ref="@title"/>
@@ -41,7 +41,7 @@
 									<xforms:group ref=".[not(string(instance('c-id')))]">
 										<xforms:output ref="@title"/>
 									</xforms:group>
-								</xhtml:h3>
+								</xhtml:h4>
 								<xsl:choose>
 									<xsl:when test="exists(@depth)">
 										<xsl:call-template name="node">

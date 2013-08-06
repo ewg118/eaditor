@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eaditor xs xi" version="2.0"
-	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:eaditor="http://code.google.com/p/eaditor/">
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.w3.org/1999/xhtml" xmlns:eaditor="https://github.com/ewg118/eaditor">
 	<xsl:output method="xml" encoding="UTF-8"/>
 	<!-- URL parameters -->
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>	

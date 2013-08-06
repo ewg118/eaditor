@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:eaditor="http://code.google.com/p/eaditor/" exclude-result-prefixes="xs eaditor xs xi" version="2.0">
+	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="xs eaditor xs xi" version="2.0">
 	<xsl:include href="../functions.xsl"/>
 
 	<xsl:variable name="flickr-api-key" select="/config/flickr_api_key"/>	

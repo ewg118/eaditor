@@ -58,7 +58,7 @@
 	<page path-info="/eaditor/show/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
 
 	<!-- solr doc service -->
-	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/ead-publish.xpl"/>
+	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
 
 	<!-- index -->
 	<page path-info="/eaditor/" model="xpl/config.xpl" view="xpl/index.xpl"/>

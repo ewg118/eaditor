@@ -1,21 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:datetime="http://exslt.org/dates-and-times" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:exsl="http://exslt.org/common" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="xs datetime" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:datetime="http://exslt.org/dates-and-times"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="xs datetime" version="2.0">
 	<xsl:output encoding="UTF-8" indent="yes" method="xml"/>
 	<xsl:strip-space elements="*"/>
 	<xsl:variable name="url" select="/content/config/url"/>
 	
-	<!-- load ead finding aid into variable -->
-	<!--<xsl:variable name="guide" select="document(concat($exist-url, 'eaditor/guides.xml'))"/>-->
-
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
 
-	<xsl:template match="/">		
-		<xsl:apply-templates select="//ead:ead"/>		
+	<xsl:template match="/">
+		<xsl:apply-templates select="descendant::ead:ead|descendant::mods:modsCollection"/>
 	</xsl:template>
-	
+
+	<xsl:template match="mods:modsCollection">
+		<xsl:apply-templates select="mods:mods"/>
+	</xsl:template>
+
+	<xsl:template match="mods:mods">
+		<add>
+			<doc>
+				<field name="id">
+					<xsl:value-of select="mods:recordInfo/mods:recordIdentifier"/>
+				</field>
+				<field name="oai_id">
+					<xsl:text>oai:</xsl:text>
+					<xsl:value-of select="substring-before(substring-after($url, 'http://'), '/')"/>
+					<xsl:text>:</xsl:text>
+					<xsl:value-of select="mods:recordInfo/mods:recordIdentifier"/>
+				</field>
+				<field name="timestamp">
+					<xsl:variable name="timestamp" select="datetime:dateTime()"/>
+					<xsl:choose>
+						<xsl:when test="contains($timestamp, 'Z')">
+							<xsl:value-of select="$timestamp"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($timestamp, 'Z')"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</field>
+				<field name="unittitle_display">
+					<xsl:value-of select="mods:titleInfo/mods:title"/>
+				</field>
+				<field name="publisher_display">
+					<xsl:value-of select="mods:recordInfo/mods:recordContentSource"/>
+				</field>
+				<field name="unitid_display">
+					<xsl:value-of select="mods:identifier"/>
+				</field>
+				<field name="unitdate_display">
+					<xsl:value-of select="mods:originInfo/mods:dateCreated"/>
+				</field>
+				<field name="physdesc_display">
+					<xsl:if test="mods:relatedItem/mods:physicalDescription/mods:form">
+						<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:form"/>
+						<xsl:text>, </xsl:text>
+					</xsl:if>
+					<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
+				</field>
+				<field name="genreform_facet">
+					<xsl:value-of select="normalize-space(mods:physicalDescription/mods:form)"/>
+				</field>
+				<xsl:if test="mods:relatedItem/mods:physicalDescription/mods:form">
+					<field name="genreform_facet">
+						<xsl:value-of select="normalize-space(mods:relatedItem/mods:physicalDescription/mods:form)"/>
+					</field>
+				</xsl:if>
+				<xsl:for-each select="mods:name/mods:namePart[1]|mods:subject/mods:topic">
+					<xsl:variable name="category" select="if(parent::mods:name[@type='personal']) then 'persname' else if (parent::mods:name[@type='corporate']) then 'corpname' else 'subject'"/>
+
+					<field name="{$category}_facet">
+						<xsl:value-of select="normalize-space(.)"/>
+					</field>
+				</xsl:for-each>
+				<field name="fulltext">
+					<xsl:for-each select="descendant-or-self::node()">
+						<xsl:value-of select="text()"/>
+						<xsl:text> </xsl:text>
+					</xsl:for-each>
+				</field>
+			</doc>
+		</add>
+	</xsl:template>
+
 	<xsl:template match="ead:ead">
 		<add>
 			<doc>
@@ -36,24 +104,24 @@
 						<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
 					</field>
 				</xsl:if>
-				
+
 				<!-- get info from archdesc/did, mostly for display -->
 				<xsl:apply-templates select="//ead:archdesc/ead:did"/>
-				
+
 				<!-- facets -->
 				<xsl:if test="string(normalize-space(//ead:eadid/@mainagencycode))">
 					<field name="agencycode_facet">
 						<xsl:value-of select="normalize-space(//ead:eadid/@mainagencycode)"/>
 					</field>
 				</xsl:if>
-				
+
 				<xsl:for-each
 					select="descendant::ead:corpname | descendant::ead:famname | descendant::ead:genreform | descendant::ead:geogname | descendant::ead:langmaterial/ead:language | descendant::ead:persname | descendant::ead:subject">
 					<xsl:choose>
 						<xsl:when test="local-name() = 'geogname' and string(@authfilenumber)">
 							<xsl:variable name="coordinates"
 								select="concat(document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=anscoins&amp;style=full'))//lng, ',', document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=anscoins&amp;style=full'))//lat)"/>
-							
+
 							<field name="{local-name()}_facet">
 								<xsl:value-of select="normalize-space(.)"/>
 							</field>
@@ -75,7 +143,7 @@
 						<xsl:value-of select="normalize-space(.)"/>
 					</field>
 				</xsl:for-each>
-				
+
 				<!-- collection images -->
 				<xsl:for-each select="descendant::ead:archdesc/ead:did/ead:daogrp">
 					<field name="collection_thumb">
@@ -93,7 +161,7 @@
 						</xsl:choose>
 					</field>
 				</xsl:for-each>
-				
+
 				<!-- subordinate images -->
 				<xsl:for-each select="descendant::ead:daogrp">
 					<xsl:if test="not(parent::ead:did[parent::ead:archdesc])">
@@ -113,7 +181,7 @@
 						</field>
 					</xsl:if>
 				</xsl:for-each>
-				
+
 				<!-- timestamp -->
 				<field name="timestamp">
 					<xsl:variable name="timestamp" select="datetime:dateTime()"/>
@@ -126,7 +194,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</field>
-				
+
 				<!-- fulltext -->
 				<field name="fulltext">
 					<xsl:value-of select="ead:ead/@id"/>
@@ -190,13 +258,13 @@
 			<xsl:variable name="decade_digit" select="floor(number(substring($year_string, string-length($year_string) - 1, string-length($year_string))) div 10) * 10"/>
 			<xsl:variable name="decade" select="concat($century, if($decade_digit = 0) then '00' else $decade_digit)"/>
 
-			<field name="century_sint">
+			<field name="century_num">
 				<xsl:value-of select="$century"/>
 			</field>
-			<field name="decade_sint">
+			<field name="decade_num">
 				<xsl:value-of select="$decade"/>
 			</field>
-			<field name="year_sint">
+			<field name="year_num">
 				<xsl:value-of select="$year"/>
 			</field>
 		</xsl:for-each>

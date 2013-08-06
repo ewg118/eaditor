@@ -4,7 +4,7 @@
 -->
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="http://code.google.com/p/eaditor/">
+	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor">
 
 
 	<xbl:binding id="eaditor-subject" element="eaditor|subject">
@@ -36,7 +36,7 @@
 									<xforms:label>
 										<img src="/apps/eaditor/xforms/images/external.png"/>
 									</xforms:label>
-									<xforms:load ev:event="DOMActivate" ref="$binding/@identifier" show="new"/>
+									<xforms:load ev:event="DOMActivate" ref="$binding/@authfilenumber" show="new"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:trigger appearance="minimal">
@@ -76,16 +76,23 @@
 										</xforms:item>
 										<xforms:action ev:event="xforms-value-changed">
 											<xforms:action if=". = 'lcsh'">
+												<!-- clear temp -->
+												<xforms:setvalue ref="instance('temp')"/>
+												<xforms:setvalue ref="instance('temp')/@href"/>												
 												<!-- add attributes -->
-												<xforms:insert if="not($binding/@identifier)" context="$binding" origin="xxforms:attribute('identifier', '')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('identifier', '')"/>
 												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'lcsh')"/>
 												<xforms:toggle case="lcsh-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">
+												<!-- clear temp -->
+												<xforms:setvalue ref="instance('temp')"/>
+												<xforms:setvalue ref="instance('temp')/@href"/>	
 												<!-- remove attributes -->
-												<xforms:delete if="$binding/@identifier" context="$binding/@identifier"/>
+												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
-												<xforms:send submission="load-config"/>
+												<!-- load config if it hasn't been loaded -->
+												<xforms:send submission="load-config" if="not(string(instance('config')/url))"/>
 												<xforms:toggle case="local-autosuggest"/>
 											</xforms:action>
 										</xforms:action>
@@ -107,7 +114,7 @@
 										</xforms:trigger>
 									</div>
 									<xforms:group ref=".[count(instance('feed')//atom:entry) &gt; 0]">
-										<xforms:select1 ref="instance('temp')/@identifier" appearance="compact" id="lcsh-list" length="20">
+										<xforms:select1 ref="instance('temp')/@href" appearance="compact" id="lcsh-list" length="20">
 											<xforms:label>Location</xforms:label>
 											<xforms:itemset nodeset="instance('feed')//atom:entry">
 												<xforms:label ref="atom:title"/>
@@ -117,51 +124,43 @@
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="$binding/@identifier" value="instance('temp')/@identifier"/>
-												<xforms:setvalue ref="$binding" value="instance('feed')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href = instance('temp')/@identifier]/atom:title"/>
+												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
+												<!--<xforms:setvalue ref="$binding/@identifier" value="instance('temp')/@identifier"/>-->
+												<xforms:setvalue ref="$binding" value="instance('feed')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href = instance('temp')/@href]/atom:title"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
 								</xforms:case>
 								<xforms:case id="local-autosuggest">
-									
+									<fr:autocomplete ref="instance('temp')" dynamic-itemset="true" id="autocomplete-control">
+										<xforms:action ev:event="fr-search-changed">
+											<xxforms:variable name="search-value" select="event('fr-search-value')"/>
+											<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
+											<xforms:action if="$make-suggestion">
+												<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
+												<xforms:send submission="suggest-term"/>
+												<!-- always insert currently typed item into the itemset -->
+											</xforms:action>
+										</xforms:action>
+										<xforms:label style="float:left">Term</xforms:label>
+										<!-- get response from current position in suggestions-aggregate instance -->
+										<xforms:itemset nodeset="instance('solr-response')//lst[@name='subject_facet']/int">
+											<xforms:label ref="@name"/>
+											<xforms:value ref="@name"/>
+										</xforms:itemset>
+									</fr:autocomplete>
+									<xforms:group ref=".[string-length(instance('temp')) &gt; 0]">
+										<xforms:trigger>
+											<xforms:label>Select</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
 						</div>
 					</xforms:group>
-					<!--<fr:autocomplete ref="$binding" dynamic-itemset="true" id="subject-autocomplete-control">
-						<xforms:action ev:event="fr-search-changed">
-							<xxforms:variable name="search-value" select="event('fr-search-value')"/>
-							<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
-							<xforms:action if="$make-suggestion">
-								<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
-								<xforms:send submission="suggest-subject"/>
-								<!-\- always insert currently typed item into the itemset -\->
-								<xforms:action ev:event="xforms-value-changed">
-									<xforms:insert context="instance('suggestions')/lst[@name='terms']/lst[@name='subject']" origin="instance('facet-result-template')"/>
-									<xforms:setvalue ref="instance('suggestions')/lst[@name='terms']/lst[@name='subject']/int[1]/@name" value="$search-value"/>
-									<xforms:send submission="query-terms"/>
-									<xforms:action ev:event="xforms-submit-done">
-										<xforms:action if="number(instance('term-doc')/result[@name='response']/@numFound) = 1">
-											<xforms:insert context="$binding" origin="xxforms:attribute('source', instance('term-doc')/result[@name='response']/doc/str[@name='source'])"/>
-											<xforms:insert context="$binding" origin="xxforms:attribute('identifier', instance('term-doc')/result[@name='response']/doc/str[@name='id'])"/>
-										</xforms:action>
-										<xforms:action if="number(instance('term-doc')/result[@name='response']/@numFound) = 0">
-											<xforms:delete context="$binding" nodeset="@source"/>
-											<xforms:delete context="$binding" nodeset="@identifier"/>
-										</xforms:action>
-									</xforms:action>
-								</xforms:action>
-							</xforms:action>
-						</xforms:action>
-						<xforms:label style="float:left">Subject</xforms:label>
-						<!-\- get response from current position in suggestions-aggregate instance -\->
-						<xforms:itemset nodeset="instance('suggestions')//lst[@name='subject']/int">
-							<xforms:label ref="@name"/>
-							<xforms:value ref="@name"/>
-						</xforms:itemset>
-					</fr:autocomplete>-->
-					
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="subject-authorities-model" xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -173,7 +172,7 @@
 						</xforms:instance>
 						
 						<xforms:instance id="temp">
-							<temp identifier="" xmlns=""/>
+							<temp href="" xmlns=""/>
 						</xforms:instance>
 
 						<!-- Instances containing the query string -->
@@ -198,7 +197,7 @@
 						</xforms:instance>
 						<xforms:instance id="terms-temp">
 							<lst name="terms" xmlns="">
-								<lst name="mint_facet">
+								<lst name="subject_facet">
 									<int name="">1</int>
 								</lst>
 							</lst>
@@ -219,7 +218,7 @@
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
-						<xforms:submission id="suggest-subject" serialization="none" method="get"
+						<xforms:submission id="suggest-term" serialization="none" method="get"
 							action="{instance('config')/solr_published}terms?terms.fl=subject_facet&amp;terms.limit=10&amp;terms.sort=index&amp;terms.prefix={instance('suggest-query')}"
 							instance="solr-response" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">

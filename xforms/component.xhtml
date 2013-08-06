@@ -4,20 +4,20 @@
 	EADitor: http://code.google.com/p/eaditor/
 	Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
-<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9" xmlns:eaditor="http://code.google.com/p/eaditor/" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude">
-	<xhtml:head>
-		<xhtml:title>EADitor: Edit Component</xhtml:title>
-		<xhtml:link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
-		<xhtml:link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
-		<xhtml:link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
-		<xhtml:link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
-		<xhtml:link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude">
+	<head>
+		<title>EADitor: Edit Component</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model>
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -31,12 +31,12 @@
 			</xs:schema>
 
 			<xforms:instance id="guide">
-				<ead id="" xmlns="urn:isbn:1-931666-22-9"/>
+				<ead id="" xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"/>
 			</xforms:instance>
 
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-url">
-				<xi:include href="exist-url.xml"/>
+				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -59,10 +59,6 @@
 
 			<xforms:instance id="identifier">
 				<id xmlns=""/>
-			</xforms:instance>
-
-			<xforms:instance id="page">
-				<page xmlns=""/>
 			</xforms:instance>
 
 			<!-- solr response for id query -->
@@ -144,8 +140,9 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
 			</xforms:submission>
+
 			<!-- load table of contents after loading the ead guide -->
-			<xforms:submission id="load-toc" serialization="none" method="get" action="../../toc/{instance('guide')/@id}" replace="instance" instance="toc">
+			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/{instance('guide')/@id}" replace="instance" instance="toc">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load table of contents</xforms:message>
 			</xforms:submission>
 
@@ -155,10 +152,6 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('status')">EAD guide saved.</xforms:setvalue>
-					<!-- post to Solr unpublished core -->
-					<xforms:insert nodeset="instance('addIndex')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/ead-unpublish.xpl', 'data', instance('guide'), 'data')"/>
-					<!-- check to see if the document is already published to Solr -->
-					<xforms:send submission="unpublish-submission"/>
 					<xforms:send submission="query-solr-for-publication"/>
 					<!-- reload toc -->
 					<xforms:send submission="load-toc"/>
@@ -167,14 +160,14 @@
 
 			<!-- submission to query solr to see if the document is published -->
 
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:{instance('guide')/@id}" replace="instance"
-				instance="is-published">
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/@id}&#x022;"
+				replace="instance" instance="is-published">
 				<!-- if the document is found in solr, get the updated solr doc -->
-				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="ead-publish"/>
+				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="doc-to-solr"/>
 			</xforms:submission>
 
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="ead-publish" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/solr/{instance('guide')/@id}">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/solr/{instance('guide')/@id}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
@@ -186,17 +179,6 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
 
-			<!-- for unpublished documents, always save to unpublished core -->
-			<!-- post instance to Solr -->
-			<xforms:submission id="unpublish-submission" action="{instance('config')/solr_unpublished}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
-				<xforms:send ev:event="xforms-submit-done" submission="submit-unpublished-commit"/>
-				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">EAD guide saved.</xforms:setvalue>
-				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
-			</xforms:submission>
-			<!-- send commit -->
-			<xforms:submission id="submit-unpublished-commit" action="{instance('config')/solr_unpublished}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
-
-			<!-- send commit -->
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
@@ -211,204 +193,208 @@
 		</xforms:model>
 
 		<!-- xbl components -->
-		<xi:include href="oxf:/xbl/eaditor/access-elements/access-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/accruals/accruals.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/address/address.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/altformavail/altformavail.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/author/author.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/blockquote/blockquote.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/c/c.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/chronlist/chronlist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/component-level/component-level.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/corpname/corpname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/creation/creation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/custodhist/custodhist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/dao/dao.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/daodesc/daodesc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/daogrp/daogrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/date/date.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/did/did.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/descgrp/descgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/extref/extref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/famname/famname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/fileplan/fileplan.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/function/function.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/genreform/genreform.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/geogname/geogname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/head/head.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/index/index.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/list/list.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/listhead/listhead.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/name/name.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/namegrp/namegrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/navigation/navigation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/note/note.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/num/num.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/occupation/occupation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/odd/odd.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/p/p.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/persname/persname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/phystech/phystech.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/prefercite/prefercite.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/processinfo/processinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/publisher/publisher.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/ref/ref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/sponsor/sponsor.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/subject/subject.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/subtitle/subtitle.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/table/table.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/title/title.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="oxf:/xbl/eaditor/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
-	</xhtml:head>
-	<xhtml:body>
-		<xxforms:variable name="display_path">../../../</xxforms:variable>
-		<xhtml:div class="yui3-g">
-			<xhtml:div class="yui3-u-1">
-				<xhtml:div class="content">
+		<xi:include href="xbl/access-elements/access-elements.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/accruals/accruals.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/address/address.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/altformavail/altformavail.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/author/author.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/blockquote/blockquote.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/c/c.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/chronlist/chronlist.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/daodesc/daodesc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/daogrp/daogrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/date/date.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/descgrp/descgrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/function/function.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/genreform/genreform.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/geogname/geogname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/head/head.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/index/index.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/list/list.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/listhead/listhead.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/name/name.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/navigation/navigation.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/num/num.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/occupation/occupation.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/odd/odd.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/p/p.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/persname/persname.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/phystech/phystech.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/prefercite/prefercite.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/processinfo/processinfo.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/publisher/publisher.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/ref/ref.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/sponsor/sponsor.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/subject/subject.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/subtitle/subtitle.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
+	</head>
+	<body>
+		<xxforms:variable name="display_path">../../</xxforms:variable>
+		<div class="yui3-g">
+			<div class="yui3-u-1">				
+				<div class="content">
+					<xi:include href="header.xml"/>
 					<xforms:group ref="instance('status')/text()">
-						<xhtml:div class="success">
+						<div class="success">
 							<xforms:output ref="instance('status')"/>
-						</xhtml:div>
+						</div>
 					</xforms:group>
-					<xhtml:p>
-						<xhtml:a href="../../">&lt; Return</xhtml:a>
-					</xhtml:p>
-				</xhtml:div>
-			</xhtml:div>
-			<xhtml:div class="yui3-u-1-5">
-				<eaditor:navigation ref="instance('toc')" depth="8"/>
-			</xhtml:div>
-			<xhtml:div class="yui3-u-4-5">
-				<xhtml:div id="form">
-					<!-- This table contains the main actions for the page  -->
-					<xhtml:div class="submission">
+					<p>
+						<a href="{$display_path}">&lt; Return</a>
+					</p>
+					<div class="submission">
 						<xforms:submit submission="save-submission" appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
+							<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
 						</xforms:submit>
 						<xforms:submit submission="load-submission" appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
+							<xforms:label><img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
 						</xforms:submit>
-					</xhtml:div>
-
-
-					<xforms:group ref="instance('guide')/descendant::ead:c[@id=instance('identifier')]">
-						<xxforms:variable name="level" select="@level"/>
-						<xhtml:h2>Edit Component</xhtml:h2>
-						<eaditor:attributes ref="."/>
-						<xhtml:div class="section">
-							<xhtml:div>
-								<xforms:input ref="@id">
-									<xforms:label>Component ID</xforms:label>
-									<xforms:alert>Required</xforms:alert>
-								</xforms:input>
-							</xhtml:div>
-							<xhtml:div>
-								<xforms:select1 ref="@level">
-									<xforms:label>Level</xforms:label>
-									<xforms:itemset nodeset="instance('level-template')/level">
-										<xforms:label ref="."/>
-										<xforms:value ref="@value"/>
-									</xforms:itemset>
-									<!-- create otherlevel attribute or delete it, depending on @level value -->
-									<xforms:action ev:event="xforms-value-changed">
-										<xforms:insert if="$level='otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]" origin="xxforms:attribute('otherlevel', '')"/>
-										<xforms:delete if="$level != 'otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]" nodeset="@otherlevel"/>
-									</xforms:action>
-								</xforms:select1>
-							</xhtml:div>
-							<xforms:group ref=".[@level='otherlevel']">
-								<xhtml:div>
-									<xforms:input ref="@otherlevel">
-										<xforms:label>Other Level</xforms:label>
-										<xforms:alert>Must be a valid nametoken</xforms:alert>
+					</div>
+				</div>
+			</div>
+			<div class="yui3-u-1-5">
+				<div class="content">
+					<eaditor:navigation ref="instance('toc')" depth="8"/>
+				</div>
+			</div>
+			<div class="yui3-u-4-5">
+				<div class="content">
+					<div id="form">
+						<!-- This table contains the main actions for the page  -->
+						<xforms:group ref="instance('guide')/descendant::ead:c[@id=instance('identifier')]">
+							<xxforms:variable name="level" select="@level"/>
+							<h2>Edit Component</h2>
+							<eaditor:attributes ref="."/>
+							<div class="section">
+								<div>
+									<xforms:input ref="@id">
+										<xforms:label>Component ID</xforms:label>
+										<xforms:alert>Required</xforms:alert>
 									</xforms:input>
-								</xhtml:div>
-							</xforms:group>
-							<xforms:group ref=".[string(@audience)]">
-								<xhtml:div>
-									<xforms:output ref="@audience">
-										<xforms:label>Audience</xforms:label>
-									</xforms:output>
-								</xhtml:div>
-							</xforms:group>
-						</xhtml:div>
-						<fr:tabview>
-							<!--**************************************** DESCRIPTIVE INFORMATION - DID **********************************-->
-							<fr:tab id="did">
-								<fr:label>Descriptive Identification</fr:label>
-								<!-- did-level instances -->
-								<xhtml:div class="section">
-									<xforms:group ref="ead:did">
-										<eaditor:did/>
-									</xforms:group>
-								</xhtml:div>
-							</fr:tab>
-							<!--**************************************** END DESCRIPTIVE INFORMATION - DID **********************************-->
-							<!--**************************************** COMPONENT-LEVEL INFORMATION **********************************-->
-							<fr:tab id="c-level">
-								<fr:label>C-level Information</fr:label>
-								<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the top-level ead form -->
-								<xhtml:div class="section">
-									<eaditor:component-level/>
-								</xhtml:div>
-							</fr:tab>
-							<!--**************************************** END COMPONENT-LEVEL INFORMATION **********************************-->
-							<!--**************************************** SUB COMPONENTS **********************************-->
-							<fr:tab id="subcomponents">
-								<fr:label>Subcomponents</fr:label>
-								<xhtml:h1>Subcomponents</xhtml:h1>
-								<xhtml:div>
-									<xforms:trigger appearance="minimal">
-										<xforms:label>
-											<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Subcomponent</xforms:label>
-										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
-										<xforms:action ev:event="DOMActivate">
-											<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+								</div>
+								<div>
+									<xforms:select1 ref="@level">
+										<xforms:label>Level</xforms:label>
+										<xforms:itemset nodeset="instance('level-template')/level">
+											<xforms:label ref="."/>
+											<xforms:value ref="@value"/>
+										</xforms:itemset>
+										<!-- create otherlevel attribute or delete it, depending on @level value -->
+										<xforms:action ev:event="xforms-value-changed">
+											<xforms:insert if="$level='otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]"
+												origin="xxforms:attribute('otherlevel', '')"/>
+											<xforms:delete if="$level != 'otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('identifier')]" nodeset="@otherlevel"/>
 										</xforms:action>
-									</xforms:trigger>
-								</xhtml:div>
+									</xforms:select1>
+								</div>
+								<xforms:group ref=".[@level='otherlevel']">
+									<div>
+										<xforms:input ref="@otherlevel">
+											<xforms:label>Other Level</xforms:label>
+											<xforms:alert>Must be a valid nametoken</xforms:alert>
+										</xforms:input>
+									</div>
+								</xforms:group>
+								<xforms:group ref=".[string(@audience)]">
+									<div>
+										<xforms:output ref="@audience">
+											<xforms:label>Audience</xforms:label>
+										</xforms:output>
+									</div>
+								</xforms:group>
+							</div>
+							<fr:tabview>
+								<!--**************************************** DESCRIPTIVE INFORMATION - DID **********************************-->
+								<fr:tab id="did">
+									<fr:label>Descriptive Identification</fr:label>
+									<!-- did-level instances -->
+									<div class="section">
+										<xforms:group ref="ead:did">
+											<eaditor:did/>
+										</xforms:group>
+									</div>
+								</fr:tab>
+								<!--**************************************** END DESCRIPTIVE INFORMATION - DID **********************************-->
+								<!--**************************************** COMPONENT-LEVEL INFORMATION **********************************-->
+								<fr:tab id="c-level">
+									<fr:label>C-level Information</fr:label>
+									<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the top-level ead form -->
+									<div class="section">
+										<eaditor:component-level/>
+									</div>
+								</fr:tab>
+								<!--**************************************** END COMPONENT-LEVEL INFORMATION **********************************-->
+								<!--**************************************** SUB COMPONENTS **********************************-->
+								<fr:tab id="subcomponents">
+									<fr:label>Subcomponents</fr:label>
+									<h1>Subcomponents</h1>
+									<div>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/add.gif"/>Subcomponent</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+											</xforms:action>
+										</xforms:trigger>
+									</div>
 
-								<xhtml:div class="section">
-									<xforms:repeat nodeset="ead:c">
-										<eaditor:c/>
-									</xforms:repeat>
-								</xhtml:div>
-							</fr:tab>
-							<!--**************************************** END SUB COMPONENTS **********************************-->
-							<!--<fr:tab id="preview">
+									<div class="section">
+										<xforms:repeat nodeset="ead:c">
+											<eaditor:c/>
+										</xforms:repeat>
+									</div>
+								</fr:tab>
+								<!--**************************************** END SUB COMPONENTS **********************************-->
+								<!--<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
-								<xhtml:h1>XML Preview</xhtml:h1>
+								<h1>XML Preview</h1>
 								<fr:xforms-inspector id="orbeon-xforms-inspector"/>
 							</fr:tab>-->
-						</fr:tabview>
-					</xforms:group>
-				</xhtml:div>
-			</xhtml:div>
-		</xhtml:div>
-	</xhtml:body>
-</xhtml:html>
+							</fr:tabview>
+						</xforms:group>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
