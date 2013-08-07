@@ -17,26 +17,24 @@
 					<xxforms:variable name="display_path">../../../</xxforms:variable>
 					
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:action if="not($binding/@source) and not(string($binding/text()))">
-							<xforms:send submission="load-config"/>
-							<xforms:setvalue ref="instance('interface-type')" value="'viaf'"/>
-						</xforms:action>
+						<xforms:setvalue ref="instance('interface-type')">viaf</xforms:setvalue>
 					</xforms:action>
+					
+					<xforms:send submission="load-config"/>
 
 					<xforms:group ref=".[string($binding)]">
 						<div>
 							<xforms:output ref="$binding">
 								<xforms:label>Corporate Name</xforms:label>
 							</xforms:output>
-							<xforms:group ref=".[string($binding/@authfilenumber)]">
+							<!--<xforms:group ref=".[string($binding/@authfilenumber)]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
 										<img src="/apps/eaditor/xforms/images/external.png"/>
 									</xforms:label>
 									<xforms:load ev:event="DOMActivate" show="new" ref="concat('http://viaf.org/viaf/', $binding/@authfilenumber)"/>
 								</xforms:trigger>
-							</xforms:group>
-							<eaditor:attributes ref="$binding"/>
+							</xforms:group>-->							
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:setvalue ref="instance('suggest-query')"/>
@@ -47,18 +45,19 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
+							<eaditor:attributes ref="$binding"/>
 						</div>
 					</xforms:group>
 					<xforms:group ref=".[not(string($binding))]">
 						<div style="display:table;width:100%">
-							<h4>Corporate Name</h4>
-							<eaditor:attributes ref="$binding"/>
+							<h4>Corporate Name</h4>							
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
 									<img src="{$display_path}images/remove.gif"/>
 								</xforms:label>
-							</xforms:trigger>							
+							</xforms:trigger>	
+							<eaditor:attributes ref="$binding"/>							
 							<div>
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">
@@ -92,6 +91,7 @@
 												<!-- remove attributes -->
 												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
+												<xforms:send submission="load-config" if="not(string(instance('config')/url))"/>
 												<xforms:toggle case="local-autosuggest"/>
 											</xforms:action>
 										</xforms:action>

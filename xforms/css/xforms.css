@@ -135,6 +135,10 @@
 .add {
 	display:inline;	
 }
+.xbl-eaditor-generic-elements, .xbl-eaditor-attributes, .xbl-eaditor-access-elements {
+	display:inline;
+	color:gray;	
+}
 /*
   ****************************************
   PAGINATION

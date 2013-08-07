@@ -800,29 +800,34 @@
 					<!-- solr facets, create link to search results -->
 					<xsl:when test="name()='corpname' or name()='famname' or name()='genreform' or name()='geogname' or name()='persname' or name()='subject'">
 						<li>
-							<a href="../results/?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
+							<a href="{$display_path}results/?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
 								<xsl:value-of select="normalize-space(.)"/>
 							</a>
 							<xsl:if test="@source">
 								<xsl:choose>
 									<xsl:when test="@source='geonames'">
 										<a href="http://www.geonames.org/{@authfilenumber}" target="_blank" title="Geonames">
-											<img src="../images/external.png" alt="external link" class="external_link"/>
+											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
+										</a>
+									</xsl:when>
+									<xsl:when test="@source='pleiadies'">
+										<a href="http://pleiadies.stoa.org/place/{@authfilenumber}" target="_blank" title="Pleiades">
+											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='lcsh'">
 										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCSH">
-											<img src="../images/external.png" alt="external link" class="external_link"/>
+											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='lcgft'">
 										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCGFT">
-											<img src="../images/external.png" alt="external link" class="external_link"/>
+											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='viaf'">
 										<a href="http://viaf.org/viaf/{@authfilenumber}" target="_blank" title="VIAF">
-											<img src="../images/external.png" alt="external link" class="external_link"/>
+											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 								</xsl:choose>

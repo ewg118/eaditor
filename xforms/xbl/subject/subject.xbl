@@ -38,8 +38,7 @@
 									</xforms:label>
 									<xforms:load ev:event="DOMActivate" ref="$binding/@authfilenumber" show="new"/>
 								</xforms:trigger>
-								</xforms:group>-->
-							<eaditor:attributes ref="$binding"/>
+								</xforms:group>-->							
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:setvalue ref="instance('suggest-query')"/>
@@ -50,6 +49,7 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
+							<eaditor:attributes ref="$binding"/>
 						</div>
 					</xforms:group>
 

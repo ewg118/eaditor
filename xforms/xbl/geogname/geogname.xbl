@@ -31,7 +31,7 @@
 										</xforms:label>
 										<xforms:load ev:event="DOMActivate" show="new" ref="@authfilenumber"/>
 									</xforms:trigger>
-								</xforms:group>-->
+									</xforms:group>-->								
 								<xforms:trigger appearance="minimal">
 									<xforms:action ev:event="DOMActivate">
 										<!-- delete all holdover values before removing bind, possible orbeon bug -->
@@ -46,10 +46,11 @@
 										<img src="/apps/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
 								</xforms:trigger>
+								<eaditor:attributes ref="$binding"/>
 							</div>
 						</xforms:group>
 						<xforms:group ref=".[not(string(text()))]">
-							<h4>Geographic Name</h4>
+							<h4>Geographic Name</h4>							
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -58,7 +59,7 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
-
+							<eaditor:attributes ref="$binding"/>
 							<div style="display:table;width:100%;">
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">
@@ -67,10 +68,10 @@
 											<xforms:label>Geonames</xforms:label>
 											<xforms:value>geonames</xforms:value>
 										</xforms:item>
-										<xforms:item>
+										<!--<xforms:item>
 											<xforms:label>Nomisma</xforms:label>
 											<xforms:value>nomisma</xforms:value>
-										</xforms:item>
+										</xforms:item>-->
 										<xforms:item>
 											<xforms:label>Pleiades</xforms:label>
 											<xforms:value>pleiades</xforms:value>
@@ -91,7 +92,10 @@
 
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'geonames.org')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'geonames')"/>
+												
+												<!-- set source if the attributes already exist -->												
+												<xforms:setvalue if="$binding/@source" ref="$binding/@source">geonames</xforms:setvalue>												
 												<xforms:toggle case="geonames-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'nomisma'">
@@ -105,7 +109,10 @@
 
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'nomisma.org')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'nomisma')"/>
+												
+												<!-- clear authfilenumber and set source if the attributes already exist -->												
+												<xforms:setvalue if="$binding/@source" ref="$binding/@source">nomisma</xforms:setvalue>
 												<xforms:toggle case="nomisma-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'pleiades'">
@@ -119,7 +126,10 @@
 
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'pleiades.stoa.org')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'pleiades')"/>
+												
+												<!-- clear authfilenumber and set source if the attributes already exist -->												
+												<xforms:setvalue if="$binding/@source" ref="$binding/@source">pleiades</xforms:setvalue>
 												<xforms:toggle case="pleiades-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">

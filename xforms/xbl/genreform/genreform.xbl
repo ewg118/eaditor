@@ -18,12 +18,8 @@
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
 						<xforms:action if="not(string($binding))">
 							<!-- otherwise active search interfaces -->
-							<xforms:setvalue ref="instance('interface-type')" value="'lcgf'"/>
-						</xforms:action>
-						<xforms:action if="string($binding)">
-							<xforms:setvalue ref="instance('interface-type')" value="'lcgf'" if="$binding/@source = 'lcgf'"/>
-							<xforms:setvalue ref="instance('interface-type')" value="'local'" if="$binding/@source != 'lcgf'"/>
-						</xforms:action>
+							<xforms:setvalue ref="instance('interface-type')" value="'lcgft'"/>
+						</xforms:action>						
 					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
@@ -50,6 +46,7 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
+							<eaditor:attributes ref="$binding"/>
 						</div>
 					</xforms:group>
 
@@ -69,21 +66,21 @@
 										<xforms:label>Interface Type</xforms:label>
 										<xforms:item>
 											<xforms:label>LC Genre/Form Terms</xforms:label>
-											<xforms:value>lcgf</xforms:value>
+											<xforms:value>lcgft</xforms:value>
 										</xforms:item>
 										<xforms:item>
 											<xforms:label>Local Vocabulary</xforms:label>
 											<xforms:value>local</xforms:value>
 										</xforms:item>
 										<xforms:action ev:event="xforms-value-changed">
-											<xforms:action if=". = 'lcgf'">
+											<xforms:action if=". = 'lcgft'">
 												<!-- clear temp -->
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>												
 												<!-- add attributes -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'lcgf')"/>
-												<xforms:toggle case="lcgf-search"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'lcgft')"/>
+												<xforms:toggle case="lcgft-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">
 												<!-- clear temp -->
@@ -101,7 +98,7 @@
 								</radiogroup>
 							</div>
 							<xforms:switch>
-								<xforms:case id="lcgf-search">
+								<xforms:case id="lcgft-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
 											<xforms:label>Search</xforms:label>
@@ -183,7 +180,7 @@
 							<query/>
 						</xforms:instance>
 
-						<!-- lcgf -->
+						<!-- lcgft -->
 						<xforms:instance id="feed">
 							<feed xmlns=""/>
 						</xforms:instance>
