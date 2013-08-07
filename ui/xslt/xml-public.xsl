@@ -6,10 +6,10 @@
 	Function: Identity transform for the xml pipeline in EADitor.  Internal components are suppressed unless they have external
 	descendants, in which case only the unittitles are displayed 
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common"  xmlns:ead="urn:isbn:1-931666-22-9" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:ead="urn:isbn:1-931666-22-9" version="2.0">
 	<xsl:output encoding="utf-8" indent="yes" method="xml"/>
 	<xsl:strip-space elements="*"/>
-	
+
 	<xsl:template match="@*|node()">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()"/>
@@ -32,7 +32,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
+
 		<xsl:choose>
 			<xsl:when test="$audience='internal' and descendant::ead:c[@audience='external']">
 				<c>
@@ -44,7 +44,7 @@
 					<did>
 						<xsl:apply-templates select="ead:did/ead:unittitle"/>
 					</did>
-					<xsl:apply-templates select="ead:c"/>					
+					<xsl:apply-templates select="ead:c"/>
 				</c>
 			</xsl:when>
 			<xsl:when test="$audience='external'">
@@ -54,7 +54,7 @@
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<!-- suppress internal non-component elements -->
 	<xsl:template match="*[not(local-name()='c') and @audience='internal']"/>
 
@@ -85,5 +85,9 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<!-- MODS -->
+	<!-- suppress images -->
+	<xsl:template match="mods:location[mods:url]"/>
 
 </xsl:stylesheet>
