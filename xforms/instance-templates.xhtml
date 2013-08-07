@@ -4,27 +4,25 @@
 	EADitor: http://code.google.com/p/eaditor/
 	Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
-<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
 	xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:ead="urn:isbn:1-931666-22-9">
-	<xhtml:head>
-		<xhtml:title>EADitor: Edit Agency Codes</xhtml:title>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+	<head>
+		<title>EADitor: Edit Agency Codes</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css" type="text/css"/>
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
-
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model schema="http://www.loc.gov/ead/ead.xsd">
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-url">
-				<xi:include href="exist-url.xml"/>
+				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="instance-templates">
@@ -34,17 +32,17 @@
 			<xforms:instance id="agencycode-template">
 				<agencycode value="" xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="container-template">
 				<container value="" xmlns=""/>
 			</xforms:instance>
 
 			<xforms:instance id="status">
-				<status/>
+				<status xmlns=""/>
 			</xforms:instance>
 
 			<xforms:instance id="temp-instance">
-				<temp/>
+				<temp xmlns=""/>
 			</xforms:instance>
 
 			<!-- eXist XQuery for localized agencycodes -->
@@ -110,120 +108,116 @@
 
 			<xforms:send ev:event="xforms-model-construct-done" submission="load-instance-templates"/>
 		</xforms:model>
-	</xhtml:head>
-	<xhtml:body class="yui-skin-sam">
-		<xhtml:div id="doc4">
-			<!-- header -->
-			<xxforms:variable name="display_path">../../../</xxforms:variable>
-			<xi:include href="header-admin.xml"/>
-
-			<xhtml:div id="bd">
-				<xforms:group ref="instance('status')/text()">
-					<xhtml:div class="success">
-						<xforms:output ref="instance('status')"/>
-					</xhtml:div>
-				</xforms:group>
-				<p>
-					<a href="../../templates/">&lt; Return</a>
-				</p>
-				<!-- This table contains the main actions for the page  -->
-				<xhtml:div class="submission">
-					<xforms:submit submission="save-instance-templates" appearance="minimal">
-						<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
-					</xforms:submit>
-					<xforms:submit submission="load-instance-templates" appearance="minimal">
-						<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
-					</xforms:submit>
-				</xhtml:div>
-				<xhtml:h1>Edit Instance Templates</xhtml:h1>
-				<fr:tabview>
-					<fr:tab bind="agencycodes-tab">
-						<fr:label>Agency Codes</fr:label>
-						<xhtml:h2>Agency Codes</xhtml:h2>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Agencies</xforms:label>
-							<xforms:action ev:event="DOMActivate">
-								<xforms:send submission="agencycodes-submission"/>
-							</xforms:action>
-						</xforms:trigger>
-						<xforms:repeat nodeset="agencycode">
-							<xhtml:div class="pair_div">
-								<xhtml:div>
-									<xforms:input ref=".">
-										<xforms:label>Agency</xforms:label>
-										<xforms:alert>Required</xforms:alert>
-									</xforms:input>
-								</xhtml:div>
-								<xhtml:div>
-									<xforms:input ref="@value">
-										<xforms:label>Code</xforms:label>
-										<xforms:alert>The value is required and must meet the schema specification for the data.repositorycode type.</xforms:alert>
-									</xforms:input>
-								</xhtml:div>
-								<xforms:group ref=".[count(//agencycode) &gt; 1]">
-									<xforms:trigger appearance="minimal" style="float:right">
-										<xforms:delete ev:event="DOMActivate" nodeset="."/>
-										<xforms:label>
-											<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
-										</xforms:label>
-									</xforms:trigger>
-								</xforms:group>
-							</xhtml:div>
-						</xforms:repeat>
-					</fr:tab>
-					<fr:tab bind="containertypes-tab">
-						<fr:label>Container Types</fr:label>
-						<xhtml:h2>Container Types</xhtml:h2>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('container-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label><xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Container Types</xforms:label>
-							<xforms:action ev:event="DOMActivate">
-								<xforms:send submission="containertypes-submission"/>
-							</xforms:action>
-						</xforms:trigger>
-						<xforms:repeat nodeset="container">
-							<xhtml:div class="pair_div">
-								<xhtml:div>
-									<xforms:input ref=".">
-										<xforms:label>Agency</xforms:label>
-										<xforms:alert>Required</xforms:alert>
-									</xforms:input>
-								</xhtml:div>
-								<xhtml:div>
-									<xforms:input ref="@value">
-										<xforms:label>Code</xforms:label>
-										<xforms:alert>Required; must be xs:NMTOKEN type</xforms:alert>
-									</xforms:input>
-								</xhtml:div>
-								<xforms:group ref=".[count(//container) &gt; 1]">
-									<xforms:trigger appearance="minimal" style="float:right">
-										<xforms:delete ev:event="DOMActivate" nodeset="."/>
-										<xforms:label>
-											<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
-										</xforms:label>
-									</xforms:trigger>
-								</xforms:group>
-							</xhtml:div>
-						</xforms:repeat>
-					</fr:tab>
-				</fr:tabview>
-
-				<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector"
+	</head>
+	<body>
+		<div class="yui3-g">
+			<div class="yui3-u-1">
+				<div class="content">
+					<xxforms:variable name="display_path">../../</xxforms:variable>
+					<xi:include href="header.xml"/>
+					
+					<xforms:group ref="instance('status')/text()">
+						<div class="success">
+							<xforms:output ref="instance('status')"/>
+						</div>
+					</xforms:group>
+					<p>
+						<a href="{$display_path}templates/">&lt; Return</a>
+					</p>
+					<!-- This table contains the main actions for the page  -->
+					<div class="submission">
+						<xforms:submit submission="save-instance-templates" appearance="minimal">
+							<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
+						</xforms:submit>
+						<xforms:submit submission="load-instance-templates" appearance="minimal">
+							<xforms:label><img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
+						</xforms:submit>
+					</div>
+					<h1>Edit Instance Templates</h1>
+					<fr:tabview>
+						<fr:tab bind="agencycodes-tab">
+							<fr:label>Agency Codes</fr:label>
+							<h2>Agency Codes</h2>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Agencies</xforms:label>
+								<xforms:action ev:event="DOMActivate">
+									<xforms:send submission="agencycodes-submission"/>
+								</xforms:action>
+							</xforms:trigger>
+							<xforms:repeat nodeset="agencycode">
+								<div class="pair_div">
+									<div>
+										<xforms:input ref=".">
+											<xforms:label>Agency</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+										</xforms:input>
+									</div>
+									<div>
+										<xforms:input ref="@value">
+											<xforms:label>Code</xforms:label>
+											<xforms:alert>The value is required and must meet the schema specification for the data.repositorycode type.</xforms:alert>
+										</xforms:input>
+									</div>
+									<xforms:group ref=".[count(//agencycode) &gt; 1]">
+										<xforms:trigger appearance="minimal" style="float:right">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</xforms:group>
+								</div>
+							</xforms:repeat>
+						</fr:tab>
+						<fr:tab bind="containertypes-tab">
+							<fr:label>Container Types</fr:label>
+							<h2>Container Types</h2>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('container-template')"/>
+							</xforms:trigger>
+							<xforms:trigger appearance="minimal">
+								<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Container Types</xforms:label>
+								<xforms:action ev:event="DOMActivate">
+									<xforms:send submission="containertypes-submission"/>
+								</xforms:action>
+							</xforms:trigger>
+							<xforms:repeat nodeset="container">
+								<div class="pair_div">
+									<div>
+										<xforms:input ref=".">
+											<xforms:label>Agency</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+										</xforms:input>
+									</div>
+									<div>
+										<xforms:input ref="@value">
+											<xforms:label>Code</xforms:label>
+											<xforms:alert>Required; must be xs:NMTOKEN type</xforms:alert>
+										</xforms:input>
+									</div>
+									<xforms:group ref=".[count(//container) &gt; 1]">
+										<xforms:trigger appearance="minimal" style="float:right">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</xforms:group>
+								</div>
+							</xforms:repeat>
+						</fr:tab>
+					</fr:tabview>
+					<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector"
 					xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
-			</xhtml:div>
-
-			<!-- footer -->
-			<xi:include href="xslt/footer.xml"/>
-		</xhtml:div>
-	</xhtml:body>
-
-</xhtml:html>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

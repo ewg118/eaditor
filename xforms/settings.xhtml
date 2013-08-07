@@ -4,36 +4,34 @@
     EADitor: http://code.google.com/p/eaditor/
     Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
-<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
 	xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:eaditor="https://github.com/ewg118/eaditor">
-	<xhtml:head>
-		<xhtml:title>EADitor: Edit Settings</xhtml:title>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+	<head>
+		<title>EADitor: Edit Settings</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
-
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model>
-			<xs:schema> 	
-				<xs:simpleType name="emailAddress"> 
-					<xs:restriction base="xs:string"> 
-						<xs:pattern value="[^@]+@[^\.]+\..+"/> 
-					</xs:restriction> 
-				</xs:simpleType> 
+			<xs:schema>
+				<xs:simpleType name="emailAddress">
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[^@]+@[^\.]+\..+"/>
+					</xs:restriction>
+				</xs:simpleType>
 			</xs:schema>
-			
-			
+
+
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-url">
-				<xi:include href="exist-url.xml"/>
+				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -85,7 +83,7 @@
 					<theme>vader</theme>
 				</themes>
 			</xforms:instance>
-			
+
 			<!-- OAI-PMH fields -->
 			<xforms:instance id="repositoryName-template">
 				<repositoryName xmlns=""/>
@@ -98,8 +96,6 @@
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"/>
 				<xforms:bind nodeset="solr_published" required="true()"/>
-				<xforms:bind nodeset="solr_unpublished" required="true()"/>
-				<xforms:bind nodeset="solr_vocabularies" required="true()"/>
 				<xforms:bind nodeset="theme/jquery_ui_theme" required="true()"/>
 				<xforms:bind nodeset="oai-pmh">
 					<xforms:bind nodeset="@active" type="xs:boolean"/>
@@ -141,228 +137,215 @@
 				<xforms:send submission="load-config"/>
 			</xforms:action>
 		</xforms:model>
-	</xhtml:head>
+	</head>
 
-	<xhtml:body class="yui-skin-sam">
-		<xhtml:div id="doc4">
-			<!-- header -->
-			<xxforms:variable name="display_path">../../</xxforms:variable>
-			<xi:include href="header-admin.xml"/>
-
-			<xhtml:div id="bd">
-				<xhtml:div id="form">
-					<xforms:group ref="instance('status')/text()">
-						<xhtml:div class="success">
-							<xforms:output ref="instance('status')"/>
-						</xhtml:div>
-					</xforms:group>
-					<xhtml:p>
-						<xhtml:a href="../">&lt; Return</xhtml:a>
-					</xhtml:p>
-					<xhtml:div class="submission">
-						<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
-							<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
-							<xforms:send ev:event="DOMActivate" submission="save-config"/>
-						</xforms:trigger>
-					</xhtml:div>
-
-
-					<xhtml:h1>EADitor Settings</xhtml:h1>
-
-					<fr:tabview>
-						<!--**************************************** CONFIGURATION **********************************-->
-						<fr:tab id="configure-tab">
-							<fr:label>Configuration</fr:label>
-							<xhtml:h1>Configuration</xhtml:h1>
-							<xforms:group ref="instance('config')">
-								<xhtml:div class="section">
-									<xhtml:h2>Titles and URLs</xhtml:h2>
-									<xhtml:div>
-										<xforms:input ref="title">
-											<xforms:label>Title</xforms:label>
-											<xforms:alert>Required</xforms:alert>
-										</xforms:input>
-										<xhtml:p>The title of the site to be displayed in all web page titles and citations in PDF files.</xhtml:p>
-									</xhtml:div>
-									<xhtml:div>
-										<xforms:input ref="banner_text">
-											<xforms:label>Banner Text</xforms:label>
-											<xforms:alert>Required</xforms:alert>
-										</xforms:input>
-										<xhtml:p>Appears in the header banner. For more sophisticated control, edit header.xsl.</xhtml:p>
-									</xhtml:div>
-									<xhtml:div>
-										<xforms:input ref="url">
-											<xforms:label>URL</xforms:label>
-											<xforms:alert>Required</xforms:alert>
-										</xforms:input>
-										<xhtml:p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor
-											be contained on different servers.</xhtml:p>
-									</xhtml:div>
-									<!--<xforms:group ref="banner_image">
+	<body>
+		<div class="yui3-g">
+			<div class="yui3-u-1">
+				<div class="content">
+					<!-- header -->
+					<xxforms:variable name="display_path">../</xxforms:variable>
+					<xi:include href="header.xml"/>
+					<div id="form">
+						<xforms:group ref="instance('status')/text()">
+							<div class="success">
+								<xforms:output ref="instance('status')"/>
+							</div>
+						</xforms:group>
+						<p>
+							<a href="{$display_path}">&lt; Return</a>
+						</p>
+						<div class="submission">
+							<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
+								<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
+								<xforms:send ev:event="DOMActivate" submission="save-config"/>
+							</xforms:trigger>
+						</div>
+						<h1>EADitor Settings</h1>
+						<fr:tabview>
+							<!--**************************************** CONFIGURATION **********************************-->
+							<fr:tab id="configure-tab">
+								<fr:label>Configuration</fr:label>
+								<h2>Configuration</h2>
+								<xforms:group ref="instance('config')">
+									<div class="section">
+										<h3>Titles and URLs</h3>
+										<div>
+											<xforms:input ref="title">
+												<xforms:label>Title</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:input>
+											<p>The title of the site to be displayed in all web page titles and citations in PDF files.</p>
+										</div>
+										<div>
+											<xforms:input ref="banner_text">
+												<xforms:label>Banner Text</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:input>
+											<p>Appears in the header banner. For more sophisticated control, edit header.xsl.</p>
+										</div>
+										<div>
+											<xforms:input ref="url">
+												<xforms:label>URL</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:input>
+											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor be
+												contained on different servers.</p>
+										</div>
+										<!--<xforms:group ref="banner_image">
 										<numishare:banner-upload/>
 									</xforms:group>-->
-								</xhtml:div>
-								<xhtml:div class="section">
-									<xforms:group ref="oai-pmh">
-										<xhtml:h2>OAI-PMH</xhtml:h2>
-										<xhtml:p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <xhtml:b>Important: </xhtml:b>
-											Validation only passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI
-											unique identifier is derived from the URL on this settings page.</xhtml:p>
-										<xhtml:div>
-											<xforms:input ref="@active" id="oai-active">
-												<xforms:label>Active</xforms:label>
-												<!-- insert required OAI-PMH fields on 'active', else delete them -->
-												<xforms:action ev:event="xforms-value-changed">
-													<xforms:action if="parent::node()/@active='true'">
-														<xforms:insert context="parent::node()" origin="instance('repositoryName-template')"/>
-														<xforms:insert context="parent::node()" origin="instance('adminEmail-template')"/>
+									</div>
+									<div class="section">
+										<xforms:group ref="oai-pmh">
+											<h3>OAI-PMH</h3>
+											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only
+												passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier
+												is derived from the URL on this settings page.</p>
+											<div>
+												<xforms:input ref="@active" id="oai-active">
+													<xforms:label>Active</xforms:label>
+													<!-- insert required OAI-PMH fields on 'active', else delete them -->
+													<xforms:action ev:event="xforms-value-changed">
+														<xforms:action if="parent::node()/@active='true'">
+															<xforms:insert context="parent::node()" origin="instance('repositoryName-template')"/>
+															<xforms:insert context="parent::node()" origin="instance('adminEmail-template')"/>
+														</xforms:action>
+														<xforms:action if="parent::node()/@active='false'">
+															<xforms:delete nodeset="parent::node()/*"/>
+														</xforms:action>
 													</xforms:action>
-													<xforms:action if="parent::node()/@active='false'">
-														<xforms:delete nodeset="parent::node()/*"/>												
-													</xforms:action>
-												</xforms:action>												
+												</xforms:input>
+											</div>
+											<div>
+												<xforms:input ref="repositoryName">
+													<xforms:label>Repository Name</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</div>
+											<div>
+												<xforms:input ref="adminEmail">
+													<xforms:label>Administrator Email</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</div>
+										</xforms:group>
+									</div>
+									<div class="section">
+										<h3>API Keys</h3>
+										<xforms:group ref=".[instance('flickr-response')/@stat='fail' and string-length(flickr_api_key) &gt; 0]">
+											<div class="ui-widget">
+												<div class="ui-state-error ui-corner-all">
+													<p>
+														<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"/>
+														<strong>Alert:</strong>
+														<xforms:output ref="instance('flickr-response')/err/@msg"/>
+													</p>
+												</div>
+											</div>
+										</xforms:group>
+										<div>
+											<xforms:input ref="flickr_api_key" incremental="true">
+												<xforms:label>flickr API Key</xforms:label>
+												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"/>
 											</xforms:input>
-										</xhtml:div>
-										<xhtml:div>
-											<xforms:input ref="repositoryName">
-												<xforms:label>Repository Name</xforms:label>
-												<xforms:alert>Required</xforms:alert>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
+										</div>
+										<div>
+											<xforms:input ref="geonames_api_key" incremental="true">
+												<xforms:label>Geonames API Key</xforms:label>
 											</xforms:input>
-										</xhtml:div>
-										<xhtml:div>
-											<xforms:input ref="adminEmail">
-												<xforms:label>Administrator Email</xforms:label>
-												<xforms:alert>Required</xforms:alert>
-											</xforms:input>
-										</xhtml:div>
-									</xforms:group>
-								</xhtml:div>
-								<xhtml:div class="section">
-									<xhtml:h2>flickr API Key</xhtml:h2>
-									<xforms:group ref=".[instance('flickr-response')/@stat='fail' and string-length(flickr_api_key) &gt; 0]">
-										<xhtml:div class="ui-widget">
-											<xhtml:div class="ui-state-error ui-corner-all">
-												<xhtml:p>
-													<xhtml:span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"/>
-													<xhtml:strong>Alert:</xhtml:strong>
-													<xforms:output ref="instance('flickr-response')/err/@msg"/>
-												</xhtml:p>
-											</xhtml:div>
-										</xhtml:div>
-									</xforms:group>
-									<xhtml:div>
-										<xforms:input ref="flickr_api_key" incremental="true">
-											<xforms:label>flickr API Key</xforms:label>
-											<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"/>
-										</xforms:input>
-										<xhtml:p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking in
-											Numishare.</xhtml:p>
-									</xhtml:div>
-								</xhtml:div>
-							</xforms:group>
-						</fr:tab>
-						<!--**************************************** THEMES AND LAYOUT **********************************-->
-						<fr:tab bind="visual-tab">
-							<fr:label>Themes and Layout</fr:label>
-							<xhtml:div class="section">
-								<xhtml:h1>Layout</xhtml:h1>
-								<xhtml:h2>Browse Page</xhtml:h2>
-								<xhtml:p>Two page layouts are available for the browse section. Facets may occur either in a left or right-aligned column. Output fields can also be selected from the
-									list below and ordered. Keep in mind that selecting many fields may result in a cumbersome user experience. Thumbnail images may be aligned either to the left or
-									right of the record content.</xhtml:p>
-
-								<xforms:group ref="layouts/results">
-									<xhtml:div class="subsection">
-										<xhtml:h3>Facet Column Alignment</xhtml:h3>
-										<xhtml:div>
-											<xforms:select1 ref="yui_class">
-												<xforms:label>Alignment</xforms:label>
-												<xforms:item>
-													<xforms:label>left</xforms:label>
-													<xforms:value>yui-t2</xforms:value>
-												</xforms:item>
-												<xforms:item>
-													<xforms:label>right</xforms:label>
-													<xforms:value>yui-t5</xforms:value>
-												</xforms:item>
-											</xforms:select1>
-										</xhtml:div>
-									</xhtml:div>
-									<xhtml:div class="subsection">
-										<xhtml:h3>Result Documents</xhtml:h3>
-										<xhtml:div>
-											<xforms:select1 ref="image_location">
-												<xforms:label>Thumbnail Alignment</xforms:label>
-												<xforms:item>
-													<xforms:label>left</xforms:label>
-													<xforms:value>left</xforms:value>
-												</xforms:item>
-												<xforms:item>
-													<xforms:label>right</xforms:label>
-													<xforms:value>right</xforms:value>
-												</xforms:item>
-											</xforms:select1>
-										</xhtml:div>
-									</xhtml:div>
+										</div>
+									</div>
 								</xforms:group>
-							</xhtml:div>
-							<xhtml:div class="section">
-								<xhtml:h1>Theme</xhtml:h1>
-								<xhtml:div>
-									<xforms:select1 ref="jquery_ui_theme">
-										<xforms:label>jQuery UI Theme</xforms:label>
-										<xforms:alert>Required</xforms:alert>
-										<xforms:itemset nodeset="instance('jquery-ui-themes')/theme">
-											<xforms:label ref="."/>
-											<xforms:value ref="."/>
-										</xforms:itemset>
-									</xforms:select1>
-								</xhtml:div>
-							</xhtml:div>
-						</fr:tab>
-						<!--**************************************** ADVANCED SETTINGS **********************************-->
-						<fr:tab id="advanced">
-							<fr:label>Advanced</fr:label>
-							<xforms:group ref="instance('config')">
-								<xhtml:h2>Advanced Settings</xhtml:h2>
-								<xhtml:div class="section">
-									<xhtml:p>
-										<xhtml:b>Only change these options if Orbeon is run on a separate server.</xhtml:b>
-									</xhtml:p>
-									<xhtml:p>Changing these options to an inactive URL could break public display and web form functionality.</xhtml:p>
-									<xhtml:div class="subsection">
-										<xhtml:h3>Solr URLs</xhtml:h3>
-										<xhtml:div>
-											<xforms:input ref="solr_published">
-												<xforms:label>Published</xforms:label>
-												<xforms:alert>Required</xforms:alert>
-											</xforms:input>
-										</xhtml:div>
-										<xhtml:div>
-											<xforms:input ref="solr_unpublished">
-												<xforms:label>Unpublished</xforms:label>
-												<xforms:alert>Required</xforms:alert>
-											</xforms:input>
-										</xhtml:div>
-										<xhtml:div>
-											<xforms:input ref="solr_vocabularies">
-												<xforms:label>Vocabularies</xforms:label>
-												<xforms:alert>Required</xforms:alert>
-											</xforms:input>
-										</xhtml:div>
-									</xhtml:div>
-								</xhtml:div>
-							</xforms:group>
-						</fr:tab>
-					</fr:tabview>
-				</xhtml:div>
-
-				<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector" xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
-			</xhtml:div>
-
-			<!-- footer -->
-			<xi:include href="xslt/footer.xml"/>
-		</xhtml:div>
-	</xhtml:body>
-</xhtml:html>
+							</fr:tab>
+							<!--**************************************** THEMES AND LAYOUT **********************************-->
+							<fr:tab bind="visual-tab">
+								<fr:label>Themes and Layout</fr:label>
+								<div class="section">
+									<h2>Layout</h2>
+									<div class="subsection">
+										<h3>Browse Page</h3>
+										<p>Two page layouts are available for the browse section. Facets may occur either in a left or right-aligned column. Output fields can also be selected from the
+											list below and ordered. Keep in mind that selecting many fields may result in a cumbersome user experience. Thumbnail images may be aligned either to the
+											left or right of the record content.</p>
+										<xforms:group ref="layouts/results">
+											<div class="subsection">
+												<h4>Facet Column Alignment</h4>
+												<div>
+													<xforms:select1 ref="yui_class">
+														<xforms:label>Alignment</xforms:label>
+														<xforms:item>
+															<xforms:label>left</xforms:label>
+															<xforms:value>yui-t2</xforms:value>
+														</xforms:item>
+														<xforms:item>
+															<xforms:label>right</xforms:label>
+															<xforms:value>yui-t5</xforms:value>
+														</xforms:item>
+													</xforms:select1>
+												</div>
+											</div>
+											<div class="subsection">
+												<h4>Result Documents</h4>
+												<div>
+													<xforms:select1 ref="image_location">
+														<xforms:label>Thumbnail Alignment</xforms:label>
+														<xforms:item>
+															<xforms:label>left</xforms:label>
+															<xforms:value>left</xforms:value>
+														</xforms:item>
+														<xforms:item>
+															<xforms:label>right</xforms:label>
+															<xforms:value>right</xforms:value>
+														</xforms:item>
+													</xforms:select1>
+												</div>
+											</div>
+										</xforms:group>
+									</div>
+								</div>
+								<div class="section">
+									<h2>Theme</h2>
+									<div>
+										<xforms:select1 ref="jquery_ui_theme">
+											<xforms:label>jQuery UI Theme</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+											<xforms:itemset nodeset="instance('jquery-ui-themes')/theme">
+												<xforms:label ref="."/>
+												<xforms:value ref="."/>
+											</xforms:itemset>
+										</xforms:select1>
+									</div>
+								</div>
+							</fr:tab>
+							<!--**************************************** ADVANCED SETTINGS **********************************-->
+							<fr:tab id="advanced">
+								<fr:label>Advanced</fr:label>
+								<xforms:group ref="instance('config')">
+									<h3>Advanced Settings</h3>
+									<div class="section">
+										<p>
+											<b>Only change these options if Orbeon is run on a separate server.</b>
+										</p>
+										<p>Changing these options to an inactive URL could break public display and web form functionality.</p>
+										<div class="subsection">
+											<h4>Solr URLs</h4>
+											<div>
+												<xforms:input ref="solr_published">
+													<xforms:label>Published</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</div>
+										</div>
+									</div>
+								</xforms:group>
+							</fr:tab>
+						</fr:tabview>
+					</div>
+					<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector" xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

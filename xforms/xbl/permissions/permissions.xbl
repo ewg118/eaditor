@@ -12,7 +12,7 @@
 	<xbl:binding element="eaditor|permissions">
 
 		<xbl:resources>
-			<xbl:style src="oxf:/xbl/eaditor/permissions/permissions.css"/>
+			<xbl:style src="/eaditor/xforms/xbl/permissions/permissions.css"/>
 		</xbl:resources>
 
 		<xbl:template xxbl:transform="oxf:xslt">

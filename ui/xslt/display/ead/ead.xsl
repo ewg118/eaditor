@@ -33,19 +33,11 @@
 						</a>
 					</li>
 				</xsl:if>
-				<xsl:if test="ead:archdesc/ead:bioghist">
-					<xsl:apply-templates select="ead:archdesc/ead:bioghist" mode="tocLink"/>
-				</xsl:if>
-				<xsl:if test="ead:archdesc/ead:scopecontent">
-					<xsl:apply-templates select="ead:archdesc/ead:scopecontent" mode="tocLink"/>
-				</xsl:if>
-				<xsl:if test="ead:archdesc/ead:arrangement">
-					<xsl:apply-templates select="ead:archdesc/ead:arrangement" mode="tocLink"/>
-				</xsl:if>
-
-				<xsl:if test="ead:archdesc/ead:controlaccess">
-					<xsl:apply-templates select="ead:archdesc/ead:controlaccess" mode="tocLink"/>
-				</xsl:if>
+				<xsl:apply-templates select="ead:archdesc/ead:bioghist" mode="tocLink"/>
+				<xsl:apply-templates select="ead:archdesc/ead:scopecontent" mode="tocLink"/>
+				<xsl:apply-templates select="ead:archdesc/ead:arrangement" mode="tocLink"/>
+				<xsl:apply-templates select="ead:archdesc/ead:controlaccess" mode="tocLink"/>
+				<xsl:apply-templates select="ead:archdesc/ead:note" mode="tocLink"/>
 				<xsl:if test="ead:archdesc/ead:relatedmaterial   or ead:archdesc/ead:separatedmaterial   or ead:archdesc/*/ead:relatedmaterial   or ead:archdesc/*/ead:separatedmaterial">
 					<li>
 						<a href="#relatedmaterial">

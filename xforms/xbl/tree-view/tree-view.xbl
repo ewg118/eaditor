@@ -3,19 +3,18 @@
 	Based on tree-view example by delcyon on orbeon.com, heavily modified by Ethan Gruber
 	
 	Installation Location:
-	oxf:/xbl/eaditor/tree-view/tree-view.xbl
+	oxf:/eaditor/xforms/xbl/tree-view/tree-view.xbl
 -->
 <xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:dlcn="http://www.delcyon.com/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors"
 	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xbl:script src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
-	<xbl:script src="/xbl/eaditor/tree-view/tree-view.js"/>
+	<xbl:script src="/eaditor/xforms/xbl/tree-view/tree-view.js"/>
 
 	<xbl:binding element="eaditor|tree-view">
 
 		<xbl:resources>
-			<xbl:style src="/xbl/eaditor/tree-view/tree-view.css"/>
+			<xbl:style src="/eaditor/xforms/xbl/tree-view/tree-view.css"/>
 		</xbl:resources>
 
 		<xbl:template xxbl:transform="oxf:xslt">
@@ -76,7 +75,7 @@
 								<xforms:group ref=".[count(ead:c) &gt; 0]">
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img alt="expand" src="/xbl/eaditor/tree-view/images/plus.gif" class="trigger-image"/>
+											<img alt="expand" src="/eaditor/xforms/xbl/tree-view/images/plus.gif" class="trigger-image"/>
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
@@ -92,7 +91,7 @@
 							<xforms:group ref=".[$position > 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img alt="up" src="/xbl/eaditor/tree-view/images/up.gif"/>
+										<img alt="up" src="/eaditor/xforms/xbl/tree-view/images/up.gif"/>
 									</xforms:label>
 									<xforms:action ev:event="DOMActivate">
 										<xforms:insert origin="$data//ead:c[@id=$id]" context="instance('c-copy')"/>
@@ -106,7 +105,7 @@
 							<xforms:group ref=".[$position &lt; $count]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img alt="down" src="/xbl/eaditor/tree-view/images/down.gif"/>
+										<img alt="down" src="/eaditor/xforms/xbl/tree-view/images/down.gif"/>
 									</xforms:label>
 									<xforms:action ev:event="DOMActivate">
 										<xforms:insert origin="$data//ead:c[@id=$id]" context="instance('c-copy')"/>
