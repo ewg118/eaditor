@@ -26,8 +26,7 @@
 						<div>
 							<xforms:output ref="$binding">
 								<xforms:label>Genreform</xforms:label>
-							</xforms:output>
-							<eaditor:attributes ref="$binding"/>
+							</xforms:output>							
 							<!--<xforms:group ref=".[string($binding/@authfilenumber)]">
 								<xforms:trigger appearance="xxforms:link">
 									<xforms:label>
