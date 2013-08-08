@@ -34,7 +34,7 @@
 			</xsl:choose>
 		</xsl:variable>
 
-		<ead id="{$id}">
+		<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" id="{$id}">
 			<xsl:apply-templates select="@*[not(name() = 'id')]|node()"/>
 		</ead>
 	</xsl:template>

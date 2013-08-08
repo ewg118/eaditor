@@ -5,8 +5,8 @@
 	<span> | </span>
 	<a href="{$display_path}settings/">Modify EADitor Settings</a>
 	<span> | </span>
-	<a href="{$display_path}test/">Run Conformance Tests</a>
-	<span> | </span>
+	<!--<a href="{$display_path}test/">Run Conformance Tests</a>
+	<span> | </span>-->
 	<a href="{$display_path}templates/">Edit Templates</a>
 	<span> | </span>
 	<!--<a href="{$display_path}vocab/">Manage Controlled Vocabularies</a><span> | </span>-->

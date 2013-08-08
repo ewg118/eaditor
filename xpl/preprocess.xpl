@@ -13,7 +13,7 @@
 	
 	<p:processor name="oxf:xslt">
 		<p:input name="data" href="#source"/>
-		<p:input name="config" href="../xslt/import/dtd2schema.xsl"/>
+		<p:input name="config" href="../xforms/xslt/import/dtd2schema.xsl"/>
 		<p:output name="data" id="schematized"/>
 	</p:processor>
 	
