@@ -319,7 +319,7 @@
 
 			<!-- ************************* Solr **************************8 -->
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/solr/{instance('control-instance')/id}">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('control-instance')/id}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="post-to-solr"/>
 			</xforms:submission>
