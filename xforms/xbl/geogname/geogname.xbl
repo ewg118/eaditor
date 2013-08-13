@@ -284,28 +284,42 @@
 									</xforms:group>-->
 								</xforms:case>
 								<xforms:case id="local-autosuggest">
-									<fr:autocomplete ref="instance('temp')" dynamic-itemset="true">
-										<xforms:action ev:event="fr-search-changed">
-											<xxforms:variable name="search-value" select="event('fr-search-value')"/>
-											<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
-											<xforms:action if="$make-suggestion">
-												<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
+									<div>
+										<xforms:input ref="instance('search-query')">
+											<xforms:label>Term</xforms:label>
+										</xforms:input>
+										<xforms:trigger>
+											<xforms:action ev:event="DOMActivate">
 												<xforms:send submission="suggest-term"/>
 											</xforms:action>
-										</xforms:action>
-										<xforms:label style="float:left">Term</xforms:label>
-										<xforms:itemset nodeset="instance('solr-response')//lst[@name='geogname_facet']/int">
-											<xforms:label ref="@name"/>
-											<xforms:value ref="@name"/>
-										</xforms:itemset>
-									</fr:autocomplete>
-									<xforms:group ref=".[string-length(instance('temp')) &gt; 0]">
+											<xforms:label>Search</xforms:label>
+										</xforms:trigger>
+									</div>
+									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
+										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
+											<xforms:label>Location</xforms:label>
+											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
+												<xforms:label ref="@name"/>
+												<xforms:value ref="@name"/>
+											</xforms:itemset>
+										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
+										<xforms:trigger>
+											<xforms:label>Add New</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="$binding" value="instance('search-query')"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:group ref=".[string-length(instance('control-instance')/local-message) &gt; 0]">
+										<p>
+											<xforms:output ref="instance('control-instance')/local-message"/>
+										</p>
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
@@ -318,6 +332,11 @@
 						</xforms:instance>
 						<xforms:instance id="config">
 							<config xmlns=""/>
+						</xforms:instance>
+						<xforms:instance id="control-instance">
+							<control xmlns="">
+								<local-message/>
+							</control>
 						</xforms:instance>
 						<!-- temp instance used by both interfaces to avoid inconsistent referencing to $binding -->
 						<xforms:instance id="temp">
@@ -447,19 +466,9 @@
 							<description xmlns=""/>
 						</xforms:instance>
 
-						<!-- local vocabulary -->
-						<xforms:instance id="facet-result-template">
-							<int name="" xmlns=""/>
-						</xforms:instance>
+						<!-- local vocabulary -->						
 						<xforms:instance id="solr-response">
 							<response xmlns=""/>
-						</xforms:instance>
-						<xforms:instance id="terms-temp">
-							<lst name="terms" xmlns="">
-								<lst name="geogname_facet">
-									<int name="">1</int>
-								</lst>
-							</lst>
 						</xforms:instance>
 
 						<!-- mint type radio button -->
@@ -467,7 +476,8 @@
 							<interface/>
 						</xforms:instance>
 
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"
+							xxforms:username="admin" xxforms:password="">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
@@ -508,12 +518,14 @@
 
 						<!-- local vocabulary-->
 						<xforms:submission id="suggest-term" serialization="none" method="get"
-							action="{instance('config')/solr_published}terms?terms.fl=geogname_facet&amp;terms.limit=10&amp;terms.sort=index&amp;terms.prefix={instance('suggest-query')}"
+							action="{instance('config')/solr_published}terms?terms.fl=geogname_facet&amp;terms.limit=25&amp;terms.sort=index&amp;terms.regex.flag=case_insensitive&amp;terms.regex=.*{instance('search-query')}.*"
 							instance="solr-response" replace="instance">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query Solr.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
-								<!-- always insert currently typed item into the itemset -->
-								<xforms:insert context="instance('solr-response')/lst[@name='terms']/lst[@name='geogname_facet']" origin="instance('facet-result-template')"/>
-								<xforms:setvalue ref="instance('solr-response')/lst[@name='terms']/lst[@name='geogname_facet']/int[1]/@name" value="instance('suggest-query')"/>
+								<!-- set or clear message based on number of results found -->
+								<xforms:setvalue ref="instance('control-instance')/local-message" if="count(instance('solr-response')/lst[@name='terms']//int) = 0">No matching terms
+									found.</xforms:setvalue>
+								<xforms:setvalue ref="instance('control-instance')/local-message" if="count(instance('solr-response')/lst[@name='terms']//int) &gt; 0"/>
 							</xforms:action>
 						</xforms:submission>
 					</xforms:model>

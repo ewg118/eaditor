@@ -55,8 +55,8 @@
 			<title>
 				<xsl:value-of select="str[@name='unittitle_display']"/>
 			</title>
-			<link href="{$url}show/{str[@name='id']}"/>
-			<link rel="alternate xml" type="text/xml" href="{$url}xml/{str[@name='id']}"/>
+			<link href="{$url}id/{str[@name='id']}"/>
+			<link rel="alternate xml" type="text/xml" href="{$url}id/{str[@name='id']}.xml"/>
 
 			<id>
 				<xsl:value-of select="str[@name='id']"/>

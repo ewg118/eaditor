@@ -27,38 +27,51 @@
 		</p>
 	</xsl:template>
 
+	<xsl:template match="ead:c" mode="component">
+		<xsl:call-template name="component-template"/>
+	</xsl:template>
+
 	<xsl:template match="ead:c">
 		<li>
+			<xsl:call-template name="component-template"/>
+		</li>
+	</xsl:template>
+
+	<xsl:template name="component-template">
+		<xsl:if test="not(string($id))">
 			<xsl:if test="@level = 'series' or @level='subseries'">
 				<a name="{@id}"/>
 			</xsl:if>
+		</xsl:if>
 
-			<xsl:apply-templates select="ead:did"/>
+		<xsl:apply-templates select="ead:did"/>
 
-			<xsl:apply-templates
-				select="ead:bioghist | ead:scopecontent | ead:arrangement | ead:accessrestrict | ead:userestrict | ead:prefercite | ead:acqinfo | ead:altformavail | ead:accruals | ead:appraisal | ead:custodhist | ead:processinfo | ead:originalsloc | ead:phystech | ead:odd | ead:note | ead:descgrp | ead:bibliography | ead:otherfindaid | ead:relatedmaterial | ead:separatedmaterial | ead:fileplan"
-				mode="did_level"/>
+		<xsl:apply-templates
+			select="ead:bioghist | ead:scopecontent | ead:arrangement | ead:accessrestrict | ead:userestrict | ead:prefercite | ead:acqinfo | ead:altformavail | ead:accruals | ead:appraisal | ead:custodhist | ead:processinfo | ead:originalsloc | ead:phystech | ead:odd | ead:note | ead:descgrp | ead:bibliography | ead:otherfindaid | ead:relatedmaterial | ead:separatedmaterial | ead:fileplan"
+			mode="did_level"/>
 
-			<xsl:if test="ead:dao or ead:daogrp">
-				<div class="imageGrp">
-					<h2>Images</h2>
-					<xsl:apply-templates select="ead:dao | ead:daogrp"/>
-				</div>
-			</xsl:if>
+		<xsl:if test="ead:dao or ead:daogrp">
+			<div class="imageGrp">
+				<h2>Images</h2>
+				<xsl:apply-templates select="ead:dao | ead:daogrp"/>
+			</div>
+		</xsl:if>
 
-			<xsl:apply-templates select="ead:index | ead:controlaccess"/>
+		<xsl:apply-templates select="ead:index | ead:controlaccess"/>
 
-			<xsl:if test="count(ead:c) &gt; 0">
-				<ul>
-					<xsl:apply-templates select="ead:c"/>
-				</ul>
-			</xsl:if>
+		<xsl:if test="count(ead:c) &gt; 0">
+			<ul>
+				<xsl:apply-templates select="ead:c"/>
+			</ul>
+		</xsl:if>
+
+		<xsl:if test="not(string($id))">
 			<xsl:if test="@level='series'">
 				<div class="backtotop">
 					<a href="#top" target="_self">Back to Top</a>
 				</div>
 			</xsl:if>
-		</li>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="ead:did">

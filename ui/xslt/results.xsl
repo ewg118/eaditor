@@ -179,7 +179,7 @@
 						<b>Title</b>
 					</dt>
 					<dd>
-						<a href="{$display_path}show/{str[@name='id']}">
+						<a href="{$display_path}id/{str[@name='id']}">
 							<xsl:value-of select="str[@name='unittitle_display']"/>
 						</a>
 					</dd>

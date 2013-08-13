@@ -4,8 +4,8 @@
 	<xsl:output method="xhtml" encoding="UTF-8" indent="yes"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
-	
-	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>	
+
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">maps</xsl:variable>
@@ -23,7 +23,7 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/fullscreen.css"/>
 				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
@@ -55,50 +55,51 @@
 					<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/maps_functions.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/facet_functions.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/map_fullscreen_functions.js"/>
 				</xsl:if>
 			</head>
 			<body>
-				<xsl:call-template name="header"/>
 				<xsl:call-template name="content"/>
-				<xsl:call-template name="footer"/>
 			</body>
 		</html>
 	</xsl:template>
 
 	<xsl:template name="content">
-		<div class="yui3-g">
-			<div id="backgroundPopup"/>
-			<div class="yui3-u-1">
-				<div class="content">
-					<h1>Maps</h1>
-					<p>View maps in <a href="fullscreen">fullscreen</a>.</p>
-					<xsl:choose>
-						<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
-							<div style="display:table;width:100%">
-								<ul id="filter_list" section="maps">
-									<xsl:apply-templates select="/content//lst[@name='facet_fields']/lst[descendant::int]"/>
-								</ul>
-							</div>
-							<div id="mapcontainer"/>
-							<a name="results"/>
-							<div id="results"/>
-							<input id="facet_form_query" name="q" value="*:*" type="hidden"/>
-							<xsl:if test="string($lang)">
-								<input type="hidden" name="lang" value="{$lang}"/>
-							</xsl:if>
-							<span style="display:none" id="pipeline">
-								<xsl:value-of select="$pipeline"/>
-							</span>
-							<select style="display:none" id="ajax-temp"/>
-							<ul style="display:none" id="decades-temp"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<h2> No results found.</h2>
-						</xsl:otherwise>
-					</xsl:choose>
+		<xsl:choose>
+			<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
+				<div id="backgroundPopup"/>
+				<div id="mapcontainer"/>
+				<a name="results"/>
+				<div id="results"/>
+				<input id="facet_form_query" name="q" value="*:*" type="hidden"/>
+				<xsl:if test="string($lang)">
+					<input type="hidden" name="lang" value="{$lang}"/>
+				</xsl:if>
+				<span style="display:none" id="pipeline">
+					<xsl:value-of select="$pipeline"/>
+				</span>
+				<select style="display:none" id="ajax-temp"/>
+				<ul style="display:none" id="decades-temp"/>
+				<div id="legend" class="ui-corner-all">
+					<h2>
+						<a href="#map_filters" id="show_filters">Refine Results</a>
+					</h2>
+
 				</div>
-			</div>
-		</div>
+				<div style="display:none">
+					<div id="map_filters">
+						<h2>Refine Results</h2>
+						<ul id="filter_list" section="maps">
+							<xsl:apply-templates select="/content//lst[@name='facet_fields']/lst[descendant::int]"/>
+						</ul>
+						<input type="button" id="close" value="Close"/>
+					</div>
+				</div>
+			</xsl:when>
+			<xsl:otherwise>
+				<h2> No results found.</h2>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="lst">

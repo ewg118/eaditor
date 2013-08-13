@@ -39,9 +39,7 @@
 
 					<xxforms:dialog id="element-attributes" appearance="full" level="modal" close="false" draggable="true" visible="false">
 						<xforms:label ref="concat('&lt;', $binding/local-name(), '&gt; attributes')"/>
-						<xforms:repeat nodeset="instance('attributes')/attribute">
-							<xxforms:variable name="attribute-name" select="@name"/>
-							<xxforms:variable name="value" select="text()"/>
+						<xforms:repeat nodeset="instance('attributes')/attribute">						
 							<xforms:group ref=".[@name='type' and $binding/local-name() = 'container']">
 								<xhtml:div style="margin-bottom:5px;">
 									<xforms:select1 ref=".">
@@ -54,10 +52,6 @@
 											<xforms:label ref="."/>
 											<xforms:value ref="@value"/>
 										</xforms:itemset>
-										<xforms:action ev:event="xforms-value-changed">
-											<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>
-											<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
-										</xforms:action>
 									</xforms:select1>
 								</xhtml:div>
 							</xforms:group>
@@ -72,11 +66,7 @@
 										<xforms:itemset nodeset="instance('renders')//xs:enumeration">
 											<xforms:label ref="@value"/>
 											<xforms:value ref="@value"/>
-										</xforms:itemset>
-										<xforms:action ev:event="xforms-value-changed">
-											<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>
-											<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
-										</xforms:action>
+										</xforms:itemset>										
 									</xforms:select1>
 								</xhtml:div>
 							</xforms:group>
@@ -95,11 +85,7 @@
 										<xforms:item>
 											<xforms:label>Internal</xforms:label>
 											<xforms:value>internal</xforms:value>
-										</xforms:item>
-										<xforms:action ev:event="xforms-value-changed">
-											<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>
-											<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
-										</xforms:action>
+										</xforms:item>										
 									</xforms:select1>
 								</xhtml:div>
 							</xforms:group>
@@ -108,18 +94,29 @@
 								<xhtml:div style="margin-bottom:5px;">
 									<xforms:input ref=".">
 										<xforms:label ref="@name"/>
-										<xforms:alert>Error: content type may be disallowed. Refer to EAD 2002 schema.</xforms:alert>
-										<xforms:action ev:event="xforms-value-changed">
-											<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>
-											<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
-										</xforms:action>
+										<xforms:alert>Error: content type may be disallowed. Refer to EAD 2002 schema.</xforms:alert>										
 									</xforms:input>
 								</xhtml:div>
 							</xforms:group>
 						</xforms:repeat>
 						<xforms:trigger>
 							<xforms:label>OK</xforms:label>
-							<xxforms:hide dialog="element-attributes" ev:event="DOMActivate"/>
+							<xforms:action ev:event="DOMActivate">
+								<!-- only modify the attribute values when clicking okay -->
+								<xforms:action xxforms:iterate="instance('attributes')/attribute">
+									<xxforms:variable name="attribute-name" select="context()/@name"/>
+									<xxforms:variable name="value" select="context()/text()"/>
+									<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>								
+									<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
+								</xforms:action>							
+								<xxforms:hide dialog="element-attributes"/>
+							</xforms:action>
+						</xforms:trigger>
+						<xforms:trigger>
+							<xforms:label>Cancel</xforms:label>
+							<xforms:action ev:event="DOMActivate">								
+								<xxforms:hide dialog="element-attributes"/>
+							</xforms:action>
 						</xforms:trigger>
 					</xxforms:dialog>
 					<!-- ********************************************************************** -->

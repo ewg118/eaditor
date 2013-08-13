@@ -287,7 +287,7 @@
 						<xsl:value-of select="//repositoryName"/>
 					</dc:publisher>
 					<dc:identifier>
-						<xsl:value-of select="concat($url, 'show/', str[@name='id'])"/>
+						<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
 					</dc:identifier>
 					<xsl:if test="string(str[@name='unitdate_display'])">
 						<dc:date>

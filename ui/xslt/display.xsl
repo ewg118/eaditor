@@ -1,33 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">	
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="display/ead/ead.xsl"/>
 	<xsl:include href="display/ead/dsc.xsl"/>
 	<xsl:include href="display/mods/mods.xsl"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
-	<!-- config variables -->
-	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
-	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
-	<xsl:variable name="display_path">
+	<!-- path and document params -->
+	<xsl:param name="path" select="substring-after(doc('input:request')/request/request-url, 'id/')"/>
+	<xsl:variable name="doc">
 		<xsl:choose>
-			<xsl:when test="$mode='private'">
-				<xsl:text>../../</xsl:text>
+			<xsl:when test="contains($path, '/')">
+				<xsl:value-of select="tokenize($path, '/')[1]"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:text>../</xsl:text>
+				<xsl:choose>
+					<xsl:when test="contains($path, '.')">
+						<xsl:variable name="pieces" select="tokenize($path, '\.')"/>
+
+						<xsl:for-each select="$pieces[not(position()=last())]">
+							<xsl:value-of select="."/>
+							<xsl:if test="not(position()=last())">
+								<xsl:text>.</xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$path"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-
 	<xsl:variable name="id">
+		<xsl:if test="contains($path, '/')">
+			<xsl:variable name="last-piece" select="substring-after($path, '/')"/>
+			<xsl:choose>
+				<xsl:when test="contains($last-piece, '.')">
+					<xsl:variable name="pieces" select="tokenize($last-piece, '\.')"/>
+					<xsl:for-each select="$pieces[not(position()=last())]">
+						<xsl:value-of select="."/>
+						<xsl:if test="not(position()=last())">
+							<xsl:text>.</xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$last-piece"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+
+	<!-- config variables -->
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
+	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
+
+	<!-- display path -->
+	<xsl:variable name="display_path">
 		<xsl:choose>
-			<xsl:when test="//mods:recordIdentifier">
-				<xsl:value-of select="//mods:recordIdentifier"/>
+			<xsl:when test="$mode='private'">
+				<xsl:choose>
+					<xsl:when test="string($id)">
+						<xsl:text>../../../</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>../../</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="//ead:ead/@id"/>
+				<xsl:choose>
+					<xsl:when test="string($id)">
+						<xsl:text>../../</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>../</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -42,11 +94,11 @@
 	</xsl:param>
 
 	<xsl:template match="/">
-		<xsl:apply-templates select="/content/ead:ead|/content/mods:modsCollection/mods:mods"/>
+		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
 	</xsl:template>
 
 	<xsl:template match="ead:ead|mods:mods">
-		<html>
+		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
 			<head>
 				<title>
 					<xsl:value-of select="/content/config/title"/>
@@ -72,6 +124,7 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+				<xsl:call-template name="icons"/>
 				<xsl:choose>
 					<xsl:when test="namespace-uri()='http://www.loc.gov/mods/v3'">
 						<xsl:call-template name="mods-content"/>
@@ -88,10 +141,10 @@
 	<xsl:template name="icons">
 		<div class="submenu">
 			<div class="icon">
-				<a href="{$display_path}admin/show/{$id}">Staff View</a>
+				<a href="{$display_path}admin/id/{$doc}">Staff View</a>
 			</div>
 			<div class="icon">
-				<a href="{$display_path}xml/{$id}">
+				<a href="{$path}.xml">
 					<img src="{$display_path}images/xml.png" title="XML" alt="XML"/>
 				</a>
 			</div>

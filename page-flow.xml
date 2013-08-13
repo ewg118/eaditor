@@ -41,10 +41,10 @@
 	<page path-info="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
 
 	<!-- private xml (all elements shown) -->
-	<page path-info="/eaditor/admin/xml/(.*)" matcher="oxf:perl5-matcher" view="xpl/xml-private.xpl"/>
+	<page path-info="/eaditor/admin/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-private.xpl"/>
 
 	<!-- private html view -->
-	<page path-info="/eaditor/admin/show/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/display.xpl"/>
+	<page path-info="/eaditor/admin/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/display.xpl"/>
 
 	<!-- ****************
 	* PUBLIC INTERFACE *
@@ -52,13 +52,17 @@
 	<page path-info="/eaditor/config.xml" view="xpl/config.xpl"/>
 	
 	<!-- public xml view (internal elements supressed) -->
-	<page path-info="/eaditor/xml/(.*)" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
+	<page path-info="/eaditor/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
+	
+	<!-- RDF serialization -->
+	<page path-info="/eaditor/id/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>	
+	
+	<!-- solr doc service -->
+	<page path-info="/eaditor/id/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
 
 	<!-- public html view -->
-	<page path-info="/eaditor/show/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
-
-	<!-- solr doc service -->
-	<page path-info="/eaditor/solr/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
+	<page path-info="/eaditor/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
+	<page path-info="/eaditor/id/(.*)/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
 
 	<!-- index -->
 	<page path-info="/eaditor/" model="xpl/config.xpl" view="xpl/index.xpl"/>
@@ -67,12 +71,17 @@
 	<page path-info="/eaditor/results/" model="xpl/solr-results.xpl" view="xpl/results.xpl"/>
 	<page path-info="/eaditor/search/" model="xpl/config.xpl" view="xpl/search.xpl"/>
 	<page path-info="/eaditor/maps/" model="xpl/solr-maps.xpl" view="xpl/maps.xpl"/>
+	<page path-info="/eaditor/maps/fullscreen" model="xpl/solr-maps.xpl" view="xpl/maps-fullscreen.xpl"/>
 
 	<!-- Atom feed -->
 	<page path-info="/eaditor/feed/" model="xpl/solr-feed.xpl" view="xpl/feed.xpl"/>
 
 	<!-- OAI-PMH feed -->
 	<page path-info="/eaditor/oai/" model="xpl/solr-oai-pmh.xpl" view="xpl/oai-pmh.xpl"/>
+	
+	<!-- Pelagios -->
+	<page path-info="/eaditor/pelagios.void.rdf" model="xpl/config.xpl" view="xpl/void.xpl"/>
+	<page path-info="/eaditor/pelagios.rdf" model="xpl/solr-pelagios.xpl" view="xpl/pelagios.xpl"/>
 
 	<!-- KML service -->
 	<page path-info="/eaditor/query.kml" model="xpl/solr-kml.xpl" view="xpl/kml.xpl"/>

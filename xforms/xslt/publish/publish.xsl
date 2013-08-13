@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:datetime="http://exslt.org/dates-and-times"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="xs datetime" version="2.0">
-	<xsl:output encoding="UTF-8" indent="yes" method="xml"/>
-	<xsl:strip-space elements="*"/>
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	exclude-result-prefixes="#all" version="2.0">
+
+	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
-	
+	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
+
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
@@ -115,34 +117,8 @@
 					</field>
 				</xsl:if>
 
-				<xsl:for-each
-					select="descendant::ead:corpname | descendant::ead:famname | descendant::ead:genreform | descendant::ead:geogname | descendant::ead:langmaterial/ead:language | descendant::ead:persname | descendant::ead:subject">
-					<xsl:choose>
-						<xsl:when test="local-name() = 'geogname' and string(@authfilenumber)">
-							<xsl:variable name="coordinates"
-								select="concat(document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=anscoins&amp;style=full'))//lng, ',', document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=anscoins&amp;style=full'))//lat)"/>
-
-							<field name="{local-name()}_facet">
-								<xsl:value-of select="normalize-space(.)"/>
-							</field>
-							<field name="georef">
-								<xsl:value-of select="@authfilenumber"/>
-								<xsl:text>|</xsl:text>
-								<xsl:value-of select="normalize-space(.)"/>
-								<xsl:text>|</xsl:text>
-								<xsl:value-of select="$coordinates"/>
-							</field>
-						</xsl:when>
-						<xsl:otherwise>
-							<field name="{local-name()}_facet">
-								<xsl:value-of select="normalize-space(.)"/>
-							</field>
-						</xsl:otherwise>
-					</xsl:choose>
-					<field name="{local-name()}_text">
-						<xsl:value-of select="normalize-space(.)"/>
-					</field>
-				</xsl:for-each>
+				<xsl:apply-templates
+					select="descendant::ead:corpname | descendant::ead:famname | descendant::ead:genreform | descendant::ead:geogname | descendant::ead:langmaterial/ead:language | descendant::ead:persname | descendant::ead:subject"/>
 
 				<!-- collection images -->
 				<xsl:for-each select="descendant::ead:archdesc/ead:did/ead:daogrp">
@@ -210,6 +186,82 @@
 				</field>
 			</doc>
 		</add>
+	</xsl:template>
+
+	<xsl:template
+		match="ead:corpname | ead:famname | ead:genreform | ead:geogname | ead:language | ead:persname | ead:subject">
+		<field name="{local-name()}_facet">
+			<xsl:value-of select="normalize-space(.)"/>
+		</field>
+		<field name="{local-name()}_text">
+			<xsl:value-of select="normalize-space(.)"/>
+		</field>
+		
+		<!-- get coordinates -->
+		<xsl:if test="local-name() = 'geogname' and string(@authfilenumber)">			
+			<xsl:choose>
+				<xsl:when test="@source='geonames'">
+					<xsl:variable name="geonames_data" as="node()*">
+						<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
+					</xsl:variable>
+					
+					<field name="georef">
+						<xsl:value-of select="@authfilenumber"/>
+						<xsl:text>|</xsl:text>
+						<xsl:value-of select="normalize-space(.)"/>
+						<xsl:text>|</xsl:text>
+						<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
+					</field>
+				</xsl:when>
+				<xsl:when test="@source='pleiades'">
+					<xsl:variable name="rdf" as="node()*">
+						<xsl:copy-of select="document(concat('http://pleiades.stoa.org/places/', @authfilenumber, '/rdf'))"/>
+					</xsl:variable>
+					
+					<xsl:if test="number($rdf//geo:long) and number($rdf//geo:lat)">
+						<field name="georef">
+							<xsl:value-of select="@authfilenumber"/>
+							<xsl:text>|</xsl:text>
+							<xsl:value-of select="normalize-space(.)"/>
+							<xsl:text>|</xsl:text>
+							<xsl:value-of select="concat($rdf//geo:long, ',', $rdf//geo:lat)"/>
+						</field>
+					</xsl:if>
+				</xsl:when>
+			</xsl:choose>			
+		</xsl:if>
+		
+		<!-- uri -->
+		<xsl:if test="string(@source) and string(@authfilenumber)">
+			<xsl:variable name="resource">
+				<xsl:choose>
+					<xsl:when test="@source='geonames'">
+						<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>					
+					</xsl:when>
+					<xsl:when test="@source='pleiades'">
+						<xsl:value-of select="concat('http://pleiades.stoa.org/places/', @authfilenumber)"/>					
+					</xsl:when>
+					<xsl:when test="@source='lcsh' or @source='lcgft'">
+						<xsl:value-of select="concat('http://id.loc.gov/authorities/', @authfilenumber)"/>					
+					</xsl:when>				
+					<xsl:when test="@source='viaf'">
+						<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>					
+					</xsl:when>
+				</xsl:choose>
+			</xsl:variable>
+			
+			<xsl:if test="string($resource)">
+				<field name="{local-name()}_uri">
+					<xsl:value-of select="$resource"/>
+				</field>
+				<xsl:if test="@source='pleiades'">
+					<field name="pleiades_uri">
+						<xsl:value-of select="$resource"/>
+					</field>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+		
 	</xsl:template>
 
 	<xsl:template match="ead:archdesc/ead:did">

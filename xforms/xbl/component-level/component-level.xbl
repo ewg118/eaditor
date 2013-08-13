@@ -127,13 +127,11 @@
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('originalsloc-template')"/>
 							</xforms:trigger>
 						</xforms:group>
-						<xforms:group ref="$binding[count(ead:note) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('note-template')"/>
-							</xforms:trigger>
-						</xforms:group>
+						<xforms:trigger appearance="minimal">
+							<xforms:label>
+								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
+							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('note-template')"/>
+						</xforms:trigger>
 						<xforms:group ref="$binding[count(ead:odd) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
@@ -244,6 +242,9 @@
 					<xforms:group ref="$binding/ead:index">
 						<eaditor:index/>
 					</xforms:group>
+					<xforms:repeat ref="$binding/ead:note">
+						<eaditor:note/>
+					</xforms:repeat>
 					<xforms:group ref="$binding/ead:odd">
 						<eaditor:odd/>
 					</xforms:group>
@@ -325,6 +326,9 @@
 						</xforms:instance>
 						<xforms:instance id="indexentry-template" xxforms:exclude-result-prefixes="#all">
 							<indexentry/>
+						</xforms:instance>
+						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+							<note/>
 						</xforms:instance>
 						<xforms:instance id="odd-template" xxforms:exclude-result-prefixes="#all">
 							<odd/>

@@ -51,14 +51,18 @@
 					<flickr_api_key/>
 					<geonames_api_key/>
 					<title>EADitor</title>
+					<description/>
+					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<banner_text>EADitor: XForms for EAD</banner_text>
-					<banner_image xlink:href=""/>
-					<lcsh-date>2011-08-01</lcsh-date>
+					<banner_image xlink:href=""/>					
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
-					<oai-pmh active="false"/>
+					<export>
+						<oai-pmh>true</oai-pmh>
+						<pelagios>false</pelagios>
+					</export>					
 					<theme>
-						<facets>agency_facet,century_sint,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
+						<facets>agency_facet,century_num,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
 						<jquery_ui_theme>smoothness</jquery_ui_theme>
 						<layouts>
 							<index>
@@ -70,6 +74,27 @@
 							</results>
 						</layouts>
 					</theme>
+					<machine_tags>
+						<namespace id="geonames">
+							<predicate>locality</predicate>
+						</namespace>
+						<namespace id="lcgft">
+							<predicate>genreform</predicate>
+						</namespace>
+						<namespace id="lcsh">
+							<predicate>subject</predicate>
+						</namespace>
+						<namespace id="pleiades">
+							<predicate>atteststo</predicate>
+							<predicate>depicts</predicate>
+							<predicate>findspot</predicate>
+							<predicate>origin</predicate>
+							<predicate>place</predicate>
+						</namespace>
+						<namespace id="viaf">
+							<predicate>depicts</predicate>
+						</namespace>
+					</machine_tags>
 				</config>
 			</xforms:instance>
 
@@ -631,9 +656,9 @@
 													<div class="{$id}_container" style="display:none"/>
 												</xforms:group>
 											</td>
-											<td class="{$class} center"><a href="{instance('config')/url}xml/{$id}" target="_blank">xml</a> | <a href="{instance('config')/url}show/{$id}"
+											<td class="{$class} center"><a href="{instance('config')/url}id/{$id}.xml" target="_blank">xml</a> | <a href="{instance('config')/url}id/{$id}"
 													target="_blank">html</a></td>
-											<td class="{$class} center"><a href="xml/{$id}" target="_blank">xml</a> | <a href="show/{$id}" target="_blank">html</a></td>
+											<td class="{$class} center"><a href="id/{$id}.xml" target="_blank">xml</a> | <a href="id/{$id}" target="_blank">html</a></td>
 											<td class="{$class} center">
 												<xforms:group ref=".[type='ead']">
 													<xforms:group ref=".[components = 'true']">
@@ -719,7 +744,7 @@
 					<!-- optimize index -->
 					<xforms:send submission="optimize"/>
 					<!-- reload table -->
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '1'), 'END', '20')"/>
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
@@ -742,7 +767,7 @@
 					<!-- commit index -->
 					<xforms:send submission="commit"/>
 					<!-- reload table -->
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '1'), 'END', '20')"/>
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
@@ -764,7 +789,7 @@
 					<!-- commit index -->
 					<xforms:send submission="commit"/>
 					<!-- reload table -->
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', '1'), 'END', '20')"/>
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
@@ -781,9 +806,8 @@
 					<xforms:send submission="commit"/>
 					<!-- reload table -->
 					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
-					<xxforms:variable name="end" select="$page * 20"/>
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start)), 'END', string($end))"/>
+					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>					
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
@@ -799,9 +823,8 @@
 					<xforms:send submission="delete-solr-doc"/>
 					<!-- reload table -->
 					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
-					<xxforms:variable name="end" select="$page * 20"/>
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start)), 'END', string($end))"/>
+					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>					
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
@@ -812,15 +835,21 @@
 			<fr:negative-choice/>
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
+					<!-- dleete from exist and solr -->
 					<xforms:setvalue ref="instance('deleteId')/id" value="instance('control-instance')/id"/>
 					<xforms:send submission="delete-guide"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="delete-solr-doc"/>
+					
+					<!-- get new numCount -->					
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"/>
+					<xforms:send submission="xquery-collection"/>
+					
 					<!-- reload table -->
-					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
+					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>					
 					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
 					<xxforms:variable name="end" select="$page * 20"/>
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start)), 'END', string($end))"/>
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>

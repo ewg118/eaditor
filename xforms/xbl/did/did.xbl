@@ -348,20 +348,20 @@
 							</xforms:repeat>
 						</xhtml:div>
 					</xforms:repeat>
-					<xhtml:div>
-						<xforms:input ref="$binding/ead:physloc">
-							<xforms:label>Physical Location</xforms:label>
-						</xforms:input>
-						<xforms:group ref="$binding[count(ead:physloc) &gt; 0]">
+					<xforms:group ref="$binding/ead:physloc">
+						<xhtml:div>
+							<xforms:input ref=".">
+								<xforms:label>Physical Location</xforms:label>
+							</xforms:input>
 							<xforms:trigger appearance="minimal">
-								<xforms:delete ev:event="DOMActivate" nodeset="$binding/ead:physloc"/>
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
 									<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
-						</xforms:group>
-					</xhtml:div>
-
+							<eaditor:attributes ref="."/>
+						</xhtml:div>
+					</xforms:group>
 					<xhtml:div>
 						<xforms:input ref="$binding/ead:repository">
 							<xforms:label>Repository</xforms:label>
@@ -391,7 +391,7 @@
 
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="did-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="did-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- digital object elements -->
 						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>

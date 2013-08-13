@@ -305,7 +305,7 @@ $(document).ready(function() {
 		//disables popup only if it is enabled
 		if (popupStatus == 1) {	
 			$("#backgroundPopup").fadeOut("fast");
-			$('#century_sint-list') .parent('div').attr('style', 'width: 192px;');
+			$('#century_num-list') .parent('div').attr('style', 'width: 192px;');
 			popupStatus = 0;		
 		}
 	}

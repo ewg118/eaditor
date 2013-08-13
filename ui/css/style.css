@@ -117,7 +117,12 @@ a:hover {
 	border-bottom:1px solid silver;
 }
 .toc_ul {
-	margin:0 0 0 1em;
+	padding:0;
+	margin:0;
+}
+.toc_ul ul {
+	margin-left:2em;
+	padding:0;
 }
 .toc_ul li {
 	list-style-type:none;
@@ -183,6 +188,21 @@ div.container {
 }
 .external_link {
 	margin-left:10px;
+}
+.submenu {
+	width:100%;
+	vertical-align:bottom;
+	display:table;
+	text-align:right;
+	margin-top:3px;
+}
+.icon {
+	border-left:1px solid silver;
+	float:right;
+	vertical-align:text-bottom;
+	padding-left:15px;
+	padding-right:15px;
+	font-size:12px;
 }
 /*
   ****************************************

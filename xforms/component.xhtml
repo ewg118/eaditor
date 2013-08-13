@@ -167,7 +167,7 @@
 			</xforms:submission>
 
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/solr/{instance('guide')/@id}">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('guide')/@id}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
@@ -270,7 +270,7 @@
 	<body>
 		<xxforms:variable name="display_path">../../</xxforms:variable>
 		<div class="yui3-g">
-			<div class="yui3-u-1">				
+			<div class="yui3-u-1">
 				<div class="content">
 					<xi:include href="header.xml"/>
 					<xforms:group ref="instance('status')/text()">
@@ -376,20 +376,18 @@
 												<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
 											</xforms:action>
 										</xforms:trigger>
-									</div>
-
-									<div class="section">
+									</div> <div class="section">
 										<xforms:repeat nodeset="ead:c">
 											<eaditor:c/>
 										</xforms:repeat>
 									</div>
 								</fr:tab>
 								<!--**************************************** END SUB COMPONENTS **********************************-->
-								<!--<fr:tab id="preview">
-								<fr:label>XML Preview</fr:label>
-								<h1>XML Preview</h1>
-								<fr:xforms-inspector id="orbeon-xforms-inspector"/>
-							</fr:tab>-->
+								<fr:tab id="preview">
+									<fr:label>XML Preview</fr:label>
+									<h1>XML Preview</h1>
+									<fr:xforms-inspector id="orbeon-xforms-inspector"/>
+								</fr:tab>
 							</fr:tabview>
 						</xforms:group>
 					</div>

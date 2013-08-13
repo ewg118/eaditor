@@ -27,9 +27,9 @@
 				<li role="presentation">
 					<a href="{$display_path}maps/">Maps</a>
 				</li>
-				<li role="presentation">
+				<!--<li role="presentation">
 					<a href="{$display_path}admin/">Admin</a>
-				</li>
+				</li>-->
 			</ul>
 		</div>
 	</xsl:template>

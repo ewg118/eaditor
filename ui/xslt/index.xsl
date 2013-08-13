@@ -79,9 +79,14 @@
 						<a href="{$display_path}feed/?q=*:*">
 							<img src="{$display_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
-						<xsl:if test="/config/oai-pmh/@active='true'">
+						<xsl:if test="/config/export/oai-pmh='true'">
 							<a href="{$display_path}oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead">
 								<img src="{$display_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
+							</a>
+						</xsl:if>
+						<xsl:if test="/config/export/pelagios='true'">
+							<a href="{$display_path}pelagios.void.rdf">
+								<img src="{$display_path}ui/images/pelagios_icon.png" title="Pelagios" alt="Pelagios"/>
 							</a>
 						</xsl:if>
 					</div>

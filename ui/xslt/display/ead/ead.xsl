@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3"
 	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
-	
+
 	<xsl:template name="ead-content">
-		<div class="yui3-g">
-			<div class="yui3-u-1-5">
-				<div class="content">
-					<xsl:call-template name="toc"/>
+		<!-- display component if there's an $id, otherwise whole finding aid -->
+		<xsl:choose>
+			<xsl:when test="string($id)">
+				<div class="yui3-g">
+					<div class="yui3-u-1">
+						<div class="content">
+							<xsl:apply-templates select="ead:c" mode="component"/>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="yui3-u-4-5">
-				<div class="content">
-					<xsl:call-template name="body"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<div class="yui3-g">
+					<div class="yui3-u-1-5">
+						<div class="content">
+							<xsl:call-template name="toc"/>
+						</div>
+					</div>
+					<div class="yui3-u-4-5">
+						<div class="content">
+							<xsl:call-template name="body"/>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
+			</xsl:otherwise>
+		</xsl:choose>
+
+
 	</xsl:template>
 
 	<xsl:template name="toc">
@@ -94,7 +110,7 @@
 					<li>
 						<a href="#{generate-id(ead:archdesc/ead:dsc)}">Components List</a>
 					</li>
-					<ul class="toc_ul">
+					<ul>
 						<xsl:for-each select="ead:archdesc/ead:dsc/ead:c[@level='series' or @level='subseries' or @level='subgrp' or @level='subcollection']">
 							<li>
 								<a href="#{@id}">
@@ -102,7 +118,7 @@
 								</a>
 							</li>
 							<xsl:if test="child::ead:c[@level='subseries']">
-								<ul class="toc_ul">
+								<ul>
 									<xsl:for-each select="ead:c[@level='subseries']">
 										<li>
 											<a href="#{@id}">
@@ -171,7 +187,9 @@
 	<xsl:template name="body">
 		<!--<xsl:apply-templates select="ead:eadheader"/>-->
 		<h1>
-			<xsl:value-of select="ead:archdesc/ead:did/ead:unittitle"/>
+			<span property="dcterms:title">
+				<xsl:value-of select="ead:archdesc/ead:did/ead:unittitle"/>
+			</span>
 			<xsl:if test="string(ead:archdesc/ead:did/ead:unitdate)">
 				<xsl:text>, </xsl:text>
 				<xsl:value-of select="ead:archdesc/ead:did/ead:unitdate"/>
@@ -353,9 +371,23 @@
 						<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
 					</xsl:otherwise>
 				</xsl:choose>
-
 			</dt>
 			<dd>
+				<!-- insert applicable RDFa attributes -->
+				<xsl:choose>
+					<xsl:when test="local-name()='abstract'">
+						<xsl:attribute name="property">dcterms:abstract</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="local-name()='extent'">
+						<xsl:attribute name="property">dcterms:extent</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="local-name()='origination'">
+						<xsl:attribute name="property">dcterms:creator</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="local-name()='unitid'">
+						<xsl:attribute name="property">dcterms:identifier</xsl:attribute>
+					</xsl:when>
+				</xsl:choose>
 				<xsl:apply-templates/>
 			</dd>
 		</div>
@@ -792,33 +824,34 @@
 					<!-- solr facets, create link to search results -->
 					<xsl:when test="name()='corpname' or name()='famname' or name()='genreform' or name()='geogname' or name()='persname' or name()='subject'">
 						<li>
-							<a href="{$display_path}results/?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
+							<a
+								href="{$display_path}results/?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
 								<xsl:value-of select="normalize-space(.)"/>
 							</a>
 							<xsl:if test="@source">
 								<xsl:choose>
 									<xsl:when test="@source='geonames'">
-										<a href="http://www.geonames.org/{@authfilenumber}" target="_blank" title="Geonames">
+										<a href="http://www.geonames.org/{@authfilenumber}" target="_blank" title="Geonames" rel="dcterms:coverage">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='pleiadies'">
-										<a href="http://pleiadies.stoa.org/place/{@authfilenumber}" target="_blank" title="Pleiades">
+										<a href="http://pleiadies.stoa.org/place/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='lcsh'">
-										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCSH">
+										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCSH" rel="dcterms:subject">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='lcgft'">
-										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCGFT">
+										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCGFT" rel="dcterms:format">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='viaf'">
-										<a href="http://viaf.org/viaf/{@authfilenumber}" target="_blank" title="VIAF">
+										<a href="http://viaf.org/viaf/{@authfilenumber}" target="_blank" title="VIAF" rel="arch:correspondedWith">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
@@ -1237,5 +1270,5 @@
 			</xsl:for-each>
 		</div>
 	</xsl:template>
-	
+
 </xsl:stylesheet>
