@@ -164,7 +164,8 @@
 								</xforms:trigger>
 
 								<xhtml:div>
-									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">lo <xforms:trigger appearance="minimal">
+									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
+										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<xhtml:img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
