@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns="urn:isbn:1-931666-22-9"
+<xbl:xbl xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-daogrp" element="eaditor|daogrp">
 		<xbl:template>
@@ -16,98 +16,113 @@
 					<xforms:group ref="$binding">
 						<!-- just show thumbnail if it is a flickr thumbnail -->
 						<xforms:group ref=".[contains(ead:daoloc[1]/@xlink:href, 'flickr.com')]">
-							<xhtml:div class="subsection pair_div">
-								<xhtml:h3>Digital Archival Object Group</xhtml:h3>
+							<div class="subsection pair_div">
+								<h3>Digital Archival Object Group</h3>
 								<eaditor:attributes ref="."/>
 								<xforms:trigger appearance="minimal">
 									<xforms:action ev:event="DOMActivate">
 										<xforms:delete nodeset="."/>
 									</xforms:action>
 									<xforms:label>
-										<xhtml:img src="/eaditor/xforms/images/remove.gif"/>
+										<img src="/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
 								</xforms:trigger>
-								<xhtml:div>
+								<div>
 									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
+												<img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
 										</xforms:trigger>
 									</xforms:group>
-								</xhtml:div>
-								<xhtml:div style="margin:10px 0">
-									<xhtml:h4>Reference flickr Image</xhtml:h4>
-									<xhtml:div>
+									<!-- machine tags -->
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/eaditor/xforms/images/add.gif"/>Tags</xforms:label>
+										<xforms:action ev:event="DOMActivate">
+											<!-- load config only if has not already been loaded -->
+											<xforms:send submission="load-config" if="not(string(instance('config')/url))"/>
+
+											<!-- clear terms -->
+											<xforms:delete nodeset="instance('terms')/*"/>
+
+											<!-- get photo id and flickr photo info if it hasn't already been loaded -->
+											<xforms:action if="not(instance('flickr-info')/@stat = 'ok')">
+												<xforms:setvalue ref="instance('photo_id')"
+													value="substring-before(tokenize(substring-after($binding/ead:daoloc[1]/@xlink:href, 'http://'), '/')[3], '_')"/>
+												<xforms:send submission="query-flickr-getInfo"/>
+											</xforms:action>
+
+
+											<!-- get nearest vocabulary terms, only if there are no terms listed -->
+											<xforms:action xxforms:iterate="ancestor::ead:c[1]/descendant::*[string(@source) and string(@authfilenumber)]">
+												<xforms:var name="source" select="context()/@source"/>
+												<xforms:var name="authfilenumber" select="context()/@authfilenumber"/>
+												<xforms:var name="predicate"
+													select="substring-before(substring-after(instance('flickr-info')//tag[contains(., $source) and contains(.,$authfilenumber)][1], ':'), '=')"/>
+
+												<xforms:insert context="instance('terms')" nodeset="./child::node()[last()]" origin="instance('term-template')"/>
+												<xforms:setvalue ref="instance('terms')/term[last()]/@namespace" value="$source"/>
+												<xforms:setvalue ref="instance('terms')/term[last()]/@value" value="$authfilenumber"/>
+												<xforms:setvalue ref="instance('terms')/term[last()]/@predicate" value="$predicate" if="string($predicate)"/>
+												<xforms:setvalue ref="instance('terms')/term[last()]" value="context()"/>
+
+												<!-- set tag, selected if predicate is available -->
+												<xforms:setvalue ref="instance('terms')/term[last()]/@tag" value="concat($source, ':', $predicate, '=', $authfilenumber)" if="string($predicate)"/>
+												<xforms:setvalue ref="instance('terms')/term[last()]/@selected" if="string($predicate)">true</xforms:setvalue>
+											</xforms:action>
+
+											<!-- add tags which are not already represented -->
+											<xforms:action xxforms:iterate="instance('flickr-info')//tag[not(text()=instance('terms')/term/@tag)]">
+												<xforms:insert context="instance('terms')" nodeset="./child::node()[last()]" origin="instance('tag-template')"/>
+												<xforms:setvalue ref="instance('terms')/tag[last()]/@tag" value="context()"/>
+											</xforms:action>
+
+											<xxforms:show dialog="tags-dialog"/>
+										</xforms:action>
+									</xforms:trigger>
+
+								</div>
+								<div style="margin:10px 0">
+									<h4>Reference flickr Image</h4>
+									<div>
 										<xforms:output mediatype="image/*" value="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
-									</xhtml:div>
-								</xhtml:div>
+									</div>
+								</div>
 								<xforms:group ref="ead:daodesc">
 									<eaditor:daodesc/>
 								</xforms:group>
 
-								<!-- machine tags -->
-								<xforms:trigger appearance="minimal">
-									<xforms:label>machine tags</xforms:label>
-									<xforms:action ev:event="DOMActivate">
-										<!-- load config only if has not already been loaded -->
-										<xforms:send submission="load-config" if="not(string(instance('config')/url))"/>
-
-										<!-- clear terms -->
-										<xforms:delete nodeset="instance('access-terms')/term"/>
-
-										<xforms:send submission="query-flickr-getInfo" if="instance('flickr-info')/@stat != 'ok'"/>
-
-										<!-- get nearest vocabulary terms, only if there are no terms listed -->
-										<xforms:action xxforms:iterate="ancestor::ead:c[1]/descendant::*[string(@source) and string(@authfilenumber)]">
-											<xforms:insert context="instance('access-terms')" nodeset="./child::node()[last()]" origin="instance('term-template')"/>
-											<xforms:setvalue ref="instance('access-terms')/term[last()]/@namespace" value="context()/@source"/>
-											<xforms:setvalue ref="instance('access-terms')/term[last()]/@value" value="context()/@authfilenumber"/>
-											<xforms:setvalue ref="instance('access-terms')/term[last()]" value="context()"/>
-
-											<!-- set predicate if there is a related tag set for the image -->
-											<xforms:setvalue ref="instance('access-terms')/term[last()]/@predicate"
-												value="substring-before(substring-after(instance('flickr-info')//tag[contains(., context()/@source) and contains(., context()/@authfilenumber)][1], ':'), '=')"
-											/>
-										</xforms:action>
-
-										<!-- get photo info if it hasn't already been loaded -->
-
-
-										<xforms:action xxforms:iterate="instance('access-terms')/term">
-											<xxforms:variable name="tag" select="concat(@namespace, ':', @predicate, '=', @value)"/>
-
-											<xforms:setvalue ref="@selected" if="instance('flickr-info')//tag[@raw=$tag]">true</xforms:setvalue>
-											<xforms:setvalue ref="@selected" if="instance('flickr-info')//tag[@raw!=$tag]">false</xforms:setvalue>
-										</xforms:action>
-
-										<xxforms:show dialog="tags-dialog"/>
-									</xforms:action>
-								</xforms:trigger>
-
 								<xxforms:dialog id="tags-dialog" appearance="full" level="modal" close="false" draggable="true" visible="false">
 									<xforms:label>Flickr Machine Tags</xforms:label>
-									<xforms:group ref=".[count(instance('access-terms')/term) &gt; 0]">
-										<xhtml:table>
-											<xhtml:thead>
-												<xhtml:tr>
-													<xhtml:th>selected</xhtml:th>
-													<xhtml:th>namespace</xhtml:th>
-													<xhtml:th>predicate</xhtml:th>
-													<xhtml:th>value</xhtml:th>
-												</xhtml:tr>
-											</xhtml:thead>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/eaditor/xforms/images/add.gif"/>Custom Tags</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="instance('terms')" nodeset="./child::node()[last()]" origin="instance('custom-template')"/>
+									</xforms:trigger>
+									<xforms:group ref=".[count(instance('terms')/term) &gt; 0]">
+										<table>
+											<thead>
+												<tr>
+													<th>use</th>
+													<th>namespace</th>
+													<th>predicate</th>
+													<th>value</th>
+												</tr>
+											</thead>
 
-											<xforms:repeat nodeset="instance('access-terms')/term">
+											<!-- parent component controlled access headings -->
+											<xforms:repeat nodeset="instance('terms')/term">
 												<xxforms:variable name="namespace" select="@namespace"/>
-												<xhtml:tr>
-													<xhtml:td>
+												<xxforms:variable name="value" select="@value"/>
+												<tr>
+													<td>
 														<xforms:input ref="@selected"/>
-													</xhtml:td>
-													<xhtml:td>
+													</td>
+													<td>
 														<xforms:output value="concat(@namespace, ':')"/>
-													</xhtml:td>
-													<xhtml:td>
+													</td>
+													<td>
 														<xforms:select1 ref="@predicate">
 															<xforms:item>
 																<xforms:label>Select...</xforms:label>
@@ -117,18 +132,59 @@
 																<xforms:label ref="."/>
 																<xforms:value ref="."/>
 															</xforms:itemset>
+															<!-- set tag if the predicate has a value, otherwise erase the tag -->
+															<xforms:action ev:event="xforms-value-changed">
+																<xforms:setvalue ref="parent::term/@tag" value="concat($namespace, ':', parent::term/@predicate, '=', $value)"
+																	if="string-length(parent::term/@predicate) &gt; 0"/>
+																<xforms:setvalue ref="parent::term/@tag" if="string-length(parent::term/@predicate) = 0"/>
+															</xforms:action>
 														</xforms:select1>
-													</xhtml:td>
-													<!--<xforms:input ref="@predicate"/>-->
-													<xhtml:td>
+													</td>
+													<td>
 														<xforms:output value="concat('=', @value, ' (', ., ')')"/>
-													</xhtml:td>
-												</xhtml:tr>
+													</td>
+												</tr>
 											</xforms:repeat>
-										</xhtml:table>
+
+											<!-- existing tags -->
+											<xforms:repeat nodeset="instance('terms')/tag">
+												<tr>
+													<td>
+														<xforms:input ref="@selected"/>
+													</td>
+													<td/>
+													<td/>
+													<td>
+														<xforms:output value="@tag"/>
+													</td>
+												</tr>
+											</xforms:repeat>
+
+											<!-- custom tags -->
+											<xforms:repeat nodeset="instance('terms')/custom">
+												<tr>
+													<td>
+														<xforms:input ref="@selected"/>
+													</td>
+													<td/>
+													<td/>
+													<td>
+														<xforms:input ref="@tag"/>
+														<xforms:trigger appearance="minimal">
+															<xforms:delete nodeset="." ev:event="DOMActivate"/>
+															<xforms:label>
+																<img src="/eaditor/xforms/images/remove.gif"/>
+															</xforms:label>
+														</xforms:trigger>
+													</td>
+												</tr>
+											</xforms:repeat>
+										</table>
 										<xforms:trigger>
 											<xforms:label>Apply tags</xforms:label>
 											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="instance('tags')" value="string-join(instance('terms')/*[@selected='true']/@tag, ' ')"/>
+												<xforms:message level="modal" ref="instance('tags')"/>
 												<xxforms:hide dialog="tags-dialog"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -137,7 +193,7 @@
 											<xxforms:hide dialog="tags-dialog" ev:event="DOMActivate"/>
 										</xforms:trigger>
 									</xforms:group>
-									<xforms:group ref=".[count(instance('access-terms')/term) = 0]">
+									<xforms:group ref=".[count(instance('terms')/term) = 0]">
 										<p>No potential tags present in parent component.</p>
 										<xforms:trigger>
 											<xforms:label>Close</xforms:label>
@@ -145,12 +201,12 @@
 										</xforms:trigger>
 									</xforms:group>
 								</xxforms:dialog>
-							</xhtml:div>
+							</div>
 						</xforms:group>
 						<!-- otherwise show controls -->
 						<xforms:group ref=".[not(contains(ead:daoloc[1]/@xlink:href, 'flickr.com'))]">
-							<xhtml:div class="subsection pair_div">
-								<xhtml:h3>Digital Archival Object Group</xhtml:h3>
+							<div class="subsection pair_div">
+								<h3>Digital Archival Object Group</h3>
 								<eaditor:attributes ref="."/>
 								<xforms:trigger appearance="minimal">
 									<xforms:action ev:event="DOMActivate">
@@ -159,28 +215,28 @@
 										<xforms:delete nodeset="."/>
 									</xforms:action>
 									<xforms:label>
-										<xhtml:img src="/eaditor/xforms/images/remove.gif"/>
+										<img src="/eaditor/xforms/images/remove.gif"/>
 									</xforms:label>
 								</xforms:trigger>
 
-								<xhtml:div>
+								<div>
 									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
+												<img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
 										</xforms:trigger>
 									</xforms:group>
 									<xforms:group ref=".[instance('interface-type')='manual']">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/eaditor/xforms/images/add.gif"/>Digital Archival Object</xforms:label>
+												<img src="/eaditor/xforms/images/add.gif"/>Digital Archival Object</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('daoloc-template')"/>
 										</xforms:trigger>
 									</xforms:group>
-								</xhtml:div>
+								</div>
 
-								<xhtml:div style="margin:10px 0">
+								<div style="margin:10px 0">
 									<xforms:select1 ref="instance('interface-type')" appearance="full">
 										<xforms:label>Image Type</xforms:label>
 										<xforms:item>
@@ -200,7 +256,7 @@
 											</xforms:action>
 										</xforms:action>
 									</xforms:select1>
-								</xhtml:div>
+								</div>
 
 								<xforms:switch>
 									<xforms:case id="manual">
@@ -213,8 +269,8 @@
 									</xforms:case>
 									<xforms:case id="flickr">
 										<xforms:group ref=".[count(ead:daoloc) = 0]">
-											<xhtml:h4>Reference flickr Image</xhtml:h4>
-											<xhtml:div style="margin:10px 0 20px 0">
+											<h4>Reference flickr Image</h4>
+											<div style="margin:10px 0 20px 0">
 												<xforms:input ref="instance('flickr-uri')">
 													<xforms:label>URI</xforms:label>
 												</xforms:input>
@@ -222,7 +278,7 @@
 													<xforms:label>Attach</xforms:label>
 													<xforms:action ev:event="DOMActivate">
 														<xforms:setvalue ref="instance('photo_id')" value="tokenize(substring-after(instance('flickr-uri'), '://'), '/')[4]"/>
-														<xforms:send submission="query-flickr" if="number(instance('photo_id'))"/>
+														<xforms:send submission="query-flickr-getSizes" if="number(instance('photo_id'))"/>
 														<xforms:dispatch target="parse-error-dialog" name="fr-show" if="not(number(instance('photo_id')))"/>
 
 														<!-- initiate flickr-to-mets processing after submission -->
@@ -258,7 +314,7 @@
 														</xforms:action>
 													</xforms:action>
 												</xforms:trigger>
-											</xhtml:div>
+											</div>
 										</xforms:group>
 
 										<fr:alert-dialog id="parse-error-dialog">
@@ -282,7 +338,7 @@
 								<xforms:group ref="ead:daodesc">
 									<eaditor:daodesc/>
 								</xforms:group>
-							</xhtml:div>
+							</div>
 						</xforms:group>
 						<!--<fr:xforms-inspector/>-->
 					</xforms:group>
@@ -295,41 +351,62 @@
 						</xforms:instance>
 
 						<xforms:instance id="config">
-							<config xmlns=""/>
+							<config/>
+						</xforms:instance>
+						
+						<xforms:instance id="control-instance">
+							<control>								
+								<flickr_uri/>
+								<photo_id/>
+								<tags/>
+							</control>
 						</xforms:instance>
 
 						<xforms:instance id="interface-type">
-							<interface xmlns="">manual</interface>
+							<interface>manual</interface>
 						</xforms:instance>
 
-						<xforms:instance id="flickr-response">
-							<rsp xmlns=""/>
-						</xforms:instance>
-
-						<!-- URI for flickr image -->
+						<!-- flickr parameter values -->
 						<xforms:instance id="flickr-uri">
-							<uri xmlns=""/>
+							<uri/>
 						</xforms:instance>
 
 						<xforms:instance id="photo_id">
-							<photo_id xmlns=""/>
+							<photo_id/>
+						</xforms:instance>
+
+						<xforms:instance id="tags">
+							<tags/>
+						</xforms:instance>
+						
+						<!-- flickr responses -->
+						<xforms:instance id="flickr-response">
+							<rsp/>
 						</xforms:instance>
 
 						<xforms:instance id="flickr-sizes">
-							<rsp xmlns=""/>
+							<rsp/>
 						</xforms:instance>
 
 						<xforms:instance id="flickr-info">
-							<rsp xmlns=""/>
+							<rsp/>
 						</xforms:instance>
 
 						<!-- machine tag instances -->
-						<xforms:instance id="access-terms">
+						<xforms:instance id="terms">
 							<terms xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="term-template">
-							<term xmlns="" namespace="" predicate="" value="" selected=""/>
+							<term xmlns="" namespace="" predicate="" value="" selected="false" tag=""/>
+						</xforms:instance>
+
+						<xforms:instance id="tag-template">
+							<tag xmlns="" selected="true" tag=""/>
+						</xforms:instance>
+
+						<xforms:instance id="custom-template">
+							<custom xmlns="" selected="true" tag=""/>
 						</xforms:instance>
 
 						<!-- daodesc and associated elements -->
@@ -353,12 +430,18 @@
 						<xforms:bind nodeset="instance('interface-type')" readonly="instance('flickr-response')/@stat='ok'"/>
 
 						<!-- require value for predicate -->
-						<xforms:bind nodeset="instance('access-terms')">
+						<xforms:bind nodeset="instance('terms')">
 							<xforms:bind nodeset="term">
 								<xforms:bind nodeset="@predicate" required="true()">
 									<xforms:bind constraint="string-length(.) &gt; 0"/>
 								</xforms:bind>
-								<xforms:bind nodeset="@selected" type="xs:boolean"/>
+								<xforms:bind nodeset="@selected" type="xs:boolean" readonly="string-length(parent::node()/@tag) = 0"/>
+							</xforms:bind>
+							<xforms:bind nodeset="tag">
+								<xforms:bind nodeset="@selected" type="xs:boolean" readonly="string-length(parent::node()/@tag) = 0"/>
+							</xforms:bind>
+							<xforms:bind nodeset="custom">
+								<xforms:bind nodeset="@selected" type="xs:boolean" readonly="string-length(parent::node()/@tag) = 0"/>
 							</xforms:bind>
 						</xforms:bind>
 
@@ -368,7 +451,7 @@
 						</xforms:submission>
 
 						<!-- query flickr.photos.getSizes API -->
-						<xforms:submission id="query-flickr" serialization="none" method="get"
+						<xforms:submission id="query-flickr-getSizes" serialization="none" method="get"
 							action="http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
 							replace="instance" instance="flickr-sizes"/>
 
