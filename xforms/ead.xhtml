@@ -429,6 +429,16 @@
 							<xforms:output ref="instance('status')"/>
 						</div>
 					</xforms:group>
+					<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
+						<!-- show username if there are already session parameters -->
+						<div style="float:right">
+							<b>
+								<xforms:output value="xxforms:get-session-attribute('flickr_username')">
+									<xforms:label>Flickr User</xforms:label>
+								</xforms:output>
+							</b>
+						</div>
+					</xforms:group>
 					<p>
 						<a href="{$display_path}">&lt; Return</a>
 					</p>

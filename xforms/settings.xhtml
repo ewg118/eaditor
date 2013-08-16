@@ -52,6 +52,10 @@
 			<xforms:instance id="flickr-response">
 				<rsp xmlns=""/>
 			</xforms:instance>
+			
+			<xforms:instance id="secret-template" xxforms:exclude-result-prefixes="#all">
+				<flickr_api_secret/>
+			</xforms:instance>
 
 			<!-- jQuery UI themes -->
 			<xforms:instance id="jquery-ui-themes">
@@ -110,6 +114,8 @@
 			<!-- submissions -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config. Is eXist operational?</xforms:message>
+				<!-- insert flickr api secret if it isn't already in the config -->
+				<xforms:insert origin="instance('secret-template')" context="instance('config')" nodeset="./child::node()[last()]" if="count(instance('config')/flickr_api_secret) = 0" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 
 			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none" xxforms:username="admin" xxforms:password="">
@@ -250,6 +256,12 @@
 												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"/>
 											</xforms:input>
 											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
+										</div>
+										<div>
+											<xforms:input ref="flickr_api_secret" incremental="true">
+												<xforms:label>flickr API Secret</xforms:label>												
+											</xforms:input>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
 										</div>
 										<div>
 											<xforms:input ref="geonames_api_key" incremental="true">

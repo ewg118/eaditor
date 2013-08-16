@@ -48,19 +48,20 @@
 			<xforms:instance id="config-template">
 				<config xmlns:xlink="http://www.w3.org/1999/xlink">
 					<firstrun/>
-					<flickr_api_key/>
+					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
+					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
 					<geonames_api_key/>
 					<title>EADitor</title>
 					<description/>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<banner_text>EADitor: XForms for EAD</banner_text>
-					<banner_image xlink:href=""/>					
+					<banner_image xlink:href=""/>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
 					<export>
 						<oai-pmh>true</oai-pmh>
 						<pelagios>false</pelagios>
-					</export>					
+					</export>
 					<theme>
 						<facets>agency_facet,century_num,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
 						<jquery_ui_theme>smoothness</jquery_ui_theme>
@@ -177,8 +178,8 @@
 					<query id="publish-mods">&lt;report xmlns:mods="http://www.loc.gov/mods/v3"> { for $foo in collection() return if($foo[child::node()[local-name()='modsCollection']]) then &lt;item>
 						{ $foo/*[local-name()='modsCollection']/*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier'] } &lt;/item> else '' } &lt;/report></query>
 					<query id="query-objects"> &lt;report> { for $record in collection()[contains(descendant::*[local-name()='unittitle'], 'QUERY') or descendant::*[local-name()='eadid'] = 'QUERY' or
-						descendant::*[local-name()='identifier'] = 'QUERY' or descendant::*[local-name()='recordIdentifier'] = 'QUERY' or contains(descendant::*[local-name()='title'], 'QUERY')] let $type := $record/*/local-name() return if ($type='ead') then
-						&lt;record> &lt;type>{ $type }&lt;/type> &lt;id>{ $record//*[local-name()='eadid']/text() }&lt;/id> &lt;title>{
+						descendant::*[local-name()='identifier'] = 'QUERY' or descendant::*[local-name()='recordIdentifier'] = 'QUERY' or contains(descendant::*[local-name()='title'], 'QUERY')] let
+						$type := $record/*/local-name() return if ($type='ead') then &lt;record> &lt;type>{ $type }&lt;/type> &lt;id>{ $record//*[local-name()='eadid']/text() }&lt;/id> &lt;title>{
 						$record//*[local-name()='archdesc']/*[local-name()='did']/*[local-name()='unittitle']/text() }&lt;/title> &lt;components>{ if (count($record//*[local-name()='c']) &gt; 0) then
 						'true' else 'false' }&lt;/components> &lt;published/> &lt;/record> else &lt;record> &lt;type>{ $type }&lt;/type> &lt;id>{
 						$record//*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier']/text() }&lt;/id> &lt;title>{
@@ -229,6 +230,42 @@
 				<optimize/>
 			</xforms:instance>
 
+			<!-- flickr -->
+			<xforms:instance id="flickr-control">
+				<controls xmlns="">
+					<service/>
+					<request/>
+					<timestamp/>
+					<nonce/>
+					<method>HMAC-SHA1</method>
+					<version>1.0</version>
+					<callback/>
+					<signature/>
+					<token/>
+					<verifier/>					
+				</controls>
+			</xforms:instance>
+
+			<xforms:instance id="flickr-response">
+				<rsp xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="flickr-auth-response">
+				<document xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="flickr-auth-config">
+				<config xmlns="">
+					<url/>
+					<content-type>text/plain</content-type>
+				</config>
+			</xforms:instance>
+
+			<xforms:instance id="request">
+				<request xmlns=""/>
+			</xforms:instance>
+
+			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config-template')">
 				<xforms:bind nodeset="title" required="true()"/>
 				<xforms:bind nodeset="url" required="true()" type="xs:anyURI"/>
@@ -236,7 +273,7 @@
 			</xforms:bind>
 
 
-			<!-- submissions -->
+			<!-- ************* SUBMISSIONS ************* -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- get the number of docs in the eXist collection() -->
@@ -366,7 +403,46 @@
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:send submission="load-config"/>
 
-				<!-- testing query -->
+				<!-- get request if there are flickr API key and secret values -->
+				<xforms:action if="string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)">
+					<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"/>
+				</xforms:action>
+
+				<!-- handle flickr authentication -->
+				<xforms:action if="string(xxforms:get-request-parameter('oauth_token')) and string(xxforms:get-request-parameter('oauth_verifier'))">
+					<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-request-parameter('oauth_token')"/>
+					<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxforms:get-request-parameter('oauth_verifier')"/>
+
+					<!-- get access token -->
+					<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
+					<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"/>
+					<xforms:setvalue ref="instance('flickr-control')/service">http://www.flickr.com/services/oauth/access_token</xforms:setvalue>
+					<!-- generating signature -->
+					<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
+					<xforms:var name="base"
+						select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_version=', instance('flickr-control')/version)))"/>
+					<xforms:setvalue ref="instance('flickr-control')/signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"/>
+					<xforms:setvalue ref="instance('flickr-control')/request"
+						value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_token=', instance('flickr-control')/token)"/>
+
+					<!-- get response -->
+					<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"/>
+					<xforms:insert nodeset="instance('flickr-auth-response')"
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
+
+					<!-- set session attributes after flickr authentication -->
+					<xforms:var name="pieces" select="tokenize(instance('flickr-auth-response'), '&amp;')"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"/>
+					
+					<!-- reload page after setting oauth session attributions -->
+					<xforms:load resource="{instance('request')/request-url}"/>
+				</xforms:action>
+				
+				<!-- get first page of objects -->
 				<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='query-objects']"/>
 				<xforms:send submission="xquery-collection"/>
 			</xforms:action>
@@ -388,6 +464,52 @@
 						<div class="error">
 							<xforms:output ref="instance('control-instance')/error"/>
 						</div>
+					</xforms:group>
+					<!-- flickr authentication successful -->
+					<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
+						<!-- show username if there are already session parameters -->
+						<div style="float:right">
+							<b>
+								<xforms:output value="xxforms:get-session-attribute('flickr_username')">
+									<xforms:label>Flickr User</xforms:label>
+								</xforms:output>
+							</b>
+						</div>
+					</xforms:group>
+					<!-- show flickr login button -->
+					<xforms:group ref=".[not(string(xxforms:get-session-attribute('flickr_username'))) and string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)]">
+						<xforms:group ref="instance('flickr-control')">
+							<div style="float:right">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>Flickr Login</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<!-- STEP 1: Request Token -->
+										<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
+										<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"/>
+										<xforms:setvalue ref="callback" value="encode-for-uri(instance('request')/request-url)"/>
+										<xforms:setvalue ref="service">http://www.flickr.com/services/oauth/request_token</xforms:setvalue>
+										<!-- generating signature -->
+										<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;')"/>
+										<xforms:var name="base"
+											select="concat('GET&amp;', encode-for-uri(service), '&amp;', encode-for-uri(concat('oauth_callback=', callback, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', nonce, '&amp;oauth_signature_method=', method, '&amp;oauth_timestamp=', timestamp, '&amp;oauth_version=', version)))"/>
+										<xforms:setvalue ref="signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"/>
+										<xforms:setvalue ref="request"
+											value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_callback=', instance('flickr-control')/callback)"/>
+										<!-- get response -->
+										<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"/>
+										<xforms:insert nodeset="instance('flickr-auth-response')"
+											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
+										<!-- STEP 2: Redirect to Authorization URL -->
+										<!-- set session attributes -->
+										<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
+										<xforms:insert context="."
+											origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
+										<!-- load authorization page -->
+										<xforms:load resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}&amp;perms=write"/>
+									</xforms:action>
+								</xforms:trigger>
+							</div>
+						</xforms:group>
 					</xforms:group>
 					<h2>File Manager</h2>
 					<ul>
@@ -421,7 +543,6 @@
 							</li>
 						</ul>
 					</xforms:group>
-					
 					<!-- search -->
 					<xforms:group ref="instance('control-instance')[number(numFound) &gt; 0]">
 						<div>
@@ -452,11 +573,9 @@
 							</xforms:group>
 						</div>
 					</xforms:group>
-					
-					
 					<xforms:group ref="instance('pagination-result')">
 						<xforms:group ref=".[count(//record) &gt; 0]">
-							<h3>List of Guides</h3>							
+							<h3>List of Guides</h3>
 							<!-- pagination variables -->
 							<xxforms:variable name="numFound" select="number(instance('control-instance')/numFound)"/>
 							<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
@@ -464,8 +583,7 @@
 							<xxforms:variable name="end" select="if ($numFound &lt; $page * 20) then $numFound else $page * 20"/>
 							<xxforms:variable name="next" select="($page * 20) + 1"/>
 							<xxforms:variable name="total" select="ceiling($numFound div 20)"/>
-							
-							<!-- pagination --> 
+							<!-- pagination -->
 							<xforms:group ref=".[string-length(instance('control-instance')/query_sent) = 0]">
 								<div class="paging_div">
 									<div style="float:left;"> Displaying records <b><xforms:output value="$start"/></b> to <b><xforms:output value="$end"/></b> of <b><xforms:output value="$numFound"/>
@@ -806,7 +924,7 @@
 					<xforms:send submission="commit"/>
 					<!-- reload table -->
 					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>					
+					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
@@ -823,7 +941,7 @@
 					<xforms:send submission="delete-solr-doc"/>
 					<!-- reload table -->
 					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>					
+					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
@@ -840,13 +958,13 @@
 					<xforms:send submission="delete-guide"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="delete-solr-doc"/>
-					
-					<!-- get new numCount -->					
+
+					<!-- get new numCount -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"/>
 					<xforms:send submission="xquery-collection"/>
-					
+
 					<!-- reload table -->
-					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>					
+					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
 					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
 					<xxforms:variable name="end" select="$page * 20"/>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>

@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:exist="http://exist.sourceforge.net/NS/exist">
-	<xhtml:head>
-		<xhtml:title>EADitor: Conformance Testing</xhtml:title>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/grids-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/reset-fonts-grids.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/base-min.css"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="/apps/eaditor/css/fonts-min.css"/>
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:saxon="http://saxon.sf.net/">
+	<head>
+		<title>EADitor: Conformance Testing</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 
 		<!-- EADitor styling -->
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/style.css"/>
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/css/themes/smoothness.css"/>
-
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/get_components.js"/>
-		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
-
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model>
 			<xforms:instance id="exist-url">
-				<xi:include href="exist-url.xml"/>
+				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -90,23 +86,12 @@
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/@test">Success</xforms:setvalue>
-					<xforms:send submission="test-solr-vocabularies"/>
-					<xforms:send submission="test-solr-unpublished"/>
 					<xforms:send submission="test-solr-published"/>
-					<!-- compare count of eXist files with count of unpublished Solr docs -->
-					<xforms:action if="instance('control-instance')/errors/error[@code='003']/@count = instance('control-instance')/errors/error[@code='008']/@count">
-						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/@test">Success</xforms:setvalue>
-						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/message">Number of files in eaditor/guides eXist collection matches Solr docs in ead-unpublished Solr core.</xforms:setvalue>
-					</xforms:action>
-					<xforms:action if="instance('control-instance')/errors/error[@code='003']/@count != instance('control-instance')/errors/error[@code='008']/@count">
-						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/@test">Fail</xforms:setvalue>
-						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='009']/message">Mismatch between eaditor/guides collection in eXist and documents in eaditor-unpublished
-							Solr core. Be sure that all finding aids are EAD 2002 schema-compliant and reload the Admin Home page to reindex the collection into Solr.</xforms:setvalue>
-					</xforms:action>
-					<!-- be sure that the number of published Solr documents does not outnumber eXist or unpublished count -->
-					<xforms:action if="number(instance('control-instance')/errors/error[@code='010']/@count) &gt; number(instance('control-instance')/errors/error[@code='003']/@count) or number(instance('control-instance')/errors/error[@code='010']/@count) &gt; number(instance('control-instance')/errors/error[@code='008']/@count)">
+					<xforms:action
+						if="number(instance('control-instance')/errors/error[@code='010']/@count) &gt; number(instance('control-instance')/errors/error[@code='003']/@count) or number(instance('control-instance')/errors/error[@code='010']/@count) &gt; number(instance('control-instance')/errors/error[@code='008']/@count)">
 						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='011']/@test">Fail</xforms:setvalue>
-						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='011']/message">Number of published finding aids outnumbers unpublished Solr documents or eXist files.</xforms:setvalue>
+						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='011']/message">Number of published finding aids outnumbers unpublished Solr documents or eXist
+							files.</xforms:setvalue>
 					</xforms:action>
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
@@ -166,33 +151,11 @@
 			</xforms:submission>
 
 			<!-- test Solr cores -->
-			<xforms:submission id="test-solr-vocabularies" serialization="none" method="get" action="{instance('config')/solr_vocabularies}select/?q=*:*&amp;rows=0" replace="instance" instance="temp">
-				<xforms:action ev:event="xforms-submit-done">
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/@test">Success</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/message" value="concat(instance('temp')//result[@name='response']/@numFound, ' terms found.')"/>
-				</xforms:action>
-				<xforms:action ev:event="xforms-submit-error">
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='007']/message" value="concat('No response from ', instance('config')/solr_vocabularies)"/>
-				</xforms:action>
-			</xforms:submission>
-			<xforms:submission id="test-solr-unpublished" serialization="none" method="get" action="{instance('config')/solr_unpublished}select/?q=*:*&amp;rows=0" replace="instance" instance="temp">
-				<xforms:action ev:event="xforms-submit-done">
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/@test">Success</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/@count" value="instance('temp')//result[@name='response']/@numFound"/>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/message" value="concat(../@count, ' finding aids indexed into unpublished index.')"/>
-				</xforms:action>
-				<xforms:action ev:event="xforms-submit-error">
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='008']/message" value="concat('No response from ', instance('config')/solr_unpublished)"/>
-				</xforms:action>
-			</xforms:submission>
 			<xforms:submission id="test-solr-published" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=*:*&amp;rows=0" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/@test">Success</xforms:setvalue>
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/@count" value="instance('temp')//result[@name='response']/@numFound"/>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/message"
-						value="concat(../@count, ' published finding aids.')"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/message" value="concat(../@count, ' published finding aids.')"/>
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='010']/@test">Fail</xforms:setvalue>
@@ -200,60 +163,157 @@
 				</xforms:action>
 			</xforms:submission>
 
+			<!-- flickr test  -->
+			<xforms:submission id="flickr-test" serialization="none" method="get"
+				action="http://api.flickr.com/services/rest/?method=flickr.test.login&amp;oauth_consumer_key={instance('flickr-control')/api_key}&amp;oauth_timestamp={instance('flickr-control')/timestamp}&amp;oauth_nonce={instance('flickr-control')/nonce}&amp;oauth_signature_method={instance('flickr-control')/method}&amp;oauth_version={instance('flickr-control')/version}&amp;oauth_token={instance('flickr-control')/token}&amp;oauth_signature={instance('flickr-control')/signature}"
+				replace="instance" instance="flickr-response">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
+			</xforms:submission>
+
 			<!-- load eaditor config file on xforms construction -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:send submission="load-eaditor-collection"/>
+				<xforms:setvalue ref="instance('flickr-control')/api_key" value="instance('config')/flickr_api_key"/>
+				<xforms:setvalue ref="instance('flickr-control')/api_secret" value="instance('config')/flickr_api_secret"/>
+
+				<!-- get a request token after loggin in -->
+				<xforms:action if="string(xxforms:get-request-parameter('oauth_token')) and string(xxforms:get-request-parameter('oauth_verifier'))">
+					<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-request-parameter('oauth_token')"/>
+					<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxforms:get-request-parameter('oauth_verifier')"/>
+
+					<!-- get access token -->
+					<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
+					<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"/>
+					<xforms:setvalue ref="instance('flickr-control')/service">http://www.flickr.com/services/oauth/access_token</xforms:setvalue>
+					<!-- generating signature -->
+					<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
+					<xforms:var name="base"
+						select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('oauth_consumer_key=', instance('flickr-control')/api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_version=', instance('flickr-control')/version)))"/>
+					<xforms:setvalue ref="instance('flickr-control')/auth/key" value="$key"/>
+					<xforms:setvalue ref="instance('flickr-control')/auth/base" value="$base"/>
+					<xforms:setvalue ref="instance('flickr-control')/signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"/>
+					<xforms:setvalue ref="instance('flickr-control')/request"
+						value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('flickr-control')/api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_token=', instance('flickr-control')/token)"/>
+
+					<!-- get response -->
+					<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"/>
+					<xforms:insert nodeset="instance('flickr-auth-response')"
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
+
+					<!-- set session attributes after flickr authentication -->
+					<xforms:var name="pieces" select="tokenize(instance('flickr-auth-response'), '&amp;')"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"/>
+					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"/>
+				</xforms:action>
+				<!--<xforms:action if="string(xxforms:get-session-attribute('oauth_token'))">
+					
+				</xforms:action>-->
 			</xforms:action>
 		</xforms:model>
-	</xhtml:head>
+	</head>
 
-	<xhtml:body class="yui-skin-sam">
-		<xhtml:div id="doc4">
-			<!-- header -->
-			<xxforms:variable name="display_path">../../</xxforms:variable>
-			<xi:include href="header-admin.xml"/>
 
-			<xhtml:div id="bd">
-				<xhtml:div id="form">
-					<xhtml:p>
-						<a href="..">&lt; Return</a>
-					</xhtml:p>
-					<xhtml:h1>EADitor Conformance Testing</xhtml:h1>
-					<xhtml:p>This page checks for the existence of required files based on the eXist URL in exist-url.xml in the EADitor folder in Orbeon's apps directory. Upon successful load of
-						EADitor's configuration file, config.xml, in the eXist database, Solr and other configurations are verified.</xhtml:p>
-					<xforms:group ref="instance('control-instance')/errors">
-						<xhtml:table class="error-table" style="border-collapse:separate;border-spacing:10px;">
-							<xhtml:tr>
-								<xhtml:th class="indicator">Status</xhtml:th>
-								<xhtml:th>Description</xhtml:th>
-							</xhtml:tr>
+	<body>
+		<div class="yui3-g">
+			<div class="yui3-u-1">
+				<div class="content">
+					<!-- header -->
+					<xxforms:variable name="display_path">../../</xxforms:variable>
+					<xi:include href="header.xml"/>
+					<div id="form">
+						<p>
+							<a href="..">&lt; Return</a>
+						</p>
+						<h1>EADitor Conformance Testing</h1>
+						<p>This page checks for the existence of required files based on the eXist URL in exist-url.xml in the EADitor folder in Orbeon's apps directory. Upon successful load of
+							EADitor's configuration file, config.xml, in the eXist database, Solr and other configurations are verified.</p>
+						<xforms:group ref="instance('control-instance')/errors">
+							<table class="error-table" style="border-collapse:separate;border-spacing:10px;">
+								<tr>
+									<th class="indicator">Status</th>
+									<th>Description</th>
+								</tr>
 
-							<xforms:repeat nodeset="error[string(@test)]">
-								<xxforms:variable name="status" select="if (@test='Success') then 'test-success' else 'test-fail'"/>
-								<xhtml:tr>
-									<xhtml:td class="indicator {$status}">
-										<xforms:output ref="@code"/>
-									</xhtml:td>
-									<xhtml:td style="border-bottom:1px solid silver;">
-										<xhtml:b>
-											<xforms:output ref="concat(@test, ':')"/>
-										</xhtml:b>
-										<xforms:output ref="@label"/>
-										<xforms:group ref=".[string(message)]">
-											<xhtml:span> - </xhtml:span>
-											<xforms:output ref="message"/>
-										</xforms:group>
-									</xhtml:td>
-								</xhtml:tr>
-							</xforms:repeat>
-						</xhtml:table>
-					</xforms:group>
-					<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector" xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
-				</xhtml:div>
-			</xhtml:div>
-
-			<!-- footer -->
-			<xi:include href="xslt/footer.xml"/>
-		</xhtml:div>
-	</xhtml:body>
-</xhtml:html>
+								<xforms:repeat nodeset="error[string(@test)]">
+									<xxforms:variable name="status" select="if (@test='Success') then 'test-success' else 'test-fail'"/>
+									<tr>
+										<td class="indicator {$status}">
+											<xforms:output ref="@code"/>
+										</td>
+										<td style="border-bottom:1px solid silver;">
+											<b>
+												<xforms:output ref="concat(@test, ':')"/>
+											</b>
+											<xforms:output ref="@label"/>
+											<xforms:group ref=".[string(message)]">
+												<span> - </span>
+												<xforms:output ref="message"/>
+											</xforms:group>
+										</td>
+									</tr>
+								</xforms:repeat>
+							</table>
+						</xforms:group>
+						<!--<xforms:group ref="instance('flickr-control')">
+							<h2>flickr test</h2> <xforms:trigger>
+								<xforms:label>Login</xforms:label>
+								<xforms:action ev:event="DOMActivate">
+									<!-\- STEP 1: Request Token -\->
+									<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
+									<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"/>
+									<xforms:setvalue ref="callback" value="encode-for-uri('http://localhost:8080/orbeon/eaditor/admin/test/')"/>
+									<xforms:setvalue ref="service">http://www.flickr.com/services/oauth/request_token</xforms:setvalue>
+									<!-\- generating signature -\->
+									<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;')"/>
+									<xforms:var name="base"
+										select="concat('GET&amp;', encode-for-uri(service), '&amp;', encode-for-uri(concat('oauth_callback=', callback, '&amp;oauth_consumer_key=', api_key, '&amp;oauth_nonce=', nonce, '&amp;oauth_signature_method=', method, '&amp;oauth_timestamp=', timestamp, '&amp;oauth_version=', version)))"/>
+									<xforms:setvalue ref="auth/key" value="$key"/>
+									<xforms:setvalue ref="auth/base" value="$base"/>
+									<xforms:setvalue ref="signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"/>
+									<xforms:setvalue ref="request"
+										value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('flickr-control')/api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_callback=', instance('flickr-control')/callback)"/>
+									<!-\- get response -\->
+									<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"/>
+									<xforms:insert nodeset="instance('flickr-auth-response')"
+										origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
+									<!-\- STEP 2: Redirect to Authorization URL -\->
+									<!-\- set session attributes -\->
+									<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
+									<xforms:insert context="."
+										origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
+									<xforms:load resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}"/>
+								</xforms:action>
+							</xforms:trigger> <xforms:group ref=".[string(xxforms:get-session-attribute('oauth_token'))]">
+								<xforms:trigger>
+									<xforms:label>Check Authentication</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
+										<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"/>
+										<xforms:setvalue ref="service">http://api.flickr.com/services/rest/</xforms:setvalue>
+										<xforms:setvalue ref="token" value="xxforms:get-session-attribute('oauth_token')"/>
+										<!-\- generating signature -\->
+										<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
+										<xforms:var name="base"
+											select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('method=flickr.test.login&amp;oauth_consumer_key=', instance('flickr-control')/api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_version=', instance('flickr-control')/version)))"/>
+										<xforms:setvalue ref="auth/key" value="$key"/>
+										<xforms:setvalue ref="auth/base" value="$base"/>
+										<xforms:setvalue ref="signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"/> <xforms:send submission="flickr-test"/>
+									</xforms:action>
+								</xforms:trigger>
+							</xforms:group>
+							</xforms:group>-->
+						
+						
+						<xforms:output value="xxforms:get-request-path()">
+							<xforms:label>URL</xforms:label>
+						</xforms:output>
+						<fr:xforms-inspector id="orbeon-xforms-inspector"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
