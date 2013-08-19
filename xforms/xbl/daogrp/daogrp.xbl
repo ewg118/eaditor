@@ -9,16 +9,7 @@
 					<xxforms:variable name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xxforms:variable>
-
-					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<!-- set flickr oauth_token so that the add tags trigger may be bound to it -->
-						<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-session-attribute('oauth_token')" if="string(xxforms:get-session-attribute('oauth_token'))"/>
-
-						<!-- only load config on new insertions or local images -->
-						<xforms:action if="not(contains($binding/ead:daoloc[1]/@xlink:href, 'flickr.com'))">
-							<xforms:send submission="load-config"/>
-						</xforms:action>
-					</xforms:action>
+					
 					<xforms:group ref="$binding">
 						<!-- just show thumbnail if it is a flickr thumbnail -->
 						<xforms:group ref=".[contains(ead:daoloc[1]/@xlink:href, 'flickr.com')]">
@@ -274,6 +265,7 @@
 												<xforms:toggle case="manual"/>
 											</xforms:action>
 											<xforms:action if=". = 'flickr'">
+												<xforms:send submission="load-config" if="not(string(instance('config')/url))"/>
 												<xforms:toggle case="flickr"/>
 											</xforms:action>
 										</xforms:action>
@@ -465,10 +457,10 @@
 						</xforms:instance>
 
 						<!-- interface type-->
-						<xforms:bind nodeset="instance('interface-type')" readonly="instance('flickr-response')/@stat='ok'"/>
+						<!--<xforms:bind nodeset="instance('interface-type')" readonly="instance('flickr-response')/@stat='ok'"/>-->
 
 						<!-- allow allow the add tags trigger to be activated when the flickr user has been authenticated -->
-						<xforms:bind id="authenticated" relevant="string(instance('flickr-control')/token)"/>
+						<xforms:bind id="authenticated" relevant="string(xxforms:get-session-attribute('oauth_token'))"/>
 
 						<!-- require value for predicate -->
 						<xforms:bind nodeset="instance('terms')">
