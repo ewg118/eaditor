@@ -3,10 +3,8 @@ $(document).ready(function () {
 		autoExpand: true
 	});
 	
-	$('.ui-menu-item').click(function(){
+	/*$('.ui-menubar-item').click(function(){
 		var href = $(this).children('a').attr('href');
-		
 		window.location = href;
-	});
-	
+	});*/
 });

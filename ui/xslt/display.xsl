@@ -56,6 +56,7 @@
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
+	<xsl:variable name="url" select="/content/config/url"/>
 
 	<!-- display path -->
 	<xsl:variable name="display_path">
@@ -83,7 +84,10 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-
+	
+	<!-- boolean variable as to whether there are mappable points -->
+	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
+	
 	<!-- url params -->
 	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:param name="mode">
@@ -105,6 +109,10 @@
 					<xsl:text>: </xsl:text>
 					<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
 				</title>
+				<!-- alternates -->
+				<link rel="alternate" type="text/xml" href="{concat($url, 'id/', $path)}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{concat($url, 'id/', $path)}.rdf"/>
+				
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
 				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
@@ -121,6 +129,33 @@
 				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
 				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
 				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
+
+				<xsl:if test="$hasPoints = true()">
+					<!-- mapping -->
+					<link type="text/css" href="{$display_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>
+					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+					<!--<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"/>-->
+					<script type="text/javascript" src="{$display_path}ui/javascript/mxn.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/timeline-2.3.0.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/timemap_full.pack.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/param.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/xml.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/kml.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
+				</xsl:if>
+				<script type="text/javascript" langage="javascript">
+					$(document).ready(function () {
+						$("#tabs").tabs();
+						<!--$(".thumbImage a").fancybox();
+						$('.flickr-link').click(function () {
+							var href = $(this).attr('href');
+							$.fancybox.close();
+							window.open(href, '_blank');
+						});-->
+					});
+				</script>
+				
+				
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -133,6 +168,9 @@
 						<xsl:call-template name="ead-content"/>
 					</xsl:when>
 				</xsl:choose>
+				<div id="path" style="display:none">
+					<xsl:value-of select="$path"/>
+				</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>

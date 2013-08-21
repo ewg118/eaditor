@@ -41,12 +41,15 @@
 					<xsl:when test="$elem = 'famname'">Family Name</xsl:when>
 					<xsl:when test="$elem = 'fileplan'">Fileplan</xsl:when>
 					<xsl:when test="$elem = 'fulltext'">Keyword</xsl:when>
+					<xsl:when test="$elem = 'function'">Function</xsl:when>
 					<xsl:when test="$elem = 'genreform'">Genre/Format</xsl:when>
 					<xsl:when test="$elem = 'geogname'">Geographical Name</xsl:when>
 					<xsl:when test="$elem = 'langmaterial'">Language</xsl:when>
 					<xsl:when test="$elem = 'language'">Language</xsl:when>
 					<xsl:when test="$elem = 'materialspec'">Technical</xsl:when>
+					<xsl:when test="$elem = 'name'">Name</xsl:when>
 					<xsl:when test="$elem = 'note'">Note</xsl:when>
+					<xsl:when test="$elem = 'occupation'">Occupation</xsl:when>
 					<xsl:when test="$elem = 'odd'">Other Descriptive Data</xsl:when>
 					<xsl:when test="$elem = 'originalsloc'">Location of Originals</xsl:when>
 					<xsl:when test="$elem = 'origination'">Creator</xsl:when>
@@ -63,6 +66,7 @@
 					<xsl:when test="$elem = 'separatedmaterial'">Separated Material</xsl:when>
 					<xsl:when test="$elem = 'subject'">Subject</xsl:when>
 					<xsl:when test="$elem = 'timestamp'">Record publication date</xsl:when>
+					<xsl:when test="$elem = 'title'">Title</xsl:when>
 					<xsl:when test="$elem = 'unittitle'">Title</xsl:when>
 					<xsl:when test="$elem = 'unitid'">Unit ID</xsl:when>
 					<xsl:when test="$elem = 'userestrict'">Use Restriction</xsl:when>

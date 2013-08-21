@@ -179,6 +179,24 @@
 			<xsl:value-of select="."/>
 		</div>
 	</xsl:template>
+	
+	<xsl:template match="ead:daoloc" mode="collection-image">
+		<xsl:variable name="photo_id" select="substring-before(tokenize(@xlink:href, '/')[last()], '_')"/>
+		<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
+		<a href="{$flickr_uri}" target="_blank">
+			<img class="ci" src="{@xlink:href}"/>
+		</a>
+		<xsl:if test="string(parent::node()/ead:daodesc/ead:head)">
+			<h3>
+				<xsl:value-of select="parent::node()/ead:daodesc/ead:head"/>
+			</h3>
+		</xsl:if>
+		<xsl:if test="string(parent::node()/ead:daodesc/ead:p[1])">
+			<xsl:apply-templates select="parent::node()/ead:daodesc/ead:p"/>
+		</xsl:if>
+		
+		
+	</xsl:template>
 
 	<xsl:template match="ead:daogrp">
 		<xsl:apply-templates select="ead:daoloc[@xlink:label='Thumbnail']"/>

@@ -16,21 +16,119 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<div class="yui3-g">
-					<div class="yui3-u-1-5">
-						<div class="content">
-							<xsl:call-template name="toc"/>
-						</div>
+					<!-- display archdesc/did, collection image, and map if available -->
+					<div class="yui3-u-1">
+						<xsl:call-template name="head"/>
+						<xsl:call-template name="body"/>
 					</div>
-					<div class="yui3-u-4-5">
-						<div class="content">
-							<xsl:call-template name="body"/>
-						</div>
+
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="head">
+		<h1>
+			<span property="dcterms:title">
+				<xsl:value-of select="ead:archdesc/ead:did/ead:unittitle"/>
+			</span>
+			<xsl:if test="string(ead:archdesc/ead:did/ead:unitdate)">
+				<xsl:text>, </xsl:text>
+				<span>
+					<xsl:value-of select="ead:archdesc/ead:did/ead:unitdate"/>
+				</span>
+			</xsl:if>
+		</h1>
+		<xsl:choose>
+			<xsl:when test="ead:archdesc/ead:did/ead:dao/@xlink:href">
+				<div class="yui3-u-1-2">
+					<div class="content">
+						<xsl:apply-templates select="ead:archdesc/ead:did"/>
+					</div>
+				</div>
+				<div class="yui3-u-1-2">
+					<div class="content">
+						<xsl:apply-templates select="ead:archdesc/ead:did/ead:dao"/>
+					</div>
+				</div>
+			</xsl:when>
+			<xsl:when test="contains(ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']/@xlink:href, 'flickr.com')">
+				<div class="yui3-u-1-2">
+					<div class="content">
+						<xsl:apply-templates select="ead:archdesc/ead:did"/>
+					</div>
+				</div>
+				<div class="yui3-u-1-2">
+					<div class="content">
+						<xsl:apply-templates select="ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']" mode="collection-image"/>
+					</div>
+				</div>
+			</xsl:when>
+			<xsl:otherwise>
+				<div class="yui3-u-1">
+					<div class="content">
+						<xsl:apply-templates select="ead:archdesc/ead:did"/>
 					</div>
 				</div>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
 
-
+	<xsl:template name="body">
+		<div id="tabs">
+			<ul>
+				<li>
+					<a href="#summary">Summary</a>
+				</li>
+				<xsl:if test="$hasPoints = true()">
+					<li>
+						<a href="#mapTab">Map</a>
+					</li>
+				</xsl:if>
+			</ul>
+			<div id="summary">
+				<div class="yui3-u-1-5">
+					<div class="content">
+						<xsl:call-template name="toc"/>
+					</div>
+				</div>
+				<div class="yui3-u-4-5">
+					<div class="content">
+						<div id="archdesc-info">
+							<xsl:call-template name="archdesc-admininfo"/>
+							<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
+							<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
+							<xsl:apply-templates select="ead:archdesc/ead:arrangement"/>
+							<xsl:call-template name="archdesc-relatedmaterial"/>
+							<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
+							<xsl:apply-templates select="ead:archdesc/ead:odd"/>
+							<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
+							<xsl:apply-templates select="ead:archdesc/ead:phystech"/>
+							<xsl:apply-templates select="ead:archdesc/ead:descgrp[not(@type='admininfo')]"/>
+							<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
+							<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
+							<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
+							<xsl:apply-templates select="ead:archdesc/ead:index | ead:archdesc/*/ead:index"/>
+						</div>
+						<div id="dsc">
+							<xsl:apply-templates select="ead:archdesc/ead:dsc"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<xsl:if test="$hasPoints = true()">
+				<div id="mapTab">
+					<div id="timemap">
+						<div id="mapcontainer">
+							<div id="map"/>
+						</div>
+						<div id="timelinecontainer">
+							<div id="timeline"/>
+						</div>
+					</div>
+				</div>
+			</xsl:if>
+		</div>
 	</xsl:template>
 
 	<xsl:template name="toc">
@@ -184,51 +282,8 @@
 		</li>
 	</xsl:template>
 
-	<xsl:template name="body">
-		<!--<xsl:apply-templates select="ead:eadheader"/>-->
-		<h1>
-			<span property="dcterms:title">
-				<xsl:value-of select="ead:archdesc/ead:did/ead:unittitle"/>
-			</span>
-			<xsl:if test="string(ead:archdesc/ead:did/ead:unitdate)">
-				<xsl:text>, </xsl:text>
-				<xsl:value-of select="ead:archdesc/ead:did/ead:unitdate"/>
-			</xsl:if>
-		</h1>
-
-		<!--To change the order of display, adjust the sequence of
-			the following apply-template statements which invoke the various
-			templates that populate the finding aid.  Multiple statements
-			are included to handle the possibility that descgrp has been used
-			as a wrapper to replace add and admininfo.  In several cases where
-			multiple elemnents are displayed together in the output, a call-template
-			statement is used-->
-
-		<xsl:apply-templates select="ead:archdesc/ead:did"/>
-
-		<div id="archdesc-info">
-			<xsl:call-template name="archdesc-admininfo"/>
-			<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
-			<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
-			<xsl:apply-templates select="ead:archdesc/ead:arrangement"/>
-			<xsl:call-template name="archdesc-relatedmaterial"/>
-			<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
-			<xsl:apply-templates select="ead:archdesc/ead:odd"/>
-			<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
-			<xsl:apply-templates select="ead:archdesc/ead:phystech"/>
-			<xsl:apply-templates select="ead:archdesc/ead:descgrp[not(@type='admininfo')]"/>
-			<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
-			<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
-			<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
-			<xsl:apply-templates select="ead:archdesc/ead:index | ead:archdesc/*/ead:index"/>
-		</div>
-		<div id="dsc">
-			<xsl:apply-templates select="ead:archdesc/ead:dsc"/>
-		</div>
-	</xsl:template>
-
-	<!--Suppreses all other elements of eadheader.-->
-	<xsl:template match="ead:eadheader">
+	<!--EAD Header: becoming deprecated in EAD 3.-->
+	<!--<xsl:template match="ead:eadheader">
 		<xsl:apply-templates select="/ead:ead/ead:frontmatter/ead:titlepage"/>
 	</xsl:template>
 
@@ -252,7 +307,7 @@
 				</xsl:if>
 			</div>
 
-			<!-- publisher Contact Information -->
+			<!-\- publisher Contact Information -\->
 			<xsl:if test="ead:author">
 				<xsl:value-of select="ead:author"/>
 				<br/>
@@ -272,7 +327,7 @@
 			<xsl:apply-templates select="ead:address | ead:list"/>
 			<xsl:apply-templates select="ead:note"/>
 		</div>
-	</xsl:template>
+	</xsl:template>-->
 
 	<!--This template creates a table for the did, inserts the head and then
       each of the other did elements.  To change the order of appearance of these
@@ -614,8 +669,18 @@
 				<xsl:text>clevel</xsl:text>
 			</xsl:if>
 		</xsl:variable>
+		<xsl:variable name="controlaccess" as="node()*">
+			<controlaccess xmlns="urn:isbn:1-931666-22-9">
+				<xsl:copy-of select="*"/>
+			</controlaccess>
+		</xsl:variable>
 
-		<div class="{$class}">
+
+		<div>
+			<!-- add class for component level controlaccess only, not within archdesc -->
+			<xsl:if test="string($class)">
+				<xsl:attribute name="class" select="$class"/>
+			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="@head">
 					<xsl:choose>
@@ -634,175 +699,47 @@
 				<xsl:otherwise>
 					<xsl:choose>
 						<xsl:when test="parent::ead:archdesc">
-							<h2>Controlled Access Headings</h2>
+							<h2>
+								<xsl:value-of select="eaditor:normalize_fields('controlaccess', $lang)"/>
+							</h2>
 						</xsl:when>
 						<xsl:otherwise>
-							<b>Controlled Access Headings</b>
+							<b>
+								<xsl:value-of select="eaditor:normalize_fields('controlaccess', $lang)"/>
+							</b>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 			<xsl:apply-templates select="ead:address | ead:blockquote | ead:chronlist | ead:controlaccess | ead:list | ead:listhead | ead:note | ead:p | ead:table"/>
 
-			<!--<xsl:if
-				test="corpname | famname | function | genreform | geogname | name | occupation | persname | subject | title">
-				<ul>
-					<xsl:apply-templates
-						select="corpname | famname | function | genreform | geogname | name | occupation | persname | subject | title"
-					/>
-				</ul>
-			</xsl:if>-->
+			<!-- created unnumbered list for the access terms: this XSLT is simplified from earlier versions -->
+			<xsl:variable name="accessTerms">corpname,famname,function,genreform,geogname,name,occupation,persname,subject,title</xsl:variable>
 
-			<xsl:if test="ead:corpname">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Corporate Names</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Corporate Names</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:corpname"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:famname">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Family Names</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Family Names</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:famname"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:function">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Functions</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Functions</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:function"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:genreform">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Genres/Formats</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Genres/Formats</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:genreform"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:geogname">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Geographic Names</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Geographic Names</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:geogname"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:name">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Names</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Names</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:name"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:occupation">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Occupations</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Occupations</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:occupation"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:persname">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Personal Names</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Personal Names</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:persname"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:subject">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Subjects</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Subjects</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:subject"/>
-				</ul>
-			</xsl:if>
-			<xsl:if test="ead:title">
-				<ul>
-					<li>
-						<xsl:choose>
-							<xsl:when test="parent::ead:archdesc">
-								<h3>Titles</h3>
-							</xsl:when>
-							<xsl:otherwise>
-								<b>Titles</b>
-							</xsl:otherwise>
-						</xsl:choose>
-					</li>
-					<xsl:apply-templates select="ead:title" mode="controlaccess"/>
-				</ul>
-			</xsl:if>
+			<xsl:for-each select="tokenize($accessTerms, ',')">
+				<xsl:variable name="element" select="."/>
+				<xsl:if test="count($controlaccess//*[local-name()=$element]) &gt; 0">
+					<ul>
+						<li>
+							<xsl:choose>
+								<xsl:when test="$class='clevel'">
+									<b>
+										<xsl:value-of select="eaditor:normalize_fields($element, $lang)"/>
+									</b>
+								</xsl:when>
+								<xsl:otherwise>
+									<h3>
+										<xsl:value-of select="eaditor:normalize_fields($element, $lang)"/>
+									</h3>
+								</xsl:otherwise>
+							</xsl:choose>
+							<ul>
+								<xsl:apply-templates select="$controlaccess//*[local-name()=$element]"/>
+							</ul>
+						</li>
+					</ul>
+				</xsl:if>
+			</xsl:for-each>
 		</div>
 	</xsl:template>
 

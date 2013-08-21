@@ -57,6 +57,9 @@
 	<!-- RDF serialization -->
 	<page path-info="/eaditor/id/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>	
 	
+	<!-- Object KML -->
+	<page path-info="/eaditor/id/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/object-to-kml.xpl"/>
+	
 	<!-- solr doc service -->
 	<page path-info="/eaditor/id/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
 

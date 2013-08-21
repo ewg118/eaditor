@@ -24,11 +24,11 @@ h1 {
 #form ul li {
 	list-style-type:none;
 }
-a:link {
+a:link, .ui-widget a:link {
 	color:#8BADCF;
 	text-decoration:none;
 }
-a:visited {
+a:visited, .ui-widget a:visited {
 	color:#8BADCF;
 	text-decoration:none;
 }
@@ -480,11 +480,15 @@ button.ui-multiselect {
  */
 div#timelinecontainer {
 	width:100%;
-	height: 250px;
+	height: 150px;
 }
 div#mapcontainer {
 	width:100%;
 	height: 600px;
+}
+div#display-mapcontainer {
+	width:100%;
+	height: 400px;
 }
 div.olFramedCloudPopupContent {
 	width: 300px;
