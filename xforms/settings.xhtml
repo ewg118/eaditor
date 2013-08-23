@@ -5,8 +5,8 @@
     Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
-	xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:eaditor="https://github.com/ewg118/eaditor">
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:saxon="http://saxon.sf.net/">
 	<head>
 		<title>EADitor: Edit Settings</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -34,8 +34,63 @@
 				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
-			<xforms:instance id="config">
+			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
 				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="config-backup" xxforms:exclude-result-prefixes="#all">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
+				<config version="0.5" xmlns="">
+					<firstrun/>
+					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
+					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
+					<geonames_api_key/>
+					<title>EADitor</title>
+					<description/>
+					<publisher/>
+					<publisher_code/>
+					<publisher_email/>
+					<license>http://opendatacommons.org/licenses/odbl/</license>
+					<banner_text>EADitor: XForms for EAD</banner_text>
+					<banner_image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
+					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
+					<url>http://localhost:8080/orbeon/eaditor/</url>
+					<export>
+						<oai-pmh>true</oai-pmh>
+						<pelagios>false</pelagios>
+					</export>
+					<theme>
+						<facets>agency_facet,century_num,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
+						<jquery_ui_theme>smoothness</jquery_ui_theme>
+					</theme>
+					<machine_tags>
+						<namespace id="geonames">
+							<predicate>locality</predicate>
+						</namespace>
+						<namespace id="lcgft">
+							<predicate>genreform</predicate>
+						</namespace>
+						<namespace id="lcsh">
+							<predicate>subject</predicate>
+						</namespace>
+						<namespace id="pleiades">
+							<predicate>atteststo</predicate>
+							<predicate>depicts</predicate>
+							<predicate>findspot</predicate>
+							<predicate>origin</predicate>
+							<predicate>place</predicate>
+						</namespace>
+						<namespace id="viaf">
+							<predicate>depicts</predicate>
+						</namespace>
+					</machine_tags>
+					<google_analytics>
+						<script type="text/javascript"/>
+					</google_analytics>
+				</config>
 			</xforms:instance>
 
 			<xforms:instance id="status">
@@ -49,10 +104,20 @@
 				</control>
 			</xforms:instance>
 
+			<!-- facets -->
+			<xforms:instance id="facets" xxforms:exclude-result-prefixes="#all">
+				<facets xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="facet-template">
+				<facet xmlns=""/>
+			</xforms:instance>
+
+			<!-- flickr -->
 			<xforms:instance id="flickr-response">
 				<rsp xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="secret-template" xxforms:exclude-result-prefixes="#all">
 				<flickr_api_secret xmlns=""/>
 			</xforms:instance>
@@ -88,24 +153,18 @@
 				</themes>
 			</xforms:instance>
 
-			<!-- OAI-PMH fields -->
-			<xforms:instance id="repositoryName-template">
-				<repositoryName xmlns=""/>
-			</xforms:instance>
-
-			<xforms:instance id="adminEmail-template">
-				<adminEmail xmlns=""/>
-			</xforms:instance>
-
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"/>
+				<xforms:bind nodeset="description" required="../export/pelagios = true()" readonly="../export/pelagios = false()"/>
 				<xforms:bind nodeset="solr_published" required="true()"/>
 				<xforms:bind nodeset="theme/jquery_ui_theme" required="true()"/>
-				<xforms:bind nodeset="oai-pmh">
-					<xforms:bind nodeset="@active" type="xs:boolean"/>
-					<xforms:bind nodeset="repositoryName" constraint="string-length(.) &gt; 0"/>
-					<xforms:bind nodeset="adminEmail" type="emailAddress"/>
+				<xforms:bind nodeset="export">
+					<xforms:bind nodeset="oai-pmh" type="xs:boolean"/>
+					<xforms:bind nodeset="pelagios" type="xs:boolean"/>
 				</xforms:bind>
+				<xforms:bind nodeset="publisher" required="../export/oai-pmh = true() or ../export/pelagios = true()"/>
+				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
+				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('control-instance')/save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>
@@ -114,8 +173,39 @@
 			<!-- submissions -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config. Is eXist operational?</xforms:message>
-				<!-- insert flickr api secret if it isn't already in the config -->
-				<xforms:insert origin="instance('secret-template')" context="instance('config')" nodeset="./child::node()[last()]" if="count(instance('config')/flickr_api_secret) = 0" ev:event="xforms-submit-done"/>
+
+				<!-- if the current version number is lacking or is less than the default config template (should be identical to that in the admin XForms page), replace the config with the default config and reset values -->
+				<xforms:action ev:event="xforms-submit-done" if="not(instance('config')/@version) or number(instance('config')/@version) &lt; number(instance('config-template')/@version)">
+					<!-- set config backup with config instance -->
+					<xforms:insert context="instance('config-backup')" origin="instance('config')/*"/>
+
+
+					<!-- delete all elements and attributes within config -->
+					<xforms:delete context="instance('config')" nodeset="*"/>
+					<xforms:delete context="instance('config')" nodeset="@version"/>
+					<xforms:setvalue ref="instance('config')"/>
+
+					<!-- insert all elements from the newer config template -->
+					<xforms:insert context="instance('config')" origin="instance('config-template')/*"/>
+
+					<!-- set values from backup -->
+					<xforms:action xxforms:iterate="instance('config')//*[not(*)]">
+						<xforms:var name="element" select="context()/local-name()"/>
+						<xforms:setvalue ref="context()" value="instance('config-backup')//*[local-name()=$element]"
+							if="$element != 'predicate' and string(instance('config-backup')//*[local-name()=$element])"/>
+					</xforms:action>
+
+					<!-- pull machine tags if available -->
+					<xforms:action if="instance('config-backup')/machine_tags">
+						<xforms:delete context="instance('config')" nodeset="machine_tags"/>
+						<xforms:insert context="instance('config')" nodeset="./child::node()[last()]" origin="instance('config-backup')/machine_tags"/>
+					</xforms:action>
+
+					<!-- set version number -->
+					<xforms:insert context="instance('config')" origin="xxforms:attribute('version', instance('config-template')/@version)"/>
+
+					<!--<xforms:message level="modal">Config version updated.</xforms:message>-->
+				</xforms:action>
 			</xforms:submission>
 
 			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none" xxforms:username="admin" xxforms:password="">
@@ -141,6 +231,12 @@
 			<!-- load eaditor config file on xforms construction -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:send submission="load-config"/>
+
+				<!-- set facets instance -->
+				<xforms:action xxforms:iterate="tokenize(instance('config')/theme/facets, ',')">
+					<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')"/>
+					<xforms:setvalue ref="instance('facets')/facet[last()]" value="context()"/>
+				</xforms:action>
 			</xforms:action>
 		</xforms:model>
 	</head>
@@ -164,10 +260,20 @@
 						<div class="submission">
 							<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
 								<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
-								<xforms:send ev:event="DOMActivate" submission="save-config"/>
+								<xforms:action ev:event="DOMActivate">
+									<!-- first re-assemble the facets template into comma separated values into the config -->
+									<xforms:setvalue ref="instance('config')/theme/facets" value="string-join(instance('facets')/facet, ',')"/>
+									<!-- then save the config to eXist -->
+									<!--<xforms:send submission="save-config"/>-->
+								</xforms:action>
 							</xforms:trigger>
 						</div>
 						<h1>EADitor Settings</h1>
+						<div>
+							<xforms:output ref="instance('config')/@version">
+								<xforms:label>Version</xforms:label>
+							</xforms:output>
+						</div>
 						<fr:tabview>
 							<!--**************************************** CONFIGURATION **********************************-->
 							<fr:tab id="configure-tab">
@@ -184,9 +290,15 @@
 											<p>The title of the site to be displayed in all web page titles and citations in PDF files.</p>
 										</div>
 										<div>
+											<xforms:input ref="publisher">
+												<xforms:label>Publisher</xforms:label>
+												<xforms:alert>Required if Pelagios or OAI-PMH export are enabled.</xforms:alert>
+											</xforms:input>
+											<p>Publisher (individual institution or consortium) responsible for publishing content.</p>
+										</div>
+										<div>
 											<xforms:input ref="banner_text">
 												<xforms:label>Banner Text</xforms:label>
-												<xforms:alert>Required</xforms:alert>
 											</xforms:input>
 											<p>Appears in the header banner. For more sophisticated control, edit header.xsl.</p>
 										</div>
@@ -203,39 +315,49 @@
 									</xforms:group>-->
 									</div>
 									<div class="section">
-										<xforms:group ref="oai-pmh">
-											<h3>OAI-PMH</h3>
+										<h3>Export</h3>
+										<div class="subsection">
+											<h4>OAI-PMH</h4>
 											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only
 												passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier
 												is derived from the URL on this settings page.</p>
 											<div>
-												<xforms:input ref="@active" id="oai-active">
-													<xforms:label>Active</xforms:label>
-													<!-- insert required OAI-PMH fields on 'active', else delete them -->
-													<xforms:action ev:event="xforms-value-changed">
-														<xforms:action if="parent::node()/@active='true'">
-															<xforms:insert context="parent::node()" origin="instance('repositoryName-template')"/>
-															<xforms:insert context="parent::node()" origin="instance('adminEmail-template')"/>
-														</xforms:action>
-														<xforms:action if="parent::node()/@active='false'">
-															<xforms:delete nodeset="parent::node()/*"/>
-														</xforms:action>
-													</xforms:action>
+												<xforms:input ref="export/oai-pmh">
+													<xforms:label>Enabled</xforms:label>
 												</xforms:input>
 											</div>
 											<div>
-												<xforms:input ref="repositoryName">
-													<xforms:label>Repository Name</xforms:label>
-													<xforms:alert>Required</xforms:alert>
+												<xforms:input ref="publisher_code">
+													<xforms:label>Publisher Code</xforms:label>
+													<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
+												</xforms:input>
+												<p>Publisher code used for OAI-PMH export.</p>
+											</div>
+											<div>
+												<xforms:input ref="publisher_email">
+													<xforms:label>Publisher Email</xforms:label>
+													<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
+												</xforms:input>
+												<p>Publisher email used for OAI-PMH export.</p>
+											</div>
+										</div>
+										<div class="subsection">
+											<h4>Pelagios</h4>
+											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF documents for objects
+												which have been tied to Pleiades IDs.</p>
+											<div>
+												<xforms:input ref="export/pelagios">
+													<xforms:label>Enabled</xforms:label>
 												</xforms:input>
 											</div>
 											<div>
-												<xforms:input ref="adminEmail">
-													<xforms:label>Administrator Email</xforms:label>
-													<xforms:alert>Required</xforms:alert>
+												<xforms:input ref="description">
+													<xforms:label>Description</xforms:label>
+													<xforms:alert>Required of Pelagios export is enabled.</xforms:alert>
 												</xforms:input>
+												<p>This is the description of the VOiD dataset exported for Pelagios.</p>
 											</div>
-										</xforms:group>
+										</div>
 									</div>
 									<div class="section">
 										<h3>API Keys</h3>
@@ -259,7 +381,7 @@
 										</div>
 										<div>
 											<xforms:input ref="flickr_api_secret" incremental="true">
-												<xforms:label>flickr API Secret</xforms:label>												
+												<xforms:label>flickr API Secret</xforms:label>
 											</xforms:input>
 											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
 										</div>
@@ -269,54 +391,20 @@
 											</xforms:input>
 										</div>
 									</div>
+									<div class="section">
+										<h3>Google Analytics</h3>
+										<p>Copy and paste Javascript code provided by Google Analytics here.</p>
+										<div>
+											<xforms:textarea ref="google_analytics/script">
+												<xforms:label>Code</xforms:label>
+											</xforms:textarea>
+										</div>
+									</div>
 								</xforms:group>
 							</fr:tab>
 							<!--**************************************** THEMES AND LAYOUT **********************************-->
 							<fr:tab bind="visual-tab">
 								<fr:label>Themes and Layout</fr:label>
-								<div class="section">
-									<h2>Layout</h2>
-									<div class="subsection">
-										<h3>Browse Page</h3>
-										<p>Two page layouts are available for the browse section. Facets may occur either in a left or right-aligned column. Output fields can also be selected from the
-											list below and ordered. Keep in mind that selecting many fields may result in a cumbersome user experience. Thumbnail images may be aligned either to the
-											left or right of the record content.</p>
-										<xforms:group ref="layouts/results">
-											<div class="subsection">
-												<h4>Facet Column Alignment</h4>
-												<div>
-													<xforms:select1 ref="yui_class">
-														<xforms:label>Alignment</xforms:label>
-														<xforms:item>
-															<xforms:label>left</xforms:label>
-															<xforms:value>yui-t2</xforms:value>
-														</xforms:item>
-														<xforms:item>
-															<xforms:label>right</xforms:label>
-															<xforms:value>yui-t5</xforms:value>
-														</xforms:item>
-													</xforms:select1>
-												</div>
-											</div>
-											<div class="subsection">
-												<h4>Result Documents</h4>
-												<div>
-													<xforms:select1 ref="image_location">
-														<xforms:label>Thumbnail Alignment</xforms:label>
-														<xforms:item>
-															<xforms:label>left</xforms:label>
-															<xforms:value>left</xforms:value>
-														</xforms:item>
-														<xforms:item>
-															<xforms:label>right</xforms:label>
-															<xforms:value>right</xforms:value>
-														</xforms:item>
-													</xforms:select1>
-												</div>
-											</div>
-										</xforms:group>
-									</div>
-								</div>
 								<div class="section">
 									<h2>Theme</h2>
 									<div>
@@ -329,6 +417,51 @@
 											</xforms:itemset>
 										</xforms:select1>
 									</div>
+								</div>
+								<div class="section">
+									<h2>Facets</h2>
+									<span class="add">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/add.gif"/>Facet </xforms:label>
+											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')" ev:event="DOMActivate"/>
+										</xforms:trigger>
+									</span>
+									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will cause the browse and
+										map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
+									<xforms:repeat nodeset="instance('facets')/facet">
+										<xforms:var name="position" select="position()"/>
+										
+										<div>
+											<xforms:input ref=".">
+												<xforms:label>Facet</xforms:label>
+											</xforms:input>											
+											<xforms:group ref=".[$position != 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label><img alt="up" src="/eaditor/xforms/xbl/tree-view/images/up.gif"/></xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:insert context="instance('facets')" nodeset="facet[$position - 2]" origin="instance('facets')/facet[$position]"/>
+														<xforms:delete nodeset="."/>
+													</xforms:action>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:group ref=".[not($position=count(instance('facets')/facet))]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label><img alt="down" src="/eaditor/xforms/xbl/tree-view/images/down.gif"/></xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:insert context="instance('facets')" nodeset="facet[$position+1]" origin="instance('facets')/facet[$position]"/>
+														<xforms:delete nodeset="."/>
+													</xforms:action>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" context="."/>
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
+										</div>
+									</xforms:repeat>
 								</div>
 							</fr:tab>
 							<!--**************************************** ADVANCED SETTINGS **********************************-->
@@ -355,7 +488,7 @@
 							</fr:tab>
 						</fr:tabview>
 					</div>
-					<!--<widget:xforms-instance-inspector id="orbeon-xforms-inspector" xmlns:widget="http://orbeon.org/oxf/xml/widget"/>-->
+					<!--<fr:xforms-inspector/>-->
 				</div>
 			</div>
 		</div>

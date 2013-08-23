@@ -46,16 +46,19 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template">
-				<config xmlns:xlink="http://www.w3.org/1999/xlink">
+				<config version="0.5">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
 					<geonames_api_key/>
 					<title>EADitor</title>
+					<publisher/>
+					<publisher_code/>
+					<publisher_email/>
 					<description/>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<banner_text>EADitor: XForms for EAD</banner_text>
-					<banner_image xlink:href=""/>
+					<banner_image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
 					<export>
@@ -64,16 +67,7 @@
 					</export>
 					<theme>
 						<facets>agency_facet,century_num,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
-						<jquery_ui_theme>smoothness</jquery_ui_theme>
-						<layouts>
-							<index>
-								<yui_class>yui-t5</yui_class>
-							</index>
-							<results>
-								<yui_class>yui-t2</yui_class>
-								<image_location>right</image_location>
-							</results>
-						</layouts>
+						<jquery_ui_theme>smoothness</jquery_ui_theme>						
 					</theme>
 					<machine_tags>
 						<namespace id="geonames">
@@ -96,6 +90,9 @@
 							<predicate>depicts</predicate>
 						</namespace>
 					</machine_tags>
+					<google_analytics>
+						<script type="text/javascript"/>
+					</google_analytics>
 				</config>
 			</xforms:instance>
 

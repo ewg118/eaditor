@@ -29,6 +29,10 @@
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	
+	<xsl:variable name="publisher" select="content/config/publisher"/>
+	<xsl:variable name="publisher_email" select="content/config/publisher_email"/>
+	<xsl:variable name="publisher_code" select="content/config/publisher_code"/>
 
 	<xsl:template match="/">
 		<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -54,14 +58,14 @@
 				<xsl:when test="$verb='Identify'">
 					<Identify>
 						<repositoryName>
-							<xsl:value-of select="//repositoryName"/>
+							<xsl:value-of select="$publisher"/>
 						</repositoryName>
 						<baseURL>
 							<xsl:value-of select="concat($url, 'oai/')"/>
 						</baseURL>
 						<protocolVersion>2.0</protocolVersion>
 						<adminEmail>
-							<xsl:value-of select="//adminEmail"/>
+							<xsl:value-of select="$publisher_email"/>
 						</adminEmail>
 						<earliestDatestamp>
 							<xsl:value-of select="substring-before(descendant::doc[last()]/date[@name='timestamp'], 'T')"/>
@@ -88,14 +92,14 @@
 					<ListSets>
 						<set>
 							<setSpec>ead</setSpec>
-							<setName>Encoded Archival Description (EAD) collection of <xsl:value-of select="//repositoryName"/></setName>
+							<setName>Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"/></setName>
 							<setDescription>
 								<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 									xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ 
 									http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-									<dc:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="//repositoryName"/></dc:title>
+									<dc:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"/></dc:title>
 									<dc:creator>
-										<xsl:value-of select="//repositoryName"/>
+										<xsl:value-of select="$publisher"/>
 									</dc:creator>
 								</oai_dc:dc>
 							</setDescription>
@@ -284,7 +288,7 @@
 						<xsl:value-of select="str[@name='unittitle_display']"/>
 					</dc:title>
 					<dc:publisher>
-						<xsl:value-of select="//repositoryName"/>
+						<xsl:value-of select="$publisher"/>
 					</dc:publisher>
 					<dc:identifier>
 						<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>

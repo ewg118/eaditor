@@ -675,7 +675,6 @@
 			</controlaccess>
 		</xsl:variable>
 
-
 		<div>
 			<!-- add class for component level controlaccess only, not within archdesc -->
 			<xsl:if test="string($class)">
