@@ -204,7 +204,7 @@
 					<!-- set version number -->
 					<xforms:insert context="instance('config')" origin="xxforms:attribute('version', instance('config-template')/@version)"/>
 
-					<!--<xforms:message level="modal">Config version updated.</xforms:message>-->
+					<xforms:message level="modal">Config version updated.</xforms:message>
 				</xforms:action>
 			</xforms:submission>
 
@@ -264,7 +264,7 @@
 									<!-- first re-assemble the facets template into comma separated values into the config -->
 									<xforms:setvalue ref="instance('config')/theme/facets" value="string-join(instance('facets')/facet, ',')"/>
 									<!-- then save the config to eXist -->
-									<!--<xforms:send submission="save-config"/>-->
+									<xforms:send submission="save-config"/>
 								</xforms:action>
 							</xforms:trigger>
 						</div>
