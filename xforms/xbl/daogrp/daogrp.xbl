@@ -453,7 +453,7 @@
 						</xforms:instance>
 
 						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
-							<daoloc xlink:href="" xlink:label=""/>
+							<daoloc xlink:type="locator" xlink:href="" xlink:label=""/>
 						</xforms:instance>
 
 						<!-- interface type-->
