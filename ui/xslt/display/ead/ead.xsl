@@ -285,48 +285,6 @@
 	<!--EAD Header: becoming deprecated in EAD 3.-->
 	<!--<xsl:template match="ead:eadheader">
 		<xsl:apply-templates select="/ead:ead/ead:frontmatter/ead:titlepage"/>
-	</xsl:template>
-
-	<xsl:template match="ead:titlepage">
-		<div id="titlepage">
-			<div>
-				<a name="top"/>
-				<h1>
-					<xsl:value-of select="ead:titleproper"/>
-					<xsl:if test="ead:date">
-						<xsl:text>, </xsl:text>
-						<xsl:value-of select="ead:date"/>
-					</xsl:if>
-				</h1>
-				<br/>
-				<xsl:if test="ead:subtitle">
-					<h2>
-						<xsl:apply-templates select="ead:subtitle"/>
-					</h2>
-					<br/>
-				</xsl:if>
-			</div>
-
-			<!-\- publisher Contact Information -\->
-			<xsl:if test="ead:author">
-				<xsl:value-of select="ead:author"/>
-				<br/>
-			</xsl:if>
-			<xsl:if test="ead:publisher">
-				<xsl:value-of select="ead:publisher"/>
-				<br/>
-			</xsl:if>
-			<xsl:if test="ead:sponsor">
-				<xsl:value-of select="ead:sponsor"/>
-				<br/>
-			</xsl:if>
-			<xsl:if test="ead:edition">
-				<xsl:value-of select="ead:edition"/>
-				<br/>
-			</xsl:if>
-			<xsl:apply-templates select="ead:address | ead:list"/>
-			<xsl:apply-templates select="ead:note"/>
-		</div>
 	</xsl:template>-->
 
 	<!--This template creates a table for the did, inserts the head and then
