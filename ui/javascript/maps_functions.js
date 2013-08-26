@@ -320,17 +320,7 @@ $(document).ready(function () {
 			$("#backgroundPopup").fadeIn("fast");
 			popupStatus = 1;
 		}
-		
-		var q = getQuery();
-		var pipeline = $('#pipeline').text();
 		var list_id = $(this) .attr('id').split('_link')[0] + '-list';
-		$.get('../get_centuries', {
-			q: q, pipeline: pipeline
-		},
-		function (data) {
-			$('#century_num-list').html(data);
-		});
-		
 		$('#' + list_id).parent('div').attr('style', 'width: 192px;display:block;');
 	});
 	
@@ -351,10 +341,13 @@ $(document).ready(function () {
 			//perform ajax load on first click of expand button
 			if ($(this).parent('li').children('ul').html().indexOf('<li') < 0) {
 				$.get('../get_decades/', {
-					q: q, century: century
+					q: q, century: century, pipeline: pipeline
 				},
 				function (data) {
-					$('#century_' + century + '_list').html(data);
+					$('#decades-temp').html(data);
+					$('#decades-temp li').each(function(){
+						$(this).clone().appendTo('#century_' + century + '_list');
+					});
 				});
 			}
 			$('#century_' + century + '_list') .show();

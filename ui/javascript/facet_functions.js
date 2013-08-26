@@ -135,7 +135,7 @@ function getDate() {
 };
 
 function dateLabel() {
-	var title = $('#century_num_link').attr('title');
+	var title = 'Date';
 	dates = new Array();
 	$('.century_checkbox:checked').each(function () {
 		if ($(this).parent('li').children('ul').children('li').children('.decade_checkbox:checked').length == 0) {

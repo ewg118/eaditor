@@ -598,7 +598,7 @@
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
 					</button>
-					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all date-div" style="width: 192px;">
+					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all date-div" style="width: 175px;">
 						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
 							<ul class="ui-helper-reset">
 								<li class="ui-multiselect-close">
@@ -626,7 +626,7 @@
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
 									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
 										<xsl:if test="contains($q, concat(':',@name))">
-											<xsl:copy-of select="document(concat($url, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name))//li"/>
+											<xsl:copy-of select="document(concat($url, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"/>
 										</xsl:if>
 									</ul>
 								</li>
@@ -638,7 +638,7 @@
 					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}"
 						style="width:180px">
 						<xsl:if test="contains($q, @name)">
-							<xsl:copy-of select="document(concat($url, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1'))//option"/>
+							<xsl:copy-of select="document(concat($url, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"/>
 						</xsl:if>
 					</select>
 				</xsl:otherwise>

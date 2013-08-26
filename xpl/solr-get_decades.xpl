@@ -32,12 +32,20 @@
 				<!-- url params -->
 				<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>	
 				<xsl:param name="century" select="doc('input:params')/request/parameters/parameter[name='century']/value"/>
+				<xsl:param name="pipeline" select="doc('input:params')/request/parameters/parameter[name='pipeline']/value"/>
 				
 				<!-- config variables -->
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 								
 				<xsl:variable name="service">
-					<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
+					<xsl:choose>
+						<xsl:when test="$pipeline='results'">
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
+						</xsl:when>
+						<xsl:when test="$pipeline='maps'">
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
+						</xsl:when>			
+					</xsl:choose>					
 				</xsl:variable>
 				
 				<xsl:template match="/">
