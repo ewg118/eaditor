@@ -61,7 +61,7 @@
 						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->
-					<xforms:model id="declaration-model">
+					<xforms:model id="declaration-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="abbreviation-template" xxforms:exclude-result-prefixes="#all">
 							<abbreviation/>
 						</xforms:instance>
