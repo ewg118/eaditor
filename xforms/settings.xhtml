@@ -43,16 +43,16 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config version="0.5" xmlns="">
+				<config xmlns="" version="0.51">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
 					<geonames_api_key/>
 					<title>EADitor</title>
-					<description/>
 					<publisher/>
 					<publisher_code/>
 					<publisher_email/>
+					<description/>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<banner_text>EADitor: XForms for EAD</banner_text>
 					<banner_image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
@@ -64,7 +64,7 @@
 					</export>
 					<theme>
 						<facets>agency_facet,century_num,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
-						<jquery_ui_theme>smoothness</jquery_ui_theme>
+						<jquery_ui_theme>smoothness</jquery_ui_theme>						
 					</theme>
 					<machine_tags>
 						<namespace id="geonames">
@@ -87,6 +87,18 @@
 							<predicate>depicts</predicate>
 						</namespace>
 					</machine_tags>
+					<templates>
+						<agencycodes>
+							<agencycode value="US-default">Default Agency</agencycode>
+						</agencycodes>
+						<containertypes>
+							<container value="box">Box</container>
+							<container value="box-folder">Box-Folder</container>
+							<container value="folder">Folder</container>
+							<container value="reel">Reel</container>
+							<container value="tape">Tape</container>
+						</containertypes>
+					</templates>
 					<google_analytics>
 						<script type="text/javascript"/>
 					</google_analytics>

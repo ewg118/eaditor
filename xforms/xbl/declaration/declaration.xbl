@@ -1,0 +1,80 @@
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
+	<xbl:binding id="eaditor-declaration" element="eaditor|declaration">
+		<xbl:template>
+			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
+				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
+				<xforms:group xxbl:scope="inner">
+					<xxforms:variable name="binding" as="node()?">
+						<xxforms:sequence select="." xxbl:scope="outer"/>
+					</xxforms:variable>
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Declaration</h3>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+								</xforms:label>
+							</xforms:trigger>
+							<div class="trigger_container">
+								<xforms:group ref=".[count(ead:abbreviation) = 0]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Abbreviation</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." origin="instance('abbreviation-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+								<xforms:group ref=".[count(ead:descriptivenote) = 0]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+											origin="instance('descriptivenote-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+							</div>
+							<xforms:group ref="ead:abbreviation">
+								<div>
+									<xforms:input ref=".">
+										<xforms:label>Abbreviation</xforms:label>
+										<xforms:alert>Required</xforms:alert>
+									</xforms:input>
+									<xforms:trigger appearance="minimal">
+										<xforms:delete ev:event="DOMActivate" nodeset="."/>
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/remove.gif"/>
+										</xforms:label>
+									</xforms:trigger>
+								</div>
+							</xforms:group>
+							<div>
+								<xforms:input ref="ead:citation">
+									<xforms:label>Citation</xforms:label>
+									<xforms:alert>Required</xforms:alert>
+								</xforms:input>
+							</div>
+							<xforms:group ref="ead:descriptivenote">
+								<eaditor:note/>
+							</xforms:group>
+						</div>
+					</xforms:group>
+					<!-- ********************************************************************** -->
+					<xforms:model id="declaration-model">
+						<xforms:instance id="abbreviation-template" xxforms:exclude-result-prefixes="#all">
+							<abbreviation/>
+						</xforms:instance>
+
+						<xforms:instance id="descriptivenote-template" xxforms:exclude-result-prefixes="#all">
+							<descriptivenote>
+								<p/>
+							</descriptivenote>
+						</xforms:instance>
+					</xforms:model>
+				</xforms:group>
+			</xforms:group>
+		</xbl:template>
+	</xbl:binding>
+
+</xbl:xbl>

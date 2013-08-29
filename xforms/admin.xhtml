@@ -46,7 +46,7 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template">
-				<config version="0.5">
+				<config xmlns="" version="0.51">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
@@ -90,25 +90,22 @@
 							<predicate>depicts</predicate>
 						</namespace>
 					</machine_tags>
+					<templates>
+						<agencycodes>
+							<agencycode value="US-default">Default Agency</agencycode>
+						</agencycodes>
+						<containertypes>
+							<container value="box">Box</container>
+							<container value="box-folder">Box-Folder</container>
+							<container value="folder">Folder</container>
+							<container value="reel">Reel</container>
+							<container value="tape">Tape</container>
+						</containertypes>
+					</templates>
 					<google_analytics>
 						<script type="text/javascript"/>
 					</google_analytics>
 				</config>
-			</xforms:instance>
-
-			<xforms:instance id="instance-templates">
-				<templates>
-					<agencycodes>
-						<agencycode value="default">Default Agency: Edit Your Template!</agencycode>
-					</agencycodes>
-					<containertypes>
-						<container value="box">Box</container>
-						<container value="box-folder">Box-Folder</container>
-						<container value="folder">Folder</container>
-						<container value="reel">Reel</container>
-						<container value="tape">Tape</container>
-					</containertypes>
-				</templates>
 			</xforms:instance>
 
 			<xforms:instance id="ead-template">
@@ -321,10 +318,6 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<!-- reload the config after it has been created -->
 				<xforms:send submission="load-config" ev:event="xforms-submit-done"/>
-			</xforms:submission>
-			<xforms:submission id="save-instance-templates" ref="instance('instance-templates')" action="{instance('exist-url')}eaditor/instance-templates.xml" method="put" replace="none"
-				xxforms:username="admin" xxforms:password="">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Agency Codes Template.</xforms:message>
 			</xforms:submission>
 			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-url')}eaditor/ead-template.xml" method="put" replace="none" xxforms:username="admin"
 				xxforms:password="">
@@ -1017,7 +1010,6 @@
 				<!-- save collections and XML files to config -->
 				<xforms:action ev:event="DOMActivate">
 					<xforms:send submission="save-config"/>
-					<xforms:send submission="save-instance-templates"/>
 					<xforms:send submission="save-ead-template"/>
 					<xforms:send submission="save-c-template"/>
 

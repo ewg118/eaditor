@@ -29,6 +29,7 @@
 	<page path-info="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
 	<page path-info="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
 	<page path-info="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
+	<page path-info="/eaditor/admin/control/" view="xforms/control.xhtml"/>
 	<page path-info="/eaditor/admin/" id="admin" view="xforms/admin.xhtml"/>
 
 	<!-- test page -->

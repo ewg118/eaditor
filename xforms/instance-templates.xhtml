@@ -25,15 +25,15 @@
 				<xi:include href="../exist-url.xml"/>
 			</xforms:instance>
 
-			<xforms:instance id="instance-templates">
-				<templates xmlns=""/>
+			<xforms:instance id="config">
+				<config xmlns=""/>
 			</xforms:instance>
 
-			<xforms:instance id="agencycode-template">
+			<xforms:instance id="agencycode-template" xxforms:exclude-result-prefixes="#all">
 				<agencycode value="" xmlns=""/>
 			</xforms:instance>
 
-			<xforms:instance id="container-template">
+			<xforms:instance id="container-template" xxforms:exclude-result-prefixes="#all">
 				<container value="" xmlns=""/>
 			</xforms:instance>
 
@@ -66,7 +66,7 @@
 				<exist:result/>
 			</xforms:instance>
 
-			<xforms:bind nodeset="instance('instance-templates')">
+			<xforms:bind nodeset="instance('config')/templates">
 				<xforms:bind nodeset="agencycodes">
 					<xforms:bind nodeset="agencycode/@value" required="true()" type="ead:data.repositorycode"/>
 					<xforms:bind nodeset="agencycode" required="true()"/>
@@ -77,8 +77,8 @@
 				</xforms:bind>
 			</xforms:bind>
 
-			<xforms:bind id="agencycodes-tab" nodeset="instance('instance-templates')/agencycodes"/>
-			<xforms:bind id="containertypes-tab" nodeset="instance('instance-templates')/containertypes"/>
+			<xforms:bind id="agencycodes-tab" nodeset="instance('config')/templates/agencycodes"/>
+			<xforms:bind id="containertypes-tab" nodeset="instance('config')/templates/containertypes"/>
 
 			<!-- submit query to eXist -->
 			<xforms:submission id="agencycodes-submission" ref="instance('agencycodes-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
@@ -86,27 +86,25 @@
 				<xforms:insert nodeset="instance('temp-instance')" ev:event="xforms-submit-done"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-agencycodes.xpl', 'data', instance('response-instance'), 'data')"/>
 				<xforms:action xxforms:iterate="instance('temp-instance')/agencycode" ev:event="xforms-submit-done">
-					<xforms:insert context="instance('instance-templates')" nodeset="agencycode[position() = last()]" origin="instance('agencycode-template')"/>
-					<xforms:setvalue ref="instance('instance-templates')/agencycode[last()]" value="context()"/>
-					<xforms:setvalue ref="instance('instance-templates')/agencycode[last()]/@value" value="context()"/>
+					<xforms:insert context="instance('config')/templates/agencycodes" nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
+					<xforms:setvalue ref="instance('config')/templates/agencycodes/agencycode[last()]" value="context()"/>
+					<xforms:setvalue ref="instance('config')/templates/agencycodes/agencycode[last()]/@value" value="context()"/>
 				</xforms:action>
 			</xforms:submission>
 
 			<!-- error report -->
 			<xforms:setvalue ev:event="xforms-submit-error" ref="instance('control-instance')/error" value="event('response-body')"/>
 
-			<!-- Submission to get the document -->
-			<xforms:submission id="load-instance-templates" serialization="none" method="get" action="{instance('exist-url')}eaditor/instance-templates.xml" replace="instance" xxforms:username="admin"
-				xxforms:password="" instance="instance-templates"/>
-
-			<!-- Submission to save the document -->
-			<xforms:submission id="save-instance-templates" ref="instance('instance-templates')" action="{instance('exist-url')}eaditor/instance-templates.xml" method="put" replace="none"
-				xxforms:username="admin" xxforms:password="">
-				<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred while saving to eXist.</xforms:message>
-				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Templates saved.</xforms:setvalue>
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config" xxforms:username="admin" xxforms:password="">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config. Is eXist operational?</xforms:message>
+			</xforms:submission>
+			
+			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none" xxforms:username="admin" xxforms:password="">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
+				<xforms:setvalue ref="instance('status')" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
 			</xforms:submission>
 
-			<xforms:send ev:event="xforms-model-construct-done" submission="load-instance-templates"/>
+			<xforms:send ev:event="xforms-model-construct-done" submission="load-config"/>
 		</xforms:model>
 	</head>
 	<body>
@@ -126,10 +124,10 @@
 					</p>
 					<!-- This table contains the main actions for the page  -->
 					<div class="submission">
-						<xforms:submit submission="save-instance-templates" appearance="minimal">
+						<xforms:submit submission="save-config" appearance="minimal">
 							<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
 						</xforms:submit>
-						<xforms:submit submission="load-instance-templates" appearance="minimal">
+						<xforms:submit submission="load-config" appearance="minimal">
 							<xforms:label><img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
 						</xforms:submit>
 					</div>
@@ -179,7 +177,7 @@
 							<h2>Container Types</h2>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
+									<img src="/apps/eaditor/xforms/images/add.gif"/>New Container</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('container-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
@@ -192,13 +190,13 @@
 								<div class="pair_div">
 									<div>
 										<xforms:input ref=".">
-											<xforms:label>Agency</xforms:label>
+											<xforms:label>Container</xforms:label>
 											<xforms:alert>Required</xforms:alert>
 										</xforms:input>
 									</div>
 									<div>
 										<xforms:input ref="@value">
-											<xforms:label>Code</xforms:label>
+											<xforms:label>Level</xforms:label>
 											<xforms:alert>Required; must be xs:NMTOKEN type</xforms:alert>
 										</xforms:input>
 									</div>
@@ -207,7 +205,7 @@
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
 												<img src="/apps/eaditor/xforms/images/remove.gif"/>
-											</xforms:label>
+											</xforms:label>container
 										</xforms:trigger>
 									</xforms:group>
 								</div>
