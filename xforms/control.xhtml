@@ -1038,6 +1038,12 @@
 									<xforms:repeat nodeset="ead:localcontrol">
 										<div class="subsection">
 											<h3>Local Control</h3>
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
 											<div class="trigger_container">
 												<xforms:group ref=".[count(ead:datesingle) = 0 and count(ead:daterange) = 0]">
 													<xforms:trigger appearance="minimal">
