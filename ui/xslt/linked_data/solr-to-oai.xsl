@@ -291,7 +291,18 @@
 						<xsl:value-of select="$publisher"/>
 					</dc:publisher>
 					<dc:identifier>
-						<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
+						<xsl:variable name="objectUri">
+							<xsl:choose>
+								<xsl:when test="//config/ark[@enabled='true']">
+									<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='id'])"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						
+						<xsl:value-of select="$objectUri"/>
 					</dc:identifier>
 					<xsl:if test="string(str[@name='unitdate_display'])">
 						<dc:date>

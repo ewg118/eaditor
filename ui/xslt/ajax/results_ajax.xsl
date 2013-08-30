@@ -70,7 +70,17 @@
 						<b>Title</b>
 					</dt>
 					<dd>
-						<a href="{$display_path}id/{str[@name='id']}">
+						<xsl:variable name="objectUri">
+							<xsl:choose>
+								<xsl:when test="//config/ark[@enabled='true']">
+									<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='id'])"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($display_path, 'id/', str[@name='id'])"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<a href="{$objectUri}">
 							<xsl:value-of select="str[@name='unittitle_display']"/>
 						</a>
 					</dd>

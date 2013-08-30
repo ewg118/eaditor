@@ -51,13 +51,23 @@
 	</xsl:template>
 
 	<xsl:template match="doc">
+		<xsl:variable name="objectUri">
+			<xsl:choose>
+				<xsl:when test="//config/ark[@enabled='true']">
+					<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='id'])"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<entry>
 			<title>
 				<xsl:value-of select="str[@name='unittitle_display']"/>
 			</title>
-			<link href="{$url}id/{str[@name='id']}"/>
-			<link rel="alternate xml" type="text/xml" href="{$url}id/{str[@name='id']}.xml"/>
-
+			<link href="{$objectUri}"/>
+			<link rel="alternate xml" type="text/xml" href="{$objectUri}.xml"/>
+			<link rel="alternate rdf" type="application/rdf+xml" href="{$objectUri}.rdf"/>
 			<id>
 				<xsl:value-of select="str[@name='id']"/>
 			</id>
