@@ -12,7 +12,7 @@
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="url" select="substring-before(doc('input:request')/request/request-url, 'results/')"/>
+	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
@@ -636,7 +636,7 @@
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
 									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
 										<xsl:if test="contains($q, concat(':',@name))">
-											<xsl:copy-of select="document(concat($url, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"/>
+											<xsl:copy-of select="document(concat($request-uri, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"/>
 										</xsl:if>
 									</ul>
 								</li>
@@ -648,7 +648,7 @@
 					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}"
 						style="width:180px">
 						<xsl:if test="contains($q, @name)">
-							<xsl:copy-of select="document(concat($url, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"/>
+							<xsl:copy-of select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"/>
 						</xsl:if>
 					</select>
 				</xsl:otherwise>
