@@ -172,11 +172,7 @@
 									</xsl:choose>
 									<!-- output for 1800s, 1900s, etc. -->
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
-									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
-										<!--<xsl:if test="contains($q, concat(':',@name))">
-											<xsl:copy-of select="document(concat($url, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"/>
-										</xsl:if>-->
-									</ul>
+									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}"/>
 								</li>
 							</xsl:for-each>
 						</ul>

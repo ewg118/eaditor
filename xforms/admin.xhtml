@@ -277,6 +277,12 @@
 				<xforms:bind nodeset="url" required="true()" type="xs:anyURI"/>
 				<xforms:bind nodeset="solr_published" required="true()" type="xs:anyURI"/>
 			</xforms:bind>
+			
+			<xforms:bind nodeset="instance('config')">
+				<xforms:bind nodeset="ark">
+					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
+				</xforms:bind>
+			</xforms:bind>
 
 
 			<!-- ************* SUBMISSIONS ************* -->
@@ -804,8 +810,16 @@
 													<div class="{$id}_container" style="display:none"/>
 												</xforms:group>
 											</td>
-											<td class="{$class} center"><a href="{instance('config')/url}id/{$id}.xml" target="_blank">xml</a> | <a
-													href="{instance('config')/url}id/{$id}" target="_blank">html</a></td>
+											<td class="{$class} center">
+												<xforms:group ref=".[instance('config')/ark/@enabled=true()]">
+													<a href="{instance('config')/url}ark:/{instance('config')/ark/naan}/{$id}.xml" target="_blank">xml</a> | <a
+														href="{instance('config')/url}ark:/{instance('config')/ark/naan}/{$id}" target="_blank">html</a>
+												</xforms:group>
+												<xforms:group ref=".[instance('config')/ark/@enabled=false()]">
+													<a href="{instance('config')/url}id/{$id}.xml" target="_blank">xml</a> | <a
+														href="{instance('config')/url}id/{$id}" target="_blank">html</a>
+												</xforms:group>
+											</td>
 											<td class="{$class} center"><a href="id/{$id}.xml" target="_blank">xml</a> | <a href="id/{$id}" target="_blank"
 													>html</a></td>
 											<td class="{$class} center">

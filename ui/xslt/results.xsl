@@ -12,26 +12,26 @@
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="url" select="/content/config/url"/>
+	<xsl:variable name="url" select="substring-before(doc('input:request')/request/request-url, 'results/')"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
-	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 	<xsl:param name="sort">
-		<xsl:if test="string(doc('input:params')/request/parameters/parameter[name='sort']/value)">
-			<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='sort']/value"/>
+		<xsl:if test="string(doc('input:request')/request/parameters/parameter[name='sort']/value)">
+			<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
 		</xsl:if>
 	</xsl:param>
 	<xsl:param name="rows">10</xsl:param>
 	<xsl:param name="start">
 		<xsl:choose>
-			<xsl:when test="string(doc('input:params')/request/parameters/parameter[name='start']/value)">
-				<xsl:value-of select="doc('input:params')/request/parameters/parameter[name='start']/value"/>
+			<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='start']/value)">
+				<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='start']/value"/>
 			</xsl:when>
 			<xsl:otherwise>0</xsl:otherwise>
 		</xsl:choose>
