@@ -132,7 +132,18 @@
 				<title>
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
-					<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
+					<xsl:choose>
+						<xsl:when test="string(ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper)">
+							<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
+						</xsl:when>
+						<xsl:when test="string(ead:c/ead:did/ead:unittitle)">
+							<xsl:value-of select="ead:c/ead:did/ead:unittitle"/>
+						</xsl:when>
+						<xsl:when test="string(mods:titleInfo/mods:title)">
+							<xsl:value-of select="mods:titleInfo/mods:title"/>
+						</xsl:when>
+					</xsl:choose>
+					
 				</title>
 				<!-- alternates -->
 				<link rel="alternate" type="text/xml" href="{$uri}.xml"/>
