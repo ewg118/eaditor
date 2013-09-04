@@ -21,7 +21,6 @@
 						<xsl:call-template name="head"/>
 						<xsl:call-template name="body"/>
 					</div>
-
 				</div>
 			</xsl:otherwise>
 		</xsl:choose>

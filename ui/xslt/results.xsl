@@ -211,23 +211,18 @@
 						</a>
 					</dd>
 				</div>
-				<div>
-					<dt>
-						<b>
-							<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
-						</b>
-					</dt>
-					<dd>
-						<xsl:choose>
-							<xsl:when test="string(str[@name='unitdate_display'])">
-								<xsl:value-of select="str[@name='unitdate_display']"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>[Unknown]</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</dd>
-				</div>
+				<xsl:if test="string(str[@name='unitdate_display'])">
+					<div>
+						<dt>
+							<b>
+								<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
+							</b>
+						</dt>
+						<dd>
+							<xsl:value-of select="str[@name='unitdate_display']"/>
+						</dd>
+					</div>
+				</xsl:if>
 				<xsl:if test="string(str[@name='publisher_display'])">
 					<div>
 						<dt>

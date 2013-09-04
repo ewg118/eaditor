@@ -14,8 +14,16 @@
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="#data"/>				
 		<p:input name="config" href="../ui/xslt/geographic/solr-to-kml.xsl"/>
-		<p:output name="data" ref="data"/>
+		<p:output name="data" id="model"/>
 	</p:processor>
 	
-
+	<p:processor name="oxf:xml-serializer">
+		<p:input name="data" href="#model"/>
+		<p:input name="config">
+			<config>
+				<content-type>application/vnd.google-earth.kml+xml</content-type>
+			</config>
+		</p:input>
+		<p:output name="data" ref="data"/>
+	</p:processor>
 </p:config>

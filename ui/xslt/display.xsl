@@ -143,7 +143,6 @@
 							<xsl:value-of select="mods:titleInfo/mods:title"/>
 						</xsl:when>
 					</xsl:choose>
-					
 				</title>
 				<!-- alternates -->
 				<link rel="alternate" type="text/xml" href="{$uri}.xml"/>

@@ -368,9 +368,9 @@
 				<xsl:value-of select="ead:unitid"/>
 			</field>
 		</xsl:if>
-		<xsl:if test="ead:physdesc">
-			<field name="physdesc_display">
-				<xsl:value-of select="ead:physdesc"/>
+		<xsl:if test="ead:physdesc/ead:extent">
+			<field name="extent_display">
+				<xsl:value-of select="ead:physdesc/ead:extent"/>
 			</field>
 		</xsl:if>
 	</xsl:template>

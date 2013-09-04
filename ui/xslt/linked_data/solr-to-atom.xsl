@@ -22,7 +22,7 @@
 		<xsl:variable name="numFound">
 			<xsl:value-of select="number(//result[@name='response']/@numFound)"/>
 		</xsl:variable>
-		<xsl:variable name="last" select="number(concat(substring($numFound, 1, string-length($numFound) - 2), '00'))"/>
+		<xsl:variable name="last" select="floor($numFound div 100) * 100"/>
 		<xsl:variable name="next" select="$start_var + 100"/>
 
 
@@ -30,11 +30,11 @@
 			<title>
 				<xsl:value-of select="/content/config/title"/>
 			</title>
-			<link href="/"/>
-			<link href="../feed/?q={$q}" rel="self"/>
+			<link href="{/content/config/url}"/>
+			<link href="{/content/config/url}feed/?q={$q}" rel="self"/>
 			<id>Feed ID</id>
 
-			<xsl:if test="not($next = $last)">
+			<xsl:if test="$next &lt; $last">
 				<link rel="next" href="{$url}feed/?q={$q}&amp;start={$next}"/>
 			</xsl:if>
 			<link rel="last" href="{$url}feed/?q={$q}&amp;start={$last}"/>
