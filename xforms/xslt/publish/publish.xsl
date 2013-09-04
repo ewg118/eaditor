@@ -103,19 +103,22 @@
 		</add>
 	</xsl:template>
 
-	<xsl:template match="ead:ead">	
+	<xsl:template match="ead:ead">		
 		<xsl:variable name="title" select="ead:archdesc/ead:did/ead:unittitle"/>
 		<xsl:variable name="recordId" select="ead:eadheader/ead:eadid"/>
 		<xsl:variable name="archdesc-level" select="ead:archdesc/@level"/>
 
 		<add>
-			<xsl:call-template name="ead-doc">
-				<xsl:with-param name="title" select="$title"/>
-				<xsl:with-param name="recordId" select="$recordId"/>
-				<xsl:with-param name="archdesc-level" select="$archdesc-level"/>
-			</xsl:call-template>
+			<xsl:if test="/content/config/levels/archdesc/@enabled = true()">
+				<xsl:call-template name="ead-doc">
+					<xsl:with-param name="title" select="$title"/>
+					<xsl:with-param name="recordId" select="$recordId"/>
+					<xsl:with-param name="archdesc-level" select="$archdesc-level"/>
+				</xsl:call-template>
+			</xsl:if>
 			
-			<xsl:apply-templates select="descendant::ead:c">
+			<!-- apply templates only to those components when the level has been enabled in the config -->
+			<xsl:apply-templates select="descendant::ead:c[boolean(index-of(/content/config/levels/level[@enabled=true()], @level)) = true()]">
 				<xsl:with-param name="title" select="$title"/>
 				<xsl:with-param name="recordId" select="$recordId"/>
 				<xsl:with-param name="archdesc-level" select="$archdesc-level"/>

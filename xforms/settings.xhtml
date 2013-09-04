@@ -43,7 +43,7 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config xmlns="" version="0.52">
+				<config xmlns="" version="0.53">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
@@ -90,6 +90,20 @@
 							<predicate>depicts</predicate>
 						</namespace>
 					</machine_tags>
+					<levels>
+						<archdesc enabled="true"/>
+						<level enabled="false">class</level>
+						<level enabled="false">collection</level>
+						<level enabled="false">file</level>
+						<level enabled="false">fonds</level>
+						<level enabled="false">item</level>
+						<level enabled="false">otherlevel</level>
+						<level enabled="false">recordgrp</level>
+						<level enabled="false">series</level>
+						<level enabled="false">subfonds</level>
+						<level enabled="false">subgrp</level>
+						<level enabled="false">subseries</level>
+					</levels>
 					<templates>
 						<agencycodes>
 							<agencycode value="US-default">Default Agency</agencycode>
@@ -182,6 +196,10 @@
 					<xforms:bind nodeset="oai-pmh" type="xs:boolean"/>
 					<xforms:bind nodeset="pelagios" type="xs:boolean"/>
 				</xforms:bind>
+				<xforms:bind nodeset="levels">
+					<xforms:bind nodeset="archdesc/@enabled" type="xs:boolean"/>
+					<xforms:bind nodeset="level/@enabled" type="xs:boolean"/>
+				</xforms:bind>
 				<xforms:bind nodeset="publisher" required="../export/oai-pmh = true() or ../export/pelagios = true()"/>
 				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
 				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
@@ -215,7 +233,13 @@
 						<xforms:var name="element" select="context()/local-name()"/>
 						<xforms:setvalue ref="context()" value="instance('config-backup')//*[local-name()=$element]"
 							if="$element != 'predicate' and $element != 'agencycode' and $element != 'container' and string(instance('config-backup')//*[local-name()=$element])"/>
+						
 					</xforms:action>
+					
+					<!-- set enabled attribute, if applicable -->
+					<!--<xforms:action xxforms:iterate="instance('config')//*[@enabled]">
+						<xforms:setvalue ref="context()/@enabled" value="instance('config-backup')//*[local-name()=$element]/@enabled"/>
+					</xforms:action>-->
 
 					<!-- pull machine tags if available -->
 					<xforms:action if="instance('config-backup')/machine_tags">
@@ -404,6 +428,26 @@
 												<p>This is the description of the VOiD dataset exported for Pelagios.</p>
 											</div>
 										</div>
+									</div>
+									<div class="section">
+										<h3>Publication Options</h3>
+										<p>Individual components may be published as atomized Solr documents for more relevant query results and component-level RDF export.</p>
+										<xforms:group ref="levels">
+											<div>
+												<xforms:input ref="archdesc/@enabled">
+													<xforms:label>Finding Aid</xforms:label>
+												</xforms:input>
+											</div>
+											<h4>Components</h4>
+											<xforms:repeat nodeset="level">
+												<xforms:var name="label" select="."/>
+												<div>
+													<xforms:input ref="@enabled">
+														<xforms:label ref="concat('Level: ', $label)"/>
+													</xforms:input>
+												</div>
+											</xforms:repeat>
+										</xforms:group>
 									</div>
 									<div class="section">
 										<h3>API Keys</h3>
