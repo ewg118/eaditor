@@ -12,14 +12,28 @@
 	</xsl:template>
 
 	<xsl:template match="doc">
-		<xsl:variable name="id" select="str[@name='id']"/>
+		<xsl:variable name="id" select="if (string(str[@name='cid'])) then str[@name='cid'] else str[@name='recordId']"/>
 		<xsl:variable name="objectUri">
 			<xsl:choose>
 				<xsl:when test="//config/ark[@enabled='true']">
-					<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='id'])"/>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'id/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

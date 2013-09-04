@@ -10,6 +10,20 @@
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
+	
+	<xsl:variable name="places" as="node()*">
+		<places>
+			<xsl:for-each select="descendant::ead:geogname[@source='geonames' and string(@authfilenumber)]">
+				<xsl:variable name="geonames_data" as="node()*">
+					<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
+				</xsl:variable>
+				
+				<place authfilenumber="{@authfilenumber}">
+					<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
+				</place>
+			</xsl:for-each>
+		</places>
+	</xsl:variable>
 
 	<xsl:template match="/">
 		<xsl:apply-templates select="descendant::ead:ead|descendant::mods:modsCollection"/>
@@ -23,6 +37,9 @@
 		<add>
 			<doc>
 				<field name="id">
+					<xsl:value-of select="mods:recordInfo/mods:recordIdentifier"/>
+				</field>
+				<field name="recordId">
 					<xsl:value-of select="mods:recordInfo/mods:recordIdentifier"/>
 				</field>
 				<field name="oai_id">
@@ -86,106 +103,167 @@
 		</add>
 	</xsl:template>
 
-	<xsl:template match="ead:ead">
+	<xsl:template match="ead:ead">	
+		<xsl:variable name="title" select="ead:archdesc/ead:did/ead:unittitle"/>
+		<xsl:variable name="recordId" select="ead:eadheader/ead:eadid"/>
+		<xsl:variable name="archdesc-level" select="ead:archdesc/@level"/>
+
 		<add>
-			<doc>
-				<field name="id">
-					<xsl:value-of select="@id"/>
+			<xsl:call-template name="ead-doc">
+				<xsl:with-param name="title" select="$title"/>
+				<xsl:with-param name="recordId" select="$recordId"/>
+				<xsl:with-param name="archdesc-level" select="$archdesc-level"/>
+			</xsl:call-template>
+			
+			<xsl:apply-templates select="descendant::ead:c">
+				<xsl:with-param name="title" select="$title"/>
+				<xsl:with-param name="recordId" select="$recordId"/>
+				<xsl:with-param name="archdesc-level" select="$archdesc-level"/>
+			</xsl:apply-templates>
+		</add>
+	</xsl:template>
+	
+	<!-- component template -->
+	<xsl:template match="ead:c">
+		<xsl:param name="title"/>
+		<xsl:param name="recordId"/>
+		<xsl:param name="archdesc-level"/>
+		
+		<xsl:call-template name="ead-doc">
+			<xsl:with-param name="title" select="$title"/>
+			<xsl:with-param name="recordId" select="$recordId"/>
+			<xsl:with-param name="archdesc-level" select="$archdesc-level"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="ead-doc">
+		<xsl:param name="title"/>
+		<xsl:param name="recordId"/>
+		<xsl:param name="archdesc-level"/>
+		<xsl:variable name="id" select="if (string(@id)) then @id else ead:eadheader/ead:eadid"/>
+		
+		<doc>
+			<field name="id">
+				<xsl:value-of select="$id"/>
+			</field>
+			<field name="recordId">
+				<xsl:value-of select="$recordId"/>
+			</field>
+			<xsl:if test="local-name()='c'">
+				<field name="cid">
+					<xsl:value-of select="$id"/>
 				</field>
-				<field name="eadid">
-					<xsl:value-of select="@id"/>
+			</xsl:if>
+			<field name="level_facet">
+				<xsl:value-of select="if (local-name()='c') then @level else ead:archdesc/@level"/>
+			</field>
+			<field name="oai_id">
+				<xsl:text>oai:</xsl:text>
+				<xsl:value-of select="substring-before(substring-after($url, 'http://'), '/olr')"/>
+				<xsl:text>:</xsl:text>
+				<xsl:value-of select="$id"/>
+			</field>
+			
+			<!-- establish archival hierarchy -->
+			<xsl:for-each select="ancestor::ead:c">
+				<xsl:sort select="position()" data-type="number" order="descending"/>
+				<field name="dsc_hier">
+					<xsl:value-of select="position()"/>
+					<xsl:text>|</xsl:text>
+					<xsl:value-of select="concat($recordId, '/', @id)"/>
+					<xsl:text>|</xsl:text>
+					<xsl:value-of select="@level"/>
+					<xsl:text>|</xsl:text>
+					<xsl:value-of select="ead:did/ead:unittitle"/>
 				</field>
-				<field name="oai_id">
-					<xsl:text>oai:</xsl:text>
-					<xsl:value-of select="substring-before(substring-after($url, 'http://'), '/')"/>
-					<xsl:text>:</xsl:text>
-					<xsl:value-of select="@id"/>
+			</xsl:for-each>
+			<!-- if the doc is a component, added dsc_hier field for the archdesc -->
+			<xsl:if test="local-name()='c'">
+				<field name="dsc_hier">
+					<xsl:value-of select="count(ancestor::ead:c) + 1"/>
+					<xsl:text>|</xsl:text>
+					<xsl:value-of select="$recordId"/>
+					<xsl:text>|</xsl:text>
+					<xsl:value-of select="$archdesc-level"/>
+					<xsl:text>|</xsl:text>
+					<xsl:value-of select="$title"/>
 				</field>
-				<xsl:if test="string(normalize-space(//ead:publicationstmt/ead:publisher))">
-					<field name="publisher_display">
-						<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
-					</field>
-				</xsl:if>
-
-				<!-- get info from archdesc/did, mostly for display -->
-				<xsl:apply-templates select="//ead:archdesc/ead:did"/>
-
-				<!-- facets -->
-				<xsl:if test="string(normalize-space(//ead:eadid/@mainagencycode))">
-					<field name="agencycode_facet">
-						<xsl:value-of select="normalize-space(//ead:eadid/@mainagencycode)"/>
-					</field>
-				</xsl:if>
-
-				<xsl:apply-templates
-					select="descendant::ead:corpname | descendant::ead:famname | descendant::ead:genreform | descendant::ead:geogname | descendant::ead:langmaterial/ead:language | descendant::ead:persname | descendant::ead:subject"/>
-
-				<!-- collection images -->
-				<xsl:for-each select="descendant::ead:archdesc/ead:did/ead:daogrp">
-					<field name="collection_thumb">
-						<xsl:value-of select="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
-					</field>
-					<field name="collection_reference">
-						<xsl:choose>
-							<!-- display Medium primarily, Small secondarily -->
-							<xsl:when test="string(ead:daoloc[@xlink:label='Medium']/@xlink:href)">
-								<xsl:value-of select="ead:daoloc[@xlink:label='Medium']/@xlink:href"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="ead:daoloc[@xlink:label='Small']/@xlink:href"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</field>
-				</xsl:for-each>
-
-				<!-- subordinate images -->
-				<xsl:for-each select="descendant::ead:daogrp">
-					<xsl:if test="not(parent::ead:did[parent::ead:archdesc])">
-						<field name="thumb_image">
-							<xsl:value-of select="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
-						</field>
-						<field name="reference_image">
-							<xsl:choose>
-								<!-- display Medium primarily, Small secondarily -->
-								<xsl:when test="string(ead:daoloc[@xlink:label='Medium']/@xlink:href)">
-									<xsl:value-of select="ead:daoloc[@xlink:label='Medium']/@xlink:href"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="ead:daoloc[@xlink:label='Small']/@xlink:href"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</field>
+			</xsl:if>
+			
+			<xsl:if test="string(normalize-space(//ead:publicationstmt/ead:publisher))">
+				<field name="publisher_display">
+					<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
+				</field>
+			</xsl:if>
+			
+			<!-- gather display terms from did -->
+			<xsl:choose>
+				<xsl:when test="ead:archdesc/ead:did">
+					<xsl:apply-templates select="ead:archdesc/ead:did"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="ead:did"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<!-- facets -->
+			<xsl:if test="string(normalize-space(//ead:eadid/@mainagencycode))">
+				<field name="agencycode_facet">
+					<xsl:value-of select="normalize-space(//ead:eadid/@mainagencycode)"/>
+				</field>
+			</xsl:if>
+			
+			<xsl:apply-templates
+				select="descendant::ead:corpname | descendant::ead:famname | descendant::ead:genreform | descendant::ead:geogname | descendant::ead:langmaterial/ead:language | descendant::ead:persname | descendant::ead:subject"/>
+			
+			
+			<!-- images -->
+			<xsl:apply-templates select="descendant::ead:daogrp"/>
+			
+			<field name="timestamp">
+				<xsl:variable name="timestamp" select="datetime:dateTime()"/>
+				<xsl:choose>
+					<xsl:when test="contains($timestamp, 'Z')">
+						<xsl:value-of select="$timestamp"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="concat($timestamp, 'Z')"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</field>
+			
+			<field name="fulltext">
+				<xsl:value-of select="@id"/>
+				<xsl:text> </xsl:text>
+				<xsl:for-each select="descendant-or-self::node()">
+					<xsl:value-of select="text()"/>
+					<xsl:text> </xsl:text>
+					<xsl:if test="@normal">
+						<xsl:value-of select="@normal"/>
+						<xsl:text> </xsl:text>
 					</xsl:if>
 				</xsl:for-each>
-
-				<!-- timestamp -->
-				<field name="timestamp">
-					<xsl:variable name="timestamp" select="datetime:dateTime()"/>
-					<xsl:choose>
-						<xsl:when test="contains($timestamp, 'Z')">
-							<xsl:value-of select="$timestamp"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="concat($timestamp, 'Z')"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</field>
-
-				<!-- fulltext -->
-				<field name="fulltext">
-					<xsl:value-of select="ead:ead/@id"/>
-					<xsl:text> </xsl:text>
-					<xsl:for-each select="descendant-or-self::node()">
-						<xsl:value-of select="text()"/>
-						<xsl:text> </xsl:text>
-						<xsl:if test="@normal">
-							<xsl:value-of select="@normal"/>
-							<xsl:text> </xsl:text>
-						</xsl:if>
-					</xsl:for-each>
-				</field>
-			</doc>
-		</add>
+			</field>
+		</doc>
+	</xsl:template>
+	
+	<xsl:template match="ead:daogrp">
+		<field>
+			<xsl:attribute name="name" select="if (parent::ead:did/parent::ead:archdesc) then 'collection_thumb' else 'thumb_image'"/>
+			<xsl:value-of select="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
+		</field>
+		<field>
+			<xsl:attribute name="name" select="if (parent::ead:did/parent::ead:archdesc) then 'collection_reference' else 'reference_image'"/>
+			<xsl:choose>
+				<!-- display Medium primarily, Small secondarily -->
+				<xsl:when test="string(ead:daoloc[@xlink:label='Medium']/@xlink:href)">
+					<xsl:value-of select="ead:daoloc[@xlink:label='Medium']/@xlink:href"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="ead:daoloc[@xlink:label='Small']/@xlink:href"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</field>
 	</xsl:template>
 
 	<xsl:template
@@ -198,29 +276,26 @@
 		</field>
 		
 		<!-- get coordinates -->
-		<xsl:if test="local-name() = 'geogname' and string(@authfilenumber)">			
+		<xsl:if test="local-name() = 'geogname' and string(@authfilenumber)">
+			<xsl:variable name="authfilenumber" select="@authfilenumber"/>			
 			<xsl:choose>
 				<xsl:when test="@source='geonames'">
-					<xsl:variable name="geonames_data" as="node()*">
-						<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
-					</xsl:variable>
-					
 					<field name="georef">
-						<xsl:value-of select="@authfilenumber"/>
+						<xsl:value-of select="$authfilenumber"/>
 						<xsl:text>|</xsl:text>
 						<xsl:value-of select="normalize-space(.)"/>
 						<xsl:text>|</xsl:text>
-						<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
+						<xsl:value-of select="$places//place[@authfilenumber=$authfilenumber]"/>
 					</field>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
 					<xsl:variable name="rdf" as="node()*">
-						<xsl:copy-of select="document(concat('http://pleiades.stoa.org/places/', @authfilenumber, '/rdf'))"/>
+						<xsl:copy-of select="document(concat('http://pleiades.stoa.org/places/', $authfilenumber, '/rdf'))"/>
 					</xsl:variable>
 					
 					<xsl:if test="number($rdf//geo:long) and number($rdf//geo:lat)">
 						<field name="georef">
-							<xsl:value-of select="@authfilenumber"/>
+							<xsl:value-of select="$authfilenumber"/>
 							<xsl:text>|</xsl:text>
 							<xsl:value-of select="normalize-space(.)"/>
 							<xsl:text>|</xsl:text>
@@ -264,7 +339,7 @@
 		
 	</xsl:template>
 
-	<xsl:template match="ead:archdesc/ead:did">
+	<xsl:template match="ead:did">
 		<field name="unittitle_display">
 			<xsl:value-of select="normalize-space(ead:unittitle)"/>
 		</field>

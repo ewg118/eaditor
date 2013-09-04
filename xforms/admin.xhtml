@@ -223,7 +223,7 @@
 			<!-- delete from Solr -->
 			<xforms:instance id="deleteId">
 				<delete xmlns="">
-					<id/>
+					<query/>
 				</delete>
 			</xforms:instance>
 			<xforms:instance id="deleteAll">
@@ -983,7 +983,7 @@
 			<fr:negative-choice/>
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
-					<xforms:setvalue ref="instance('deleteId')/id" value="instance('control-instance')/id"/>
+					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="delete-solr-doc"/>
 					<!-- reload table -->
@@ -1002,7 +1002,7 @@
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
 					<!-- dleete from exist and solr -->
-					<xforms:setvalue ref="instance('deleteId')/id" value="instance('control-instance')/id"/>
+					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
 					<xforms:send submission="delete-guide"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="delete-solr-doc"/>

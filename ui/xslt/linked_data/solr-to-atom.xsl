@@ -54,10 +54,24 @@
 		<xsl:variable name="objectUri">
 			<xsl:choose>
 				<xsl:when test="//config/ark[@enabled='true']">
-					<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='id'])"/>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'id/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -69,7 +83,7 @@
 			<link rel="alternate xml" type="text/xml" href="{$objectUri}.xml"/>
 			<link rel="alternate rdf" type="application/rdf+xml" href="{$objectUri}.rdf"/>
 			<id>
-				<xsl:value-of select="str[@name='id']"/>
+				<xsl:value-of select="$objectUri"/>
 			</id>
 			<xsl:if test="arr[@name='mint_facet']/str[1]">
 				<creator>

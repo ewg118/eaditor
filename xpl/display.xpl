@@ -14,7 +14,7 @@
 	<p:processor name="oxf:request">
 		<p:input name="config">
 			<config>
-				<include>/request/request-url</include>				
+				<include>/request</include>				
 			</config>
 		</p:input>
 		<p:output name="data" id="request"/>

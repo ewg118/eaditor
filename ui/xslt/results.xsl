@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all"
-	version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	exclude-result-prefixes="#all" version="2.0">
 	<xsl:output method="xhtml" encoding="UTF-8" indent="yes"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
@@ -176,16 +176,33 @@
 			<dl class="result_info">
 				<div>
 					<dt>
-						<b>Title</b>
+						<b>
+							<xsl:value-of select="eaditor:normalize_fields('title', $lang)"/>
+						</b>
 					</dt>
 					<dd>
 						<xsl:variable name="objectUri">
 							<xsl:choose>
 								<xsl:when test="//config/ark[@enabled='true']">
-									<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='id'])"/>
+									<xsl:choose>
+										<xsl:when test="string(str[@name='cid'])">
+											<xsl:value-of
+												select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+										</xsl:otherwise>
+									</xsl:choose>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:value-of select="concat($display_path, 'id/', str[@name='id'])"/>
+									<xsl:choose>
+										<xsl:when test="string(str[@name='cid'])">
+											<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
+										</xsl:otherwise>
+									</xsl:choose>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -196,7 +213,9 @@
 				</div>
 				<div>
 					<dt>
-						<b>Date</b>
+						<b>
+							<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
+						</b>
 					</dt>
 					<dd>
 						<xsl:choose>
@@ -212,7 +231,9 @@
 				<xsl:if test="string(str[@name='publisher_display'])">
 					<div>
 						<dt>
-							<b>Publisher</b>
+							<b>
+								<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
+							</b>
 						</dt>
 						<dd>
 							<xsl:value-of select="str[@name='publisher_display']"/>
@@ -225,14 +246,62 @@
 				<xsl:if test="string(str[@name='physdesc_display'])">
 					<div>
 						<dt>
-							<b>Physical Description</b>
+							<b>
+								<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
+							</b>
 						</dt>
 						<dd>
 							<xsl:value-of select="str[@name='physdesc_display']"/>
 						</dd>
 					</div>
 				</xsl:if>
+				<xsl:if test="string(arr[@name='level_facet']/str[1])">
+					<div>
+						<dt>
+							<b>
+								<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
+							</b>
+						</dt>
+						<dd>
+							<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
+						</dd>
+					</div>
+				</xsl:if>
+				<!-- hierarchy -->
+				<xsl:if test="count(arr[@name='dsc_hier']/str) &gt; 0">
+					<xsl:variable name="ark" select="//config/ark/@enabled" as="xs:boolean"/>
+					<xsl:variable name="naan" select="normalize-space(//config/ark/naan)"/>
 
+					<div>
+						<dt>
+							<b>Organization</b>
+						</dt>
+						<dd>
+							<xsl:for-each select="arr[@name='dsc_hier']/str">
+								<xsl:variable name="pieces" select="tokenize(., '\|')"/>
+								<xsl:choose>
+									<xsl:when test="$ark = true()">
+										<a href="{$display_path}ark:/{$naan}/{$pieces[2]}">
+											<xsl:value-of select="$pieces[3]"/>
+											<xsl:text>: </xsl:text>
+											<xsl:value-of select="$pieces[4]"/>
+										</a>
+									</xsl:when>
+									<xsl:otherwise>
+										<a href="{$display_path}id/{$pieces[2]}">
+											<xsl:value-of select="$pieces[3]"/>
+											<xsl:text>: </xsl:text>
+											<xsl:value-of select="$pieces[4]"/>
+										</a>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:if test="not(position()=last())">
+									<xsl:text> | </xsl:text>
+								</xsl:if>
+							</xsl:for-each>
+						</dd>
+					</div>
+				</xsl:if>
 			</dl>
 			<xsl:if test="count(arr[@name='collection_thumb']/str) &gt; 0">
 				<div style="float:right">
@@ -248,9 +317,10 @@
 				<xsl:when test="contains(., 'flickr.com')">
 					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
 					<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
-					<xsl:variable name="photo_count" select="count(ancestor::doc/arr[@name='thumb_image']/str) + count(ancestor::doc/arr[@name='collection_thumb']/str)"/>
+					<xsl:variable name="photo_count"
+						select="count(ancestor::doc/arr[@name='thumb_image']/str) + count(ancestor::doc/arr[@name='collection_thumb']/str)"/>
 					<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
-					<a href="#{generate-id()}" rel="{ancestor::doc/str[@name='id']}-gallery" title="{$title}: {position()} of {$photo_count}">
+					<a href="#{generate-id()}" rel="{ancestor::doc/str[@name='recordId']}-gallery" title="{$title}: {position()} of {$photo_count}">
 						<img class="ci" src="{.}"/>
 					</a>
 					<xsl:if test="count(ancestor::doc/arr[@name='thumb_image']/str) &gt; 0">
@@ -265,7 +335,8 @@
 						<xsl:for-each select="ancestor::doc/arr[@name='thumb_image']/str">
 							<xsl:variable name="dao_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
 							<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($dao_id)"/>
-							<a class="image-gallery" rel="{ancestor::doc/str[@name='id']}-gallery" href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $dao_id)][1]}"
+							<a class="image-gallery" rel="{ancestor::doc/str[@name='recordId']}-gallery"
+								href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $dao_id)][1]}"
 								title="{$title}: {position() + count(ancestor::doc/arr[@name='collection_thumb']/str)} of {$photo_count}">
 								<img src="{.}" alt="image"/>
 							</a>
@@ -604,7 +675,8 @@
 
 			<xsl:choose>
 				<xsl:when test="@name='century_num'">
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 180px;" id="{@name}_link" label="{$q}">
+					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true"
+						style="width: 180px;" id="{@name}_link" label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
 					</button>
@@ -636,7 +708,9 @@
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
 									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
 										<xsl:if test="contains($q, concat(':',@name))">
-											<xsl:copy-of select="document(concat($request-uri, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"/>
+											<xsl:copy-of
+												select="document(concat($request-uri, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"
+											/>
 										</xsl:if>
 									</ul>
 								</li>
@@ -645,10 +719,12 @@
 					</div>
 				</xsl:when>
 				<xsl:otherwise>
-					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}"
-						style="width:180px">
+					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}"
+						new_query="{if (contains($q, @name)) then $select_new_query else ''}" style="width:180px">
 						<xsl:if test="contains($q, @name)">
-							<xsl:copy-of select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"/>
+							<xsl:copy-of
+								select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"
+							/>
 						</xsl:if>
 					</select>
 				</xsl:otherwise>
@@ -718,7 +794,8 @@
 								<b><xsl:value-of select="$name"/>: </b>
 								<xsl:value-of select="if ($field = 'century_num') then eaditor:normalize_century($term) else $term"/>
 							</span>
-							<a class="ui-icon ui-icon-closethick remove_filter" href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
+							<a class="ui-icon ui-icon-closethick remove_filter"
+								href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
 						</div>
 
 					</xsl:when>
@@ -814,7 +891,8 @@
 									</xsl:if>
 								</xsl:for-each>
 							</span>
-							<a class="ui-icon ui-icon-closethick remove_filter" href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
+							<a class="ui-icon ui-icon-closethick remove_filter"
+								href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
 
 						</div>
 					</xsl:when>

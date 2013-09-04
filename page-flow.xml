@@ -73,6 +73,7 @@
 	<page path="/eaditor/ark:/([0-9]{5})/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>
 	<page path="/eaditor/ark:/([0-9]{5})/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
 	<page path="/eaditor/ark:/([0-9]{5})/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
+	
 
 	<!-- index -->
 	<page path="/eaditor/" model="xpl/config.xpl" view="xpl/index.xpl"/>

@@ -216,10 +216,10 @@
 	<xsl:template name="icons">
 		<div class="submenu">
 			<div class="icon">
-				<a href="{$display_path}admin/id/{$doc}">Staff View</a>
+				<a href="{$display_path}admin/id/{$path}">Staff View</a>
 			</div>
 			<div class="icon">
-				<a href="{$path}.xml">
+				<a href="{$uri}.xml">
 					<img src="{$display_path}images/xml.png" title="XML" alt="XML"/>
 				</a>
 			</div>
