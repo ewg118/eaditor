@@ -11,13 +11,16 @@
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
 					<xhtml:div class="subsection">
-						<xhtml:h2>Aquisition Information</xhtml:h2>
+						<xhtml:h2>Acquisition Information</xhtml:h2>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
 								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
 						</xforms:trigger>
+						
+						<!-- include attributes menu -->
+						<eaditor:attributes ref="$binding"/>
 
 						<!-- include generic triggers -->
 						<eaditor:generic-elements ref="$binding"/>
