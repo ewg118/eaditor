@@ -136,6 +136,9 @@
 							<xi:include href="../../../exist-url.xml"/>
 						</xforms:instance>
 						
+						<xforms:instance id="config">
+							<config xmlns=""/>
+						</xforms:instance>
 						
 						<xforms:instance id="has-executed">
 							<has-executed xmlns="">false</has-executed>
