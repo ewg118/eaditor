@@ -19,7 +19,8 @@
 								<!-- only query one time -->
 								<xforms:action if="not(instance('has-executed') = 'true')">
 									<xforms:setvalue ref="instance('attributes')/@element-name" value="$binding/local-name()"/>
-									<xforms:send submission="load-config"/>
+									<!-- only load config for container element -->
+									<xforms:send submission="load-config" if="$binding/local-name()='container'"/>
 									<xforms:send submission="get-attributes"/>
 									<!-- populate the attributes with values if they already exist, e.g., on form load -->
 									<xforms:action ev:event="xforms-submit-done" xxforms:iterate="instance('attributes')/attribute">
