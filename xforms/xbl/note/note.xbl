@@ -16,7 +16,9 @@
 							<xforms:label>
 								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
 							</xforms:label>
-						</xforms:trigger>						
+						</xforms:trigger>
+						<!-- include attributes menu -->
+						<eaditor:attributes ref="$binding"/>						
 						<xhtml:div>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
