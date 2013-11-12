@@ -188,10 +188,10 @@
 				<xforms:bind nodeset="theme/jquery_ui_theme" required="true()"/>
 				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
-				<xforms:bind nodeset="ark">
+				<!--<xforms:bind nodeset="ark">
 					<xforms:bind nodeset="naan"  constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
 					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
-				</xforms:bind>
+				</xforms:bind>-->
 				<xforms:bind nodeset="export">
 					<xforms:bind nodeset="oai-pmh" type="xs:boolean"/>
 					<xforms:bind nodeset="pelagios" type="xs:boolean"/>
@@ -365,7 +365,7 @@
 												public and private aspects of EADitor be contained on different servers.</p>
 										</div>
 									</div>
-									<div class="section">
+									<!--<div class="section">
 										<h3>ARK</h3>
 										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"/></p>
 										<div>
@@ -379,7 +379,7 @@
 												<xforms:alert>Must be a 5-digit ARK number.</xforms:alert>
 											</xforms:input>
 										</div>
-									</div>
+									</div>-->
 									<div class="section">
 										<h3>Export</h3>
 										<div class="subsection">
