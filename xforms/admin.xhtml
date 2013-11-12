@@ -294,8 +294,8 @@
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 				<xforms:action ev:event="xforms-submit-done">
 					<!--iterate through docs, check for publication -->
-					<xforms:action xxforms:iterate="instance('pagination-result')//record">
-						<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
+					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
+					<xforms:action xxforms:iterate="instance('pagination-result')//record">						
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()/id"/>
 						<xforms:send submission="query-solr-for-publication"/>
 					</xforms:action>
