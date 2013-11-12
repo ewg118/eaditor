@@ -1,0 +1,1161 @@
+<!--
+	Copyright (C) 2010 Ethan Gruber
+	EADitor: http://code.google.com/p/eaditor/
+	Apache License 2.0: http://code.google.com/p/eaditor/
+	
+	Heavily modified from upload form developed by Orbeon	
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9">
+	<head>
+		<title>EADitor: Test Control</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
+
+		<!-- EADitor styling -->
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+
+		<xforms:model xmlns="urn:isbn:1-931666-22-9">
+			<xforms:instance id="guide" xxforms:exclude-result-prefixes="#all">
+				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<control>
+						<recordid/>
+						<publicationstatus>inProcess</publicationstatus>
+						<filedesc>
+							<titlestmt>
+								<titleproper/>
+							</titlestmt>
+						</filedesc>
+						<maintenancestatus>new</maintenancestatus>
+						<maintenanceagency>
+							<agencyname/>
+						</maintenanceagency>
+						<maintenancehistory>
+							<maintenanceevent>
+								<eventtype>new</eventtype>
+								<eventdatetime standarddatetime=""/>
+								<agenttype>human</agenttype>
+								<agent/>
+							</maintenanceevent>
+						</maintenancehistory>
+					</control>
+				</ead>
+			</xforms:instance>
+
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="exist-url">
+				<xi:include href="../exist-url.xml"/>
+			</xforms:instance>
+
+			<!-- new -->
+			<xforms:instance id="otherrecordid-template" xxforms:exclude-result-prefixes="#all">
+				<otherrecordid/>
+			</xforms:instance>
+
+			<xforms:instance id="otheragencycode-template" xxforms:exclude-result-prefixes="#all">
+				<otheragencycode/>
+			</xforms:instance>
+
+			<xforms:instance id="agencycode-template" xxforms:exclude-result-prefixes="#all">
+				<agencycode/>
+			</xforms:instance>
+
+			<xforms:instance id="maintenanceevent-template" xxforms:exclude-result-prefixes="#all">
+				<maintenanceevent>
+					<eventtype/>
+					<eventdatetime standarddatetime=""/>
+					<agenttype/>
+					<agent/>
+				</maintenanceevent>
+			</xforms:instance>
+
+			<xforms:instance id="eventdescription-template" xxforms:exclude-result-prefixes="#all">
+				<eventdescription/>
+			</xforms:instance>
+
+			<xforms:instance id="conventiondeclaration-template" xxforms:exclude-result-prefixes="#all">
+				<conventiondeclaration>
+					<citation/>
+				</conventiondeclaration>
+			</xforms:instance>
+
+			<xforms:instance id="localtypedeclaration-template" xxforms:exclude-result-prefixes="#all">
+				<localtypedeclaration>
+					<citation/>
+				</localtypedeclaration>
+			</xforms:instance>
+
+			<xforms:instance id="languagedeclaration-template" xxforms:exclude-result-prefixes="#all">
+				<languagedeclaration>
+					<language languagecode=""/>
+					<script scriptcode=""/>
+				</languagedeclaration>
+			</xforms:instance>
+
+			<xforms:instance id="localcontrol-template" xxforms:exclude-result-prefixes="#all">
+				<localcontrol>
+					<term/>
+				</localcontrol>
+			</xforms:instance>
+
+			<xforms:instance id="datesingle-template" xxforms:exclude-result-prefixes="#all">
+				<datesingle/>
+			</xforms:instance>
+
+			<xforms:instance id="daterange-template" xxforms:exclude-result-prefixes="#all">
+				<daterange>
+					<fromdate/>
+					<todate/>
+				</daterange>
+			</xforms:instance>
+
+			<xforms:instance id="sources-template" xxforms:exclude-result-prefixes="#all">
+				<sources>
+					<source>
+						<sourceentry/>
+					</source>
+				</sources>
+			</xforms:instance>
+
+			<xforms:instance id="source-template" xxforms:exclude-result-prefixes="#all">
+				<source>
+					<sourceentry/>
+				</source>s </xforms:instance>
+
+			<!-- generic templates -->
+			<xforms:instance id="descriptivenote-template" xxforms:exclude-result-prefixes="#all">
+				<descriptivenote>
+					<p/>
+				</descriptivenote>
+			</xforms:instance>
+
+			<xforms:instance id="controlnote-template" xxforms:exclude-result-prefixes="#all">
+				<controlnote>
+					<p/>
+				</controlnote>
+			</xforms:instance>
+
+			<!-- old -->
+			<xforms:instance id="editionstmt-template" xxforms:exclude-result-prefixes="#all">
+				<editionstmt>
+					<edition/>
+				</editionstmt>
+			</xforms:instance>
+			<xforms:instance id="notestmt-template" xxforms:exclude-result-prefixes="#all">
+				<notestmt>
+					<note>
+						<p/>
+					</note>
+				</notestmt>
+			</xforms:instance>
+			<xforms:instance id="publicationstmt-template" xxforms:exclude-result-prefixes="#all">
+				<publicationstmt/>
+			</xforms:instance>
+			<xforms:instance id="seriesstmt-template" xxforms:exclude-result-prefixes="#all">
+				<seriesstmt/>
+			</xforms:instance>
+
+			<!-- shared/generic -->
+			<xforms:instance id="author-template" xxforms:exclude-result-prefixes="#all">
+				<author/>
+			</xforms:instance>
+			<xforms:instance id="creation-template" xxforms:exclude-result-prefixes="#all">
+				<creation/>
+			</xforms:instance>
+			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
+				<change>
+					<date/>
+					<item/>
+				</change>
+			</xforms:instance>
+			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
+				<date/>
+			</xforms:instance>
+			<xforms:instance id="num-template" xxforms:exclude-result-prefixes="#all">
+				<num type=""/>
+			</xforms:instance>
+			<xforms:instance id="publisher-template" xxforms:exclude-result-prefixes="#all">
+				<publisher/>
+			</xforms:instance>
+			<xforms:instance id="sponsor-template" xxforms:exclude-result-prefixes="#all">
+				<sponsor/>
+			</xforms:instance>
+			<xforms:instance id="subtitle-template" xxforms:exclude-result-prefixes="#all">
+				<subtitle/>
+			</xforms:instance>
+			<xforms:instance id="titleproper-template" xxforms:exclude-result-prefixes="#all">
+				<titleproper/>
+			</xforms:instance>
+			<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+				<address>
+					<addressline/>
+				</address>
+			</xforms:instance>
+			<xforms:instance id="blockquote-template" xxforms:exclude-result-prefixes="#all">
+				<blockquote/>
+			</xforms:instance>
+			<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+				<head/>
+			</xforms:instance>
+			<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+				<note>
+					<p/>
+				</note>
+			</xforms:instance>
+			<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+				<p/>
+			</xforms:instance>
+
+			<!-- select lists -->
+			<xforms:instance id="languages">
+				<xi:include href="instances/languages.xml"/>
+			</xforms:instance>
+			<xforms:instance id="scripts">
+				<xi:include href="instances/scripts.xml"/>
+			</xforms:instance>
+			<xforms:instance id="maintenancestatuses">
+				<statuses xmlns="">
+					<status>revised</status>
+					<status>deleted</status>
+					<status>new</status>
+					<status>deletedSplit</status>
+					<status>deletedReplaced</status>
+					<status>cancelled</status>
+					<status>derived</status>
+				</statuses>
+			</xforms:instance>
+
+			<xforms:instance id="eventtypes">
+				<types xmlns="">
+					<type>created</type>
+					<type>revised</type>
+					<type>deleted</type>
+					<type>cancelled</type>
+					<type>derived</type>
+					<type>updated</type>
+					<type>unknown</type>
+				</types>
+			</xforms:instance>
+
+			<xforms:instance id="agenttypes">
+				<types xmlns="">
+					<type>human</type>
+					<type>machine</type>
+					<type>unknown</type>
+				</types>
+			</xforms:instance>
+
+			<!-- bindings -->
+			<xforms:bind nodeset="instance('guide')">
+				<xforms:bind nodeset="ead:control">
+					<xforms:bind nodeset="ead:recordid" required="true()"/>
+					<xforms:bind nodeset="ead:otherrecordid" required="true()"/>
+					<xforms:bind nodeset="ead:filedesc">
+						<xforms:bind nodeset="ead:titlestmt">
+							<xforms:bind nodeset="ead:titleproper" required="true()"/>
+						</xforms:bind>
+						<xforms:bind nodeset="ead:editionstmt">
+							<xforms:bind nodeset="ead:edition" required="true()"/>
+						</xforms:bind>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:conventiondeclaration">
+						<xforms:bind nodeset="ead:abbreviation" required="true()"/>
+						<xforms:bind nodeset="ead:citation" required="true()"/>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:localtypedeclaration">
+						<xforms:bind nodeset="ead:abbreviation" required="true()"/>
+						<xforms:bind nodeset="ead:citation" required="true()"/>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:languagedeclaration">
+						<xforms:bind nodeset="ead:language" required="true()">
+							<xforms:bind nodeset="@languagecode" required="true()"/>
+						</xforms:bind>
+						<xforms:bind nodeset="ead:script" required="true()">
+							<xforms:bind nodeset="@scriptcode" required="true()"/>
+						</xforms:bind>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:maintenancestatus" required="true()"/>
+					<xforms:bind nodeset="ead:maintenanceagency">
+						<xforms:bind nodeset="ead:agencyname" required="true()"/>
+						<xforms:bind nodeset="ead:agencycode" required="true()"/>
+						<xforms:bind nodeset="ead:otheragencycode" required="true()"/>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:maintenancehistory">
+						<xforms:bind nodeset="ead:maintenanceevent">
+							<xforms:bind nodeset="ead:agent" required="true()"/>
+							<xforms:bind nodeset="ead:eventdescription" required="true()"/>
+							<xforms:bind nodeset="ead:eventdatetime/@standarddatetime" type="xs:dateTime"/>
+						</xforms:bind>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:sources">
+						<xforms:bind nodeset="ead:source">
+							<xforms:bind nodeset="ead:sourceentry" required="true()"/>
+						</xforms:bind>
+					</xforms:bind>
+				</xforms:bind>
+			</xforms:bind>
+
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance"
+				instance="config"/>
+
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:send submission="load-config"/>
+
+				<xforms:action if="string(xxforms:get-request-parameter('guide'))">
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:recordid" value="xxforms:get-request-parameter('guide')"/>
+
+					<!-- insert new maintenance event and set event type -->
+					<xforms:insert context="instance('guide')/ead:control/ead:maintenancehistory" nodeset="./child::node()[last()]"
+						origin="instance('maintenanceevent-template')"/>
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:maintenancehistory/ead:maintenanceevent[last()]/ead:eventtype"
+						>revised</xforms:setvalue>
+
+					<!-- set datetime -->
+					<xforms:var name="dateTime" select="current-dateTime()"/>
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:maintenancehistory/ead:maintenanceevent[last()]/ead:eventdatetime/@standarddatetime"
+						value="$dateTime"/>
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:maintenancehistory/ead:maintenanceevent[last()]/ead:eventdatetime"
+						value="format-dateTime(xs:dateTime($dateTime), '[MNn] [D], [Y]: [H]:[m]', 'en', (), ())"/>
+
+				</xforms:action>
+				<xforms:action if="not(string(xxforms:get-request-parameter('guide')))">
+					<!-- set datetime on new record -->
+					<xforms:var name="dateTime" select="current-dateTime()"/>
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:maintenancehistory/ead:maintenanceevent/ead:eventdatetime/@standarddatetime"
+						value="$dateTime"/>
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:maintenancehistory/ead:maintenanceevent/ead:eventdatetime"
+						value="format-dateTime(xs:dateTime($dateTime), '[MNn] [D], [Y]: [H]:[m]', 'en', (), ())"/>
+				</xforms:action>
+			</xforms:action>
+		</xforms:model>
+		<!-- XBL -->
+		<xi:include href="xbl/declaration/declaration.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/p/p.xbl" xxi:omit-xml-base="true"/>
+	</head>
+	<body>
+		<div class="yui3-g">
+			<xforms:group ref="instance('guide')/ead:control">
+				<div id="form">
+					<div class="yui3-u-1">
+						<!-- header -->
+						<xxforms:variable name="display_path">../../</xxforms:variable>
+						<xi:include href="header.xml"/>
+						<p>
+							<a href="..">&lt; Return</a>
+						</p>
+						<h1>Control</h1>
+						<div class="trigger_container">
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<img src="/apps/eaditor/xforms/images/add.gif"/>Other Record ID</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:otherrecordid) then ead:otherrecordid else ead:recordid"
+									position="after" origin="instance('otherrecordid-template')"/>
+							</xforms:trigger>
+						</div>
+						<div>
+							<xforms:input ref="ead:recordid">
+								<xforms:label>Record ID</xforms:label>
+								<xforms:alert>Required</xforms:alert>
+							</xforms:input>
+						</div>
+						<xforms:repeat nodeset="ead:otherrecordid">
+							<div>
+								<xforms:input ref=".">
+									<xforms:label>Other Record ID</xforms:label>
+									<xforms:alert>Required</xforms:alert>
+								</xforms:input>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+							</div>
+						</xforms:repeat>
+						<xforms:group ref="ead:publicationstatus">
+							<xforms:select1 ref=".">
+								<xforms:label>Publication Status</xforms:label>
+								<xforms:item>
+									<xforms:label>inProcess</xforms:label>
+									<xforms:value>inProcess</xforms:value>
+								</xforms:item>
+								<xforms:item>
+									<xforms:label>approved</xforms:label>
+									<xforms:value>approved</xforms:value>
+								</xforms:item>
+							</xforms:select1>
+						</xforms:group>
+					</div>
+					<div class="yui3-u-1-2">
+						<div class="section">
+							<h2>File Description</h2>
+							<span class="add">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>
+									</xforms:label>
+									<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"/>
+								</xforms:trigger>
+							</span>
+							<xxforms:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+								<xforms:label>File Description Elements</xforms:label>
+								<xforms:group ref=".[count(//ead:editionstmt) &lt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Edition Statement</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after"
+											origin="instance('editionstmt-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+								<xforms:group ref=".[count(//ead:publicationstmt) &lt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Publication Statement</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
+											nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt" origin="instance('publicationstmt-template')"
+										/>
+									</xforms:trigger>
+								</xforms:group>
+								<xforms:group ref=".[count(//ead:seriesstmt) &lt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Series Statement</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
+											nodeset="if (ead:publicationstmt) then ead:publicationstmt else if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
+											origin="instance('seriesstmt-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+								<xforms:group ref=".[count(//ead:notestmt) &lt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Note Statement</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]"
+											origin="instance('notestmt-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+							</xxforms:dialog>
+							<xforms:group ref="ead:filedesc">
+								<xforms:group ref="ead:titlestmt">
+									<div class="subsection">
+										<h3>Title Statement</h3>
+										<span class="add">
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>
+												</xforms:label>
+												<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"/>
+											</xforms:trigger>
+										</span>
+										<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+											<xforms:label>Title Statement Elements</xforms:label>
+											<xforms:group ref=".[count(ead:subtitle) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Subtitle</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="."
+														nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
+														origin="instance('subtitle-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>Author</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="."
+													nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper" origin="instance('author-template')"/>
+											</xforms:trigger>
+											<xforms:group ref=".[count(ead:sponsor) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Sponsor</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="."
+														nodeset="if (ead:author) then ead:author else if (ead:subtitle) then ead:subtitle else ead:titleproper"
+														origin="instance('sponsor-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+										</xxforms:dialog>
+										<div>
+											<xforms:input ref="ead:titleproper">
+												<xforms:label>Proper Title</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:input>
+										</div>
+										<!-- subtitle -->
+										<xforms:group ref="ead:subtitle">
+											<div>
+												<xforms:input ref=".">
+													<xforms:label>Subtitle</xforms:label>
+												</xforms:input>
+												<xforms:trigger appearance="minimal">
+													<xforms:delete ev:event="DOMActivate" nodeset="."/>
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													</xforms:label>
+												</xforms:trigger>
+											</div>
+										</xforms:group>
+										<!-- author -->
+										<xforms:repeat nodeset="ead:author">
+											<div>
+												<xforms:input ref=".">
+													<xforms:label>Author</xforms:label>
+												</xforms:input>
+												<xforms:trigger appearance="minimal">
+													<xforms:delete ev:event="DOMActivate" nodeset="."/>
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													</xforms:label>
+												</xforms:trigger>
+											</div>
+										</xforms:repeat>
+										<!-- sponsor -->
+										<xforms:group ref="ead:sponsor">
+											<div>
+												<xforms:input ref=".">
+													<xforms:label>Sponsor</xforms:label>
+												</xforms:input>
+												<xforms:trigger appearance="minimal">
+													<xforms:delete ev:event="DOMActivate" nodeset="."/>
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													</xforms:label>
+												</xforms:trigger>
+											</div>
+										</xforms:group>
+									</div>
+								</xforms:group>
+								<!-- edition stmt -->
+								<xforms:group ref="ead:editionstmt">
+									<div class="subsection">
+										<h3>Edition Statement</h3>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+										<div>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
+											</xforms:trigger>
+										</div>
+										<xforms:group ref="ead:edition">
+											<div>
+												<xforms:input ref=".">
+													<xforms:label>Edition</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</div>
+										</xforms:group>
+										<!-- paragraph -->
+										<xforms:repeat nodeset="ead:p">
+											<eaditor:p/>
+										</xforms:repeat>
+									</div>
+								</xforms:group>
+								<!-- publication statement -->
+								<xforms:group ref="ead:publicationstmt">
+									<div class="subsection">
+										<h3>Publication Statement</h3>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+										<span class="add">
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>
+												</xforms:label>
+												<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"/>
+											</xforms:trigger>
+										</span>
+										<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true"
+											visible="false">
+											<xforms:label>Publication Statement Elements</xforms:label>
+											<xforms:group ref=".[count(ead:address) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Address</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('address-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:group ref=".[count(ead:date) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Date</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('date-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:group ref=".[count(ead:num) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Number</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
+											</xforms:trigger>
+											<xforms:group ref=".[count(ead:publisher) &lt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Publisher</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+										</xxforms:dialog>
+										<xforms:group ref=".[count(child::node()) &lt; 1]">
+											<div class="warning"><b>Warning:</b> Element must contain content.</div>
+										</xforms:group>
+										<!-- address -->
+										<xforms:group ref="ead:address">
+											<eaditor:address/>
+										</xforms:group>
+										<!-- date -->
+										<xforms:group ref="ead:date">
+											<eaditor:date/>
+										</xforms:group>
+										<!-- num -->
+										<xforms:group ref="ead:num">
+											<eaditor:num/>
+										</xforms:group>
+										<!-- paragraph -->
+										<xforms:repeat nodeset="ead:p">
+											<eaditor:p/>
+										</xforms:repeat>
+										<!-- publisher -->
+										<xforms:group ref="ead:publisher">
+											<div>
+												<xforms:input ref=".">
+													<xforms:label>Publisher</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+												<xforms:trigger appearance="minimal">
+													<xforms:delete ev:event="DOMActivate" nodeset="."/>
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													</xforms:label>
+												</xforms:trigger>
+											</div>
+										</xforms:group>
+									</div>
+								</xforms:group>
+								<!-- series statement -->
+								<xforms:group ref="ead:seriesstmt">
+									<div class="subsection">
+										<h3>Series Statement</h3>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+										<span class="add">
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>
+												</xforms:label>
+												<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"/>
+											</xforms:trigger>
+										</span>
+										<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+											<xforms:label>Series Statement Elements</xforms:label>
+											<p>The Series Statement may include titleproper/num or paragraphs.</p>
+											<xforms:group ref=".[count(ead:titleproper) = 0 and count(ead:p) = 0]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Title</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('titleproper-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:group ref=".[count(ead:num) = 0  and count(ead:p) = 0]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Number</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:group ref=".[count(ead:num) = 0 and count(ead:titleproper) = 0]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+														origin="instance('p-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+										</xxforms:dialog>
+										<xforms:group ref=".[count(child::node()) &lt; 1]">
+											<div class="warning"><b>Warning:</b> Element must contain content.</div>
+										</xforms:group>
+										<!-- titleproper -->
+										<xforms:group ref="ead:titleproper">
+											<div>
+												<xforms:input ref=".">
+													<xforms:label>Proper Title</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</div>
+										</xforms:group>
+										<!-- num -->
+										<xforms:group ref="ead:num">
+											<eaditor:num/>
+										</xforms:group>
+										<!-- p -->
+										<xforms:repeat nodeset="ead:p">
+											<eaditor:p/>
+										</xforms:repeat>
+									</div>
+								</xforms:group>
+								<xforms:group ref="ead:notestmt">
+									<div class="subsection">
+										<h3>Note Statement</h3>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+										<div>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]"
+													origin="instance('controlnote-template')"/>
+											</xforms:trigger>
+										</div>
+										<xforms:group ref=".[count(child::ead:note) &lt; 1]">
+											<div class="warning"><b>Warning:</b> Note Statement must contain at least one Note.</div>
+										</xforms:group>
+										<xforms:repeat nodeset="ead:controlnote">
+											<eaditor:note/>
+										</xforms:repeat>
+									</div>
+								</xforms:group>
+							</xforms:group>
+						</div>
+						<!-- maintenance -->
+						<div class="section">
+							<h2>Maintenance</h2>
+							<div>
+								<xforms:select1 ref="ead:maintenancestatus">
+									<xforms:label>Status</xforms:label>
+									<xforms:itemset nodeset="instance('maintenancestatuses')//status">
+										<xforms:label ref="."/>
+										<xforms:value ref="."/>
+									</xforms:itemset>
+									<xforms:alert>Required</xforms:alert>
+								</xforms:select1>
+							</div>
+							<xforms:group ref="ead:maintenanceagency">
+								<h3>Maintenance Agency</h3>
+								<div class="trigger_container">
+									<xforms:group ref=".[count(ead:agencycode) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/add.gif"/>Agency Code</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:var name="agencyname" select="ead:agencyname"/>
+												<xforms:insert context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
+												<xforms:setvalue ref="ead:agencycode"
+													value="instance('config')/templates/agencycodes/agencycode[.=$agencyname]/@value"
+													if="string(ead:agencyname)"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<img src="/apps/eaditor/xforms/images/add.gif"/>Other Agency Code</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+											origin="instance('otheragencycode-template')"/>
+									</xforms:trigger>
+									<xforms:group ref=".[count(ead:descriptivenote) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+												origin="instance('descriptivenote-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</div>
+								<div>
+									<xforms:select1 ref="ead:agencyname">
+										<xforms:label>Name</xforms:label>
+										<xforms:alert>Required</xforms:alert>
+										<xforms:item>
+											<xforms:label>Select Agency Name...</xforms:label>
+											<xforms:value/>
+										</xforms:item>
+										<xforms:itemset nodeset="instance('config')/templates/agencycodes/agencycode">
+											<xforms:label ref="."/>
+											<xforms:value ref="."/>
+										</xforms:itemset>
+										<xforms:action ev:event="xforms-value-changed">
+											<xforms:var name="agencyname" select="."/>
+											<xforms:setvalue ref="parent::node()/ead:agencycode"
+												value="instance('config')/templates/agencycodes/agencycode[.=$agencyname]/@value"/>
+										</xforms:action>
+									</xforms:select1>
+								</div>
+								<xforms:group ref="ead:agencycode">
+									<div>
+										<xforms:input ref=".">
+											<xforms:label>Code</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+										</xforms:input>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</div>
+								</xforms:group>
+								<xforms:repeat nodeset="ead:otheragencycode">
+									<div>
+										<xforms:input ref=".">
+											<xforms:label>Other Code</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+										</xforms:input>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											</xforms:label>
+										</xforms:trigger>
+									</div>
+								</xforms:repeat>
+								<xforms:group ref="ead:descriptivenote">
+									<eaditor:note/>
+								</xforms:group>
+							</xforms:group>
+							<xforms:group ref="ead:maintenancehistory">
+								<h3>Maintenance History</h3>
+								<!--<div class="trigger_container">
+									<xforms:trigger appearance="minimal">
+									<xforms:label>
+									<img src="/apps/eaditor/xforms/images/add.gif"/>Maintenance Event</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+									origin="instance('maintenanceevent-template')"/>
+									</xforms:trigger>
+									</div>-->
+								<xforms:repeat nodeset="ead:maintenanceevent">
+									<div class="subsection">
+										<h4>Maintenance Event</h4>
+										<xforms:group ref=".[count(.) &gt; 1]">
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
+										</xforms:group>
+										<div class="trigger_container">
+											<xforms:group ref=".[count(ead:eventdescription) = 0]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/add.gif"/>Event Description</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+														origin="instance('eventdescription-template')"/>
+												</xforms:trigger>
+											</xforms:group>
+										</div>
+										<div>
+											<xforms:select1 ref="ead:eventtype">
+												<xforms:label>Event Type</xforms:label>
+												<xforms:itemset nodeset="instance('eventtypes')//type">
+													<xforms:label ref="."/>
+													<xforms:value ref="."/>
+												</xforms:itemset>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:select1>
+										</div>
+										<div>
+											<xforms:output ref="ead:eventdatetime">
+												<xforms:label>Event Date</xforms:label>
+											</xforms:output>
+										</div>
+										<div>
+											<xforms:select1 ref="ead:agenttype">
+												<xforms:label>Agent Type</xforms:label>
+												<xforms:itemset nodeset="instance('agenttypes')//type">
+													<xforms:label ref="."/>
+													<xforms:value ref="."/>
+												</xforms:itemset>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:select1>
+										</div>
+										<div>
+											<xforms:input ref="ead:agent">
+												<xforms:label>Agent</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:input>
+										</div>
+										<xforms:group ref="ead:eventdescription">
+											<xforms:textarea ref=".">
+												<xforms:label>Description</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+											</xforms:textarea>
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
+										</xforms:group>
+									</div>
+								</xforms:repeat>
+							</xforms:group>
+						</div>
+					</div>
+					<div class="yui3-u-1-2">
+						<div class="section">
+							<h2>Terms and Declarations</h2>
+							<div class="trigger_container">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>Convention Declaration</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+										origin="instance('conventiondeclaration-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>Language Declaration</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+										origin="instance('languagedeclaration-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>LocalType Declaration</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+										origin="instance('localtypedeclaration-template')"/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>Local Control</xforms:label>
+									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+										origin="instance('localcontrol-template')"/>
+								</xforms:trigger>
+							</div>
+							<xforms:group ref=".[count(ead:conventiondeclaration) &gt; 0]">
+								<div class="subsection">
+									<h3>Convention Declarations</h3>
+									<xforms:repeat nodeset="ead:conventiondeclaration">
+										<eaditor:declaration/>
+									</xforms:repeat>
+								</div>
+							</xforms:group>
+							<xforms:group ref=".[count(ead:languagedeclaration) &gt; 0]">
+								<div class="subsection">
+									<h3>Language Declarations</h3>
+									<xforms:repeat nodeset="ead:languagedeclaration">
+										<div class="subsection">
+											<h3>Declaration</h3>
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
+											<div class="trigger_container">
+												<xforms:group ref=".[count(ead:descriptivenote) = 0]">
+													<xforms:trigger appearance="minimal">
+														<xforms:label>
+															<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+														<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+															origin="instance('descriptivenote-template')"/>
+													</xforms:trigger>
+												</xforms:group>
+											</div>
+											<div>
+												<xforms:select1 ref="ead:language">
+													<xforms:label>Language</xforms:label>
+													<xforms:item>
+														<xforms:label>Select Language...</xforms:label>
+														<xforms:value/>
+													</xforms:item>
+													<xforms:itemset nodeset="instance('languages')//language">
+														<xforms:label ref="name"/>
+														<xforms:value ref="name"/>
+													</xforms:itemset>
+													<xforms:alert>Required</xforms:alert>
+													<xforms:action ev:event="xforms-value-changed">
+														<xforms:var name="language" select="context()"/>
+														<xforms:setvalue ref="@languagecode" value="instance('languages')//language[name = $language]/code"/>
+													</xforms:action>
+												</xforms:select1>
+											</div>
+											<div>
+												<xforms:select1 ref="ead:script">
+													<xforms:label>Script</xforms:label>
+													<xforms:item>
+														<xforms:label>Select Script...</xforms:label>
+														<xforms:value/>
+													</xforms:item>
+													<xforms:itemset nodeset="instance('scripts')//script">
+														<xforms:label ref="."/>
+														<xforms:value ref="."/>
+													</xforms:itemset>
+													<xforms:alert>Required</xforms:alert>
+													<xforms:action ev:event="xforms-value-changed">
+														<xforms:var name="script" select="context()"/>
+														<xforms:setvalue ref="@scriptcode" value="instance('scripts')//script[.=$script]/@code"/>
+													</xforms:action>
+												</xforms:select1>
+											</div>
+											<xforms:group ref="ead:descriptivenote">
+												<eaditor:note/>
+											</xforms:group>
+										</div>
+									</xforms:repeat>
+								</div>
+							</xforms:group>
+							<xforms:group ref=".[count(ead:localtypedeclaration) &gt; 0]">
+								<div class="subsection">
+									<h3>LocalType Declarations</h3>
+									<xforms:repeat nodeset="ead:localtypedeclaration">
+										<eaditor:declaration/>
+									</xforms:repeat>
+								</div>
+							</xforms:group>
+							<xforms:group ref=".[count(ead:localcontrol) &gt; 0]">
+								<div class="subsection">
+									<h3>Local Control Terms</h3>
+									<xforms:repeat nodeset="ead:localcontrol">
+										<div class="subsection">
+											<h3>Local Control</h3>
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:label>
+													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												</xforms:label>
+											</xforms:trigger>
+											<div class="trigger_container">
+												<xforms:group ref=".[count(ead:datesingle) = 0 and count(ead:daterange) = 0]">
+													<xforms:trigger appearance="minimal">
+														<xforms:label>
+															<img src="/apps/eaditor/xforms/images/add.gif"/>Date</xforms:label>
+														<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+															origin="instance('datesingle-template')"/>
+													</xforms:trigger>
+												</xforms:group>
+												<xforms:group ref=".[count(ead:datesingle) = 0 and count(ead:daterange) = 0]">
+													<xforms:trigger appearance="minimal">
+														<xforms:label>
+															<img src="/apps/eaditor/xforms/images/add.gif"/>Date Range</xforms:label>
+														<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+															origin="instance('daterange-template')"/>
+													</xforms:trigger>
+												</xforms:group>
+											</div>
+											<div>
+												<xforms:input ref="ead:term">
+													<xforms:label>Term</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</div>
+											<xforms:group ref="ead:datesingle">
+												<div>
+													<xforms:input ref=".">
+														<xforms:label>Date</xforms:label>
+													</xforms:input>
+													<xforms:trigger appearance="minimal">
+														<xforms:delete ev:event="DOMActivate" nodeset="."/>
+														<xforms:label>
+															<img src="/apps/eaditor/xforms/images/remove.gif"/>
+														</xforms:label>
+													</xforms:trigger>
+												</div>
+											</xforms:group>
+											<xforms:group ref="ead:daterange">
+												<h4>Date Range</h4>
+												<xforms:trigger appearance="minimal">
+													<xforms:delete ev:event="DOMActivate" nodeset="."/>
+													<xforms:label>
+														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													</xforms:label>
+												</xforms:trigger>
+												<div>
+													<xforms:input ref="ead:fromdate">
+														<xforms:label>From Date</xforms:label>
+													</xforms:input>
+												</div>
+												<div>
+													<xforms:input ref="ead:todate">
+														<xforms:label>To Date</xforms:label>
+													</xforms:input>
+												</div>
+											</xforms:group>
+										</div>
+									</xforms:repeat>
+								</div>
+							</xforms:group>
+						</div>
+						<div class="section">
+							<h2>Sources</h2>
+							<div class="trigger_container">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/add.gif"/>Source</xforms:label>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:action if="ead:sources">
+											<xforms:insert context="ead:sources" nodeset="./child::node()[last()]" origin="instance('source-template')"/>
+										</xforms:action>
+										<xforms:action if="not(ead:sources)">
+											<xforms:insert context="." nodeset="./child::node()[last()]" origin="instance('sources-template')"/>
+										</xforms:action>
+									</xforms:action>
+								</xforms:trigger>
+							</div>
+							<xforms:repeat nodeset="ead:sources/ead:source">
+								<h3>Source</h3>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									</xforms:label>
+								</xforms:trigger>
+								<div class="trigger_container">
+									<xforms:group ref=".[count(ead:descriptivenote) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+												origin="instance('descriptivenote-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</div>
+								<div>
+									<xforms:input ref="ead:sourceentry">
+										<xforms:label>Source Entry</xforms:label>
+										<xforms:alert>Required</xforms:alert>
+									</xforms:input>
+								</div>
+								<xforms:group ref="ead:descriptivenote">
+									<eaditor:note/>
+								</xforms:group>
+							</xforms:repeat>
+						</div>
+					</div>
+				</div>
+			</xforms:group>
+			<div class="yui3-u-1">
+				<fr:xforms-inspector/>
+			</div>
+		</div>
+	</body>
+</html>

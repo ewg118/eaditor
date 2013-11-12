@@ -12,7 +12,31 @@
 	</xsl:template>
 
 	<xsl:template match="doc">
-		<xsl:variable name="id" select="str[@name='id']"/>
+		<xsl:variable name="id" select="if (string(str[@name='cid'])) then str[@name='cid'] else str[@name='recordId']"/>
+		<xsl:variable name="objectUri">
+			<xsl:choose>
+				<xsl:when test="//config/ark[@enabled='true']">
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'id/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 
 		<oac:Annotation rdf:about="{$url}pelagios.rdf#{$id}">
 			<dcterms:title>
@@ -21,7 +45,7 @@
 			<xsl:for-each select="distinct-values(arr[@name='pleiades_uri']/str)">
 				<oac:hasBody rdf:resource="{.}#this"/>
 			</xsl:for-each>
-			<oac:hasTarget rdf:resource="{$url}id/{$id}"/>
+			<oac:hasTarget rdf:resource="{$objectUri}"/>
 		</oac:Annotation>
 	</xsl:template>
 </xsl:stylesheet>

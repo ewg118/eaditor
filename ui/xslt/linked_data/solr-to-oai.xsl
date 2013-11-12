@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:datetime="http://exslt.org/dates-and-times" exclude-result-prefixes="xs datetime" version="2.0">
+	xmlns:datetime="http://exslt.org/dates-and-times" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="xs datetime"
+	version="2.0">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
-	
+
 	<!-- request params -->
 	<xsl:param name="verb" select="doc('input:params')/request/parameters/parameter[name='verb']/value"/>
 	<xsl:param name="metadataPrefix" select="doc('input:params')/request/parameters/parameter[name='metadataPrefix']/value"/>
@@ -29,7 +30,7 @@
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
+
 	<xsl:variable name="publisher" select="content/config/publisher"/>
 	<xsl:variable name="publisher_email" select="content/config/publisher_email"/>
 	<xsl:variable name="publisher_code" select="content/config/publisher_code"/>
@@ -94,13 +95,15 @@
 							<setSpec>ead</setSpec>
 							<setName>Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"/></setName>
 							<setDescription>
-								<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+								<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dcterms="http://purl.org/dc/terms/"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 									xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ 
 									http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-									<dc:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"/></dc:title>
-									<dc:creator>
+									<dcterms:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"
+										/></dcterms:title>
+									<dcterms:creator>
 										<xsl:value-of select="$publisher"/>
-									</dc:creator>
+									</dcterms:creator>
 								</oai_dc:dc>
 							</setDescription>
 						</set>
@@ -281,45 +284,69 @@
 				<setSpec>ead</setSpec>
 			</header>
 			<metadata>
-				<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dcterms="http://purl.org/dc/terms/"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 					xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/
 					http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-					<dc:title>
+					<dcterms:title>
 						<xsl:value-of select="str[@name='unittitle_display']"/>
-					</dc:title>
-					<dc:publisher>
+					</dcterms:title>
+					<dcterms:publisher>
 						<xsl:value-of select="$publisher"/>
-					</dc:publisher>
-					<dc:identifier>
-						<xsl:value-of select="concat($url, 'id/', str[@name='id'])"/>
-					</dc:identifier>
+					</dcterms:publisher>
+					<dcterms:identifier>
+						<xsl:variable name="objectUri">
+							<xsl:choose>
+								<xsl:when test="//config/ark[@enabled='true']">
+									<xsl:choose>
+										<xsl:when test="string(str[@name='cid'])">
+											<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:choose>
+										<xsl:when test="string(str[@name='cid'])">
+											<xsl:value-of select="concat($url, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($url, 'id/', str[@name='recordId'])"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+
+						<xsl:value-of select="$objectUri"/>
+					</dcterms:identifier>
 					<xsl:if test="string(str[@name='unitdate_display'])">
-						<dc:date>
+						<dcterms:date>
 							<xsl:value-of select="str[@name='unitdate_display']"/>
-						</dc:date>
+						</dcterms:date>
 					</xsl:if>
-					<xsl:if test="string(str[@name='physdesc_display'])">
-						<dc:format>
-							<xsl:value-of select="str[@name='physdesc_display']"/>
-						</dc:format>
+					<xsl:if test="string(str[@name='extent_display'])">
+						<dcterms:extent>
+							<xsl:value-of select="str[@name='extent_display']"/>
+						</dcterms:extent>
 					</xsl:if>
 					<xsl:for-each select="arr[@name='language_facet']/str">
-						<dc:language>
+						<dcterms:language>
 							<xsl:value-of select="."/>
-						</dc:language>
+						</dcterms:language>
 					</xsl:for-each>
 					<xsl:for-each select="arr[@name='subject_facet']/str">
-						<dc:subject>
+						<dcterms:subject>
 							<xsl:value-of select="."/>
-						</dc:subject>
+						</dcterms:subject>
 					</xsl:for-each>
-					<xsl:for-each select="arr[@name='geogname_facet']/str">
-						<dc:coverage>
-							<xsl:value-of select="."/>
-						</dc:coverage>
+					<xsl:for-each select="arr[@name='geogname_uri']/str">
+						<dcterms:coverage rdf:resource="{.}"/>
 					</xsl:for-each>
-					<dc:rights>Open for public research.</dc:rights>
-					<dc:format>ead</dc:format>
+					<dcterms:rights>Open for public research.</dcterms:rights>
+					<dcterms:format>ead</dcterms:format>
 				</oai_dc:dc>
 			</metadata>
 		</record>

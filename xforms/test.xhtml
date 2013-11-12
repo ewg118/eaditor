@@ -74,7 +74,6 @@
 					<xforms:send submission="load-guides-collection"/>
 					<xforms:send submission="load-c-template"/>
 					<xforms:send submission="load-ead-template"/>
-					<xforms:send submission="load-instance-template"/>
 					<xforms:send submission="load-config"/>
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
@@ -132,21 +131,6 @@
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/@test">Fail</xforms:setvalue>
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/message" value="concat(instance('exist-url'), 'eaditor/ead-template.xml not found.')"/>
-				</xforms:action>
-			</xforms:submission>
-
-			<!-- load instance template -->
-			<xforms:submission id="load-instance-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/instance-templates.xml" replace="instance" instance="temp">
-				<xforms:action ev:event="xforms-submit-done">
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/@test">Success</xforms:setvalue>
-					<xforms:action xxforms:iterate="instance('temp')/*">
-						<xxforms:variable name="message" select="concat(name(), ' [', count(*), ' option(s)]', if (position()!=last()) then ', ' else '')"/>
-						<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/message" value="concat(instance('control-instance')/errors/error[@code='006']/message, $message)"/>
-					</xforms:action>
-				</xforms:action>
-				<xforms:action ev:event="xforms-submit-error">
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='006']/message" value="concat(instance('exist-url'), 'eaditor/instance-templates.xml not found.')"/>
 				</xforms:action>
 			</xforms:submission>
 

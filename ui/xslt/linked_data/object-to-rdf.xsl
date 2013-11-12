@@ -5,10 +5,29 @@
 	exclude-result-prefixes="mods ead xlink" version="2.0">
 
 	<!-- url params -->
-	<xsl:param name="path" select="substring-before(substring-after(doc('input:request')/request/request-url, 'id/'), '.rdf')"/>
-
+	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
+	<xsl:param name="path">
+		<xsl:choose>
+			<xsl:when test="contains($uri, 'ark:/')">
+				<xsl:value-of select="substring-before(substring-after(substring-after($uri, 'ark:/'), '/'), '.rdf')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="substring-before(substring-after($uri, 'id/'), '.rdf')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:param>
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
+	<xsl:variable name="objectUri">
+		<xsl:choose>
+			<xsl:when test="//config/ark[@enabled='true']">
+				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $path)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat($url, 'id/', $path)"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
@@ -29,7 +48,7 @@
 
 	<!-- ***************** EAD-TO-RDF ******************-->
 	<xsl:template name="ead-content">
-		<arch:Collection rdf:about="{$url}id/{$path}">
+		<arch:Collection rdf:about="{$objectUri}">
 			<!-- title, creator, abstract, etc. -->
 			<xsl:choose>
 				<!-- apply templates for immediate did if the child is a component-->

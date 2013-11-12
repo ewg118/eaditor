@@ -4,9 +4,10 @@
     EADitor: http://code.google.com/p/eaditor/
     Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
 	<head>
 		<title>EADitor: Edit Core Template</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -43,12 +44,7 @@
 			<xforms:instance id="c-template" xmlns:xlink="http://www.w3.org/1999/xlink">
 				<c xmlns="urn:isbn:1-931666-22-9"/>
 			</xforms:instance>
-
-			<!-- controlled instances -->
-			<!-- instances -->
-			<xforms:instance id="instance-templates">
-				<templates xmlns=""/>
-			</xforms:instance>
+			
 
 			<xforms:instance id="status">
 				<status/>
@@ -205,25 +201,20 @@
 			<xforms:bind id="archdesc-tab" nodeset="instance('ead-template')/ead:archdesc"/>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance" instance="c-template"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance"
+				instance="c-template" xxforms:username="admin" xxforms:password="">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading component template.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-instance-templates" serialization="none" method="get" action="{instance('exist-url')}eaditor/instance-templates.xml" replace="instance" xxforms:username="admin"
-				xxforms:password="" instance="instance-templates">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading instance templates.</xforms:message>
-			</xforms:submission>
-
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/ead-template.xml" replace="instance" instance="ead-template"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/ead-template.xml"
+				replace="instance" instance="ead-template" xxforms:username="admin" xxforms:password="">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading core template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-url')}eaditor/ead-template.xml" method="put" replace="none" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-url')}eaditor/ead-template.xml" method="put"
+				replace="none" xxforms:username="admin" xxforms:password="">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Template saved.</xforms:setvalue>
 			</xforms:submission>
@@ -232,7 +223,6 @@
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:send submission="load-core-template"/>
 				<xforms:send submission="load-c-template"/>
-				<xforms:send submission="load-instance-templates"/>
 			</xforms:action>
 		</xforms:model>
 
@@ -246,7 +236,6 @@
 		<xi:include href="xbl/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/author/author.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
@@ -264,7 +253,6 @@
 		<xi:include href="xbl/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/date/date.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/descgrp/descgrp.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
@@ -295,15 +283,12 @@
 		<xi:include href="xbl/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/publisher/publisher.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/ref/ref.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/sponsor/sponsor.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/subject/subject.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/subtitle/subtitle.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
@@ -336,9 +321,8 @@
 							</xforms:submit>
 						</div>
 						<div class="section">
-							<h1>Edit EAD Finding Aid Core Template</h1>							
+							<h1>Edit EAD Finding Aid Core Template</h1>
 						</div>
-
 						<fr:tabview>
 							<!--**************************************** EADHEADER **********************************-->
 							<fr:tab id="eadheader-tab">
@@ -359,14 +343,16 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
 													<img src="/apps/eaditor/xforms/images/add.gif"/>Profile Description</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="." nodeset="ead:filedesc" origin="instance('profiledesc-template')"/>
+												<xforms:insert ev:event="DOMActivate" context="." nodeset="ead:filedesc"
+													origin="instance('profiledesc-template')"/>
 											</xforms:trigger>
 										</xforms:group>
 										<xforms:group ref=".[count(ead:revisiondesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
 													<img src="/apps/eaditor/xforms/images/add.gif"/>Revision Description</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:profiledesc) then ead:profiledesc else ead:filedesc"
+												<xforms:insert ev:event="DOMActivate" context="."
+													nodeset="if (ead:profiledesc) then ead:profiledesc else ead:filedesc"
 													origin="instance('revisiondesc-template')"/>
 											</xforms:trigger>
 										</xforms:group>
@@ -392,7 +378,7 @@
 													<xforms:label>Select Agency...</xforms:label>
 													<xforms:value/>
 												</xforms:item>
-												<xforms:itemset nodeset="instance('instance-templates')/agencycodes/agencycode">
+												<xforms:itemset nodeset="instance('config')/templates/agencycodes/agencycode">
 													<xforms:label ref="."/>
 													<xforms:value ref="@value"/>
 												</xforms:itemset>
@@ -422,14 +408,16 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Edition Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after" origin="instance('editionstmt-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after"
+														origin="instance('editionstmt-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:publicationstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Publication Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
+														nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
 														origin="instance('publicationstmt-template')"/>
 												</xforms:trigger>
 											</xforms:group>
@@ -446,7 +434,8 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Note Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]" origin="instance('notestmt-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]"
+														origin="instance('notestmt-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 										</xxforms:dialog>
@@ -462,22 +451,23 @@
 															<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"/>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true"
+														visible="false">
 														<xforms:label>Title Statement Elements</xforms:label>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
 																<img src="/apps/eaditor/xforms/images/add.gif"/>Subtitle</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
+															<xforms:insert ev:event="DOMActivate" context="."
+																nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
 																origin="instance('subtitle-template')"/>
 														</xforms:trigger>
-														<xforms:group ref=".[count(ead:author) &lt; 1]">
-															<xforms:trigger appearance="minimal">
-																<xforms:label>
-																	<img src="/apps/eaditor/xforms/images/add.gif"/>Author</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
-																	origin="instance('author-template')"/>
-															</xforms:trigger>
-														</xforms:group>
+														<xforms:trigger appearance="minimal">
+															<xforms:label>
+																<img src="/apps/eaditor/xforms/images/add.gif"/>Author</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="."
+																nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
+																origin="instance('author-template')"/>
+														</xforms:trigger>
 														<xforms:group ref=".[count(ead:sponsor) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
@@ -495,16 +485,46 @@
 														</xforms:input>
 													</div>
 													<!-- subtitle -->
-													<xforms:repeat nodeset="ead:subtitle">
-														<eaditor:subtitle/>
-													</xforms:repeat>
-													<!-- author -->
-													<xforms:group ref="ead:author">
-														<eaditor:author/>
+													<xforms:group ref="ead:subtitle">
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Subtitle</xforms:label>
+															</xforms:input>
+															<xforms:trigger appearance="minimal">
+																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:label>
+																	<img src="/apps/eaditor/xforms/images/remove.gif"/>
+																</xforms:label>
+															</xforms:trigger>
+														</div>
 													</xforms:group>
+													<!-- author -->
+													<xforms:repeat nodeset="ead:author">
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Author</xforms:label>
+															</xforms:input>
+															<xforms:trigger appearance="minimal">
+																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:label>
+																	<img src="/apps/eaditor/xforms/images/remove.gif"/>
+																</xforms:label>
+															</xforms:trigger>
+														</div>
+													</xforms:repeat>
 													<!-- sponsor -->
 													<xforms:group ref="ead:sponsor">
-														<eaditor:sponsor/>
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Sponsor</xforms:label>
+															</xforms:input>
+															<xforms:trigger appearance="minimal">
+																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:label>
+																	<img src="/apps/eaditor/xforms/images/remove.gif"/>
+																</xforms:label>
+															</xforms:trigger>
+														</div>
 													</xforms:group>
 												</div>
 											</xforms:group>
@@ -525,13 +545,14 @@
 															<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
 														</xforms:trigger>
 													</div>
-													<xforms:repeat nodeset=".">
+													<xforms:group nodeset="ead:edition">
 														<div>
-															<xforms:input ref="ead:edition">
+															<xforms:input ref=".">
 																<xforms:label>Edition</xforms:label>
+																<xforms:alert>Required.</xforms:alert>
 															</xforms:input>
 														</div>
-													</xforms:repeat>
+													</xforms:group>
 													<!-- paragraph -->
 													<xforms:repeat nodeset="ead:p">
 														<eaditor:p/>
@@ -556,7 +577,8 @@
 															<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"/>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true"
+														visible="false">
 														<xforms:label>Publication Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:address) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -613,7 +635,18 @@
 													</xforms:repeat>
 													<!-- publisher -->
 													<xforms:group ref="ead:publisher">
-														<eaditor:publisher/>
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Publisher</xforms:label>
+																<xforms:alert>Required</xforms:alert>
+															</xforms:input>
+															<xforms:trigger appearance="minimal">
+																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:label>
+																	<img src="/apps/eaditor/xforms/images/remove.gif"/>
+																</xforms:label>
+															</xforms:trigger>
+														</div>
 													</xforms:group>
 												</div>
 											</xforms:group>
@@ -635,7 +668,8 @@
 															<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"/>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true"
+														visible="false">
 														<xforms:label>Series Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:num) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -647,7 +681,8 @@
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
 																<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('p-template')"/>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+																origin="instance('p-template')"/>
 														</xforms:trigger>
 														<xforms:group ref=".[count(ead:titleproper) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -687,7 +722,8 @@
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
 																<img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('note-template')"/>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]"
+																origin="instance('note-template')"/>
 														</xforms:trigger>
 													</div>
 													<xforms:group ref=".[count(child::ead:note) &lt; 1]">
@@ -718,13 +754,15 @@
 													<xxforms:show ev:event="DOMActivate" dialog="profiledesc-objects"/>
 												</xforms:trigger>
 											</span>
-											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true"
+												visible="false">
 												<xforms:label>Profile Description Elements</xforms:label>
 												<xforms:group ref=".[count(ead:creation) &lt; 1]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
 															<img src="/apps/eaditor/xforms/images/add.gif"/>Creation</xforms:label>
-														<xforms:insert ev:event="DOMActivate" context="." at="1" position="before" origin="instance('creation-template')"/>
+														<xforms:insert ev:event="DOMActivate" context="." at="1" position="before"
+															origin="instance('creation-template')"/>
 													</xforms:trigger>
 												</xforms:group>
 												<xforms:group ref=".[count(ead:descrules) &lt; 1]">
@@ -830,7 +868,8 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Description of Subordinate Components</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('dsc-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+														origin="instance('dsc-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 										</div>
@@ -867,9 +906,11 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Component</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+														origin="instance('c-template')"/>
 													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+														<xforms:setvalue ref="ead:c[last()]/@id"
+															value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
 													</xforms:action>
 												</xforms:trigger>
 											</div>
@@ -879,7 +920,7 @@
 										</xforms:group>
 									</div>
 								</div>
-							</fr:tab>			
+							</fr:tab>
 							<!--<fr:tab id="preview">
 							<fr:label>XML Preview</fr:label>
 							<h1>XML Preview</h1>

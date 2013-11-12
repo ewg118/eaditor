@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
+	exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="display/ead/ead.xsl"/>
 	<xsl:include href="display/ead/dsc.xsl"/>
 	<xsl:include href="display/mods/mods.xsl"/>
@@ -8,7 +9,17 @@
 	<xsl:include href="functions.xsl"/>
 
 	<!-- path and document params -->
-	<xsl:param name="path" select="substring-after(doc('input:request')/request/request-url, 'id/')"/>
+	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
+	<xsl:param name="path">
+		<xsl:choose>
+			<xsl:when test="contains($uri, 'ark:/')">
+				<xsl:value-of select="substring-after(substring-after($uri, 'ark:/'), '/')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="substring-after($uri, 'id/')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:param>
 	<xsl:variable name="doc">
 		<xsl:choose>
 			<xsl:when test="contains($path, '/')">
@@ -73,26 +84,39 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
-					<xsl:when test="string($id)">
-						<xsl:text>../../</xsl:text>
+					<xsl:when test="contains($uri, 'ark:/')">
+						<xsl:choose>
+							<xsl:when test="string($id)">
+								<xsl:text>../../../</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>../../</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:text>../</xsl:text>
+						<xsl:choose>
+							<xsl:when test="string($id)">
+								<xsl:text>../../</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>../</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:otherwise>
 				</xsl:choose>
-
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
+
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
-	
+
 	<!-- url params -->
 	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:param name="mode">
 		<xsl:choose>
-			<xsl:when test="contains(doc('input:request')/request/request-url, 'admin/')">private</xsl:when>
+			<xsl:when test="contains($uri, 'admin/')">private</xsl:when>
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
@@ -102,17 +126,28 @@
 	</xsl:template>
 
 	<xsl:template match="ead:ead|mods:mods">
-		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
 			<head>
 				<title>
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
-					<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
+					<xsl:choose>
+						<xsl:when test="string(ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper)">
+							<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
+						</xsl:when>
+						<xsl:when test="string(ead:c/ead:did/ead:unittitle)">
+							<xsl:value-of select="ead:c/ead:did/ead:unittitle"/>
+						</xsl:when>
+						<xsl:when test="string(mods:titleInfo/mods:title)">
+							<xsl:value-of select="mods:titleInfo/mods:title"/>
+						</xsl:when>
+					</xsl:choose>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{concat($url, 'id/', $path)}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{concat($url, 'id/', $path)}.rdf"/>
-				
+				<link rel="alternate" type="text/xml" href="{$uri}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$uri}.rdf"/>
+
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
 				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
@@ -146,7 +181,8 @@
 				<script type="text/javascript" langage="javascript">
 					$(document).ready(function () {
 						$("#tabs").tabs();
-						<!--$(".thumbImage a").fancybox();
+						<!--
+						$(".thumbImage a").fancybox();
 						$('.flickr-link').click(function () {
 							var href = $(this).attr('href');
 							$.fancybox.close();
@@ -154,8 +190,8 @@
 						});-->
 					});
 				</script>
-				
-				
+
+
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -179,10 +215,10 @@
 	<xsl:template name="icons">
 		<div class="submenu">
 			<div class="icon">
-				<a href="{$display_path}admin/id/{$doc}">Staff View</a>
+				<a href="{$display_path}admin/id/{$path}">Staff View</a>
 			</div>
 			<div class="icon">
-				<a href="{$path}.xml">
+				<a href="{$uri}.xml">
 					<img src="{$display_path}images/xml.png" title="XML" alt="XML"/>
 				</a>
 			</div>

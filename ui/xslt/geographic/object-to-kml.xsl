@@ -70,8 +70,19 @@
 				</name>
 				
 				<xsl:if test="ancestor::ead:c">
+					<xsl:variable name="objectUri">
+						<xsl:choose>
+							<xsl:when test="//config/ark[@enabled='true']">
+								<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $id, '/', ancestor::ead:c[1]/@id)"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="concat($url, 'id/', $id, '/', ancestor::ead:c[1]/@id)"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					
 					<description>
-						<![CDATA[<a href="]]><xsl:value-of select="concat($url, 'id/', $id, '/', ancestor::ead:c[1]/@id)"/><![CDATA[">]]>
+						<![CDATA[<a href="]]><xsl:value-of select="$objectUri"/><![CDATA[">]]>
 						<xsl:value-of select="ancestor::ead:c[1]/ead:did/ead:unittitle"/>
 						<xsl:if test="string(ancestor::ead:c[1]/ead:did/ead:unitdate)">
 							<xsl:text>, </xsl:text>
