@@ -88,11 +88,11 @@
 		
 		<!--sortable int -->
 		<!--sorting -->
-		<dynamicField name="*_maxint" type="sint" indexed="true" stored="true"/>
-		<dynamicField name="*_minint" type="sint" indexed="true" stored="true"/>
+		<dynamicField name="*_maxint" type="int" indexed="true" stored="true"/>
+		<dynamicField name="*_minint" type="int" indexed="true" stored="true"/>
 		
 		<!-- date-related fields -->
-		<dynamicField name="*_num" type="sint" indexed="true" stored="true" multiValued="true"/>
+		<dynamicField name="*_num" type="int" indexed="true" stored="true" multiValued="true"/>
 		
 		<!-- images -->
 		<field name="collection_thumb" type="string" indexed="true" stored="true" multiValued="true"/>
