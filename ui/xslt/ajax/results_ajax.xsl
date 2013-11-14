@@ -65,79 +65,78 @@
 
 		<div class="result_div">
 			<dl class="result_info">
-				<div>
-					<dt>
-						<b>Title</b>
-					</dt>
-					<dd>
-						<xsl:variable name="objectUri">
-							<xsl:choose>
-								<xsl:when test="//config/ark[@enabled='true']">
-									<xsl:choose>
-										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:choose>
-										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-						<a href="{$objectUri}">
-							<xsl:value-of select="str[@name='unittitle_display']"/>
-						</a>
-					</dd>
-				</div>
-				<div>
-					<dt>
-						<b>Date</b>
-					</dt>
-					<dd>
+				<dt>
+					<xsl:value-of select="eaditor:normalize_fields('title', $lang)"/>
+				</dt>
+				<dd>
+					<xsl:variable name="objectUri">
 						<xsl:choose>
-							<xsl:when test="string(str[@name='unitdate_display'])">
-								<xsl:value-of select="str[@name='unitdate_display']"/>
+							<xsl:when test="//config/ark[@enabled='true']">
+								<xsl:choose>
+									<xsl:when test="string(str[@name='cid'])">
+										<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:text>[Unknown]</xsl:text>
+								<xsl:choose>
+									<xsl:when test="string(str[@name='cid'])">
+										<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:otherwise>
 						</xsl:choose>
-					</dd>
-				</div>
+					</xsl:variable>
+					<a href="{$objectUri}">
+						<xsl:value-of select="str[@name='unittitle_display']"/>
+					</a>
+				</dd>
+				<dt>
+					<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
+				</dt>
+				<dd>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='unitdate_display'])">
+							<xsl:value-of select="str[@name='unitdate_display']"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>[Unknown]</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</dd>
 				<xsl:if test="string(str[@name='publisher_display'])">
-					<div>
-						<dt>
-							<b>Publisher</b>
-						</dt>
-						<dd>
-							<xsl:value-of select="str[@name='publisher_display']"/>
-							<xsl:if test="str[@name='agencycode_facet']">
-								<xsl:value-of select="concat(' (', str[@name='agencycode_facet'], ')')"/>
-							</xsl:if>
-						</dd>
-					</div>
+					<dt>
+						<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
+					</dt>
+					<dd>
+						<xsl:value-of select="str[@name='publisher_display']"/>
+						<xsl:if test="str[@name='agencycode_facet']">
+							<xsl:value-of select="concat(' (', str[@name='agencycode_facet'], ')')"/>
+						</xsl:if>
+					</dd>
 				</xsl:if>
 				<xsl:if test="string(str[@name='physdesc_display'])">
-					<div>
-						<dt>
-							<b>Physical Description</b>
-						</dt>
-						<dd>
-							<xsl:value-of select="str[@name='physdesc_display']"/>
-						</dd>
-					</div>
+					<dt>
+						<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
+					</dt>
+					<dd>
+						<xsl:value-of select="str[@name='physdesc_display']"/>
+					</dd>
 				</xsl:if>
-
+				<xsl:if test="string(arr[@name='level_facet']/str[1])">
+					<dt>
+						<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
+					</dt>
+					<dd>
+						<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
+					</dd>
+				</xsl:if>
 			</dl>
 			<xsl:if test="count(arr[@name='thumb_image']/str) &gt; 0">
 				<div style="float:right">

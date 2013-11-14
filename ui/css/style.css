@@ -247,13 +247,6 @@ div.container {
 	width:60%;
 	float:left;
 }
-.result_info dt {
-	float:left;
-	width:150px;
-}
-.result_info dd {
-	margin-left:150px;
-}
 .flickr-link {
 	cursor:pointer;
 }
