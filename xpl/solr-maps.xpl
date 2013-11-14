@@ -27,7 +27,7 @@
 					</xsl:for-each>
 				</xsl:variable>
 				<xsl:variable name="service">					
-					<xsl:value-of select="concat($solr-url, '?q=georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1', $facets)"/>
+					<xsl:value-of select="concat($solr-url, '?q=georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true', $facets)"/>
 				</xsl:variable>
 				
 				<xsl:template match="/">

@@ -59,10 +59,10 @@
 				<xsl:variable name="service">
 					<xsl:choose>
 						<xsl:when test="string($sort)">
-							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, '&amp;sort=', encode-for-uri($sort), $facets, '&amp;facet.field=georef&amp;facet.sort=index')"/>
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index')"/>
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>

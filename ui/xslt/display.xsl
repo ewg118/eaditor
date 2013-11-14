@@ -218,12 +218,10 @@
 				<a href="{$display_path}admin/id/{$path}">Staff View</a>
 			</div>
 			<div class="icon">
-				<a href="{$uri}.xml">
-					<img src="{$display_path}images/xml.png" title="XML" alt="XML"/>
-				</a>
+				<a href="{$uri}.rdf">RDF/XML</a>
 			</div>
 			<div class="icon">
-				<!-- addthis could go here -->
+				<a href="{$uri}.xml">XML</a>
 			</div>
 		</div>
 	</xsl:template>

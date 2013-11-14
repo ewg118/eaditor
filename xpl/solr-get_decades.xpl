@@ -40,10 +40,10 @@
 				<xsl:variable name="service">
 					<xsl:choose>
 						<xsl:when test="$pipeline='results'">
-							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"/>
 						</xsl:when>
 						<xsl:when test="$pipeline='maps'">
-							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;fq=century_num:', $century)"/>
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"/>
 						</xsl:when>			
 					</xsl:choose>					
 				</xsl:variable>
