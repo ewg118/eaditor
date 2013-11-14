@@ -71,14 +71,14 @@
 		<xsl:apply-templates select="ead:unittitle|ead:unitid|ead:origination|ead:abstract|ead:extent"/>
 	</xsl:template>
 	
-	<xsl:template match="ead:subject|ead:genreform|ead:origination|ead:geogname">
+	<xsl:template match="ead:subject|ead:genreform|ead:origination|ead:geogname|ead:persname|ead:corpname">
 		<xsl:variable name="element">
 			<xsl:choose>
 				<xsl:when test="local-name()='subject'">dcterms:subject</xsl:when>
 				<xsl:when test="local-name()='genreform'">dcterms:format</xsl:when>
-				<xsl:when test="local-name()='persname'">arch:correspondedWith</xsl:when>
+				<xsl:when test="local-name()='persname'">dcterms:subject</xsl:when>
 				<xsl:when test="local-name()='geogname'">dcterms:coverage</xsl:when>
-				<xsl:when test="local-name()='corpname'">dcterms:coverage</xsl:when>
+				<xsl:when test="local-name()='corpname'">dcterms:subject</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="resource">
