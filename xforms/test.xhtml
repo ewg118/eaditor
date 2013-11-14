@@ -205,7 +205,7 @@
 			<div class="yui3-u-1">
 				<div class="content">
 					<!-- header -->
-					<xxforms:variable name="display_path">../../</xxforms:variable>
+					<xforms:var name="display_path">../../</xforms:var>
 					<xi:include href="header.xml"/>
 					<div id="form">
 						<p>
@@ -222,7 +222,7 @@
 								</tr>
 
 								<xforms:repeat nodeset="error[string(@test)]">
-									<xxforms:variable name="status" select="if (@test='Success') then 'test-success' else 'test-fail'"/>
+									<xforms:var name="status" select="if (@test='Success') then 'test-success' else 'test-fail'"/>
 									<tr>
 										<td class="indicator {$status}">
 											<xforms:output ref="@code"/>

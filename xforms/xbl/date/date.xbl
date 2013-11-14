@@ -5,9 +5,9 @@
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
-					<xxforms:variable name="binding" as="node()?">
+					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
-					</xxforms:variable>
+					</xforms:var>
 					<xhtml:div>
 						<xforms:input ref="$binding">
 							<xforms:label>Date</xforms:label>
@@ -15,10 +15,10 @@
 						<eaditor:attributes ref="$binding"/>
 
 						<!--<xforms:action ev:event="xforms-value-changed">
-							<xxforms:variable name="year" select="substring-before(@normal, '-')"/>
-							<xxforms:variable name="month-digit" select="substring-before(substring-after(@normal, '-'), '-')"/>
-							<xxforms:variable name="day" select="replace(substring-after(substring-after(@normal, '-'), '-'), '^0', '')"/>
-							<xxforms:variable name="month"
+							<xforms:var name="year" select="substring-before(@normal, '-')"/>
+							<xforms:var name="month-digit" select="substring-before(substring-after(@normal, '-'), '-')"/>
+							<xforms:var name="day" select="replace(substring-after(substring-after(@normal, '-'), '-'), '^0', '')"/>
+							<xforms:var name="month"
 								select="if ($month-digit = '01') then 'January' else if ($month-digit = '02') then 'February' else if ($month-digit = '03') then 'March' else if ($month-digit = '04') then 'April' else if ($month-digit = '05') then 'May' else if ($month-digit = '06') then 'June' else if ($month-digit = '07') then 'July' else if ($month-digit = '08') then 'August' else if ($month-digit = '09') then 'September' else if ($month-digit = '10') then 'October' else if ($month-digit = '11') then 'November' else if ($month-digit = '12') then 'December' else @normal"/>
 							<xforms:setvalue ref="parent::node()" value="concat($year, ' ', $month, ' ', $day)"/>
 						</xforms:action>-->

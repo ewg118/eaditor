@@ -309,7 +309,7 @@
 					<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"/>
 					<!-- set value in control instance -->
 
-					<xxforms:variable name="end" select="if(instance('control-instance')/numFound &gt; 20) then 20 else instance('control-instance')/numFound"/>
+					<xforms:var name="end" select="if(instance('control-instance')/numFound &gt; 20) then 20 else instance('control-instance')/numFound"/>
 					<!-- get list of files for page 1, replacing START and END -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"/>
 					<xforms:send submission="xquery-pagination"/>
@@ -397,7 +397,7 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:action xxforms:iterate="instance('list-published-response')//doc">
-						<xxforms:variable name="id" select="str[@name='id']"/>
+						<xforms:var name="id" select="str[@name='id']"/>
 						<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>
 						<xforms:send submission="doc-to-solr"/>
 					</xforms:action>
@@ -491,7 +491,7 @@
 	</head>
 
 	<body>
-		<xxforms:variable name="display_path"/>
+		<xforms:var name="display_path"/>
 		<div class="yui3-g">
 			<div class="yui3-u-1">
 				<div class="content">
@@ -623,12 +623,12 @@
 						<xforms:group ref=".[count(//record) &gt; 0]">
 							<h3>List of Guides</h3>
 							<!-- pagination variables -->
-							<xxforms:variable name="numFound" select="number(instance('control-instance')/numFound)"/>
-							<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-							<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
-							<xxforms:variable name="end" select="if ($numFound &lt; $page * 20) then $numFound else $page * 20"/>
-							<xxforms:variable name="next" select="($page * 20) + 1"/>
-							<xxforms:variable name="total" select="ceiling($numFound div 20)"/>
+							<xforms:var name="numFound" select="number(instance('control-instance')/numFound)"/>
+							<xforms:var name="page" select="number(instance('control-instance')/page)"/>
+							<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
+							<xforms:var name="end" select="if ($numFound &lt; $page * 20) then $numFound else $page * 20"/>
+							<xforms:var name="next" select="($page * 20) + 1"/>
+							<xforms:var name="total" select="ceiling($numFound div 20)"/>
 							<!-- pagination -->
 							<xforms:group ref=".[string-length(instance('control-instance')/query_sent) = 0]">
 								<div class="paging_div">
@@ -798,8 +798,8 @@
 								</thead>
 								<tbody>
 									<xforms:repeat nodeset="instance('pagination-result')//record">
-										<xxforms:variable name="id" select="id"/>
-										<xxforms:variable name="class" select="if (position() mod 2 = 0) then 'even-row' else 'odd-row'"/>
+										<xforms:var name="id" select="id"/>
+										<xforms:var name="class" select="if (position() mod 2 = 0) then 'even-row' else 'odd-row'"/>
 										<tr>
 											<td class="{$class} center">
 												<xforms:output ref="if (type='modsCollection') then 'mods' else type"/>
@@ -938,7 +938,7 @@
 					<xforms:send submission="xquery-collection"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
-						<xxforms:variable name="id" select="@id"/>
+						<xforms:var name="id" select="@id"/>
 						<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>
 						<xforms:send submission="doc-to-solr"/>
 					</xforms:action>
@@ -983,8 +983,8 @@
 					<xforms:send submission="doc-to-solr"/>
 					<xforms:send submission="commit"/>
 					<!-- reload table -->
-					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
+					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
+					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
 						value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
@@ -1001,8 +1001,8 @@
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="delete-solr-doc"/>
 					<!-- reload table -->
-					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
+					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
+					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
 						value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>
@@ -1026,9 +1026,9 @@
 					<xforms:send submission="xquery-collection"/>
 
 					<!-- reload table -->
-					<xxforms:variable name="page" select="number(instance('control-instance')/page)"/>
-					<xxforms:variable name="start" select="(($page - 1) * 20) + 1"/>
-					<xxforms:variable name="end" select="$page * 20"/>
+					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
+					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
+					<xforms:var name="end" select="$page * 20"/>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
 						value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
 					<xforms:send submission="xquery-pagination"/>

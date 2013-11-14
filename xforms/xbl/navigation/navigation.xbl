@@ -17,9 +17,9 @@
 					<xforms:group xbl:attr="ref" xxbl:scope="outer">
 						<!-- Start copying the variables over that we need -->
 
-						<xxforms:variable name="data" xxbl:scope="inner">
+						<xforms:var name="data" xxbl:scope="inner">
 							<xxforms:sequence select="." xxbl:scope="outer"/>
-						</xxforms:variable>
+						</xforms:var>
 
 						<!-- end external variable copying -->
 
@@ -31,7 +31,7 @@
 								<xforms:setvalue ref="instance('c-id')" value="xxforms:get-request-parameter('component')"/>
 							</xforms:action>
 							<xforms:group ref="$data">
-								<xxforms:variable name="guide_id" select="@id"/>
+								<xforms:var name="guide_id" select="@id"/>
 								<xhtml:h4>
 									<xforms:group ref=".[string(instance('c-id'))]">
 										<xhtml:a href="../core/?guide={'{$guide_id}'}">

@@ -8,9 +8,9 @@
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
-					<xxforms:variable name="binding" as="node()?">
+					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
-					</xxforms:variable>
+					</xforms:var>
 
 					<xhtml:span class="add">
 						<xforms:trigger appearance="minimal">
@@ -24,7 +24,7 @@
 									<xforms:send submission="get-attributes"/>
 									<!-- populate the attributes with values if they already exist, e.g., on form load -->
 									<xforms:action ev:event="xforms-submit-done" xxforms:iterate="instance('attributes')/attribute">
-										<xxforms:variable name="name" select="@name"/>
+										<xforms:var name="name" select="@name"/>
 										<xforms:setvalue ref="context()" value="$binding/@*[name() = $name]"/>
 									</xforms:action>
 									<xforms:setvalue ref="instance('has-executed')">true</xforms:setvalue>
@@ -105,8 +105,8 @@
 							<xforms:action ev:event="DOMActivate">
 								<!-- only modify the attribute values when clicking okay -->
 								<xforms:action xxforms:iterate="instance('attributes')/attribute">
-									<xxforms:variable name="attribute-name" select="context()/@name"/>
-									<xxforms:variable name="value" select="context()/text()"/>
+									<xforms:var name="attribute-name" select="context()/@name"/>
+									<xforms:var name="value" select="context()/text()"/>
 									<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>								
 									<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
 								</xforms:action>							
