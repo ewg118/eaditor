@@ -358,51 +358,49 @@
       The sequence of their appearance is governed by the previous template.-->
 	<xsl:template
 		match="ead:repository | ead:origination | ead:physdesc/ead:extent | ead:physdesc/ead:dimensions | ead:physdesc/ead:genreform | ead:physdesc/ead:physfacet | ead:unitid | ead:physloc | ead:abstract | ead:langmaterial | ead:materialspec | ead:container">
-		<div style="display:table;width:100%">
-			<dt>
-				<xsl:choose>
-					<xsl:when test="local-name()='container'">
-						<xsl:choose>
-							<xsl:when test="string(@type)">
-								<xsl:value-of select="concat(upper-case(substring(@type, 1, 1)), substring(@type, 2))"/>
-							</xsl:when>
-							<!-- display type of the preceding sibling which has a type, if type for current container is not explicit -->
-							<!--<xsl:when test="parent::ead:did/parent::ead:c/preceding-sibling::ead:c/ead:did/ead:container[string(@type)]">
-								<xsl:variable name="type" select="parent::ead:did/parent::ead:c/preceding-sibling::ead:c/ead:did/ead:container/@type"/>
-								<xsl:value-of select="concat(upper-case(substring($type, 1, 1)), substring($type, 2))"/>
-								</xsl:when>-->
-							<xsl:otherwise>
-								<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:when test="string(normalize-space(@label))">
-						<xsl:value-of select="normalize-space(@label)"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</dt>
-			<dd>
-				<!-- insert applicable RDFa attributes -->
-				<xsl:choose>
-					<xsl:when test="local-name()='abstract'">
-						<xsl:attribute name="property">dcterms:abstract</xsl:attribute>
-					</xsl:when>
-					<xsl:when test="local-name()='extent'">
-						<xsl:attribute name="property">dcterms:extent</xsl:attribute>
-					</xsl:when>
-					<xsl:when test="local-name()='origination'">
-						<xsl:attribute name="property">dcterms:creator</xsl:attribute>
-					</xsl:when>
-					<xsl:when test="local-name()='unitid'">
-						<xsl:attribute name="property">dcterms:identifier</xsl:attribute>
-					</xsl:when>
-				</xsl:choose>
-				<xsl:apply-templates/>
-			</dd>
-		</div>
+		<dt>
+			<xsl:choose>
+				<xsl:when test="local-name()='container'">
+					<xsl:choose>
+						<xsl:when test="string(@type)">
+							<xsl:value-of select="concat(upper-case(substring(@type, 1, 1)), substring(@type, 2))"/>
+						</xsl:when>
+						<!-- display type of the preceding sibling which has a type, if type for current container is not explicit -->
+						<!--<xsl:when test="parent::ead:did/parent::ead:c/preceding-sibling::ead:c/ead:did/ead:container[string(@type)]">
+							<xsl:variable name="type" select="parent::ead:did/parent::ead:c/preceding-sibling::ead:c/ead:did/ead:container/@type"/>
+							<xsl:value-of select="concat(upper-case(substring($type, 1, 1)), substring($type, 2))"/>
+							</xsl:when>-->
+						<xsl:otherwise>
+							<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="string(normalize-space(@label))">
+					<xsl:value-of select="normalize-space(@label)"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</dt>
+		<dd>
+			<!-- insert applicable RDFa attributes -->
+			<xsl:choose>
+				<xsl:when test="local-name()='abstract'">
+					<xsl:attribute name="property">dcterms:abstract</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="local-name()='extent'">
+					<xsl:attribute name="property">dcterms:extent</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="local-name()='origination'">
+					<xsl:attribute name="property">dcterms:creator</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="local-name()='unitid'">
+					<xsl:attribute name="property">dcterms:identifier</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:apply-templates/>
+		</dd>
 	</xsl:template>
 
 
@@ -728,8 +726,8 @@
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
-									<xsl:when test="@source='pleiadies'">
-										<a href="http://pleiadies.stoa.org/place/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
+									<xsl:when test="@source='pleiades'">
+										<a href="http://pleiades.stoa.org/place/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>

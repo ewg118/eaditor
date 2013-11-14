@@ -36,7 +36,7 @@
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 								
 				<xsl:variable name="service">
-					<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=georef')"/>
+					<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=georef&amp;facet=true')"/>
 				</xsl:variable>
 				
 				<xsl:template match="/">
