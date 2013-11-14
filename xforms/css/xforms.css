@@ -76,6 +76,25 @@
 	padding:10px 0 10px 25px;
 	width:95%;
 }
+.success {
+	width:50%;
+	padding:10px;
+	border:1px solid #3c803c;
+	margin:0 auto;
+	background-color:#47e547;
+	color:#3c803c;
+}
+.warning {
+	padding:5px;
+	color:#ef8700;
+	font-weight:bold;
+}
+.error {
+	padding:25px;
+	margin:10px;
+	background-color:red;
+	border:2px solid #8d0000;
+}
 /*
   ****************************************
   ORBEON XFORM SPECIFIC STYLE
