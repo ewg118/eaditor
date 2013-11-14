@@ -727,7 +727,7 @@
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='pleiades'">
-										<a href="http://pleiades.stoa.org/place/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
+										<a href="http://pleiades.stoa.org/places/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
 											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
