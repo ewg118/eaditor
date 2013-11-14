@@ -7,7 +7,7 @@ in the admin home file liest
 ************************************/
 $(function () {
 	$('.expand') .click(function () {
-		var id = $(this) .attr('id').split('-')[0];
+		var id = $(this) .attr('cid').split('-')[0];
 		var container = id + '_container';
 		if ($(this) .text() == 'expand') {					
 			$(this) .text('collapse');
