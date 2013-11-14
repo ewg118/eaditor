@@ -180,13 +180,14 @@
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<!--<xforms:setvalue ref="$binding/@authfilenumber" value="concat('http://www.geonames.org/', instance('temp')/@href, '/')"/>-->
-												<xforms:setvalue ref="$binding/@authfilenumber" value="instance('temp')/@href"/>
-												<xforms:setvalue ref="$binding" value="instance('geonames')//geoname[geonameId = instance('temp')/@href)]/label"/>
+												<xforms:var name="href" select="instance('temp')/@href"/>
+												<xforms:setvalue ref="$binding/@authfilenumber" value="$href"/>
+												<xforms:setvalue ref="$binding" value="instance('geonames')//geoname[geonameId = $href]/label"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
 								</xforms:case>
-								<xforms:case id="nomisma-search">
+								<!--<xforms:case id="nomisma-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
 											<xforms:label>Search</xforms:label>
@@ -222,7 +223,7 @@
 										</xforms:trigger>
 									</xforms:group>
 
-									<!--<xforms:group ref=".[string(instance('temp')/@href)]">
+									<!-\-<xforms:group ref=".[string(instance('temp')/@href)]">
 										<div>
 											<xforms:output ref="instance('description')">
 												<xforms:label>Description</xforms:label>
@@ -234,8 +235,8 @@
 												<xforms:load ev:event="DOMActivate" show="new" ref="instance('temp')/@href"/>
 											</xforms:trigger>
 										</div>
-									</xforms:group>-->
-								</xforms:case>
+									</xforms:group>-\->
+								</xforms:case>-->
 								<xforms:case id="pleiades-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
