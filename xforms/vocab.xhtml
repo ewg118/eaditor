@@ -350,7 +350,7 @@
 	<xhtml:body class="yui-skin-sam">
 		<xhtml:div id="doc4">
 			<!-- header -->
-			<xxforms:variable name="display_path">../../</xxforms:variable><xi:include href="header-admin.xml"/>
+			<xforms:var name="display_path">../../</xforms:var><xi:include href="header-admin.xml"/>
 
 			<xhtml:div id="bd">
 				<xforms:group ref="instance('status')/text()">
@@ -473,8 +473,8 @@
 							<xhtml:div style="margin-top:10px;display:table;width:100%">
 								<fr:autocomplete ref="instance('term-template')" dynamic-itemset="true">
 									<xforms:action ev:event="fr-search-changed">
-										<xxforms:variable name="search-value" select="event('fr-search-value')"/>
-										<xxforms:variable name="make-suggestion" select="string-length($search-value) >= 2"/>
+										<xforms:var name="search-value" select="event('fr-search-value')"/>
+										<xforms:var name="make-suggestion" select="string-length($search-value) >= 2"/>
 										<xforms:action if="$make-suggestion">
 											<xforms:setvalue ref="instance('suggest-query')" value="$search-value"/>
 											<xforms:send submission="suggest"/>
@@ -541,8 +541,8 @@
 											</xhtml:div>
 										</xforms:case>
 										<xforms:case id="non-lcsh">
-											<xxforms:variable name="termtype" select="instance('termtype-instance')/term"/>
-											<xxforms:variable name="termlabel"
+											<xforms:var name="termtype" select="instance('termtype-instance')/term"/>
+											<xforms:var name="termlabel"
 												select="substring(instance('terms-list')/term[@type = instance('termtype-instance')/term]/text(), 1, string-length(instance('terms-list')/term[@type = instance('termtype-instance')/term]/text()) - 1)"/>
 											<xhtml:div>
 												<xforms:output ref="str[@name='id']">

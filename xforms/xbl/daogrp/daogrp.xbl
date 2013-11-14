@@ -6,9 +6,9 @@
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
-					<xxforms:variable name="binding" as="node()?">
+					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
-					</xxforms:variable>
+					</xforms:var>
 					
 					<xforms:group ref="$binding">
 						<!-- just show thumbnail if it is a flickr thumbnail -->
@@ -110,8 +110,8 @@
 
 											<!-- parent component controlled access headings -->
 											<xforms:repeat nodeset="instance('terms')/term">
-												<xxforms:variable name="namespace" select="@namespace"/>
-												<xxforms:variable name="value" select="@value"/>
+												<xforms:var name="namespace" select="@namespace"/>
+												<xforms:var name="value" select="@value"/>
 												<tr>
 													<td>
 														<xforms:input ref="@selected"/>
@@ -302,8 +302,8 @@
 															</xforms:action>
 															<xforms:action if="instance('flickr-sizes')/@stat='ok'">
 																<xforms:action xxforms:iterate="instance('flickr-sizes')//size">
-																	<xxforms:variable name="label" select="@label"/>
-																	<xxforms:variable name="href" select="@source"/>
+																	<xforms:var name="label" select="@label"/>
+																	<xforms:var name="href" select="@source"/>
 																	<xforms:insert origin="instance('daoloc-template')" context="$binding" nodeset="./child::node()[last()]"/>
 																	<xforms:setvalue ref="$binding/ead:daoloc[last()]/@xlink:label" value="$label"/>
 																	<xforms:setvalue ref="$binding/ead:daoloc[last()]/@xlink:href" value="$href"/>

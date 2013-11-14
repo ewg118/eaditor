@@ -262,7 +262,7 @@
 		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
 	</head>
 	<body>
-		<xxforms:variable name="display_path">../../</xxforms:variable>
+		<xforms:var name="display_path">../../</xforms:var>
 		<div class="yui3-g">
 			<div class="yui3-u-1">
 				<div class="content">
@@ -305,7 +305,7 @@
 					<div id="form">
 						<!-- This table contains the main actions for the page  -->
 						<xforms:group ref="instance('guide')/descendant::ead:c[@id=instance('identifier')]">
-							<xxforms:variable name="level" select="@level"/>
+							<xforms:var name="level" select="@level"/>
 							<h2>Edit Component</h2>
 							<eaditor:attributes ref="."/>
 							<div class="section">

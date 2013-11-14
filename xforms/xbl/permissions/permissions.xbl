@@ -21,9 +21,9 @@
 					<xforms:group xbl:attr="ref" xxbl:scope="outer">
 						<!-- Start copying the variables over that we need -->
 
-						<xxforms:variable name="data" xxbl:scope="inner">
+						<xforms:var name="data" xxbl:scope="inner">
 							<xxforms:sequence select="." xxbl:scope="outer"/>
-						</xxforms:variable>
+						</xforms:var>
 
 						<!-- end external variable copying -->
 
@@ -46,8 +46,8 @@
 								</xsl:choose>
 
 								<xforms:action xxforms:iterate="//ead:c" ev:event="xforms-enabled">
-									<xxforms:variable name="id" select="@id"/>
-									<xxforms:variable name="audience" select="@audience"/>
+									<xforms:var name="id" select="@id"/>
+									<xforms:var name="audience" select="@audience"/>
 									<xforms:setvalue ref="instance('c-template')/@id" value="$id"/>
 									<xforms:setvalue ref="instance('c-template')/@audience" value="if(string($audience)) then $audience else ''"/>
 									<xforms:insert origin="instance('c-template')" context="instance('components')" nodeset="./child::node()[last()]" if="count(instance('components')//c[@id=$id]) = 0"
@@ -102,8 +102,8 @@
 						<!-- Repeat over each child node of the root node -->
 						<xsl:if test="$depth > 1">
 							<xforms:repeat nodeset="ead:c">
-								<xxforms:variable name="id" select="@id"/>
-								<xxforms:variable name="audience" select="if (@audience='external') then '#77a677' else if (@audience='internal') then '#d7a074' else ''"/>
+								<xforms:var name="id" select="@id"/>
+								<xforms:var name="audience" select="if (@audience='external') then '#77a677' else if (@audience='internal') then '#d7a074' else ''"/>
 								<xhtml:li style="background-color:{'{$audience}'}" class="component">
 									<!-- if this element has children recurse into it -->
 									<xsl:call-template name="node">

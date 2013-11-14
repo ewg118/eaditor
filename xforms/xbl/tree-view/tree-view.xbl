@@ -29,9 +29,9 @@
 						<xforms:group xbl:attr="ref" xxbl:scope="outer">
 							<!-- Start copying the variables over that we need -->
 
-							<xxforms:variable name="data" xxbl:scope="inner">
+							<xforms:var name="data" xxbl:scope="inner">
 								<xxforms:sequence select="." xxbl:scope="outer"/>
-							</xxforms:variable>
+							</xforms:var>
 
 							<!-- end external variable copying -->
 
@@ -119,9 +119,9 @@
 						<!-- Repeat over each child node of the root node -->
 						<xsl:if test="$depth > 1">
 							<xforms:repeat nodeset="ead:c">
-								<xxforms:variable name="id" select="@id"/>
-								<xxforms:variable name="position" select="position()"/>
-								<xxforms:variable name="count" select="count(parent::node()/ead:c)"/>
+								<xforms:var name="id" select="@id"/>
+								<xforms:var name="position" select="position()"/>
+								<xforms:var name="count" select="count(parent::node()/ead:c)"/>
 								<xhtml:li>
 									<!-- if this element has children recurse into it -->
 									<xsl:call-template name="node">
