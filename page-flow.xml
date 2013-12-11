@@ -17,11 +17,17 @@
 	<!-- ****************
 	* ADMIN INTERFACE *
 	***************** -->
+	<!-- editor forms -->
+	<!-- EAD-related -->
 	<page path="/eaditor/admin/edit/core-template/" view="xforms/ead-template.xhtml"/>
 	<page path="/eaditor/admin/edit/c-template/" view="xforms/c-template.xhtml"/>
 	<page path="/eaditor/admin/edit/instance-templates/" view="xforms/instance-templates.xhtml"/>
 	<page path="/eaditor/admin/edit/core/" view="xforms/ead.xhtml"/>
 	<page path="/eaditor/admin/edit/component/" view="xforms/component.xhtml"/>
+	<!-- TEI -->
+	<page path="/eaditor/admin/edit/tei/" view="xforms/tei.xhtml"/>
+	
+	<!-- admin functions -->
 	<page path="/eaditor/admin/upload/" view="xforms/upload.xhtml"/>
 	<page path="/eaditor/admin/vocab/" view="xforms/vocab.xhtml"/>
 	<page path="/eaditor/admin/eac-cpf/" view="xforms/eac-cpf.xhtml"/>

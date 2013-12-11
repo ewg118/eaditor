@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3"
-	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
-	exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="display/ead/ead.xsl"/>
 	<xsl:include href="display/ead/dsc.xsl"/>
 	<xsl:include href="display/mods/mods.xsl"/>
+	<xsl:include href="display/tei/tei.xsl"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
@@ -125,9 +125,8 @@
 		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
 	</xsl:template>
 
-	<xsl:template match="ead:ead|mods:mods">
-		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#"
-			xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+	<xsl:template match="ead:ead|mods:mods|tei:TEI">
+		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
 			<head>
 				<title>
 					<xsl:value-of select="/content/config/title"/>
@@ -202,6 +201,9 @@
 					</xsl:when>
 					<xsl:when test="namespace-uri()='urn:isbn:1-931666-22-9'">
 						<xsl:call-template name="ead-content"/>
+					</xsl:when>
+					<xsl:when test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
+						<xsl:call-template name="tei-content"/>
 					</xsl:when>
 				</xsl:choose>
 				<div id="path" style="display:none">
