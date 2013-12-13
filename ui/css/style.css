@@ -3,11 +3,11 @@
   GLOBAL
   ****************************************
  */
- html{
- 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 13px;	
- }
- body {
+html {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+}
+body {
 	margin:20px auto;
 	min-width:960px;
 	max-width:90%;
@@ -85,17 +85,17 @@ dd {
   TEST PAGE
   ****************************************
  */
- .error-table{
- 	width:100%;
- }
-.error-table td{
+.error-table {
+	width:100%;
+}
+.error-table td {
 	padding:5px;
 	border:0;
 }
-.error-table th{
-	border:0;	
+.error-table th {
+	border:0;
 }
-.indicator{
+.indicator {
 	width:5%;
 	text-align:center;
 }
@@ -388,7 +388,7 @@ button.ui-multiselect {
   MAPS
   ***************************************
  */
- #resultMap {
+#resultMap {
 	width:600px;
 	height:400px;
 }
@@ -431,48 +431,82 @@ button.ui-multiselect {
 	padding:0px 5px;
 	max-width:120px;
 }
-/*.filter_facet {
-	width:12%;
-	float:left;
-	padding:2px;
-	margin:2px 2px;
-	z-index:0;
-	background-color:#D9D4C8;
-	border:1px solid #C2B9A9;
-	cursor:pointer;
-}
-.filter_facet_selected {
-	width:12%;
-	float:left;
-	padding:2px;
-	margin:2px 2px;
-	z-index:0;
-	background-color:#C2B9A9;
-	border:1px solid #C2B9A9;
-	cursor:pointer;
-}
-.filter_facet:hover {
-	color:gray;
-}
-.filter_heading {
-	width:100%;
-}
-.filter_terms {
-	position:absolute;
-	z-index:2002;
-	width:200px;
-	padding:3px;
-}*/
+/*
+  .filter_facet {
+  width:12%;
+  float:left;
+  padding:2px;
+  margin:2px 2px;
+  z-index:0;
+  background-color:#D9D4C8;
+  border:1px solid #C2B9A9;
+  cursor:pointer;
+  }
+  .filter_facet_selected {
+  width:12%;
+  float:left;
+  padding:2px;
+  margin:2px 2px;
+  z-index:0;
+  background-color:#C2B9A9;
+  border:1px solid #C2B9A9;
+  cursor:pointer;
+  }
+  .filter_facet:hover {
+  color:gray;
+  }
+  .filter_heading {
+  width:100%;
+  }
+  .filter_terms {
+  position:absolute;
+  z-index:2002;
+  width:200px;
+  padding:3px;
+  }
+ */
 #filter_list {
 	margin:0;
 	padding:0;
 }
 #filter_list li {
-	list-style-type:none;	
+	list-style-type:none;
 }
 .fl {
 	float:left;
 	width:20%;
+}
+/*
+  ***************************************
+  TEI Display
+  ***************************************
+ */
+#map-annotate-button {
+	position:absolute;
+	top:3px;
+	right:3px;
+	background-color:#000;
+	color:#fff;
+	padding:3px 8px;
+	z-index:10000;
+	font-size:11px;
+	text-decoration:none;
+}
+#annot-parent {
+	position:relative;
+	width:50%;
+	height:600px;	
+}
+#annot {
+	background-color:white;
+	width:50%;
+	height:600px;
+}
+#slider {
+	padding:20px;	
+}
+.page-image {
+	margin:5px;	
 }
 /*
   ***************************************

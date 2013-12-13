@@ -151,10 +151,21 @@
 				<!-- EADitor styling -->
 				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
 				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
-
+				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
+				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
+					<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
+					<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/> 
+				</xsl:if>
+				<!-- jquery -->
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-
+				<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
+				<!-- include annotation functions for TEI files -->
+				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
+					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/display_annotation_functions.js"/> 
+				</xsl:if>
+				
 				<!-- menu -->
 				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
 				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
@@ -168,29 +179,14 @@
 					<!-- mapping -->
 					<link type="text/css" href="{$display_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>
 					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
-					<!--<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"/>-->
 					<script type="text/javascript" src="{$display_path}ui/javascript/mxn.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/timeline-2.3.0.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/timemap_full.pack.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/param.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/xml.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/kml.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
-				</xsl:if>
-				<script type="text/javascript" langage="javascript">
-					$(document).ready(function () {
-						$("#tabs").tabs();
-						<!--
-						$(".thumbImage a").fancybox();
-						$('.flickr-link').click(function () {
-							var href = $(this).attr('href');
-							$.fancybox.close();
-							window.open(href, '_blank');
-						});-->
-					});
-				</script>
-
-
+					<script type="text/javascript" src="{$display_path}ui/javascript/display_map_functions.js"/>
+				</xsl:if>			
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
