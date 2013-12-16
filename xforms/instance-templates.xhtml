@@ -21,8 +21,8 @@
 
 		<xforms:model schema="http://www.loc.gov/ead/ead.xsd">
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -81,7 +81,7 @@
 			<xforms:bind id="containertypes-tab" nodeset="instance('config')/templates/containertypes"/>
 
 			<!-- submit query to eXist -->
-			<xforms:submission id="agencycodes-submission" ref="instance('agencycodes-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="agencycodes-submission" ref="instance('agencycodes-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance">
 				<xforms:insert nodeset="instance('temp-instance')" ev:event="xforms-submit-done"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-agencycodes.xpl', 'data', instance('response-instance'), 'data')"/>
@@ -95,11 +95,11 @@
 			<!-- error report -->
 			<xforms:setvalue ev:event="xforms-submit-error" ref="instance('control-instance')/error" value="event('response-body')"/>
 
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config. Is eXist operational?</xforms:message>
 			</xforms:submission>
 			
-			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/config.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<xforms:setvalue ref="instance('status')" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
 			</xforms:submission>

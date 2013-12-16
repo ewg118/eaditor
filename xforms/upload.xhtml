@@ -19,8 +19,8 @@
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 		<xforms:model>
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="files">
@@ -82,8 +82,8 @@
 				<xforms:send ev:event="xforms-submit-done" submission="put-to-exist"/>
 			</xforms:submission>
 
-			<xforms:submission id="put-to-exist" method="put" replace="none" ref="instance('new-guide')" action="{instance('exist-url')}eaditor/guides/{instance('new-guide')/@id}.xml"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="put-to-exist" method="put" replace="none" ref="instance('new-guide')" action="{instance('exist-config')/url}eaditor/guides/{instance('new-guide')/@id}.xml"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error in writing file to eXist. Preprocessing XSLT transformation was successful, but resulting document is
 					invalid.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
@@ -91,7 +91,7 @@
 				</xforms:action>
 			</xforms:submission>
 
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"/>
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:send submission="load-config"/>

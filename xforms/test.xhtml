@@ -15,8 +15,8 @@
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model>
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -68,7 +68,7 @@
 			</xforms:instance>
 
 			<!-- load eaditor collection -->
-			<xforms:submission id="load-eaditor-collection" serialization="none" method="get" action="{instance('exist-url')}eaditor/" replace="instance" instance="temp">
+			<xforms:submission id="load-eaditor-collection" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='001']/@test">Success</xforms:setvalue>
 					<xforms:send submission="load-guides-collection"/>
@@ -82,7 +82,7 @@
 			</xforms:submission>
 
 			<!-- load config xml file -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/@test">Success</xforms:setvalue>
 					<xforms:send submission="test-solr-published"/>
@@ -95,12 +95,12 @@
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/message" value="concat(instance('exist-url'), 'eaditor/config.xml not found.')"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/message" value="concat(instance('exist-config')/url, 'eaditor/config.xml not found.')"/>
 				</xforms:action>
 			</xforms:submission>
 
 			<!-- load eaditor/guides collection -->
-			<xforms:submission id="load-guides-collection" serialization="none" method="get" action="{instance('exist-url')}eaditor/guides" replace="instance" instance="temp">
+			<xforms:submission id="load-guides-collection" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@test">Success</xforms:setvalue>
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@count" value="count(instance('temp')//exist:resource)"/>
@@ -108,29 +108,29 @@
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/message" value="concat(instance('exist-url'), 'eaditor/guides eXist collection not found.')"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/message" value="concat(instance('exist-config')/url, 'eaditor/guides eXist collection not found.')"/>
 				</xforms:action>
 			</xforms:submission>
 
 			<!-- load c template -->
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance" instance="temp">
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/c-template.xml" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/@test">Success</xforms:setvalue>
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/message" value="concat(instance('exist-url'), 'eaditor/c-template.xml not found.')"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/message" value="concat(instance('exist-config')/url, 'eaditor/c-template.xml not found.')"/>
 				</xforms:action>
 			</xforms:submission>
 
 			<!-- load ead template -->
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/ead-template.xml" replace="instance" instance="temp">
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/ead-template.xml" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/@test">Success</xforms:setvalue>
 				</xforms:action>
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/@test">Fail</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/message" value="concat(instance('exist-url'), 'eaditor/ead-template.xml not found.')"/>
+					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/message" value="concat(instance('exist-config')/url, 'eaditor/ead-template.xml not found.')"/>
 				</xforms:action>
 			</xforms:submission>
 
@@ -212,7 +212,7 @@
 							<a href="..">&lt; Return</a>
 						</p>
 						<h1>EADitor Conformance Testing</h1>
-						<p>This page checks for the existence of required files based on the eXist URL in exist-url.xml in the EADitor folder in Orbeon's apps directory. Upon successful load of
+						<p>This page checks for the existence of required files based on the eXist URL in exist-config.xml in the EADitor folder in Orbeon's apps directory. Upon successful load of
 							EADitor's configuration file, config.xml, in the eXist database, Solr and other configurations are verified.</p>
 						<xforms:group ref="instance('control-instance')/errors">
 							<table class="error-table" style="border-collapse:separate;border-spacing:10px;">

@@ -32,8 +32,8 @@
 			</xs:schema>
 
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="ead-template" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -201,20 +201,20 @@
 			<xforms:bind id="archdesc-tab" nodeset="instance('ead-template')/ead:archdesc"/>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance"
-				instance="c-template" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/c-template.xml" replace="instance"
+				instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading component template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/ead-template.xml"
-				replace="instance" instance="ead-template" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/ead-template.xml"
+				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading core template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-url')}eaditor/ead-template.xml" method="put"
-				replace="none" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/ead-template.xml" method="put"
+				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Template saved.</xforms:setvalue>
 			</xforms:submission>

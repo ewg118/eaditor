@@ -31,8 +31,8 @@
 			</xs:schema>
 
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<!-- archdesc instances -->
@@ -90,12 +90,12 @@
 			</xforms:bind>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-template" serialization="none" method="get" action="{instance('exist-url')}eaditor/c-template.xml" replace="instance" instance="c-template"
-				xxforms:username="admin" xxforms:password=""/>
+			<xforms:submission id="load-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/c-template.xml" replace="instance" instance="c-template"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-template" ref="instance('c-template')" action="{instance('exist-url')}eaditor/c-template.xml" method="put" replace="none" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="save-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/c-template.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred while saving!</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Template saved.</xforms:setvalue>
 			</xforms:submission>

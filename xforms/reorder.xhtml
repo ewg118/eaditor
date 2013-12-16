@@ -19,8 +19,8 @@
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 		<xforms:model>
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -52,19 +52,19 @@
 				<copy xmlns=""/>
 			</xforms:instance>
 
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load configuration file.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-url')}eaditor/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-submission" ref="instance('guide')" action="{instance('exist-url')}eaditor/guides/{instance('guide')/@id}.xml" method="put" replace="none"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="save-submission" ref="instance('guide')" action="{instance('exist-config')/url}eaditor/guides/{instance('guide')/@id}.xml" method="put" replace="none"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('status')">EAD guide saved.</xforms:setvalue>

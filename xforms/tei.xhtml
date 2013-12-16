@@ -26,8 +26,8 @@
 			</xforms:instance>
 
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config">
@@ -59,20 +59,20 @@
 
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load config</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-url')}eaditor/guides/{instance('doc')/@xml:id}.xml" replace="instance"
-				instance="doc" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides/{instance('doc')/@xml:id}.xml" replace="instance"
+				instance="doc" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load TEI document</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-submission" ref="instance('doc')" action="{instance('exist-url')}eaditor/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="save-submission" ref="instance('doc')" action="{instance('exist-config')/url}eaditor/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Document. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">TEI Document saved.</xforms:setvalue>

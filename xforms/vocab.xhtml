@@ -22,8 +22,8 @@
 		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/jquery-1.4.2.min.js"/>
 		<xhtml:script type="text/javascript" src="/apps/eaditor/javascript/menu.js"/>
 		<xforms:model>
-			<xforms:instance id="exist-url">
-				<xi:include href="exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="exist-config.xml"/>
 			</xforms:instance>
 			
 			<xforms:instance id="control-instance">
@@ -206,17 +206,17 @@
 			</xforms:instance>
 
 			<!-- submit query to eXist -->
-			<xforms:submission id="corpname-submission" ref="instance('corpname-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="corpname-submission" ref="instance('corpname-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance"/>
-			<xforms:submission id="famname-submission" ref="instance('famname-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="famname-submission" ref="instance('famname-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance"/>
-			<xforms:submission id="genreform-submission" ref="instance('genreform-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="genreform-submission" ref="instance('genreform-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance"/>
-			<xforms:submission id="geogname-submission" ref="instance('geogname-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="geogname-submission" ref="instance('geogname-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance"/>
-			<xforms:submission id="persname-submission" ref="instance('persname-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="persname-submission" ref="instance('persname-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance"/>
-			<xforms:submission id="subject-submission" ref="instance('subject-instance')" action="{instance('exist-url')}{instance('control-instance')/resource}" method="post"
+			<xforms:submission id="subject-submission" ref="instance('subject-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
 				replace="instance" instance="response-instance"/>
 
 			<!-- purge existing terms before adding new ones -->
@@ -292,9 +292,9 @@
 			</xforms:submission>
 
 			<!-- Load the EADitor config file into an instance to extract the date of the last LCSH update -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config"/>
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"/>
 
-			<xforms:submission id="update-config" ref="instance('config')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none">
+			<xforms:submission id="update-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/config.xml" method="put" replace="none">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error update EADitor config file.</xforms:message>
 			</xforms:submission>
 

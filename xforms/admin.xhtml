@@ -24,8 +24,8 @@
 
 		<xforms:model>
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="control-instance">
@@ -297,7 +297,7 @@
 
 
 			<!-- ************* SUBMISSIONS ************* -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- get the number of docs in the eXist collection() -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"/>
@@ -316,7 +316,7 @@
 			</xforms:submission>
 
 			<!-- xquery for getting and processing query results into pages of items -->
-			<xforms:submission id="xquery-pagination" ref="instance('eXist-xquery')" action="{instance('exist-url')}eaditor/guides/" method="post" replace="instance" instance="pagination-result">
+			<xforms:submission id="xquery-pagination" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/guides/" method="post" replace="instance" instance="pagination-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 				<xforms:action ev:event="xforms-submit-done">
 					<!--iterate through docs, check for publication -->
@@ -329,7 +329,7 @@
 			</xforms:submission>
 
 			<!-- generic xquery -->
-			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-url')}eaditor/guides/" method="post" replace="instance" instance="xquery-result">
+			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/guides/" method="post" replace="instance" instance="xquery-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
 
@@ -342,34 +342,34 @@
 			</xforms:submission>
 
 			<!-- save templates and add guides collection to eXist on the first run of EADitor -->
-			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-config')/url}eaditor/config.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<!-- reload the config after it has been created -->
 				<xforms:send submission="load-config" ev:event="xforms-submit-done"/>
 			</xforms:submission>
-			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-url')}eaditor/ead-template.xml" method="put" replace="none" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/ead-template.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving EAD Template.</xforms:message>
 			</xforms:submission>
-			<xforms:submission id="save-c-template" ref="instance('c-template')" action="{instance('exist-url')}eaditor/c-template.xml" method="put" replace="none" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="save-c-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/c-template.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Component Template.</xforms:message>
 				<xforms:toggle case="file-list" ev:event="xforms-submit-done"/>
 			</xforms:submission>
-			<xforms:submission id="add-collection" ref="instance('eXist-xquery')" method="post" action="{instance('exist-url')}" replace="none" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="add-collection" ref="instance('eXist-xquery')" method="post" action="{instance('exist-config')/url}" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error adding guides collection.</xforms:message>
 			</xforms:submission>
 
 			<!-- load ead guide temporarily -->
-			<xforms:submission id="load-guide" serialization="none" method="get" action="{instance('exist-url')}eaditor/guides/{instance('control-instance')/id}.xml" replace="instance"
-				instance="guide" xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-guide" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides/{instance('control-instance')/id}.xml" replace="instance"
+				instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Cannot load finding aid.</xforms:message>
 			</xforms:submission>
 
 			<!-- delete finding aid -->
-			<xforms:submission id="delete-guide" action="{instance('exist-url')}eaditor/guides/{instance('control-instance')/id}.xml" method="delete" replace="none" xxforms:username="admin"
-				xxforms:password="">
+			<xforms:submission id="delete-guide" action="{instance('exist-config')/url}eaditor/guides/{instance('control-instance')/id}.xml" method="delete" replace="none" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Finding aid successfully deleted.</xforms:setvalue>
 			</xforms:submission>
 

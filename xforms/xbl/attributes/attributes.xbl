@@ -133,8 +133,8 @@
 							</xs:simpleType>
 						</xs:schema>
 						
-						<xforms:instance id="exist-url">
-							<xi:include href="../../../exist-url.xml"/>
+						<xforms:instance id="exist-config">
+							<xi:include href="../../../exist-config.xml"/>
 						</xforms:instance>
 						
 						<xforms:instance id="config">
@@ -177,7 +177,7 @@
 							<xforms:bind nodeset="attribute[@name='type']" type="xs:NMTOKEN"/>
 						</xforms:bind>
 						
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance" instance="config" xxforms:username="admin" xxforms:password="">
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config.</xforms:message>
 						</xforms:submission>
 
