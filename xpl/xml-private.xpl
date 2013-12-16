@@ -64,7 +64,7 @@
 						</xsl:choose>
 					</xsl:variable>
 					
-					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/guides/', $doc, '.xml'))/*"/>
+					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/default/guides/', $doc, '.xml'))/*"/>
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>

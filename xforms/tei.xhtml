@@ -33,9 +33,19 @@
 			<xforms:instance id="config">
 				<config xmlns=""/>
 			</xforms:instance>
+			
+			<!-- authentication -->
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="dump">
+				<dump xmlns=""/>
+			</xforms:instance>
 
 			<xforms:instance id="control-instance">
 				<control xmlns="">
+					<collection-name/>
 					<status/>
 				</control>
 			</xforms:instance>
@@ -59,19 +69,48 @@
 
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}"
-				xxforms:password="{instance('exist-config')/password}">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load config</xforms:message>
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
+			</xforms:submission>
+			
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<!-- if the config loads successfully, set the collection names based on authentication -->
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- set default if security is false -->
+					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
+						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+					</xforms:action>
+					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
+					<xforms:action if="string(instance('control-instance')/request-security/role)">
+						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
+							<xforms:setvalue ref="instance('control-instance')/collection-name"
+								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+						</xforms:action>
+					</xforms:action>
+					
+					<xforms:send submission="load-config"/>
+					<!-- if there is an id parameter, load existing document -->
+					<xforms:action if="string(xxforms:get-request-parameter('id'))">
+						<xforms:setvalue ref="instance('doc')/@xml:id" value="xxforms:get-request-parameter('id')"/>
+						<xforms:send submission="load-submission"/>
+					</xforms:action>
+				</xforms:action>
+				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides/{instance('doc')/@xml:id}.xml" replace="instance"
-				instance="doc" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-submission" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" replace="instance" instance="doc"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load TEI document</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-submission" ref="instance('doc')" action="{instance('exist-config')/url}eaditor/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
+			<xforms:submission id="save-submission" ref="instance('doc')"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Document. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
@@ -83,8 +122,8 @@
 
 			<!-- ******************* SOLR PUBLICATION ************************ -->
 			<!-- submission to query solr to see if the document is published -->
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get"
-				action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('doc')/@xml:id}&#x022;" replace="instance" instance="is-published">
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('doc')/@xml:id}&#x022;"
+				replace="instance" instance="is-published">
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="doc-to-solr"/>
 			</xforms:submission>
@@ -103,12 +142,9 @@
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:send submission="load-config"/>
-				<!-- if there is an id parameter, load existing document -->
-				<xforms:action if="string(xxforms:get-request-parameter('id'))">
-					<xforms:setvalue ref="instance('doc')/@xml:id" value="xxforms:get-request-parameter('id')"/>
-					<xforms:send submission="load-submission"/>
-				</xforms:action>
+				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+				<xforms:send submission="load-collections"/>
 			</xforms:action>
 		</xforms:model>
 	</head>
@@ -145,7 +181,7 @@
 						<div>
 							<xforms:input ref="instance('doc')/@xml:id">
 								<xforms:label>Document ID</xforms:label>
-								<xforms:alert>The id is required</xforms:alert>								
+								<xforms:alert>The id is required</xforms:alert>
 							</xforms:input>
 						</div>
 						<fr:tabview>
@@ -156,7 +192,8 @@
 							</fr:tab>
 							<!--**************************************** BODY **********************************-->
 							<fr:tab bind="body-tab">
-								<fr:label>Body</fr:label> </fr:tab>
+								<fr:label>Body</fr:label>
+							</fr:tab>
 							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>

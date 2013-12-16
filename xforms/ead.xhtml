@@ -42,15 +42,28 @@
 			<xforms:instance id="config">
 				<config xmlns=""/>
 			</xforms:instance>
+			
+			<xforms:instance id="control-instance">
+				<controls xmlns="">
+					<collection-name/>
+					<status/>					
+				</controls>
+			</xforms:instance>
+			
+			<!-- authentication -->
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="dump">
+				<dump xmlns=""/>
+			</xforms:instance>
 
 			<!-- get from exist -->
 			<xforms:instance id="c-template">
 				<c xmlns="urn:isbn:1-931666-22-9"/>
 			</xforms:instance>
-
-			<xforms:instance id="status">
-				<status/>
-			</xforms:instance>
+			
 			<!-- solr response for id query -->
 			<xforms:instance id="is-published">
 				<response xmlns=""/>
@@ -247,19 +260,54 @@
 				</xforms:bind>
 			</xforms:bind>
 
-			<!-- bind tabs -->			
-			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"/>			
+			<!-- bind tabs -->
+			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"/>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"/>
-			
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/ead-template.xml" replace="instance" instance="guide"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/c-template.xml" replace="instance" instance="c-template"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<!-- if the config loads successfully, set the collection names based on authentication -->
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- set default if security is false -->
+					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
+						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+					</xforms:action>
+					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
+					<xforms:action if="string(instance('control-instance')/request-security/role)">
+						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
+							<xforms:setvalue ref="instance('control-instance')/collection-name"
+								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+						</xforms:action>
+					</xforms:action>
+					<xforms:send submission="load-config"/>
+					<xforms:send submission="load-c-template"/>
+					<!-- if there is a guide parameter, load existing finding aid -->
+					<xforms:action if="string(xxforms:get-request-parameter('guide'))">
+						<xforms:setvalue ref="instance('guide')/@id" value="xxforms:get-request-parameter('guide')"/>
+						<xforms:send submission="load-submission"/>
+					</xforms:action>
+					<!-- if not, load ead template -->
+					<xforms:action if="not(string(xxforms:get-request-parameter('guide')))">
+						<xforms:send submission="load-ead-template"/>
+					</xforms:action>
+				</xforms:action>
+				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
+				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
+				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
 
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-submission" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
+			<xforms:submission id="load-submission" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
@@ -270,11 +318,12 @@
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-submission" ref="instance('guide')" action="{instance('exist-config')/url}eaditor/guides/{instance('guide')/@id}.xml" method="put" replace="none"
+			<xforms:submission id="save-submission" ref="instance('guide')"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/@id}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
-					<xforms:setvalue ref="instance('status')">EAD guide saved.</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
 					<!-- check to see if the document is already published to Solr -->
 					<xforms:send submission="query-solr-for-publication"/>
 					<!-- reload toc -->
@@ -295,7 +344,7 @@
 			<!-- post instance to Solr -->
 			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
 				<xforms:send ev:event="xforms-submit-done" submission="submit-commit"/>
-				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">EAD guide saved and updated to search index.</xforms:setvalue>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">EAD guide saved and updated to search index.</xforms:setvalue>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
 			<!-- send commit -->
@@ -303,17 +352,9 @@
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<!-- load id parameter from url into @id attribute for EAD guide -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:send submission="load-config"/>
-				<xforms:send submission="load-c-template"/>
-				<!-- if there is a guide parameter, load existing finding aid -->
-				<xforms:action if="string(xxforms:get-request-parameter('guide'))">
-					<xforms:setvalue ref="instance('guide')/@id" value="xxforms:get-request-parameter('guide')"/>
-					<xforms:send submission="load-submission"/>
-				</xforms:action>
-				<!-- if not, load ead template -->
-				<xforms:action if="not(string(xxforms:get-request-parameter('guide')))">
-					<xforms:send submission="load-ead-template"/>
-				</xforms:action>
+				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+				<xforms:send submission="load-collections"/>
 			</xforms:action>
 		</xforms:model>
 
@@ -396,9 +437,9 @@
 			<div class="yui3-u-1">
 				<div class="content">
 					<xi:include href="header.xml"/>
-					<xforms:group ref="instance('status')/text()">
+					<xforms:group ref="instance('control-instance')/status/text()">
 						<div class="success">
-							<xforms:output ref="instance('status')"/>
+							<xforms:output ref="instance('control-instance')/status"/>
 						</div>
 					</xforms:group>
 					<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
@@ -423,7 +464,7 @@
 							<xforms:submit submission="load-submission" appearance="minimal">
 								<xforms:label><img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
 							</xforms:submit>
-						</div>						
+						</div>
 					</div>
 				</div>
 			</div>
@@ -434,7 +475,7 @@
 			</div>
 			<div class="yui3-u-4-5">
 				<div class="content">
-					<div id="form">						
+					<div id="form">
 						<div>
 							<xforms:input ref="instance('guide')/@id">
 								<xforms:label>Document ID</xforms:label>
@@ -573,12 +614,12 @@
 															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
 																origin="instance('subtitle-template')"/>
 														</xforms:trigger>
-															<xforms:trigger appearance="minimal">
-																<xforms:label>
-																	<img src="/apps/eaditor/xforms/images/add.gif"/>Author</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
-																	origin="instance('author-template')"/>
-															</xforms:trigger>
+														<xforms:trigger appearance="minimal">
+															<xforms:label>
+																<img src="/apps/eaditor/xforms/images/add.gif"/>Author</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
+																origin="instance('author-template')"/>
+														</xforms:trigger>
 														<xforms:group ref=".[count(ead:sponsor) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
@@ -961,10 +1002,10 @@
 									</xforms:group>
 								</xforms:group>
 							</fr:tab>
-							<!--**************************************** END EADHEADER **********************************-->							
+							<!--**************************************** END EADHEADER **********************************-->
 							<!--**************************************** ARCHDESC **********************************-->
 							<fr:tab bind="archdesc-tab">
-								<fr:label>Archival Description</fr:label>								
+								<fr:label>Archival Description</fr:label>
 								<div class="yui3-g">
 									<div class="yui3-u-1">
 										<h1>Archival Description</h1>
@@ -1026,7 +1067,7 @@
 							<!--**************************************** DSC **********************************-->
 							<fr:tab bind="dsc-tab">
 								<fr:label>Description of Subordinate Components</fr:label>
-								<h2>Description of Subordinate Components</h2>									
+								<h2>Description of Subordinate Components</h2>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
 										<img src="/apps/eaditor/xforms/images/remove.gif"/>
@@ -1050,11 +1091,11 @@
 									<eaditor:c/>
 								</xforms:repeat>
 							</fr:tab>
-							<!--<fr:tab id="preview">
+							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>-->
+							</fr:tab>
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>

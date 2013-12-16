@@ -35,6 +35,21 @@
 			<xforms:instance id="exist-config">
 				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
+			
+			<xforms:instance id="control-instance">
+				<controls xmlns="">
+					<collection-name/>					
+				</controls>
+			</xforms:instance>
+			
+			<!-- authentication -->
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="dump">
+				<dump xmlns=""/>
+			</xforms:instance>
 
 			<xforms:instance id="ead-template" xmlns:xlink="http://www.w3.org/1999/xlink">
 				<ead xmlns="urn:isbn:1-931666-22-9"/>
@@ -199,21 +214,43 @@
 
 			<!-- bind tabs -->
 			<xforms:bind id="archdesc-tab" nodeset="instance('ead-template')/ead:archdesc"/>
+			
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<!-- if the config loads successfully, set the collection names based on authentication -->
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- set default if security is false -->
+					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
+						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+					</xforms:action>
+					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
+					<xforms:action if="string(instance('control-instance')/request-security/role)">
+						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
+							<xforms:setvalue ref="instance('control-instance')/collection-name"
+								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+						</xforms:action>
+					</xforms:action>
+					<xforms:send submission="load-core-template"/>
+					<xforms:send submission="load-c-template"/>
+				</xforms:action>
+				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
+			</xforms:submission>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/c-template.xml" replace="instance"
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" replace="instance"
 				instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading component template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
-			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/ead-template.xml"
+			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
 				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading core template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/ead-template.xml" method="put"
+			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml" method="put"
 				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Template saved.</xforms:setvalue>
@@ -221,8 +258,9 @@
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:send submission="load-core-template"/>
-				<xforms:send submission="load-c-template"/>
+				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+				<xforms:send submission="load-collections"/>
 			</xforms:action>
 		</xforms:model>
 

@@ -93,11 +93,11 @@
 									<xsl:choose>
 										<xsl:when test="string($id)">
 											<ead xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9">
-												<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
+												<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/default/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
 											</ead>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/guides/', $doc, '.xml'))/*"/>
+											<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/default/guides/', $doc, '.xml'))/*"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
@@ -179,11 +179,11 @@
 							<xsl:choose>
 								<xsl:when test="string($id)">
 									<ead xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9">
-										<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
+										<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/default/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
 									</ead>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/guides/', $doc, '.xml'))/*"/>
+									<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/default/guides/', $doc, '.xml'))/*"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							
