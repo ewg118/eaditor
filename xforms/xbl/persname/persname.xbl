@@ -18,7 +18,9 @@
 
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
 						<xforms:action if="not($binding/@source) and not(string($binding/text()))">
-							<xforms:send submission="load-config"/>
+							<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+								origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+							<xforms:send submission="load-collections"/>							
 							<xforms:setvalue ref="instance('interface-type')" value="'viaf'"/>
 						</xforms:action>
 					</xforms:action>
@@ -202,8 +204,18 @@
 							<results/>
 						</xforms:instance>
 
+						<!-- authentication -->
+						<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+							<collections xmlns=""/>
+						</xforms:instance>
+						
+						<xforms:instance id="dump">
+							<dump xmlns=""/>
+						</xforms:instance>						
+						
 						<xforms:instance id="control-instance">
 							<control xmlns="">
+								<collection-name/>
 								<local-message/>
 							</control>
 						</xforms:instance>
@@ -241,8 +253,29 @@
 									value="concat('Displaying first 100 of ', instance('rss')//opensearch:totalResults, ' result(s).')"/>
 							</xforms:action>
 						</xforms:submission>
+						
+						<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+							<!-- if the config loads successfully, set the collection names based on authentication -->
+							<xforms:action ev:event="xforms-submit-done">
+								<!-- set default if security is false -->
+								<xforms:action if="not(string(instance('control-instance')/request-security/role))">
+									<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+								</xforms:action>
+								<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
+								<xforms:action if="string(instance('control-instance')/request-security/role)">
+									<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
+										<xforms:setvalue ref="instance('control-instance')/collection-name"
+											value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+									</xforms:action>
+								</xforms:action>
+								<xforms:send submission="load-config"/>
+							</xforms:action>
+							<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
+						</xforms:submission>
 
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
 							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
