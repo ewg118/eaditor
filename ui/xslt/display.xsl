@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3"
-	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
-	exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="display/ead/ead.xsl"/>
 	<xsl:include href="display/ead/dsc.xsl"/>
 	<xsl:include href="display/mods/mods.xsl"/>
+	<xsl:include href="display/tei/tei.xsl"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
@@ -125,9 +125,8 @@
 		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
 	</xsl:template>
 
-	<xsl:template match="ead:ead|mods:mods">
-		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#"
-			xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+	<xsl:template match="ead:ead|mods:mods|tei:TEI">
+		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
 			<head>
 				<title>
 					<xsl:value-of select="/content/config/title"/>
@@ -152,10 +151,22 @@
 				<!-- EADitor styling -->
 				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
 				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
-
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
+				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
+				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
+					<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
+					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+					<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/> 
+				</xsl:if>
+				<!-- jquery -->
+				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-
+				<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
+				<!-- include annotation functions for TEI files -->
+				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
+					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/display_annotation_functions.js"/> 
+				</xsl:if>
+				
 				<!-- menu -->
 				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
 				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
@@ -169,29 +180,14 @@
 					<!-- mapping -->
 					<link type="text/css" href="{$display_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>
 					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
-					<!--<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"/>-->
 					<script type="text/javascript" src="{$display_path}ui/javascript/mxn.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/timeline-2.3.0.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/timemap_full.pack.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/param.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/xml.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/kml.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
-				</xsl:if>
-				<script type="text/javascript" langage="javascript">
-					$(document).ready(function () {
-						$("#tabs").tabs();
-						<!--
-						$(".thumbImage a").fancybox();
-						$('.flickr-link').click(function () {
-							var href = $(this).attr('href');
-							$.fancybox.close();
-							window.open(href, '_blank');
-						});-->
-					});
-				</script>
-
-
+					<script type="text/javascript" src="{$display_path}ui/javascript/display_map_functions.js"/>
+				</xsl:if>			
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -202,6 +198,9 @@
 					</xsl:when>
 					<xsl:when test="namespace-uri()='urn:isbn:1-931666-22-9'">
 						<xsl:call-template name="ead-content"/>
+					</xsl:when>
+					<xsl:when test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
+						<xsl:call-template name="tei-content"/>
 					</xsl:when>
 				</xsl:choose>
 				<div id="path" style="display:none">

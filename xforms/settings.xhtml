@@ -4,9 +4,9 @@
     EADitor: http://code.google.com/p/eaditor/
     Apache License 2.0: http://code.google.com/p/eaditor/    
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:saxon="http://saxon.sf.net/">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:saxon="http://saxon.sf.net/">
 	<head>
 		<title>EADitor: Edit Settings</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -19,7 +19,7 @@
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
-		<xforms:model>
+		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xs:schema>
 				<xs:simpleType name="emailAddress">
 					<xs:restriction base="xs:string">
@@ -30,12 +30,30 @@
 
 
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-url">
-				<xi:include href="../exist-url.xml"/>
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
 			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
 				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="control-instance">
+				<controls xmlns="">
+					<collection-name/>
+					<status/>
+					<api-key-accepted/>
+					<save-trigger/>
+				</controls>
+			</xforms:instance>
+
+			<!-- authentication -->
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="dump">
+				<dump xmlns=""/>
 			</xforms:instance>
 
 			<xforms:instance id="config-backup" xxforms:exclude-result-prefixes="#all">
@@ -122,17 +140,6 @@
 				</config>
 			</xforms:instance>
 
-			<xforms:instance id="status">
-				<status/>
-			</xforms:instance>
-
-			<xforms:instance id="control-instance">
-				<control xmlns="">
-					<api-key-accepted/>
-					<save-trigger/>
-				</control>
-			</xforms:instance>
-
 			<!-- facets -->
 			<xforms:instance id="facets" xxforms:exclude-result-prefixes="#all">
 				<facets xmlns=""/>
@@ -188,10 +195,10 @@
 				<xforms:bind nodeset="theme/jquery_ui_theme" required="true()"/>
 				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
-				<!--<xforms:bind nodeset="ark">
-					<xforms:bind nodeset="naan"  constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
+				<xforms:bind nodeset="ark">
+					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
 					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
-				</xforms:bind>-->
+				</xforms:bind>
 				<xforms:bind nodeset="export">
 					<xforms:bind nodeset="oai-pmh" type="xs:boolean"/>
 					<xforms:bind nodeset="pelagios" type="xs:boolean"/>
@@ -209,88 +216,64 @@
 			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"/>
 
 			<!-- submissions -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-url')}eaditor/config.xml" replace="instance"
-				instance="config">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config. Is eXist operational?</xforms:message>
-
-				<!-- if the current version number is lacking or is less than the default config template (should be identical to that in the admin XForms page), replace the config with the default config and reset values -->
-				<xforms:action ev:event="xforms-submit-done"
-					if="not(instance('config')/@version) or number(instance('config')/@version) &lt; number(instance('config-template')/@version)">
-					<!-- set config backup with config instance -->
-					<xforms:insert context="instance('config-backup')" origin="instance('config')/*"/>
-
-
-					<!-- delete all elements and attributes within config -->
-					<xforms:delete context="instance('config')" nodeset="*"/>
-					<xforms:delete context="instance('config')" nodeset="@version"/>
-					<xforms:setvalue ref="instance('config')"/>
-
-					<!-- insert all elements from the newer config template -->
-					<xforms:insert context="instance('config')" origin="instance('config-template')/*"/>
-
-					<!-- set values from backup -->
-					<xforms:action xxforms:iterate="instance('config')//*[not(*)]">
-						<xforms:var name="element" select="context()/local-name()"/>
-						<xforms:setvalue ref="context()" value="instance('config-backup')//*[local-name()=$element]"
-							if="$element != 'predicate' and $element != 'agencycode' and $element != 'container' and string(instance('config-backup')//*[local-name()=$element])"/>
-						
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<!-- if the config loads successfully, set the collection names based on authentication -->
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- set default if security is false -->
+					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
+						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
 					</xforms:action>
-					
-					<!-- set enabled attribute, if applicable -->
-					<!--<xforms:action xxforms:iterate="instance('config')//*[@enabled]">
-						<xforms:setvalue ref="context()/@enabled" value="instance('config-backup')//*[local-name()=$element]/@enabled"/>
-					</xforms:action>-->
-
-					<!-- pull machine tags if available -->
-					<xforms:action if="instance('config-backup')/machine_tags">
-						<xforms:delete context="instance('config')" nodeset="machine_tags"/>
-						<xforms:insert context="instance('config')" nodeset="./child::node()[last()]" origin="instance('config-backup')/machine_tags"/>
+					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
+					<xforms:action if="string(instance('control-instance')/request-security/role)">
+						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
+							<xforms:setvalue ref="instance('control-instance')/collection-name"
+								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+						</xforms:action>
 					</xforms:action>
-					
-					<!-- restore templates -->
-					<xforms:action if="instance('config-backup')/templates">
-						<xforms:delete context="instance('config')" nodeset="templates"/>
-						<xforms:insert context="instance('config')" nodeset="./child::node()[last()]" origin="instance('config-backup')/templates"/>
+					<xforms:send submission="load-config"/>
+
+					<!-- set facets instance -->
+					<xforms:action xxforms:iterate="tokenize(instance('config')/theme/facets, ',')">
+						<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')"/>
+						<xforms:setvalue ref="instance('facets')/facet[last()]" value="context()"/>
 					</xforms:action>
-
-					<!-- set version number -->
-					<xforms:insert context="instance('config')" origin="xxforms:attribute('version', instance('config-template')/@version)"/>
-
-					<xforms:message level="modal">Config version updated.</xforms:message>
 				</xforms:action>
+				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-url')}eaditor/config.xml" method="put" replace="none"
-				xxforms:username="admin" xxforms:password="">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put"
+				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<xforms:setvalue ref="instance('status')" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- test for flickr echo -->
 			<xforms:submission id="test-for-echo" serialization="none" method="get"
-				action="http://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance"
-				instance="flickr-response">
+				action="http://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance" instance="flickr-response">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set readonly for save button if the api key is a string and failed -->
-					<xforms:setvalue ref="instance('control-instance')/api-key-accepted"
-						if="not(instance('flickr-response')/@stat = 'ok') and string-length(instance('config')/flickr_api_key) &gt; 0" value="'false'"/>
+					<xforms:setvalue ref="instance('control-instance')/api-key-accepted" if="not(instance('flickr-response')/@stat = 'ok') and string-length(instance('config')/flickr_api_key) &gt; 0"
+						value="'false'"/>
 
 					<!-- activate button if the api key is okay or blank -->
-					<xforms:setvalue ref="instance('control-instance')/api-key-accepted"
-						if="instance('flickr-response')/@stat = 'ok' or string-length(instance('config')/flickr_api_key) = 0" value="'true'"/>
+					<xforms:setvalue ref="instance('control-instance')/api-key-accepted" if="instance('flickr-response')/@stat = 'ok' or string-length(instance('config')/flickr_api_key) = 0"
+						value="'true'"/>
 				</xforms:action>
 			</xforms:submission>
 
 			<!-- load eaditor config file on xforms construction -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:send submission="load-config"/>
-
-				<!-- set facets instance -->
-				<xforms:action xxforms:iterate="tokenize(instance('config')/theme/facets, ',')">
-					<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')"/>
-					<xforms:setvalue ref="instance('facets')/facet[last()]" value="context()"/>
-				</xforms:action>
+				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+				<xforms:send submission="load-collections"/>
 			</xforms:action>
 		</xforms:model>
 	</head>
@@ -361,13 +344,17 @@
 												<xforms:label>URL</xforms:label>
 												<xforms:alert>Required</xforms:alert>
 											</xforms:input>
-											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the
-												public and private aspects of EADitor be contained on different servers.</p>
+											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor be
+												contained on different servers.</p>
 										</div>
+										<!--<xforms:group ref="banner_image">
+										<numishare:banner-upload/>
+										</xforms:group>-->
 									</div>
-									<!--<div class="section">
+									<div class="section">
 										<h3>ARK</h3>
-										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"/></p>
+										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output
+												value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"/></p>
 										<div>
 											<xforms:input ref="ark/@enabled">
 												<xforms:label>Enabled</xforms:label>
@@ -379,15 +366,14 @@
 												<xforms:alert>Must be a 5-digit ARK number.</xforms:alert>
 											</xforms:input>
 										</div>
-									</div>-->
+									</div>
 									<div class="section">
 										<h3>Export</h3>
 										<div class="subsection">
 											<h4>OAI-PMH</h4>
-											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD
-												granularity. <b>Important: </b> Validation only passes if EADitor is run on an external server (i.e., not
-												localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier is derived from
-												the URL on this settings page.</p>
+											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only
+												passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier
+												is derived from the URL on this settings page.</p>
 											<div>
 												<xforms:input ref="export/oai-pmh">
 													<xforms:label>Enabled</xforms:label>
@@ -410,8 +396,8 @@
 										</div>
 										<div class="subsection">
 											<h4>Pelagios</h4>
-											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will
-												only contain RDF documents for objects which have been tied to Pleiades IDs.</p>
+											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF documents for objects
+												which have been tied to Pleiades IDs.</p>
 											<div>
 												<xforms:input ref="export/pelagios">
 													<xforms:label>Enabled</xforms:label>
@@ -464,15 +450,13 @@
 												<xforms:label>flickr API Key</xforms:label>
 												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"/>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take
-												advantage of flickr image linking.</p>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
 										</div>
 										<div>
 											<xforms:input ref="flickr_api_secret" incremental="true">
 												<xforms:label>flickr API Secret</xforms:label>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert
-												tags through EADitor.</p>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
 										</div>
 										<div>
 											<xforms:input ref="geonames_api_key" incremental="true">
@@ -513,13 +497,11 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<img src="/apps/eaditor/xforms/images/add.gif"/>Facet </xforms:label>
-											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')"
-												ev:event="DOMActivate"/>
+											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')" ev:event="DOMActivate"/>
 										</xforms:trigger>
 									</span>
-									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An
-										invalid field will cause the browse and map pages to fail. Note that the order of the facets below dictates the order in
-										which they appear on the browse and maps pages.</p>
+									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will cause the browse and
+										map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
 									<xforms:repeat nodeset="instance('facets')/facet">
 										<xforms:var name="position" select="position()"/>
 										<div>
@@ -530,8 +512,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label><img alt="up" src="/eaditor/xforms/xbl/tree-view/images/up.gif"/></xforms:label>
 													<xforms:action ev:event="DOMActivate">
-														<xforms:insert context="instance('facets')" nodeset="facet[$position - 2]"
-															origin="instance('facets')/facet[$position]"/>
+														<xforms:insert context="instance('facets')" nodeset="facet[$position - 2]" origin="instance('facets')/facet[$position]"/>
 														<xforms:delete nodeset="."/>
 													</xforms:action>
 												</xforms:trigger>
@@ -540,8 +521,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label><img alt="down" src="/eaditor/xforms/xbl/tree-view/images/down.gif"/></xforms:label>
 													<xforms:action ev:event="DOMActivate">
-														<xforms:insert context="instance('facets')" nodeset="facet[$position+1]"
-															origin="instance('facets')/facet[$position]"/>
+														<xforms:insert context="instance('facets')" nodeset="facet[$position+1]" origin="instance('facets')/facet[$position]"/>
 														<xforms:delete nodeset="."/>
 													</xforms:action>
 												</xforms:trigger>

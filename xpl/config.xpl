@@ -11,11 +11,11 @@
 	<p:param type="output" name="data"/>
 
 	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="data" href="../exist-url.xml"/>
+		<p:input name="data" href="../exist-config.xml"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<xsl:template match="/">
-					<xsl:copy-of select="document(concat(/exist-url, 'eaditor/config.xml'))"/>
+					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/archer/config.xml'))"/>
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>
