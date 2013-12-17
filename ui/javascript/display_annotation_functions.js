@@ -47,10 +47,10 @@ $(document).ready(function () {
 		
 		//handle annotations
 		anno.makeAnnotatable(map);
-		anno.activateSelector();
+		/*anno.activateSelector();
 		anno.addHandler('onAnnotationCreated', function (annotation) {
 			console.log(annotation);
-		});
+		});*/
 		/*$("#map-annotate-button").livequery('click', function (event) {
 		anno.activateSelector();
 		});*/

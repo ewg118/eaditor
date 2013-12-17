@@ -27,6 +27,9 @@
 
 	<xsl:template name="facsimiles">
 		<div>
+			<button onclick="anno.activateSelector();" href="#">
+				ADD ANNOTATION
+			</button> 
 			<div>
 				<div id="annot"/>
 				<!--<a id="map-annotate-button" href="#">ADD ANNOTATION</a>-->
