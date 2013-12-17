@@ -20,7 +20,8 @@
 	<p:processor xmlns:xforms="http://www.w3.org/2002/xforms" name="oxf:request-security">
 		<p:input name="config">
 			<config>				
-				<role>admin</role>				
+				<role>admin</role>
+				<role>test</role>				
 			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>

@@ -79,7 +79,7 @@
 						<naan/>
 					</ark>
 					<export>
-						<oai-pmh>true</oai-pmh>
+						<oai-pmh>false</oai-pmh>
 						<pelagios>false</pelagios>
 					</export>
 					<theme>
@@ -333,9 +333,7 @@
 					</xforms:action>
 					<!-- set exist collection value for creating new collection-->
 					<xforms:setvalue ref="instance('xqueries')/query[@id='create-collection']"
-						value="concat(&quot;xmldb:create-collection(&#x0027;/db/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
-					<!-- set the delete all query -->
-					<xforms:setvalue ref="instance('deleteAll')/query" value="concat('collection-name:', instance('control-instance')/collection-name)"/>
+						value="concat(&quot;xmldb:create-collection(&#x0027;/db/eaditor/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
 					<xforms:send submission="load-config"/>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-config.xml is correct), create it -->
@@ -1075,10 +1073,40 @@
 
 
 		<!-- *************** FIRST RUN ***************-->
+		<!-- handle the creation of new collections when a new role has successfull logged in -->
+		<xforms:action ev:event="xforms-enabled" if="not(string(instance('control-instance')/collection-name))">
+			<xxforms:show dialog="create-collection"/>
+		</xforms:action>		
+		<xxforms:dialog id="create-collection" appearance="full" level="modal" close="false" draggable="true" visible="false">
+			<xforms:label>Welcome to Numishare</xforms:label>
+			<p>Please create a collection for your authenticated group.</p>
+			<xforms:group ref="instance('collections-list')">
+				<h3>
+					<xforms:output ref="instance('control-instance')/request-security/role"/>
+				</h3>
+				<div>
+					<xforms:input ref="collection[@role=instance('control-instance')/request-security/role]/@name">
+						<xforms:label>Collection Name</xforms:label>
+						<xforms:alert>Required</xforms:alert>
+					</xforms:input>
+				</div>
+			</xforms:group>
+			<xforms:trigger>
+				<xforms:label>Save</xforms:label>
+				<xforms:action ev:event="DOMActivate">
+					<xforms:setvalue ref="instance('control-instance')/collection-name"
+						value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+					<!-- set exist collection value for creating new collection-->
+					<xforms:setvalue ref="instance('xqueries')/query[@id='create-collection']"
+						value="concat(&quot;xmldb:create-collection(&#x0027;/db/eaditor/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
+					<xforms:send submission="save-collections"/>
+					<xxforms:hide dialog="create-collection"/>
+					<xxforms:show dialog="firstrun"/>
+				</xforms:action>
+			</xforms:trigger>
+		</xxforms:dialog>
+		
 		<!-- if this is the first time that EADitor has ever been run, show a dialog that enables the user to set the title and URLs -->
-		<xforms:action ev:event="xforms-enabled" if="instance('config-template')/firstrun = 'true'">
-			<xxforms:show dialog="firstrun"/>
-		</xforms:action>
 		<xxforms:dialog id="firstrun" appearance="full" level="modal" close="false" draggable="true" visible="false">
 			<xforms:label>Welcome to EADitor</xforms:label>
 			<p>This is the first time you have run EADitor.<br/>Please set the following fields (they can be changed later under "Settings")</p>
@@ -1102,18 +1130,6 @@
 						<xforms:alert>Required, must be a URL</xforms:alert>
 					</xforms:input>
 				</div>
-				<div>
-					<xforms:input ref="solr_unpublished">
-						<xforms:label>Unpublished</xforms:label>
-						<xforms:alert>Required, must be a URL</xforms:alert>
-					</xforms:input>
-				</div>
-				<div>
-					<xforms:input ref="solr_vocabularies">
-						<xforms:label>Vocabularies</xforms:label>
-						<xforms:alert>Required, must be a URL</xforms:alert>
-					</xforms:input>
-				</div>
 			</xforms:group>
 			<xforms:trigger>
 				<xforms:label>Save</xforms:label>
@@ -1122,7 +1138,7 @@
 					<xforms:send submission="save-config"/>
 					<xforms:send submission="save-ead-template"/>
 					<xforms:send submission="save-c-template"/>
-
+					
 					<!-- set value and add collection -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='create-collection']"/>
 					<xforms:send submission="add-collection"/>
