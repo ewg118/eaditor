@@ -29,7 +29,7 @@
 		<div>
 			<div>
 				<div id="annot"/>
-				<a id="map-annotate-button" href="#">ADD ANNOTATION</a>
+				<!--<a id="map-annotate-button" href="#">ADD ANNOTATION</a>-->
 			</div>
 
 			<div id="slider">
