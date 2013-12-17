@@ -495,7 +495,7 @@ button.ui-multiselect {
 #annot-parent {
 	position:relative;
 	width:50%;
-	height:600px;	
+	height:600px;
 }
 #annot {
 	background-color:white;
@@ -503,10 +503,15 @@ button.ui-multiselect {
 	height:600px;
 }
 #slider {
-	padding:20px;	
+	padding:20px;
 }
 .page-image {
-	margin:5px;	
+	margin:5px;
+}
+#image-container {
+	position: absolute;
+	visibility: hidden;
+	display: block
 }
 /*
   ***************************************

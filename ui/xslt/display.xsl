@@ -154,15 +154,16 @@
 				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
 					<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
+					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
 					<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/> 
 				</xsl:if>
 				<!-- jquery -->
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
+				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 				<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
 				<!-- include annotation functions for TEI files -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
-					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
 					<script type="text/javascript" src="{$display_path}ui/javascript/display_annotation_functions.js"/> 
 				</xsl:if>
 				

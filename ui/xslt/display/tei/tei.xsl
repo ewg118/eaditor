@@ -38,9 +38,9 @@
 			<span style="display:none" id="image-path">
 				<xsl:value-of select="concat($display_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
 			</span>
-			<img style="display:none" id="image-img" src="{$display_path}ui/media/thumbnail/{tei:facsimile[1]/tei:graphic/@url}.jpg"/>
-		</div>
-		<img src="{$display_path}ui/media/reference/{tei:facsimile[1]/tei:graphic/@url}.jpg" id="test"/>
+			<span id="image-container"/>
+			
+		</div>		
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile">
