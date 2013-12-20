@@ -21,7 +21,8 @@
 		<p:input name="config">
 			<config>				
 				<role>admin</role>
-				<role>test</role>				
+				<role>ngca</role>
+				<role>nyblhs</role>				
 			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>
