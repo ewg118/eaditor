@@ -31,7 +31,11 @@
 			</xs:schema>
 
 			<xforms:instance id="guide">
-				<ead id="" xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<eadheader langencoding="">
+						<eadid countrycode=""/>						
+					</eadheader>
+				</ead>
 			</xforms:instance>
 
 			<!-- exist URL is stored in an XML file -->
@@ -153,7 +157,7 @@
 								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 						</xforms:action>
 					</xforms:action>					
-					<xforms:setvalue ref="instance('guide')/@id" value="xxforms:get-request-parameter('guide')"/>
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="xxforms:get-request-parameter('guide')"/>
 					<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('component')"/>
 					<xforms:send submission="load-config"/>
 					<xforms:send submission="load-submission"/>
@@ -174,20 +178,20 @@
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 
 			<!-- load table of contents after loading the ead guide -->
-			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/{instance('guide')/@id}" replace="instance" instance="toc">
+			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/{instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load table of contents</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-submission" ref="instance('guide')"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/@id}.xml" method="put" replace="none"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
@@ -200,14 +204,14 @@
 
 			<!-- submission to query solr to see if the document is published -->
 
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/@id}&#x022;"
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/ead:eadheader/ead:eadid}&#x022;"
 				replace="instance" instance="is-published">
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="doc-to-solr"/>
 			</xforms:submission>
 
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('guide')/@id}.solr">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('guide')/ead:eadheader/ead:eadid}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
