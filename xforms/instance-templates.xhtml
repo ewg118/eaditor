@@ -28,17 +28,33 @@
 			<xforms:instance id="config">
 				<config xmlns=""/>
 			</xforms:instance>
+			
+			<xforms:instance id="control-instance">
+				<controls xmlns="">
+					<collection-name/>
+					<status/>
+					<query/>
+					<error/>
+					<formatted-result/>
+				</controls>
+			</xforms:instance>
+			
+			<!-- authentication -->
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="dump">
+				<dump xmlns=""/>
+			</xforms:instance>
 
+			<!-- templates -->
 			<xforms:instance id="agencycode-template" xxforms:exclude-result-prefixes="#all">
 				<agencycode value="" xmlns=""/>
 			</xforms:instance>
 
 			<xforms:instance id="container-template" xxforms:exclude-result-prefixes="#all">
 				<container value="" xmlns=""/>
-			</xforms:instance>
-
-			<xforms:instance id="status">
-				<status xmlns=""/>
 			</xforms:instance>
 
 			<xforms:instance id="temp-instance">
@@ -50,16 +66,6 @@
 				<exist:query xmlns="">
 					<exist:text>&lt;report> { for $foo in collection() return $foo//*[local-name()='eadid'] } &lt;/report></exist:text>
 				</exist:query>
-			</xforms:instance>
-
-			<xforms:instance id="control-instance">
-				<control xmlns="">
-					<term>eadid</term>
-					<resource>eaditor/guides/</resource>
-					<query/>
-					<error/>
-					<formatted-result/>
-				</control>
 			</xforms:instance>
 
 			<xforms:instance id="response-instance">
@@ -80,8 +86,40 @@
 			<xforms:bind id="agencycodes-tab" nodeset="instance('config')/templates/agencycodes"/>
 			<xforms:bind id="containertypes-tab" nodeset="instance('config')/templates/containertypes"/>
 
-			<!-- submit query to eXist -->
-			<xforms:submission id="agencycodes-submission" ref="instance('agencycodes-instance')" action="{instance('exist-config')/url}{instance('control-instance')/resource}" method="post"
+			<!-- authentication and config submissions -->
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<!-- if the config loads successfully, set the collection names based on authentication -->
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- set default if security is false -->
+					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
+						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+					</xforms:action>
+					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
+					<xforms:action if="string(instance('control-instance')/request-security/role)">
+						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
+							<xforms:setvalue ref="instance('control-instance')/collection-name"
+								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+						</xforms:action>
+					</xforms:action>
+					<xforms:send submission="load-config"/>
+				</xforms:action>
+				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
+			</xforms:submission>
+			
+			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
+				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
+			</xforms:submission>
+			
+			<!-- xqueries -->
+			<xforms:submission id="agencycodes-submission" ref="instance('agencycodes-instance')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides" method="post"
 				replace="instance" instance="response-instance">
 				<xforms:insert nodeset="instance('temp-instance')" ev:event="xforms-submit-done"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-agencycodes.xpl', 'data', instance('response-instance'), 'data')"/>
@@ -92,19 +130,12 @@
 				</xforms:action>
 			</xforms:submission>
 
-			<!-- error report -->
-			<xforms:setvalue ev:event="xforms-submit-error" ref="instance('control-instance')/error" value="event('response-body')"/>
-
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config. Is eXist operational?</xforms:message>
-			</xforms:submission>
-			
-			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/config.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
-				<xforms:setvalue ref="instance('status')" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
-			</xforms:submission>
-
-			<xforms:send ev:event="xforms-model-construct-done" submission="load-config"/>
+			<!-- ************************ xforms-model-construct-done ****************************** -->
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+				<xforms:send submission="load-collections"/>
+			</xforms:action>
 		</xforms:model>
 	</head>
 	<body>
@@ -114,9 +145,9 @@
 					<xforms:var name="display_path">../../</xforms:var>
 					<xi:include href="header.xml"/>
 					
-					<xforms:group ref="instance('status')/text()">
+					<xforms:group ref="instance('control-instance')/status/text()">
 						<div class="success">
-							<xforms:output ref="instance('status')"/>
+							<xforms:output ref="instance('control-instance')/status"/>
 						</div>
 					</xforms:group>
 					<p>
@@ -180,12 +211,12 @@
 									<img src="/apps/eaditor/xforms/images/add.gif"/>New Container</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('container-template')"/>
 							</xforms:trigger>
-							<xforms:trigger appearance="minimal">
+							<!--<xforms:trigger appearance="minimal">
 								<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Container Types</xforms:label>
 								<xforms:action ev:event="DOMActivate">
 									<xforms:send submission="containertypes-submission"/>
 								</xforms:action>
-							</xforms:trigger>
+							</xforms:trigger>-->
 							<xforms:repeat nodeset="container">
 								<div class="pair_div">
 									<div>
