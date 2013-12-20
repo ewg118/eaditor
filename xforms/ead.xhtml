@@ -31,7 +31,11 @@
 			</xs:schema>
 
 			<xforms:instance id="guide">
-				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" id=""/>
+				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<eadheader langencoding="">
+						<eadid countrycode=""/>						
+					</eadheader>
+				</ead>
 			</xforms:instance>
 
 			<!-- exist URL is stored in an XML file -->
@@ -195,7 +199,7 @@
 
 			<xforms:bind node="instance('guide')">
 				<xforms:bind nodeset="//*/@id" type="xs:ID"/>
-				<xforms:bind nodeset="@id" required="true()"/>
+				<!--<xforms:bind nodeset="@id" required="true()"/>-->
 				<xforms:bind nodeset="ead:eadheader">
 					<xforms:bind nodeset="ead:eadid">
 						<xforms:bind constraint="string-length(.) &gt; 0"/>
@@ -288,7 +292,7 @@
 					<xforms:send submission="load-c-template"/>
 					<!-- if there is a guide parameter, load existing finding aid -->
 					<xforms:action if="string(xxforms:get-request-parameter('guide'))">
-						<xforms:setvalue ref="instance('guide')/@id" value="xxforms:get-request-parameter('guide')"/>
+						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="xxforms:get-request-parameter('guide')"/>
 						<xforms:send submission="load-submission"/>
 					</xforms:action>
 					<!-- if not, load ead template -->
@@ -307,19 +311,19 @@
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/@id}.xml" replace="instance" instance="guide"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 			<!-- load table of contents after loading the ead guide -->
-			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/{instance('guide')/@id}" replace="instance" instance="toc">
+			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/{instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load table of contents</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-submission" ref="instance('guide')"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/@id}.xml" method="put" replace="none"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
@@ -331,13 +335,13 @@
 				</xforms:action>
 			</xforms:submission>
 			<!-- submission to query solr to see if the document is published -->
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/@id}&#x022;"
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/ead:eadheader/ead:eadid}&#x022;"
 				replace="instance" instance="is-published">
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="doc-to-solr"/>
 			</xforms:submission>
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('guide')/@id}.solr">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('guide')/ead:eadheader/ead:eadid}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
@@ -477,10 +481,9 @@
 				<div class="content">
 					<div id="form">
 						<div>
-							<xforms:input ref="instance('guide')/@id">
-								<xforms:label>Document ID</xforms:label>
+							<xforms:input ref="instance('guide')/ead:eadheader/ead:eadid">
+								<xforms:label>EAD ID</xforms:label>
 								<xforms:alert>The id is required</xforms:alert>
-								<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="instance('guide')/@id" ev:event="xforms-value-changed"/>
 							</xforms:input>
 						</div>
 						<fr:tabview>
@@ -516,12 +519,12 @@
 										</xforms:group>
 									</xxforms:dialog>
 									<div class="section">
-										<div>
+										<!--<div>
 											<xforms:input ref="ead:eadid">
 												<xforms:label>EAD ID</xforms:label>
 												<xforms:alert>EAD ID required</xforms:alert>
 											</xforms:input>
-										</div>
+										</div>-->
 										<xforms:group ref=".[count(ead:eadid/@mainagencycode) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
@@ -1091,11 +1094,11 @@
 									<eaditor:c/>
 								</xforms:repeat>
 							</fr:tab>
-							<!--<fr:tab id="preview">
+							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>-->
+							</fr:tab>
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>

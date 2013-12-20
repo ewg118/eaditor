@@ -481,7 +481,7 @@ button.ui-multiselect {
   TEI Display
   ***************************************
  */
-#map-annotate-button {
+/*#map-annotate-button {
 	position:absolute;
 	top:3px;
 	right:3px;
@@ -491,7 +491,7 @@ button.ui-multiselect {
 	z-index:10000;
 	font-size:11px;
 	text-decoration:none;
-}
+}*/
 #annot-parent {
 	position:relative;
 	width:50%;

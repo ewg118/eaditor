@@ -9,7 +9,7 @@
 	</xsl:template>
 	
 	<xsl:template match="ead:ead">
-		<dsc id="{/ead:ead/@id}" title="{/ead:ead/ead:archdesc/ead:did/ead:unittitle}">
+		<dsc id="{/ead:ead/ead:eadheader/ead:eadid}" title="{/ead:ead/ead:archdesc/ead:did/ead:unittitle}">
 			<xsl:apply-templates select="//ead:dsc/ead:c"/>
 		</dsc>
 	</xsl:template>

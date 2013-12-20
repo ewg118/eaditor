@@ -141,7 +141,7 @@
 
 			<!-- templates -->
 			<xforms:instance id="ead-template">
-				<ead id="" xmlns="urn:isbn:1-931666-22-9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
 					xsi:schemaLocation="urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd">
 					<eadheader langencoding="iso639-2b">
 						<eadid countrycode="US"/>
@@ -201,7 +201,7 @@
 						&lt;type>{ lower-case($type) }&lt;/type> &lt;id>{ data($record/*[local-name()='TEI']/@xml:id) }&lt;/id> &lt;title>{
 						$record//*[local-name()='titleStmt']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> else '' } &lt;/report> </query>
 					<query id="create-collection"/>
-					<query id="publish-ead">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='ead']]) then &lt;item> { $foo/*[local-name()='ead']/@id } &lt;/item> else
+					<query id="publish-ead">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='ead']]) then &lt;item> { data($foo//*[local-name()='eadid']) } &lt;/item> else
 						'' } &lt;/report></query>
 					<query id="publish-mods">&lt;report xmlns:mods="http://www.loc.gov/mods/v3"> { for $foo in collection() return if($foo[child::node()[local-name()='modsCollection']]) then &lt;item>
 						{ $foo/*[local-name()='modsCollection']/*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier'] } &lt;/item> else '' } &lt;/report></query>
@@ -976,8 +976,7 @@
 					<xforms:send submission="xquery-collection"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
-						<xforms:var name="id" select="@id"/>
-						<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>
+						<xforms:setvalue ref="instance('control-instance')/id" value="context(.)"/>
 						<xforms:send submission="doc-to-solr"/>
 					</xforms:action>
 					<!-- commit index -->
