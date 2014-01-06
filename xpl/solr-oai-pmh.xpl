@@ -9,39 +9,40 @@
 
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
-	
+
 	<p:processor name="oxf:request">
 		<p:input name="config">
 			<config>
-				<include>/request/parameters</include>
+				<include>/request</include>
 			</config>
 		</p:input>
-		<p:output name="data" id="params"/>
+		<p:output name="data" id="request"/>
 	</p:processor>
-	
+
 	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="config.xpl"/>		
+		<p:input name="config" href="config.xpl"/>
 		<p:output name="data" id="config"/>
 	</p:processor>
 
 	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="params" href="#params"/>
+		<p:input name="request" href="#request"/>
 		<p:input name="data" href="#config"/>
 		<p:input name="config">
-			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">				
+			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 				<!-- request params -->
-				<xsl:param name="verb" select="doc('input:params')/request/parameters/parameter[name='verb']/value"/>
-				<xsl:param name="metadataPrefix" select="doc('input:params')/request/parameters/parameter[name='metadataPrefix']/value"/>
-				<xsl:param name="set" select="doc('input:params')/request/parameters/parameter[name='set']/value"/>
-				<xsl:param name="identifier" select="doc('input:params')/request/parameters/parameter[name='identifier']/value"/>
-				<xsl:param name="from" select="doc('input:params')/request/parameters/parameter[name='from']/value"/>
-				<xsl:param name="until" select="doc('input:params')/request/parameters/parameter[name='until']/value"/>
-				<xsl:param name="resumptionToken" select="doc('input:params')/request/parameters/parameter[name='resumptionToken']/value"/>
-				
+				<xsl:param name="verb" select="doc('input:request')/request/parameters/parameter[name='verb']/value"/>
+				<xsl:param name="metadataPrefix" select="doc('input:request')/request/parameters/parameter[name='metadataPrefix']/value"/>
+				<xsl:param name="set" select="doc('input:request')/request/parameters/parameter[name='set']/value"/>
+				<xsl:param name="identifier" select="doc('input:request')/request/parameters/parameter[name='identifier']/value"/>
+				<xsl:param name="from" select="doc('input:request')/request/parameters/parameter[name='from']/value"/>
+				<xsl:param name="until" select="doc('input:request')/request/parameters/parameter[name='until']/value"/>
+				<xsl:param name="resumptionToken" select="doc('input:request')/request/parameters/parameter[name='resumptionToken']/value"/>
+
 				<!-- validate from, until, resumptionToken -->
 				<xsl:variable name="from-validate" as="xs:boolean" select="$from castable as xs:date"/>
-				<xsl:variable name="until-validate" as="xs:boolean" select="$until castable as xs:date"/>				
-				
+				<xsl:variable name="until-validate" as="xs:boolean" select="$until castable as xs:date"/>
+
 				<!-- config variables -->
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
@@ -66,11 +67,11 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
-								
+
 				<xsl:variable name="service">
-					<xsl:value-of select="concat($solr-url, '?q=', $q, '&amp;sort=timestamp%20desc&amp;rows=10000')"/>
+					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', $q, '&amp;sort=timestamp%20desc&amp;rows=10000')"/>
 				</xsl:variable>
-				
+
 				<xsl:template match="/">
 					<xsl:copy-of select="document($service)/response"/>
 				</xsl:template>
