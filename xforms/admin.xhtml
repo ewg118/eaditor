@@ -979,7 +979,7 @@
 					<xforms:send submission="xquery-collection"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
-						<xforms:setvalue ref="instance('control-instance')/id" value="context(.)"/>
+						<xforms:setvalue ref="instance('control-instance')/id" value="context()"/>
 						<xforms:send submission="doc-to-solr"/>
 					</xforms:action>
 					<!-- commit index -->
