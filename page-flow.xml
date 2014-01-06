@@ -42,7 +42,7 @@
 	<page path="/eaditor/admin/test/" view="xforms/test.xhtml"/>
 	<!-- dsc navigation service for forms via ajax -->
 	<page path="/eaditor/admin/navigation/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/navigation.xpl"/>
-	<page path="/eaditor/admin/toc/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/toc.xpl"/>
+	<page path="/eaditor/admin/toc/" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
 	<page path="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
@@ -56,59 +56,61 @@
 	<!-- ****************
 	* PUBLIC INTERFACE *
 	***************** -->
-	<page path="/eaditor/config.xml" view="xpl/config.xpl"/>
+	<page path="/eaditor/[^\/]+/config.xml" matcher="oxf:perl5-matcher" view="xpl/config.xpl"/>
 
 	<!-- public xml view (internal elements supressed) -->
-	<page path="/eaditor/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
 
 	<!-- RDF serialization -->
-	<page path="/eaditor/id/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>
 
 	<!-- Object KML -->
-	<page path="/eaditor/id/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/object-to-kml.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/object-to-kml.xpl"/>
 
 	<!-- solr doc service -->
-	<page path="/eaditor/id/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
 
 	<!-- public html view -->
-	<page path="/eaditor/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
 	
 	<!-- ARK URIs -->
-	<page path="/eaditor/ark:/([0-9]{5})/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
-	<page path="/eaditor/ark:/([0-9]{5})/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/object-to-kml.xpl"/>
-	<page path="/eaditor/ark:/([0-9]{5})/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>
-	<page path="/eaditor/ark:/([0-9]{5})/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
-	<page path="/eaditor/ark:/([0-9]{5})/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
-	
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-public.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/object-to-kml.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.rdf" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/rdf.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/publish.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-public.xpl" view="xpl/display.xpl"/>
 
-	<!-- index -->
-	<page path="/eaditor/" model="xpl/config.xpl" view="xpl/index.xpl"/>
+	<!-- index -->	
+	<page path="/eaditor/[^\/]+/" matcher="oxf:perl5-matcher" model="xpl/config.xpl" view="xpl/index.xpl"/>
 
 	<!-- public search/browse interface -->
-	<page path="/eaditor/results/" model="xpl/solr-results.xpl" view="xpl/results.xpl"/>
-	<page path="/eaditor/search/" model="xpl/config.xpl" view="xpl/search.xpl"/>
-	<page path="/eaditor/maps/" model="xpl/solr-maps.xpl" view="xpl/maps.xpl"/>
-	<page path="/eaditor/maps/fullscreen" model="xpl/solr-maps.xpl" view="xpl/maps-fullscreen.xpl"/>
+	<page path="/eaditor/[^\/]+/results/" matcher="oxf:perl5-matcher" model="xpl/solr-results.xpl" view="xpl/results.xpl"/>
+	<page path="/eaditor/[^\/]+/search/" matcher="oxf:perl5-matcher" model="xpl/config.xpl" view="xpl/search.xpl"/>
+	<page path="/eaditor/[^\/]+/maps/" matcher="oxf:perl5-matcher" model="xpl/solr-maps.xpl" view="xpl/maps.xpl"/>
+	<page path="/eaditor/[^\/]+/maps/fullscreen" matcher="oxf:perl5-matcher" model="xpl/solr-maps.xpl" view="xpl/maps-fullscreen.xpl"/>
 
 	<!-- Atom feed -->
-	<page path="/eaditor/feed/" model="xpl/solr-feed.xpl" view="xpl/feed.xpl"/>
+	<page path="/eaditor/[^\/]+/feed/" matcher="oxf:perl5-matcher" model="xpl/solr-feed.xpl" view="xpl/feed.xpl"/>
 
 	<!-- OAI-PMH feed -->
-	<page path="/eaditor/oai/" model="xpl/solr-oai-pmh.xpl" view="xpl/oai-pmh.xpl"/>
+	<page path="/eaditor/[^\/]+/oai/" matcher="oxf:perl5-matcher" model="xpl/solr-oai-pmh.xpl" view="xpl/oai-pmh.xpl"/>
 
 	<!-- Pelagios -->
-	<page path="/eaditor/pelagios.void.rdf" model="xpl/config.xpl" view="xpl/void.xpl"/>
-	<page path="/eaditor/pelagios.rdf" model="xpl/solr-pelagios.xpl" view="xpl/pelagios.xpl"/>
+	<page path="/eaditor/[^\/]+/pelagios.void.rdf" matcher="oxf:perl5-matcher" model="xpl/config.xpl" view="xpl/void.xpl"/>
+	<page path="/eaditor/[^\/]+/pelagios.rdf" matcher="oxf:perl5-matcher" model="xpl/solr-pelagios.xpl" view="xpl/pelagios.xpl"/>
 
 	<!-- KML service -->
-	<page path="/eaditor/query.kml" model="xpl/solr-kml.xpl" view="xpl/kml.xpl"/>
+	<page path="/eaditor/[^\/]+/query.kml" matcher="oxf:perl5-matcher" model="xpl/solr-kml.xpl" view="xpl/kml.xpl"/>
 
 	<!-- AJAX CALLS -->
 	<!-- facet results -->
-	<page path="/eaditor/get_facets/" model="xpl/solr-get_facets.xpl" view="xpl/get_facets.xpl"/>
+	<page path="/eaditor/[^\/]+/get_facets/" matcher="oxf:perl5-matcher" model="xpl/solr-get_facets.xpl" view="xpl/get_facets.xpl"/>
 	<!-- decades results for nested checkbox -->
-	<page path="/eaditor/get_decades/" model="xpl/solr-get_decades.xpl" view="xpl/get_decades.xpl"/>
-	<page path="/eaditor/results_ajax/" model="xpl/solr-results_ajax.xpl" view="xpl/results_ajax.xpl"/>
+	<page path="/eaditor/[^\/]+/get_decades/" matcher="oxf:perl5-matcher" model="xpl/solr-get_decades.xpl" view="xpl/get_decades.xpl"/>
+	<page path="/eaditor/[^\/]+/results_ajax/" matcher="oxf:perl5-matcher" model="xpl/solr-results_ajax.xpl" view="xpl/results_ajax.xpl"/>
+	
+	<!-- EADitor public interface root page -->
+	<page path="/eaditor/" view="xpl/root.xpl"/>
 
 	<epilogue url="oxf:/config/epilogue.xpl"/>
 </config>

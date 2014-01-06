@@ -10,7 +10,7 @@
 					</div>
 				</xsl:if>
 				<xsl:if test="string(//config/banner_image/@xlink:href)">
-					<img src="{$display_path}ui/images/{//config/banner_image/@xlink:href}" alt="banner image"/>
+					<img src="{$include_path}ui/images/{//config/banner_image/@xlink:href}" alt="banner image"/>
 				</xsl:if>
 			</div>
 			<ul role="menubar" id="menu">

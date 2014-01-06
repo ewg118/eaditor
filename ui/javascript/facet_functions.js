@@ -134,7 +134,7 @@ function getDate() {
 	return date_query;
 };
 
-function dateLabel() {
+function dateLabel() {	
 	var title = $('#century_num_link').attr('title');
 	if (title.indexOf(':') > 0){
 		title = title.split(':')[0];

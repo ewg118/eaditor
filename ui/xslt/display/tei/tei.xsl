@@ -55,8 +55,8 @@
 
 	<xsl:template match="tei:facsimile">
 		<span class="page-image" id="{@xml:id}">
-			<a href="{$display_path}ui/media/archive/{tei:graphic/@url}.jpg" title="{tei:graphic/@n}">
-				<img src="{$display_path}ui/media/thumbnail/{tei:graphic/@url}.jpg" alt="{tei:graphic/@n}"/>
+			<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" title="{tei:graphic/@n}">
+				<img src="{$include_path}ui/media/thumbnail/{tei:graphic/@url}.jpg" alt="{tei:graphic/@n}"/>
 			</a>
 		</span>
 	</xsl:template>

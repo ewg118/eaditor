@@ -58,11 +58,26 @@
 								
 				<xsl:variable name="service">
 					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"/>
+						<!-- handle the value of the q parameter or pass *:* as a default when q is not specified -->
+						<xsl:when test="string($q)">
+							<xsl:choose>
+								<xsl:when test="string($sort)">
+									<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+							<xsl:choose>
+								<xsl:when test="string($sort)">
+									<xsl:value-of select="concat($solr-url, '?q=*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($solr-url, '?q=*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>

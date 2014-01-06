@@ -723,27 +723,27 @@
 								<xsl:choose>
 									<xsl:when test="@source='geonames'">
 										<a href="http://www.geonames.org/{@authfilenumber}" target="_blank" title="Geonames" rel="dcterms:coverage">
-											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
+											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='pleiades'">
 										<a href="http://pleiades.stoa.org/places/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
-											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
+											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='lcsh'">
 										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCSH" rel="dcterms:subject">
-											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
+											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='lcgft'">
 										<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCGFT" rel="dcterms:format">
-											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
+											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 									<xsl:when test="@source='viaf'">
 										<a href="http://viaf.org/viaf/{@authfilenumber}" target="_blank" title="VIAF" rel="arch:correspondedWith">
-											<img src="{$display_path}ui/images/external.png" alt="external link" class="external_link"/>
+											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 										</a>
 									</xsl:when>
 								</xsl:choose>

@@ -5,6 +5,7 @@
 
 	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path"/>
+	<xsl:variable name="include_path">../</xsl:variable>
 
 	<xsl:template match="/">
 		<html>
@@ -14,20 +15,20 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -76,17 +77,17 @@
 					</div>
 					<div id="linked_data">
 						<h3>Linked Data</h3>
-						<a href="{$display_path}feed/?q=*:*">
-							<img src="{$display_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
+						<a href="feed/?q=*:*">
+							<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
 						<xsl:if test="/config/export/oai-pmh='true'">
-							<a href="{$display_path}oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead">
-								<img src="{$display_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
+							<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead">
+								<img src="{$include_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
 							</a>
 						</xsl:if>
 						<xsl:if test="/config/export/pelagios='true'">
-							<a href="{$display_path}pelagios.void.rdf">
-								<img src="{$display_path}ui/images/pelagios_icon.png" title="Pelagios" alt="Pelagios"/>
+							<a href="pelagios.void.rdf">
+								<img src="{$include_path}ui/images/pelagios_icon.png" title="Pelagios" alt="Pelagios"/>
 							</a>
 						</xsl:if>
 					</div>

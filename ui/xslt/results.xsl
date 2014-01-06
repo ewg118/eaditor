@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	exclude-result-prefixes="#all" version="2.0">
-	<xsl:output method="xhtml" encoding="UTF-8" indent="yes"/>
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
@@ -16,6 +15,7 @@
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
+	<xsl:variable name="include_path">../../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
@@ -46,36 +46,36 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
 
 				<!-- page js/style -->
-				<link rel="stylesheet" href="{$display_path}ui/css/jquery.multiselect.css"/>
-				<link rel="stylesheet" href="{$display_path}ui/css/jquery.fancybox-1.3.4.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/jquery.multiselect.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox-1.3.4.css"/>
 
-				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.multiselect.min.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.multiselectfilter.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
-
-
-				<script type="text/javascript" src="{$display_path}ui/javascript/get_facets.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/facet_functions.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/result_map_functions.js"/>
-				<!--<script type="text/javascript" src="{$display_path}ui/javascript/quick_search.js"/>-->
-				<script type="text/javascript" src="{$display_path}ui/javascript/sort_results.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselect.min.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselectfilter.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
+				
+				<script type="text/javascript" src="{$include_path}ui/javascript/get_facets.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/facet_functions.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/result_map_functions.js"/>
+				
+				<!--<script type="text/javascript" src="{$include_path}ui/javascript/quick_search.js"/>-->
+				<script type="text/javascript" src="{$include_path}ui/javascript/sort_results.js"/>
 				<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
 				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
 				<!--<xsl:copy-of select="/content/config/google_analytics/*"/>-->
@@ -123,11 +123,11 @@
 						<div class="data_options">
 							<h3>Data Options</h3>
 							<a href="{$display_path}feed/?q=*:*">
-								<img alt="Atom" title="Atom" src="{$display_path}ui/images/atom-medium.png"/>
+								<img alt="Atom" title="Atom" src="{$include_path}ui/images/atom-medium.png"/>
 							</a>
 							<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
 								<a href="{$display_path}query.kml?q={$q}">
-									<img src="{$display_path}ui/images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
+									<img src="{$include_path}ui/images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
 								</a>
 							</xsl:if>
 						</div>
@@ -664,7 +664,7 @@
 							<xsl:for-each select="int">
 								<li>
 									<span class="expand_century" century="{@name}" q="{$q}">
-										<img src="{$display_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
+										<img src="{$include_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
 									</span>
 									<xsl:choose>
 										<xsl:when test="contains($q, concat(':',@name))">
@@ -677,11 +677,11 @@
 									<!-- output for 1800s, 1900s, etc. -->
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
 									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
-										<xsl:if test="contains($q, concat(':',@name))">
+										<!--<xsl:if test="contains($q, concat(':',@name))">
 											<xsl:copy-of
 												select="document(concat($request-uri, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"
 											/>
-										</xsl:if>
+										</xsl:if>-->
 									</ul>
 								</li>
 							</xsl:for-each>
@@ -691,11 +691,11 @@
 				<xsl:otherwise>
 					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}"
 						new_query="{if (contains($q, @name)) then $select_new_query else ''}" style="width:180px">
-						<xsl:if test="contains($q, @name)">
+						<!--<xsl:if test="contains($q, @name)">
 							<xsl:copy-of
 								select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"
 							/>
-						</xsl:if>
+						</xsl:if>-->
 					</select>
 				</xsl:otherwise>
 			</xsl:choose>

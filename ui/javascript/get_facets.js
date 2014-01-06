@@ -14,7 +14,11 @@ $(document).ready(function() {
 	} else {
 		var lang = langStr;
 	}
-	dateLabel();
+	
+	//set date label if there is a date facet
+	if ($('#century_num_link').length != 0){
+		dateLabel();
+	}
 	
 	//set hierarchical labels on load
 	$('.hierarchical-facet').each(function(){
