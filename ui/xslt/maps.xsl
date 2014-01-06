@@ -8,6 +8,7 @@
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>	
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
+	<xsl:variable name="include_path">../../</xsl:variable>
 	<xsl:variable name="pipeline">maps</xsl:variable>
 
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
@@ -23,38 +24,38 @@
 				</title>
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
 
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
 
 				<!-- map functions -->
 				<xsl:if test="/content//result[@name='response']/@numFound &gt; 0">
 					<!-- fancybox -->
-					<link rel="stylesheet" href="{$display_path}ui/css/jquery.fancybox-1.3.4.css"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox-1.3.4.css"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
 
 					<!-- multselect -->
-					<link rel="stylesheet" href="{$display_path}ui/css/jquery.multiselect.css"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.multiselect.min.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.multiselectfilter.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/jquery.multiselect.css"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselect.min.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselectfilter.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
 
 					<!-- maps -->
 					<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"/>
 					<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/maps_functions.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/facet_functions.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/maps_functions.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/facet_functions.js"/>
 				</xsl:if>
 			</head>
 			<body>
@@ -160,7 +161,7 @@
 							<xsl:for-each select="int">
 								<li>
 									<span class="expand_century" century="{@name}" q="{$q}">
-										<img src="{$display_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
+										<img src="{$include_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
 									</span>
 									<xsl:choose>
 										<xsl:when test="contains($q, concat(':',@name))">

@@ -317,7 +317,7 @@
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 			<!-- load table of contents after loading the ead guide -->
-			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/{instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
+			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/?collection={instance('control-instance')/collection-name}&amp;guide={instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load table of contents</xforms:message>
 			</xforms:submission>
 

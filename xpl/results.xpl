@@ -30,5 +30,19 @@
 		<p:input name="data" href="aggregate('content', #data, #config)"/>		
 		<p:input name="config" href="../ui/xslt/results.xsl"/>
 		<p:output name="data" ref="data"/>
+		<!--<p:output name="data" id="model"/>-->
 	</p:processor>
+	
+	<!--<p:processor name="oxf:html-serializer">
+		<p:input name="data" href="#model"/>
+		<p:input name="config">
+			<config>
+				<public-doctype>-//W3C//DTD HTML 4.01//EN</public-doctype>
+				<system-doctype>http://www.w3.org/TR/html4/strict.dtd</system-doctype>
+				<omit-xml-declaration>false</omit-xml-declaration>
+				<content-type>application/xhtml+xml</content-type>
+			</config>
+		</p:input>
+		<p:output name="data" ref="data"/>
+	</p:processor>-->
 </p:config>

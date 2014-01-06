@@ -108,6 +108,44 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	<xsl:variable name="include_path">
+		<xsl:choose>
+			<xsl:when test="$mode='private'">
+				<xsl:choose>
+					<xsl:when test="string($id)">
+						<xsl:text>../../../../</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>../../../</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="contains($uri, 'ark:/')">
+						<xsl:choose>
+							<xsl:when test="string($id)">
+								<xsl:text>../../../../</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>../../</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+							<xsl:when test="string($id)">
+								<xsl:text>../../../</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>../../</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
@@ -149,8 +187,8 @@
 
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$display_path}ui/css/themes/{$ui-theme}.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
 				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
 					<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
@@ -160,33 +198,33 @@
 				<!-- jquery -->
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"/>
 				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/display_functions.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
 				<!-- include annotation functions for TEI files -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
-					<script type="text/javascript" src="{$display_path}ui/javascript/jquery.livequery.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/display_annotation_functions.js"/> 
+					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/display_annotation_functions.js"/> 
 				</xsl:if>
 				
 				<!-- menu -->
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$display_path}ui/javascript/menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
 
 				<xsl:if test="$hasPoints = true()">
 					<!-- mapping -->
-					<link type="text/css" href="{$display_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>
+					<!--<link type="text/css" href="{$include_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>-->
 					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/mxn.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/timeline-2.3.0.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/timemap_full.pack.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/param.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/xml.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/loaders/kml.js"/>
-					<script type="text/javascript" src="{$display_path}ui/javascript/display_map_functions.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/mxn.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/timeline-2.3.0.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/timemap_full.pack.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/param.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/loaders/xml.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/loaders/kml.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/display_map_functions.js"/>
 				</xsl:if>			
 			</head>
 			<body>

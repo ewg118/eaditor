@@ -13,7 +13,7 @@
 	<p:processor name="oxf:request">
 		<p:input name="config">
 			<config>
-				<include>/request/request-url</include>
+				<include>/request</include>
 			</config>
 		</p:input>
 		<p:output name="data" id="request"/>
@@ -34,6 +34,7 @@
 						<xsl:include href="../ui/xslt/xml-public.xsl"/>
 						<xsl:output indent="yes"/>
 						<xsl:template match="/">
+							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 							<xsl:variable name="path">
 								<xsl:value-of select="substring-after(substring-after(doc('input:request')/request/request-url, 'ark:/'), '/')"/>
 							</xsl:variable>
@@ -42,7 +43,6 @@
 									<xsl:value-of select="substring-before(substring-after(doc('input:request')/request/request-url, 'ark:/'), '/')"/>
 								</xsl:if>
 							</xsl:variable>
-							
 							<!-- test to be sure naan in the URI matches that in the config -->
 							<xsl:choose>
 								<xsl:when test="/content/config/ark/naan = $naan">
@@ -93,11 +93,11 @@
 									<xsl:choose>
 										<xsl:when test="string($id)">
 											<ead xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9">
-												<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/archer/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
+												<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
 											</ead>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/archer/guides/', $doc, '.xml'))/*"/>
+											<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/*"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
@@ -131,6 +131,7 @@
 						<xsl:include href="../ui/xslt/xml-public.xsl"/>
 						<xsl:output indent="yes"/>
 						<xsl:template match="/">
+							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 							<xsl:variable name="path" select="substring-after(doc('input:request')/request/request-url, 'id/')"/>
 							<xsl:variable name="doc">
 								<xsl:choose>
@@ -179,11 +180,11 @@
 							<xsl:choose>
 								<xsl:when test="string($id)">
 									<ead xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9">
-										<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/archer/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
+										<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/descendant::ead:c[@id=$id]"/>
 									</ead>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/archer/guides/', $doc, '.xml'))/*"/>
+									<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/*"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							

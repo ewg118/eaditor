@@ -9,24 +9,14 @@
 
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
-	
-	<p:processor name="oxf:request">
-		<p:input name="config">
-			<config>
-				<include>/request</include>
-			</config>
-		</p:input>
-		<p:output name="data" id="request"/>
-	</p:processor>
 
-	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="request" href="#request"/>
+	<p:processor name="oxf:unsafe-xslt">		
 		<p:input name="data" href="../exist-config.xml"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-				<xsl:template match="/">
-					<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
-					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/config.xml'))"/>
+				<xsl:include href="../ui/xslt/root.xsl"/>
+				<xsl:template match="/">		
+					<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/collections-list.xml'))/collections"/>	
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>

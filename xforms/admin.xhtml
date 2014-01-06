@@ -482,7 +482,7 @@
 
 			<!-- ************************* Solr **************************8 -->
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/id/{instance('control-instance')/id}.solr">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="post-to-solr"/>
 			</xforms:submission>
@@ -928,9 +928,12 @@
 					</xforms:group>
 				</div>
 				<!-- instance inspector -->
-				<fr:xforms-inspector/>
+				<!--<fr:xforms-inspector/>-->
 			</div>
 			<div id="temp" style="display:none"/>
+			<span id="collection-name" style="visibility:hidden">
+				<xforms:output ref="instance('control-instance')/collection-name"/>
+			</span>
 		</div>
 
 		<!-- *************** DIALOGS ***************-->
