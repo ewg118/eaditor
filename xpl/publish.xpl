@@ -16,7 +16,17 @@
 		<p:output name="data" id="config"/>
 	</p:processor>
 	
+	<p:processor name="oxf:request">
+		<p:input name="config">
+			<config>
+				<include>/request</include>
+			</config>
+		</p:input>
+		<p:output name="data" id="request"/>
+	</p:processor>
+	
 	<p:processor name="oxf:unsafe-xslt">
+		<p:input name="request" href="#request"/>
 		<p:input name="data" href="aggregate('content', #config, #data)"/>		
 		<p:input name="config" href="../xforms/xslt/publish/publish.xsl"/>
 		<p:output name="data" ref="data"/>

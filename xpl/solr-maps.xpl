@@ -9,6 +9,15 @@
 
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
+	
+	<p:processor name="oxf:request">
+		<p:input name="config">
+			<config>
+				<include>/request</include>
+			</config>
+		</p:input>
+		<p:output name="data" id="request"/>
+	</p:processor>
 
 	<p:processor name="oxf:pipeline">
 		<p:input name="config" href="config.xpl"/>		
@@ -16,9 +25,11 @@
 	</p:processor>
 
 	<p:processor name="oxf:unsafe-xslt">
+		<p:input name="request" href="#request"/>
 		<p:input name="data" href="#config"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 				<xsl:variable name="facets">
 					<xsl:for-each select="tokenize(/config/theme/facets, ',')">
@@ -27,7 +38,7 @@
 					</xsl:for-each>
 				</xsl:variable>
 				<xsl:variable name="service">					
-					<xsl:value-of select="concat($solr-url, '?q=georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true', $facets)"/>
+					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true', $facets)"/>
 				</xsl:variable>
 				
 				<xsl:template match="/">

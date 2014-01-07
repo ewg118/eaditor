@@ -6,7 +6,7 @@
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
-
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
@@ -41,6 +41,9 @@
 				</field>
 				<field name="recordId">
 					<xsl:value-of select="mods:recordInfo/mods:recordIdentifier"/>
+				</field>
+				<field name="collection-name">
+					<xsl:value-of select="$collection-name"/>
 				</field>
 				<field name="oai_id">
 					<xsl:text>oai:</xsl:text>
@@ -151,6 +154,9 @@
 			</field>
 			<field name="recordId">
 				<xsl:value-of select="$recordId"/>
+			</field>
+			<field name="collection-name">
+				<xsl:value-of select="$collection-name"/>
 			</field>
 			<xsl:if test="local-name()='c'">
 				<field name="cid">
