@@ -41,20 +41,20 @@
 					<solr-core/>
 				</controls>
 			</xforms:instance>
-			
+
 			<!-- authentication -->
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
 				<collections xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="collection-template" xxforms:exclude-result-prefixes="#all">
 				<collection xmlns="" role="" name=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="dump">
 				<dump xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="config">
 				<config xmlns=""/>
 			</xforms:instance>
@@ -201,8 +201,8 @@
 						&lt;type>{ lower-case($type) }&lt;/type> &lt;id>{ data($record/*[local-name()='TEI']/@xml:id) }&lt;/id> &lt;title>{
 						$record//*[local-name()='titleStmt']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> else '' } &lt;/report> </query>
 					<query id="create-collection"/>
-					<query id="publish-ead">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='ead']]) then &lt;item> { data($foo//*[local-name()='eadid']) } &lt;/item> else
-						'' } &lt;/report></query>
+					<query id="publish-ead">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='ead']]) then &lt;item> { data($foo//*[local-name()='eadid']) } &lt;/item>
+						else '' } &lt;/report></query>
 					<query id="publish-mods">&lt;report xmlns:mods="http://www.loc.gov/mods/v3"> { for $foo in collection() return if($foo[child::node()[local-name()='modsCollection']]) then &lt;item>
 						{ $foo/*[local-name()='modsCollection']/*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier'] } &lt;/item> else '' } &lt;/report></query>
 					<query id="query-objects"> &lt;report> { for $record in collection()[contains(descendant::*[local-name()='unittitle'], 'QUERY') or descendant::*[local-name()='eadid'] = 'QUERY' or
@@ -359,8 +359,8 @@
 			</xforms:submission>
 
 			<!-- config -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- get first page of objects -->
 					<!--<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='query-objects']"/>
@@ -421,8 +421,8 @@
 			</xforms:submission>
 
 			<!-- xquery for getting and processing query results into pages of items -->
-			<xforms:submission id="xquery-pagination" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post" replace="instance"
-				instance="pagination-result">
+			<xforms:submission id="xquery-pagination" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post"
+				replace="instance" instance="pagination-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 				<xforms:action ev:event="xforms-submit-done">
 					<!--iterate through docs, check for publication -->
@@ -435,7 +435,8 @@
 			</xforms:submission>
 
 			<!-- generic xquery -->
-			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post" replace="instance" instance="xquery-result">
+			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post"
+				replace="instance" instance="xquery-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
 
@@ -448,18 +449,18 @@
 			</xforms:submission>
 
 			<!-- save templates and add guides collection to eXist on the first run of EADitor -->
-			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put"
+				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<!-- reload the config after it has been created -->
 				<xforms:send submission="load-config" ev:event="xforms-submit-done"/>
 			</xforms:submission>
-			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
+				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving EAD Template.</xforms:message>
 			</xforms:submission>
-			<xforms:submission id="save-c-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-c-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
+				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Component Template.</xforms:message>
 				<xforms:toggle case="file-list" ev:event="xforms-submit-done"/>
 			</xforms:submission>
@@ -469,20 +470,22 @@
 			</xforms:submission>
 
 			<!-- load ead guide temporarily -->
-			<xforms:submission id="load-guide" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml" replace="instance"
-				instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-guide" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml" replace="instance" instance="guide"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Cannot load finding aid.</xforms:message>
 			</xforms:submission>
 
 			<!-- delete finding aid -->
-			<xforms:submission id="delete-guide" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml" method="delete" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="delete-guide" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml"
+				method="delete" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Finding aid successfully deleted.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- ************************* Solr **************************8 -->
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id}.solr">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none"
+				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="post-to-solr"/>
 			</xforms:submission>
@@ -874,7 +877,8 @@
 													<a href="{instance('config')/url}id/{$id}.xml" target="_blank">xml</a> | <a href="{instance('config')/url}id/{$id}" target="_blank">html</a>
 												</xforms:group>
 											</td>
-											<td class="{$class} center"><a href="id/{$id}.xml" target="_blank">xml</a> | <a href="id/{$id}" target="_blank">html</a></td>
+											<td class="{$class} center"><a href="{instance('control-instance')/collection-name}/id/{$id}.xml" target="_blank">xml</a> | <a
+													href="{instance('control-instance')/collection-name}/id/{$id}" target="_blank">html</a></td>
 											<td class="{$class} center">
 												<xforms:group ref=".[type='ead']">
 													<xforms:group ref=".[components = 'true']">
@@ -1078,7 +1082,7 @@
 		<!-- handle the creation of new collections when a new role has successfull logged in -->
 		<xforms:action ev:event="xforms-enabled" if="not(string(instance('control-instance')/collection-name))">
 			<xxforms:show dialog="create-collection"/>
-		</xforms:action>		
+		</xforms:action>
 		<xxforms:dialog id="create-collection" appearance="full" level="modal" close="false" draggable="true" visible="false">
 			<xforms:label>Welcome to Numishare</xforms:label>
 			<p>Please create a collection for your authenticated group.</p>
@@ -1096,8 +1100,7 @@
 			<xforms:trigger>
 				<xforms:label>Save</xforms:label>
 				<xforms:action ev:event="DOMActivate">
-					<xforms:setvalue ref="instance('control-instance')/collection-name"
-						value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 					<!-- set exist collection value for creating new collection-->
 					<xforms:setvalue ref="instance('xqueries')/query[@id='create-collection']"
 						value="concat(&quot;xmldb:create-collection(&#x0027;/db/eaditor/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
@@ -1107,7 +1110,7 @@
 				</xforms:action>
 			</xforms:trigger>
 		</xxforms:dialog>
-		
+
 		<!-- if this is the first time that EADitor has ever been run, show a dialog that enables the user to set the title and URLs -->
 		<xxforms:dialog id="firstrun" appearance="full" level="modal" close="false" draggable="true" visible="false">
 			<xforms:label>Welcome to EADitor</xforms:label>
@@ -1140,7 +1143,7 @@
 					<xforms:send submission="save-config"/>
 					<xforms:send submission="save-ead-template"/>
 					<xforms:send submission="save-c-template"/>
-					
+
 					<!-- set value and add collection -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='create-collection']"/>
 					<xforms:send submission="add-collection"/>

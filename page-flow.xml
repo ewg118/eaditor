@@ -40,18 +40,21 @@
 
 	<!-- test page -->
 	<page path="/eaditor/admin/test/" view="xforms/test.xhtml"/>
-	<!-- dsc navigation service for forms via ajax -->
-	<page path="/eaditor/admin/navigation/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/navigation.xpl"/>
-	<page path="/eaditor/admin/toc/" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/toc.xpl"/>
-
+	
+	<!-- an ajax call to display the toc in the admin page -->
+	<page path="/eaditor/admin/navigation/" model="xpl/xml-private.xpl" view="xpl/navigation.xpl"/>
+	
+	<!-- generate toc in core or component form -->
+	<page path="/eaditor/admin/toc/" model="xpl/xml-private.xpl" view="xpl/toc.xpl"/>
+	
 	<!-- get attributes for given element from xsd -->
 	<page path="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
 
 	<!-- private xml (all elements shown) -->
-	<page path="/eaditor/admin/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-private.xpl"/>
+	<page path="/eaditor/admin/[^\/]+/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/xml-private.xpl"/>
 
 	<!-- private html view -->
-	<page path="/eaditor/admin/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/display.xpl"/>
+	<page path="/eaditor/admin/[^\/]+/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/xml-private.xpl" view="xpl/display.xpl"/>
 
 	<!-- ****************
 	* PUBLIC INTERFACE *
