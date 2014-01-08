@@ -111,6 +111,8 @@
 	<!-- decades results for nested checkbox -->
 	<page path="/eaditor/[^\/]+/get_decades/" matcher="oxf:perl5-matcher" model="xpl/solr-get_decades.xpl" view="xpl/get_decades.xpl"/>
 	<page path="/eaditor/[^\/]+/results_ajax/" matcher="oxf:perl5-matcher" model="xpl/solr-results_ajax.xpl" view="xpl/results_ajax.xpl"/>
+	<!-- generate Annotorious annotations from TEI, using doc and facsimile ids -->
+	<page path="/eaditor/[^\/]+/get_annotations/" matcher="oxf:perl5-matcher" view="xpl/get_annotations.xpl"/>
 	
 	<!-- EADitor public interface root page -->
 	<page path="/eaditor/" view="xpl/root.xpl"/>

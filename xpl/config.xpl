@@ -25,7 +25,16 @@
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<xsl:template match="/">
-					<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+					<xsl:variable name="collection-name">
+						<xsl:choose>
+							<xsl:when test="contains(doc('input:request')/request/servlet-path, 'admin/')">
+								<xsl:value-of select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/admin/'), '/')"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>					
 					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/config.xml'))"/>
 				</xsl:template>
 			</xsl:stylesheet>

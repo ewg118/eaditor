@@ -28,9 +28,9 @@
 
 	<xsl:template name="facsimiles">
 		<div>
-			<!--<div>
+			<div>
 				<button id="map-annotate-button">ADD ANNOTATION</button>
-			</div>-->
+			</div>
 			<div>
 				<div id="annot"/>
 			</div>
@@ -38,18 +38,19 @@
 			<div id="slider">
 				<xsl:apply-templates select="tei:facsimile"/>
 			</div>
-			<span style="display:none" id="image-path">
-				<xsl:value-of select="concat($display_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
+			<span id="image-path" style="display:none" >
+				<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
 			</span>
-			<span style="display:none" id="image-id">
+			<span id="image-id" style="display:none">
 				<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
 			</span>
+			<div id="display_path" style="display:none">
+				<xsl:value-of select="$display_path"/>
+			</div>
+			<div id="doc" style="display:none">
+				<xsl:value-of select="$doc"/>
+			</div>
 			<span id="image-container"/>
-			<span style="visibility:hidden">
-				<xsl:call-template name="eaditor:generateAnnotationJson">
-					<xsl:with-param name="id">nnan187715_0001</xsl:with-param>
-				</xsl:call-template>
-			</span>			
 		</div>
 	</xsl:template>
 
@@ -60,15 +61,5 @@
 			</a>
 		</span>
 	</xsl:template>
-
-	<xsl:template name="eaditor:generateAnnotationJson">
-		<xsl:param name="id"/>
-		<xsl:apply-templates select="descendant::tei:facsimile[@xml:id=$id]/tei:surface" mode="annotation"/>
-	</xsl:template>
 	
-	<xsl:template match="tei:surface" mode="annotation">
-		<span id="{parent::tei:facsimile/@xml:id}-object">
-			{"src":"map://openlayers/something","text":"test","shapes":[{"type":"rect","geometry":{"x":<xsl:value-of select="number(@ulx)"/>,"width":<xsl:value-of select="number(@lrx) -  number(@ulx)"/>,"y":<xsl:value-of select="number(@uly)"/>,"height":<xsl:value-of select="number(@uly) -  number(@lry)"/>}}],"context":"<xsl:value-of select="$uri"/>"}
-		</span>		
-	</xsl:template>
 </xsl:stylesheet>
