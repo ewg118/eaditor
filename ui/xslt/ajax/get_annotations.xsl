@@ -7,7 +7,9 @@
 		<xsl:text>[</xsl:text>
 		<xsl:for-each select="descendant::tei:facsimile[@xml:id=$facsimile]/tei:surface">
 			<xsl:variable name="id" select="parent::tei:facsimile/@xml:id"/>
-			<xsl:text>{"src":"map://openlayers/something","text":"test","shapes":[{"type":"rect","geometry":{"x":</xsl:text>
+			<xsl:text>{"src":"map://openlayers/something","text":"</xsl:text>
+			<xsl:apply-templates select="tei:desc"/>
+			<xsl:text>","shapes":[{"type":"rect","geometry":{"x":</xsl:text>
 			<xsl:value-of select="number(@ulx)"/>
 			<xsl:text>,"width":</xsl:text>
 			<xsl:value-of select="number(@lrx) -  number(@ulx)"/>
@@ -23,5 +25,10 @@
 			</xsl:if>
 		</xsl:for-each>
 		<xsl:text>]</xsl:text>
+	</xsl:template>
+
+	<!-- handle the creation of HTML from tei:desc; don't forget to use single quotes -->
+	<xsl:template match="tei:desc">
+		<xsl:value-of select="."/>
 	</xsl:template>
 </xsl:stylesheet>

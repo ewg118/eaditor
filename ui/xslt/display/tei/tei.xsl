@@ -28,9 +28,9 @@
 
 	<xsl:template name="facsimiles">
 		<div>
-			<div>
+			<!--<div>
 				<button id="map-annotate-button">ADD ANNOTATION</button>
-			</div>
+			</div>-->
 			<div>
 				<div id="annot"/>
 			</div>
