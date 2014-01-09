@@ -219,3 +219,17 @@
 	color:#8BADCF;
 	text-decoration:underline;
 }
+/*
+  ****************************************
+  TEI ANNOTATIONS
+  ****************************************
+ */
+.annot {
+	width:100%;
+	height:600px;
+}
+#image-container {
+	position: absolute;
+	visibility: hidden;
+	display: block
+}

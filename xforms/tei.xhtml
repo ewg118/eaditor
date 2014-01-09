@@ -18,6 +18,13 @@
 
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+		
+		<!-- annotation js and css -->
+		<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
+		<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+		<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/> 
+		<script type="text/javascript" src="/apps/eaditor/ui/javascript/jquery.livequery.js"/>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotation_functions.js"/> 
 
 		<xforms:model xmlns="http://www.tei-c.org/ns/1.0">
 			<xforms:instance id="doc">
@@ -33,12 +40,12 @@
 			<xforms:instance id="config">
 				<config xmlns=""/>
 			</xforms:instance>
-			
+
 			<!-- authentication -->
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
 				<collections xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="dump">
 				<dump xmlns=""/>
 			</xforms:instance>
@@ -47,6 +54,8 @@
 				<control xmlns="">
 					<collection-name/>
 					<status/>
+					<image-url/>
+					<image-id/>
 				</control>
 			</xforms:instance>
 
@@ -65,7 +74,8 @@
 
 			<!-- bind tabs -->
 			<xforms:bind id="teiHeader-tab" nodeset="instance('doc')/tei:teiHeader"/>
-			<xforms:bind id="body-tab" nodeset="instance('doc')/tei:body"/>
+			<xforms:bind id="facsimile-tab" constraint="count(instance('doc')/tei:facsimile) &gt; 0"/>
+			<xforms:bind id="text-tab" nodeset="instance('doc')/tei:text"/>
 
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
@@ -73,9 +83,9 @@
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
-			
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set default if security is false -->
@@ -89,7 +99,7 @@
 								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 						</xforms:action>
 					</xforms:action>
-					
+
 					<xforms:send submission="load-config"/>
 					<!-- if there is an id parameter, load existing document -->
 					<xforms:action if="string(xxforms:get-request-parameter('id'))">
@@ -183,7 +193,7 @@
 								<xforms:label>Document ID</xforms:label>
 								<xforms:alert>The id is required</xforms:alert>
 							</xforms:input>
-						</div>
+						</div>				
 						<fr:tabview>
 							<!--**************************************** EADHEADER **********************************-->
 							<fr:tab bind="teiHeader-tab">
@@ -191,8 +201,79 @@
 								<h1>TEI Header</h1>
 							</fr:tab>
 							<!--**************************************** BODY **********************************-->
-							<fr:tab bind="body-tab">
-								<fr:label>Body</fr:label>
+							<fr:tab bind="facsimile-tab">
+								<fr:label>Facsimiles</fr:label>
+								<xforms:group ref="instance('doc')">
+									<xforms:var name="display_path">../../../</xforms:var>
+									<div class="yui3-g">										
+										<div class="yui3-u-1-2">
+											<div class="content">
+												<h1>Facsimiles</h1>
+												<xforms:repeat nodeset="tei:facsimile">
+													<xforms:var name="id" select="@xml:id"/>
+													<xforms:var name="url" select="tei:graphic/@url"/>
+													<table>
+														<tr>
+															<td>
+																<xforms:trigger appearance="minimal">
+																	<xforms:label>
+																		<img src="{$display_path}ui/media/thumbnail/{$url}.jpg" alt="{tei:graphic/@n}"/>
+																	</xforms:label>
+																	<xforms:action ev:event="DOMActivate">
+																		<xforms:setvalue ref="instance('control-instance')/image-url" value="concat($display_path, 'ui/media/archive/', $url, '.jpg')"/>
+																		<xforms:setvalue ref="instance('control-instance')/image-id" value="$id"/>
+																		<xxforms:script>
+																			$('#image-container').html('');
+																			$('.annot').html('');
+																			anno.destroy();
+																			var id = ORBEON.xforms.Document.getValue("image-id");
+																			var image = ORBEON.xforms.Document.getValue("image-url");
+																			load_image(id, image);
+																		</xxforms:script>
+																	</xforms:action>																	
+																</xforms:trigger>
+															</td>
+															<td>
+																<div>
+																	<xforms:output ref="@xml:id">
+																		<xforms:label>ID</xforms:label>
+																	</xforms:output>
+																</div>
+																<div>
+																	<xforms:input ref="tei:graphic/@n">
+																		<xforms:label>Page Number</xforms:label>
+																	</xforms:input>
+																</div>
+																<div>
+																	<xforms:output value="count(tei:surface)">
+																		<xforms:label>Annotations</xforms:label>
+																	</xforms:output>
+																</div>
+															</td>
+														</tr>
+													</table>
+													<!--<span class="page-image" id="{@xml:id}">
+														<a href="{$display_path}ui/media/archive/{tei:graphic/@url}.jpg" title="{tei:graphic/@n}">
+															<img src="{$display_path}ui/media/thumbnail/{tei:graphic/@url}.jpg" alt="{tei:graphic/@n}"/>
+														</a>
+													</span>-->
+												</xforms:repeat>
+											</div>
+										</div>
+										<div class="yui3-u-1-2">
+											<div class="content">
+												<!--<button id="map-annotate-button">ADD ANNOTATION</button>-->
+												<div>
+													<div class="annot" id="annot"/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</xforms:group>								
+							</fr:tab>
+							<!--**************************************** BODY **********************************-->
+							<fr:tab bind="text-tab">
+								<fr:label>Text</fr:label>
 							</fr:tab>
 							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
@@ -200,6 +281,14 @@
 								<fr:xforms-inspector/>
 							</fr:tab>
 						</fr:tabview>
+						<!-- dummy controls for javascript hooks -->
+						<div style="visibility:hidden">
+							<xforms:output ref="instance('control-instance')/image-url" id="image-url"/>
+							<xforms:output ref="instance('control-instance')/image-id" id="image-id"/>
+							<xforms:output ref="instance('control-instance')/collection-name" id="collection-name"/>
+							<xforms:output ref="instance('doc')/@xml:id" id="doc-id"/>
+							<span id="image-container"/>
+						</div>	
 					</div>
 				</div>
 			</div>
