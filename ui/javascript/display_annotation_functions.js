@@ -19,11 +19,6 @@ $(document).ready(function () {
 		load_image(id, image);
 		return false;
 	});
-	
-	//allow annotation when button is clicked
-	/*$('#map-annotate-button').click(function () {
-		annotate();
-	});*/
 });
 
 function load_image(id, image) {
@@ -78,16 +73,3 @@ function import_annotations(id) {
 		});
 	});
 }
-
-/*function annotate() {
-	anno.activateSelector();
-	anno.addHandler('onAnnotationCreated', function (annotation) {
-		//coordinates	
-		var ulx = annotation.shapes[0].geometry.x;
-		var lrx = annotation.shapes[0].geometry.x + annotation.shapes[0].geometry.width;
-		var uly = annotation.shapes[0].geometry.y;
-		var lry = annotation.shapes[0].geometry.y - annotation.shapes[0].geometry.height;
-		obj = {ulx:ulx, lrx:lrx, uly:uly, lry:lry, desc:annotation.text};
-		//console.log(annotation);
-	});
-}*/

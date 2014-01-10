@@ -36,13 +36,28 @@ function render_map(id, image, dimensions) {
 	
 	//import annotations
 	import_annotations(id);
+	
+	//set handlers
+	anno.addHandler('onAnnotationRemoved', function (annotation) {
+		//delete annotation from TEI
+		ORBEON.xforms.Document.setValue('an-id', annotation.id);
+		ORBEON.xforms.Document.setValue('an-action', 'delete');
+		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
+	});
+	anno.addHandler('onAnnotationUpdated', function (annotation) {
+		//update annotation
+		ORBEON.xforms.Document.setValue('an-id', annotation.id);
+		ORBEON.xforms.Document.setValue('annotation-text', annotation.text);
+		ORBEON.xforms.Document.setValue('an-action', 'update');
+		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
+	});
 }
 
 function import_annotations(id) {
 	var path = '../../../' + ORBEON.xforms.Document.getValue('collection-name') + '/';
 	var doc = ORBEON.xforms.Document.getValue('doc-id');
 	$.get(path + 'get_annotations/', {
-		facsimile: id, doc: doc
+		facsimile: id, doc: doc, mode: 'admin'
 	},
 	function (data) {
 		var obj = $.parseJSON(data);
@@ -52,15 +67,28 @@ function import_annotations(id) {
 	});
 }
 
-/*function annotate() {
+function annotate() {
 	anno.activateSelector();
 	anno.addHandler('onAnnotationCreated', function (annotation) {
-		//coordinates	
+		//generate id
+		var id = 'a' + Math.random().toString(36).substr(2);
+		annotation.id = id;
+		//coordinates
 		var ulx = annotation.shapes[0].geometry.x;
 		var lrx = annotation.shapes[0].geometry.x + annotation.shapes[0].geometry.width;
 		var uly = annotation.shapes[0].geometry.y;
 		var lry = annotation.shapes[0].geometry.y - annotation.shapes[0].geometry.height;
-		obj = {ulx:ulx, lrx:lrx, uly:uly, lry:lry, desc:annotation.text};
-		//console.log(annotation);
+		
+		//write values to instances
+		ORBEON.xforms.Document.setValue('annotation-text', annotation.text);
+		ORBEON.xforms.Document.setValue('annotation-id', id);
+		ORBEON.xforms.Document.setValue('annotation-ulx', ulx);
+		ORBEON.xforms.Document.setValue('annotation-uly', uly);
+		ORBEON.xforms.Document.setValue('annotation-lrx', lrx);
+		ORBEON.xforms.Document.setValue('annotation-lry', lry);
+		
+		//generate key for xforms-value-changed observer to put data into the TEI document		
+		ORBEON.xforms.Document.setValue('an-action', 'create');
+		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
 	});
-}*/
+}
