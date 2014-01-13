@@ -87,8 +87,45 @@ function annotate() {
 		ORBEON.xforms.Document.setValue('annotation-lrx', lrx);
 		ORBEON.xforms.Document.setValue('annotation-lry', lry);
 		
-		//generate key for xforms-value-changed observer to put data into the TEI document		
+		//generate key for xforms-value-changed observer to put data into the TEI document
 		ORBEON.xforms.Document.setValue('an-action', 'create');
 		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
+		
+		//construct HTML links from regular expressions
+		var test = replaceURLWithHTMLLinks(annotation.text);
+		alert(test);
 	});
+}
+
+/********** URI PARSING **********/
+//construct HTML links from regular expressions
+function replaceURLWithHTMLLinks(text) {
+	var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	return text.replace(exp, constructLink);
+}
+
+function constructLink(match, p1, offset, string) {
+	return "<a href='" + p1 + "'>" + getLabel(p1) + "</a>";
+}
+
+//construct the linkable text depending on the URI (handle nomisma and Mantis URIs)
+function getLabel(uri) {
+	if (uri.indexOf("nomisma.org") != - 1) {
+		//use nomisma's getLabel API to extract English preflabel
+		$.getJSON('http://nomisma.org/apis/getLabel', {
+			uri: encodeURIComponent(uri), lang: 'en', format: 'json'
+		},
+		function (data) {
+			alert(data.label);			
+			//var label = data;
+		}).fail(function (data) {
+			alert("error");
+		});
+		label = 'nomisma';
+	} else if (uri.indexOf("numismatics.org/collection") != - 1) {
+		label = 'mantis';
+	} else {
+		label = uri;
+	}
+	return label;
 }

@@ -1,4 +1,15 @@
 $(document).ready(function () {
+	$.get('http://www.w3.org/2012/pyRdfa/extract', {
+			uri: 'http://nomisma.org/id/athens', format: 'xml'
+		},
+		function (data) {
+			var xml = $.parseXML(data);
+			alert($(xml).find("skos:prefLabel[lang='en']").text());
+			//var label = data;
+		}).fail(function (data) {
+			alert("error");
+		});
+
 	var image = $('#image-path').text();
 	var id = $('#image-id').text();
 	//call load_image function, which will wait until the image loads in the DOM before getting its height and width to initiate openlayers
