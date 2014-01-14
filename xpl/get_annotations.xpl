@@ -37,7 +37,6 @@
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>
-		<!--<p:output name="data" ref="data"/>-->
 		<p:output name="data" id="model"/>
 	</p:processor>
 	

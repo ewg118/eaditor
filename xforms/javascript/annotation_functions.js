@@ -38,18 +38,57 @@ function render_map(id, image, dimensions) {
 	import_annotations(id);
 	
 	//set handlers
+	anno.addHandler('onAnnotationCreated', function (annotation) {
+		//construct HTML links from regular expressions
+		var desc = replaceURLWithHTMLLinks(annotation.text);
+		//reset annotation.text
+		annotation.text = desc;
+		//generate id
+		var id = 'a' + Math.random().toString(36).substr(2);
+		annotation.id = id;
+		//coordinates
+		var ulx = annotation.shapes[0].geometry.x;
+		var lrx = annotation.shapes[0].geometry.x + annotation.shapes[0].geometry.width;
+		var uly = annotation.shapes[0].geometry.y;
+		var lry = annotation.shapes[0].geometry.y - annotation.shapes[0].geometry.height;
+		
+		//write values to instances
+		ORBEON.xforms.Document.setValue('annotation-text', desc);
+		ORBEON.xforms.Document.setValue('annotation-id', id);
+		ORBEON.xforms.Document.setValue('annotation-ulx', ulx);
+		ORBEON.xforms.Document.setValue('annotation-uly', uly);
+		ORBEON.xforms.Document.setValue('annotation-lrx', lrx);
+		ORBEON.xforms.Document.setValue('annotation-lry', lry);
+		
+		//generate key for xforms-value-changed observer to put data into the TEI document
+		ORBEON.xforms.Document.setValue('an-action', 'create');
+		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
+		
+		//set modified to true
+		ORBEON.xforms.Document.setValue('doc-modified', 'true');
+	});
 	anno.addHandler('onAnnotationRemoved', function (annotation) {
 		//delete annotation from TEI
 		ORBEON.xforms.Document.setValue('an-id', annotation.id);
 		ORBEON.xforms.Document.setValue('an-action', 'delete');
 		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
+		
+		//set modified to true
+		ORBEON.xforms.Document.setValue('doc-modified', 'true');
 	});
 	anno.addHandler('onAnnotationUpdated', function (annotation) {
+		var desc = replaceURLWithHTMLLinks(annotation.text);
+		//reset annotation.text
+		annotation.text = desc;
+	
 		//update annotation
 		ORBEON.xforms.Document.setValue('an-id', annotation.id);
-		ORBEON.xforms.Document.setValue('annotation-text', annotation.text);
+		ORBEON.xforms.Document.setValue('annotation-text', desc);
 		ORBEON.xforms.Document.setValue('an-action', 'update');
 		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
+		
+		//set modified to true
+		ORBEON.xforms.Document.setValue('doc-modified', 'true');
 	});
 }
 
@@ -69,32 +108,6 @@ function import_annotations(id) {
 
 function annotate() {
 	anno.activateSelector();
-	anno.addHandler('onAnnotationCreated', function (annotation) {
-		//generate id
-		var id = 'a' + Math.random().toString(36).substr(2);
-		annotation.id = id;
-		//coordinates
-		var ulx = annotation.shapes[0].geometry.x;
-		var lrx = annotation.shapes[0].geometry.x + annotation.shapes[0].geometry.width;
-		var uly = annotation.shapes[0].geometry.y;
-		var lry = annotation.shapes[0].geometry.y - annotation.shapes[0].geometry.height;
-		
-		//write values to instances
-		ORBEON.xforms.Document.setValue('annotation-text', annotation.text);
-		ORBEON.xforms.Document.setValue('annotation-id', id);
-		ORBEON.xforms.Document.setValue('annotation-ulx', ulx);
-		ORBEON.xforms.Document.setValue('annotation-uly', uly);
-		ORBEON.xforms.Document.setValue('annotation-lrx', lrx);
-		ORBEON.xforms.Document.setValue('annotation-lry', lry);
-		
-		//generate key for xforms-value-changed observer to put data into the TEI document
-		ORBEON.xforms.Document.setValue('an-action', 'create');
-		ORBEON.xforms.Document.setValue('key', Math.random().toString(36).substr(2));
-		
-		//construct HTML links from regular expressions
-		var test = replaceURLWithHTMLLinks(annotation.text);
-		alert(test);
-	});
 }
 
 /********** URI PARSING **********/
@@ -109,23 +122,15 @@ function constructLink(match, p1, offset, string) {
 }
 
 //construct the linkable text depending on the URI (handle nomisma and Mantis URIs)
-function getLabel(uri) {
-	if (uri.indexOf("nomisma.org") != - 1) {
-		//use nomisma's getLabel API to extract English preflabel
-		$.getJSON('http://nomisma.org/apis/getLabel', {
-			uri: encodeURIComponent(uri), lang: 'en', format: 'json'
-		},
-		function (data) {
-			alert(data.label);			
-			//var label = data;
-		}).fail(function (data) {
-			alert("error");
-		});
-		label = 'nomisma';
-	} else if (uri.indexOf("numismatics.org/collection") != - 1) {
-		label = 'mantis';
-	} else {
-		label = uri;
-	}
+function getLabel(uri) {	
+	var label;
+	var path = '../../../' + ORBEON.xforms.Document.getValue('collection-name') + '/';
+	$.ajaxSetup({async: false});
+	$.getJSON(path + 'get_label/', {
+		uri: uri
+	},
+	function (data) {
+		label = data.label;
+	});
 	return label;
 }

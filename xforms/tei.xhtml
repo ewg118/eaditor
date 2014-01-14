@@ -59,6 +59,7 @@
 					<key/>
 					<annotation-action/>
 					<annotation-id/>
+					<modified>false</modified>
 				</control>
 			</xforms:instance>
 
@@ -75,9 +76,7 @@
 
 			<!-- TEI templates -->
 			<xforms:instance id="surface-template" xxforms:exclude-result-prefixes="#all">
-				<surface xml:id="" ulx="" uly="" lrx="" lry="">
-					<desc/>
-				</surface>
+				<surface xml:id="" ulx="" uly="" lrx="" lry=""/>
 			</xforms:instance>
 
 			<!-- solr response for id query -->
@@ -92,14 +91,18 @@
 			<xforms:instance id="sendCommit">
 				<commit/>
 			</xforms:instance>
+			
+			<!-- ********** BINDINGS *********** -->
+			<xforms:bind nodeset="instance('control-instance')">
+				<!-- bind Add Annotation button -->
+				<xforms:bind id="annotation-activated" nodeset="image-id" relevant="string(.)"/>	
+				<xforms:bind nodeset="modified" type="xs:boolean"/>				
+			</xforms:bind>
 
 			<!-- bind tabs -->
 			<xforms:bind id="teiHeader-tab" nodeset="instance('doc')/tei:teiHeader"/>
 			<xforms:bind id="facsimile-tab" constraint="count(instance('doc')/tei:facsimile) &gt; 0"/>
 			<xforms:bind id="text-tab" nodeset="instance('doc')/tei:text"/>
-
-			<!-- bind Add Annotation button -->
-			<xforms:bind id="annotation-activated" nodeset="instance('control-instance')/image-id" relevant="string(.)"/>
 
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
@@ -244,11 +247,17 @@
 																		<img src="{$display_path}ui/media/thumbnail/{$url}.jpg" alt="{tei:graphic/@n}"/>
 																	</xforms:label>
 																	<xforms:action ev:event="DOMActivate">
+																		<!-- save file before loading image -->
+																		<xforms:send submission="save-submission" if="instance('control-instance')/modified=true()"/>
+																		
+																		<!-- load image -->
 																		<xforms:setvalue ref="instance('control-instance')/image-url" value="concat($display_path, 'ui/media/archive/', $url, '.jpg')"/>
 																		<xforms:setvalue ref="instance('control-instance')/image-id" value="$id"/>
 																		<xxforms:script> $('#image-container').html(''); $('.annot').html(''); anno.destroy(); var id =
 																			ORBEON.xforms.Document.getValue("image-id"); var image = ORBEON.xforms.Document.getValue("image-url"); load_image(id,
 																			image); </xxforms:script>
+																		<!-- set modification to false after load -->
+																		<xforms:setvalue ref="instance('control-instance')/modified">false</xforms:setvalue>
 																	</xforms:action>
 																</xforms:trigger>
 															</td>
@@ -303,8 +312,9 @@
 							<!-- used for getting images and annotations -->
 							<xforms:output ref="instance('control-instance')/image-url" id="image-url"/>
 							<xforms:output ref="instance('control-instance')/image-id" id="image-id"/>
-							<xforms:output ref="instance('control-instance')/collection-name" id="collection-name"/>
+							<xforms:output ref="instance('control-instance')/collection-name" id="collection-name"/>							
 							<xforms:output ref="instance('doc')/@xml:id" id="doc-id"/>
+							<xforms:input ref="instance('control-instance')/modified" id="doc-modified"/>
 							<!-- used for writing annotations from annotorious into TEI -->
 							<xforms:input ref="instance('annotation')/id" id="annotation-id"/>
 							<xforms:input ref="instance('annotation')/text" id="annotation-text"/>
@@ -323,21 +333,26 @@
 										<!-- set values -->
 										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@xml:id"
 											value="instance('annotation')/id"/>
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/tei:desc"
-											value="instance('annotation')/text"/>
 										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@ulx" value="instance('annotation')/ulx"/>
 										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@uly" value="instance('annotation')/uly"/>
 										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@lrx" value="instance('annotation')/lrx"/>
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@lry" value="instance('annotation')/lry"
-										/>
+										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@lry" value="instance('annotation')/lry"/>										
+										<!-- process the HTML from instance('annotation')/text into TEI XML -->
+										<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
+										<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]"
+											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"/>
 									</xforms:action>
 									<!-- DELETE -->
 									<xforms:action if="instance('control-instance')/annotation-action = 'delete'">
-										<xforms:delete nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]"/>
+										<xforms:delete
+											nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]"/>
 									</xforms:action>
 									<xforms:action if="instance('control-instance')/annotation-action = 'update'">
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]/tei:desc"
-											value="instance('annotation')/text"/>
+										<!-- delete desc before reprocessing into TEI and inserting a new one -->
+										<xforms:delete nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]/tei:desc"/>
+										<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
+										<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]"
+											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"/>
 									</xforms:action>
 								</xforms:action>
 							</xforms:input>
