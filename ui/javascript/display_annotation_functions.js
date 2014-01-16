@@ -11,7 +11,7 @@ $(document).ready(function () {
 		$('#annot').html('');
 		
 		//then destroy annotations before reloading
-		anno.destroy();		
+		anno.destroy();
 		
 		//reload
 		var image = $(this).children('a').attr('href');
@@ -19,11 +19,6 @@ $(document).ready(function () {
 		load_image(id, image);
 		return false;
 	});
-	
-	//allow annotation when button is clicked
-	/*$('#map-annotate-button').click(function(){
-		annotate();
-	});*/
 });
 
 function load_image(id, image) {
@@ -36,7 +31,7 @@ function load_image(id, image) {
 }
 
 function render_map(id, image, dimensions) {
-
+	
 	var height = + dimensions[ "height"];
 	var width = + dimensions[ "width"];
 	
@@ -65,15 +60,16 @@ function render_map(id, image, dimensions) {
 	import_annotations(id);
 }
 
-function import_annotations(id){
-	var obj = $.parseJSON($('#' + id + '-object').text());
-	anno.addAnnotation(obj);
-}
-
-/*function annotate() {
-	anno.activateSelector();
-	anno.addHandler('onAnnotationCreated', function (annotation) {
-		alert(JSON.stringify(annotation));
-		//console.log(annotation);
+function import_annotations(id) {
+	var path = $('#display_path').text();
+	var doc = $('#doc').text();
+	$.get(path + 'get_annotations/', {
+		facsimile: id, doc: doc
+	},
+	function (data) {
+		var obj = $.parseJSON(data);
+		$.each(obj, function (index, value) {
+			anno.addAnnotation(value);
+		});
 	});
-}*/
+}

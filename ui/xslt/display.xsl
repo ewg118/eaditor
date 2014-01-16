@@ -9,6 +9,7 @@
 	<xsl:include href="functions.xsl"/>
 
 	<!-- path and document params -->
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
 	<xsl:param name="path">
 		<xsl:choose>
@@ -243,7 +244,7 @@
 				</xsl:choose>
 				<div id="path" style="display:none">
 					<xsl:value-of select="$path"/>
-				</div>
+				</div>				
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -252,7 +253,7 @@
 	<xsl:template name="icons">
 		<div class="submenu">
 			<div class="icon">
-				<a href="{$display_path}admin/id/{$path}">Staff View</a>
+				<a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a>
 			</div>
 			<div class="icon">
 				<a href="{$uri}.rdf">RDF/XML</a>

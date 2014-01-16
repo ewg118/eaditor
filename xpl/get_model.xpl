@@ -3,13 +3,15 @@
 	Copyright (C) 2010 Ethan Gruber
 	EADitor: http://code.google.com/p/eaditor/
 	Apache License 2.0: http://code.google.com/p/eaditor/
-	
+	Function: Get the appropriate data model given URL parameter 'uri',
+	to be passed to get_label XPL for XSL processing into JSON.
+	JSON is used by backend Annotorious annotations containing html links.
 -->
 <p:config xmlns:p="http://www.orbeon.com/oxf/pipeline" xmlns:oxf="http://www.orbeon.com/oxf/processors">
 
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
-	
+
 	<p:processor name="oxf:request">
 		<p:input name="config">
 			<config>
@@ -24,23 +26,24 @@
 		<p:input name="data" href="../exist-config.xml"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+				<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
 				<xsl:template match="/">
-					<xsl:variable name="collection-name">
-						<xsl:choose>
-							<xsl:when test="contains(doc('input:request')/request/servlet-path, 'admin/')">
-								<xsl:value-of select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/admin/'), '/')"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>					
-					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/config.xml'))"/>
+					<xsl:choose>
+						<xsl:when test="contains($uri, 'http://nomisma.org/')">
+							<xsl:copy-of select="document(concat($uri, '.rdf'))/*"/>
+						</xsl:when>
+						<xsl:when test="contains($uri, 'http://numismatics.org/collection/')">
+							<xsl:copy-of select="document(concat($uri, '.rdf'))/*"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<response>
+								<xsl:value-of select="$uri"/>
+							</response>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>
 		<p:output name="data" ref="data"/>
 	</p:processor>
-
-
 </p:config>
