@@ -22,7 +22,39 @@
 			<config>				
 				<role>admin</role>
 				<role>ngca</role>
-				<role>nyblhs</role>				
+				<role>nnan</role>
+				<role>nyblhs</role>
+				<role>nbucc</role>
+				<role>nnajhs</role>
+				<role>nynycjh</role>
+				<role>nsicm</role>
+				<role>nhc</role>
+				<role>nalcsr</role>
+				<role>nic</role>
+				<role>nic</role>
+				<role>nhyf</role>
+				<role>nnfr</role>
+				<role>noneoc</role>
+				<role>nypohhv</role>
+				<role>nynycjh</role>
+				<role>nnmm</role>
+				<role>nnmtsm</role>
+				<role>nnmoma</role>
+				<role>nycoonbh</role>
+				<role>nsy</role>
+				<role>nsyohi</role>
+				<role>ntr</role>
+				<role>nrhi</role>
+				<role>nr</role>
+				<role>nrsj</role>
+				<role>nalsu</role>
+				<role>nbuul</role>
+				<role>nbuumu</role>
+				<role>nbuupo</role>
+				<role>nbuuar</role>
+				<role>nsyu</role>
+				<role>npv</role>
+				<role>nbuhi</role>		
 			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>
