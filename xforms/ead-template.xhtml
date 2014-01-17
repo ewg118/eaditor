@@ -36,6 +36,10 @@
 				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 			
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+			
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
 					<collection-name/>					
@@ -230,11 +234,17 @@
 								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 						</xforms:action>
 					</xforms:action>
+					<xforms:send submission="load-config"/>
 					<xforms:send submission="load-core-template"/>
 					<xforms:send submission="load-c-template"/>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
+			</xforms:submission>
+			
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<!-- load preliminary instances -->
