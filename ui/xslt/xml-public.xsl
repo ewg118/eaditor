@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Author: Ethan Gruber [gruber at numismatics dot org]
-	EADitor: http://code.google.com/p/eaditor/
-	Apache License 2.0: http://code.google.com/p/eaditor/
+	EADitor: https://github.com/ewg118/eaditor
+	Apache License 2.0: https://github.com/ewg118/eaditor
 	Modified: June 2011
 	Function: Identity transform for the xml pipeline in EADitor.  Internal components are suppressed unless they have external
 	descendants, in which case only the unittitles are displayed 

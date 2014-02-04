@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 	Copyright (C) 2010 Ethan Gruber
-	EADitor: http://code.google.com/p/eaditor/
-	Apache License 2.0: http://code.google.com/p/eaditor/
+	EADitor: https://github.com/ewg118/eaditor
+	Apache License 2.0: https://github.com/ewg118/eaditor
 	Function: Get the appropriate data model given URL parameter 'uri',
 	to be passed to get_label XPL for XSL processing into JSON.
 	JSON is used by backend Annotorious annotations containing html links.
