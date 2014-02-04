@@ -396,8 +396,13 @@
 				<!-- process results -->
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:var name="code" select="substring-after(instance('config')/templates/agencycodes/agencycode[1]/@value, '-')"/>
-					<xforms:var name="number" select="number(substring-after(instance('xquery-result')//item[last()], $code))"/>
-					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, format-number($number+1, '0000'))"/>
+					<xforms:action if="count(instance('xquery-result')//item) &gt; 0">						
+						<xforms:var name="number" select="number(substring-after(instance('xquery-result')//item[last()], $code))"/>
+						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, format-number($number+1, '0000'))"/>
+					</xforms:action>
+					<xforms:action if="count(instance('xquery-result')//item) = 0">
+						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, '0001')"/>
+					</xforms:action>
 				</xforms:action>
 			</xforms:action>
 		</xforms:model>
