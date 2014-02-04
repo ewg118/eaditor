@@ -6,7 +6,7 @@
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9">
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:exist="http://exist.sourceforge.net/NS/exist">
 	<head>
 		<title>EADitor: Edit Guide</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -33,7 +33,7 @@
 			<xforms:instance id="guide">
 				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 					<eadheader langencoding="">
-						<eadid countrycode=""/>						
+						<eadid countrycode=""/>
 					</eadheader>
 				</ead>
 			</xforms:instance>
@@ -46,28 +46,46 @@
 			<xforms:instance id="config">
 				<config xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
 					<collection-name/>
-					<status/>					
+					<status/>
 				</controls>
 			</xforms:instance>
-			
+
 			<!-- authentication -->
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
 				<collections xmlns=""/>
 			</xforms:instance>
-			
+
 			<xforms:instance id="dump">
 				<dump xmlns=""/>
 			</xforms:instance>
 
-			<!-- get from exist -->
+			<!-- get template from eXist -->
 			<xforms:instance id="c-template">
 				<c xmlns="urn:isbn:1-931666-22-9"/>
 			</xforms:instance>
-			
+
+			<!-- xquery to get next number in sequence -->
+			<xforms:instance id="eXist-xquery">
+				<exist:query xmlns="">
+					<exist:text/>
+				</exist:query>
+			</xforms:instance>
+
+			<xforms:instance id="xqueries">
+				<queries xmlns="">
+					<query id="get-ids">&lt;report> { for $foo in collection() where $foo[descendant::ead:eadid/@mainagencycode='AGENCYCODE'] order by $foo//ead:eadid return &lt;item> {
+						data($foo//*[local-name()='eadid']) } &lt;/item> } &lt;/report></query>
+				</queries>
+			</xforms:instance>
+
+			<xforms:instance id="xquery-result">
+				<exist:result/>
+			</xforms:instance>
+
 			<!-- solr response for id query -->
 			<xforms:instance id="is-published">
 				<response xmlns=""/>
@@ -273,8 +291,8 @@
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set default if security is false -->
@@ -317,7 +335,8 @@
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 			<!-- load table of contents after loading the ead guide -->
-			<xforms:submission id="load-toc" serialization="none" method="get" action="/eaditor/admin/toc/?collection={instance('control-instance')/collection-name}&amp;guide={instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
+			<xforms:submission id="load-toc" serialization="none" method="get"
+				action="/eaditor/admin/toc/?collection={instance('control-instance')/collection-name}&amp;guide={instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load table of contents</xforms:message>
 			</xforms:submission>
 
@@ -334,14 +353,17 @@
 					<xforms:send submission="load-toc"/>
 				</xforms:action>
 			</xforms:submission>
+			
+			<!-- ************** SOLR ***************** -->
 			<!-- submission to query solr to see if the document is published -->
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/ead:eadheader/ead:eadid}&#x022;"
-				replace="instance" instance="is-published">
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get"
+				action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/ead:eadheader/ead:eadid}&#x022;" replace="instance" instance="is-published">
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="doc-to-solr"/>
 			</xforms:submission>
 			<!-- access service to read in pre-transformed solr doc -->
-			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none" resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('guide')/ead:eadheader/ead:eadid}.solr">
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none"
+				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('guide')/ead:eadheader/ead:eadid}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
@@ -353,12 +375,30 @@
 			</xforms:submission>
 			<!-- send commit -->
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
+			
+			<!-- ************** XQUERY ***************** -->
+			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post"
+				replace="instance" instance="xquery-result">
+				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
+			</xforms:submission>
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<!-- load id parameter from url into @id attribute for EAD guide -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
 				<xforms:send submission="load-collections"/>
+			</xforms:action>
+			
+			<!-- automatically set next number on xforms-ready -->
+			<xforms:action ev:event="xforms-ready">
+				<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-ids'], 'AGENCYCODE', instance('config')/templates/agencycodes/agencycode[1]/@value)"/>
+				<xforms:send submission="xquery-collection"/>
+				<!-- process results -->
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:var name="code" select="substring-after(instance('config')/templates/agencycodes/agencycode[1]/@value, '-')"/>
+					<xforms:var name="number" select="number(substring-after(instance('xquery-result')//item[last()], $code))"/>
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, format-number($number+1, '0000'))"/>
+				</xforms:action>
 			</xforms:action>
 		</xforms:model>
 
@@ -1094,11 +1134,11 @@
 									<eaditor:c/>
 								</xforms:repeat>
 							</fr:tab>
-							<fr:tab id="preview">
+							<!--<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>
+							</fr:tab>-->
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>

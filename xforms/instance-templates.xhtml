@@ -167,7 +167,7 @@
 						<fr:tab bind="agencycodes-tab">
 							<fr:label>Agency Codes</fr:label>
 							<h2>Agency Codes</h2>
-							<xforms:trigger appearance="minimal">
+							<!--<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
@@ -177,7 +177,7 @@
 								<xforms:action ev:event="DOMActivate">
 									<xforms:send submission="agencycodes-submission"/>
 								</xforms:action>
-							</xforms:trigger>
+							</xforms:trigger>-->
 							<xforms:repeat nodeset="agencycode">
 								<div class="pair_div">
 									<div>
