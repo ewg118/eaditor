@@ -1,7 +1,7 @@
 <!--
 	Copyright (C) 2010 Ethan Gruber
-	EADitor: http://code.google.com/p/eaditor/
-	Apache License 2.0: http://code.google.com/p/eaditor/
+	EADitor: https://github.com/ewg118/eaditor
+	Apache License 2.0: https://github.com/ewg118/eaditor
 	
 	Transform the controlled access terms returned from eXist and display as a unnumbered list -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"

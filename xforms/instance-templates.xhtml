@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 	Copyright (C) 2010 Ethan Gruber
-	EADitor: http://code.google.com/p/eaditor/
-	Apache License 2.0: http://code.google.com/p/eaditor/    
+	EADitor: https://github.com/ewg118/eaditor
+	Apache License 2.0: https://github.com/ewg118/eaditor    
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
@@ -167,7 +167,7 @@
 						<fr:tab bind="agencycodes-tab">
 							<fr:label>Agency Codes</fr:label>
 							<h2>Agency Codes</h2>
-							<xforms:trigger appearance="minimal">
+							<!--<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
@@ -177,7 +177,7 @@
 								<xforms:action ev:event="DOMActivate">
 									<xforms:send submission="agencycodes-submission"/>
 								</xforms:action>
-							</xforms:trigger>
+							</xforms:trigger>-->
 							<xforms:repeat nodeset="agencycode">
 								<div class="pair_div">
 									<div>
