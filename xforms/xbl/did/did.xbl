@@ -123,7 +123,7 @@
 
 					<!-- unitdate -->
 					<xforms:repeat ref="$binding/ead:unitdate">
-						<eaditor:unitdate/>
+						<eaditor:date/>
 					</xforms:repeat>
 
 					<xforms:repeat nodeset="$binding/ead:abstract">
@@ -440,7 +440,7 @@
 							<repository/>
 						</xforms:instance>
 						<xforms:instance id="unitdate-template" xxforms:exclude-result-prefixes="#all">
-							<unitdate/>
+							<unitdate normal=""/>
 						</xforms:instance>
 						<xforms:instance id="unitid-template" xxforms:exclude-result-prefixes="#all">
 							<unitid/>

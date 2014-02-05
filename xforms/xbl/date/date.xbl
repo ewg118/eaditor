@@ -1,5 +1,6 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-date" element="eaditor|date">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -8,31 +9,187 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					<xhtml:div>
-						<xforms:input ref="$binding">
-							<xforms:label>Date</xforms:label>
-						</xforms:input>
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer">						
+						<xforms:action if="string($binding/@normal)">							
+							<!-- set values of control-instance if @normal has content -->
+							<xforms:action if="contains($binding/@normal, '/')">
+								<xforms:setvalue ref="instance('control-instance')/loaded" value="true()"/>	
+								<xforms:setvalue ref="instance('control-instance')/interface">dateRange</xforms:setvalue>								
+								<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/fromDate" value="substring-before($binding/@normal, '/')"/>
+								<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/toDate" value="substring-after($binding/@normal, '/')"/>							
+							</xforms:action>
+							<xforms:action if="not(contains($binding/@normal, '/'))">
+								<xforms:setvalue ref="instance('control-instance')/inputs/date" value="$binding/@normal"/>							
+							</xforms:action>															
+						</xforms:action>						
+					</xforms:action>
+					
+					<div class="pair_div">						
+						<h4>
+							<xforms:output ref="if ($binding/local-name()='unitdate') then 'Unit Date' else 'Date'"/>
+						</h4>
 						<eaditor:attributes ref="$binding"/>
-
-						<!--<xforms:action ev:event="xforms-value-changed">
-							<xforms:var name="year" select="substring-before(@normal, '-')"/>
-							<xforms:var name="month-digit" select="substring-before(substring-after(@normal, '-'), '-')"/>
-							<xforms:var name="day" select="replace(substring-after(substring-after(@normal, '-'), '-'), '^0', '')"/>
-							<xforms:var name="month"
-								select="if ($month-digit = '01') then 'January' else if ($month-digit = '02') then 'February' else if ($month-digit = '03') then 'March' else if ($month-digit = '04') then 'April' else if ($month-digit = '05') then 'May' else if ($month-digit = '06') then 'June' else if ($month-digit = '07') then 'July' else if ($month-digit = '08') then 'August' else if ($month-digit = '09') then 'September' else if ($month-digit = '10') then 'October' else if ($month-digit = '11') then 'November' else if ($month-digit = '12') then 'December' else @normal"/>
-							<xforms:setvalue ref="parent::node()" value="concat($year, ' ', $month, ' ', $day)"/>
-						</xforms:action>-->
-
 						<xforms:group ref="$binding[count(parent::node()[local-name()='chronitem']) &lt; 1 and count(parent::node()[local-name()='change']) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
 						</xforms:group>
-					</xhtml:div>
-					<!-- ********************************************************************** -->
+						<xforms:group ref="instance('control-instance')">
+							<div>
+								<xforms:select1 ref="interface" appearance="full">
+								<xforms:label>Type</xforms:label>
+								<xforms:item>
+									<xforms:label>Date</xforms:label>
+									<xforms:value>date</xforms:value>
+								</xforms:item>
+								<xforms:item>
+									<xforms:label>Date Range</xforms:label>
+									<xforms:value>dateRange</xforms:value>
+								</xforms:item>
+								<xforms:action ev:event="xforms-value-changed">
+									<xforms:action if="not(instance('control-instance')/loaded=true())">
+										<!-- clear inputs -->
+										<xforms:setvalue ref="instance('control-instance')/inputs/date"/>
+										<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/fromDate"/>
+										<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/toDate"/>
+										<xforms:setvalue ref="$binding"/>
+										<xforms:setvalue ref="$binding/@normal"/>
+									</xforms:action>
+									<xforms:action if=". = 'date'">
+										<xforms:toggle case="date"/>
+									</xforms:action>
+									<xforms:action if=". = 'dateRange'">											
+										<xforms:toggle case="dateRange"/>										
+									</xforms:action>
+									<xforms:setvalue ref="instance('control-instance')/loaded" value="false()"/>
+								</xforms:action>
+								</xforms:select1>
+							</div>
+							<xforms:group ref="inputs">								
+								<xforms:switch>
+									<xforms:case id="date">
+										<div>
+											<xforms:input ref="date">
+												<xforms:label>Date</xforms:label>
+												<xforms:alert>Must conform to ISO date standard.</xforms:alert>
+												<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
+												<xforms:action ev:event="xforms-value-changed">
+													<xforms:action ev:event="xforms-valid">
+														<xforms:var name="value" select="."/>
+														<xforms:setvalue ref="$binding/@normal" value="$value"/>
+														<xforms:setvalue if="$value castable as xs:date" ref="$binding" value="format-date(xs:date($value), '[MNn] [D], [Y]', 'en', (), ())"/>
+														<xforms:setvalue if="$value castable as xs:gYearMonth" ref="$binding" value="format-date(xs:date(concat($value, '-01')), '[MNn], [Y]', 'en', (), ())"/>
+														<xforms:setvalue if="$value castable as xs:gYear" ref="$binding" value="$value"/>
+													</xforms:action>
+													<xforms:action if="not(xxforms:valid(.))">
+														<xforms:setvalue ref="$binding/@normal"/>
+													</xforms:action>
+												</xforms:action>
+											</xforms:input>
+										</div>
+									</xforms:case>
+									<xforms:case id="dateRange">
+										<div>
+											<xforms:input ref="dateRange/fromDate">
+												<xforms:label>From Date</xforms:label>
+												<xforms:alert>Must conform to ISO date standard.</xforms:alert>
+												<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
+												<xforms:action ev:event="xforms-value-changed">
+													<xforms:action ev:event="xforms-valid" if="xxforms:valid(parent::node()/toDate)">
+														<xforms:var name="fromDate" select="."/>
+														<xforms:var name="toDate" select="parent::node()/toDate"/>
+														<xforms:var name="fromDateText" select="if ($fromDate castable as xs:date) then format-date(xs:date($fromDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($fromDate castable as xs:gYearMonth) then format-date(xs:date(concat($fromDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $fromDate"/>
+														<xforms:var name="toDateText" select="if ($toDate castable as xs:date) then format-date(xs:date($toDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($toDate castable as xs:gYearMonth) then format-date(xs:date(concat($toDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $toDate"/>
+														<xforms:setvalue ref="$binding/@normal" value="concat($fromDate, '/', $toDate)"/>
+														<xforms:setvalue ref="$binding" value="concat($fromDateText, '/', $toDateText)"/>
+													</xforms:action>
+													<xforms:action if="not(xxforms:valid(.)) or not(xxforms:valid(parent::node()/toDate))">
+														<xforms:setvalue ref="$binding/@normal"/>
+													</xforms:action>
+												</xforms:action>
+											</xforms:input>
+										</div>
+										<div>
+											<xforms:input ref="dateRange/toDate">
+												<xforms:label>To Date</xforms:label>
+												<xforms:alert>Must conform to ISO date standard.</xforms:alert>
+												<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
+												<xforms:action ev:event="xforms-value-changed">
+													<xforms:action ev:event="xforms-valid" if="xxforms:valid(parent::node()/fromDate)">
+														<xforms:var name="fromDate" select="parent::node()/fromDate"/>
+														<xforms:var name="toDate" select="."/>
+														<xforms:var name="fromDateText" select="if ($fromDate castable as xs:date) then format-date(xs:date($fromDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($fromDate castable as xs:gYearMonth) then format-date(xs:date(concat($fromDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $fromDate"/>
+														<xforms:var name="toDateText" select="if ($toDate castable as xs:date) then format-date(xs:date($toDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($toDate castable as xs:gYearMonth) then format-date(xs:date(concat($toDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $toDate"/>
+														<xforms:setvalue ref="$binding/@normal" value="concat($fromDate, '/', $toDate)"/>
+														<xforms:setvalue ref="$binding" value="concat($fromDateText, ' - ', $toDateText)"/>														
+													</xforms:action>
+													<xforms:action if="not(xxforms:valid(.)) or not(xxforms:valid(parent::node()/fromDate))">
+														<xforms:setvalue ref="$binding/@normal"/>
+													</xforms:action>
+												</xforms:action>
+											</xforms:input>
+										</div>
+									</xforms:case>
+								</xforms:switch>
+							</xforms:group>							
+						</xforms:group>
+						<div>
+							<xforms:input ref="$binding">
+								<xforms:label>Text</xforms:label>
+								<xforms:alert>Required</xforms:alert>
+							</xforms:input>
+						</div>
+					</div>
+					<!--<fr:xforms-inspector xmlns:fr="http://orbeon.org/oxf/xml/form-runner"/>-->
+					
+					<!-- *****************************MODEL ***************************************** -->
+					<xforms:model xmlns="urn:isbn:1-931666-22-9" id="date-model">
+						<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
+							<xs:simpleType name="m.data.standardDate">
+								<xs:union>
+									<xs:simpleType>
+										<xs:restriction base="xs:date">
+											<xs:maxInclusive value="2099-12-31"/>
+										</xs:restriction>
+									</xs:simpleType>
+									<xs:simpleType>
+										<xs:restriction base="xs:gYear">
+											<xs:maxInclusive value="2099"/>
+										</xs:restriction>
+									</xs:simpleType>
+									<xs:simpleType>
+										<xs:restriction base="xs:gYearMonth">
+											<xs:maxInclusive value="2099-12"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:union>
+							</xs:simpleType>
+						</xs:schema>
+
+						<xforms:instance id="control-instance">
+							<controls xmlns="">
+								<interface>date</interface>
+								<loaded/>
+								<inputs>
+									<date/>
+									<dateRange>
+										<fromDate/>
+										<toDate/>
+									</dateRange>									
+								</inputs>								
+							</controls>
+						</xforms:instance>
+
+						<xforms:bind nodeset="instance('control-instance')">
+							<xforms:bind nodeset="loaded" type="xs:boolean"/>
+							<xforms:bind nodeset="inputs/date" type="m.data.standardDate"/>
+							<xforms:bind nodeset="inputs/dateRange/fromDate" constraint=". &lt; parent::node()/toDate" type="m.data.standardDate"/>
+							<xforms:bind nodeset="inputs/dateRange/toDate" constraint=". &gt; parent::node()/fromDate" type="m.data.standardDate"/>
+						</xforms:bind>
+					</xforms:model>
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

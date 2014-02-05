@@ -147,7 +147,7 @@
 						</xforms:instance>
 						<xforms:instance id="chronitem-template" xxforms:exclude-result-prefixes="#all">
 							<chronitem>
-								<date/>
+								<date normal=""/>
 							</chronitem>
 						</xforms:instance>
 						<xforms:instance id="event-template" xxforms:exclude-result-prefixes="#all">

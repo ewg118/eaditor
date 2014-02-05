@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor">
 	<xbl:binding id="eaditor-creation" element="eaditor|creation">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -11,11 +11,12 @@
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
 					<xforms:input ref="$binding">
 						<xforms:label>Creation</xforms:label>
+						<xforms:alert>Required</xforms:alert>
 					</xforms:input>
 					<xforms:trigger appearance="minimal">
 						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 						<xforms:label>
-							<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+							<img src="/apps/eaditor/xforms/images/remove.gif"/>
 						</xforms:label>
 					</xforms:trigger>
 					<!-- ********************************************************************** -->
