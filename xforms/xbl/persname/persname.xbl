@@ -159,7 +159,7 @@
 									</div>
 									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
 										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
-											<xforms:label>Location</xforms:label>
+											<xforms:label>Name</xforms:label>
 											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
 												<xforms:label ref="@name"/>
 												<xforms:value ref="@name"/>
