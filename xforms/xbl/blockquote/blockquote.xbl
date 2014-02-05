@@ -118,7 +118,7 @@
 						<xforms:instance id="chronlist-template">
 							<chronlist>
 								<chronitem>
-									<date/>
+									<date normal=""/>
 								</chronitem>
 							</chronlist>
 						</xforms:instance>

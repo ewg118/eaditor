@@ -214,6 +214,9 @@
 		<xsl:if test="string(@source) and string(@authfilenumber)">
 			<xsl:variable name="resource">
 				<xsl:choose>
+					<xsl:when test="@source='aat'">
+						<xsl:value-of select="concat('http://vocab.getty.edu/aat/', @authfilenumber)"/>
+					</xsl:when>
 					<xsl:when test="@source='geonames'">
 						<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>
 					</xsl:when>

@@ -77,7 +77,7 @@
 			<xforms:instance id="revisiondesc-template" xxforms:exclude-result-prefixes="#all">
 				<revisiondesc>
 					<change>
-						<date/>
+						<date normal=""/>
 						<item/>
 					</change>
 				</revisiondesc>
@@ -110,12 +110,12 @@
 			</xforms:instance>
 			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
 				<change>
-					<date/>
+					<date normal=""/>
 					<item/>
 				</change>
 			</xforms:instance>
 			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
-				<date/>
+				<date normal=""/>
 			</xforms:instance>
 			<xforms:instance id="descrules-template" xxforms:exclude-result-prefixes="#all">
 				<descrules/>
@@ -340,9 +340,7 @@
 		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
-
 	</head>
 	<body>
 		<div class="yui3-g">

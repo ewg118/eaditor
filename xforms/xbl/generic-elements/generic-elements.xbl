@@ -102,7 +102,7 @@
 						<xforms:instance id="chronlist-template" xxforms:exclude-result-prefixes="#all">
 							<chronlist>
 								<chronitem>
-									<date/>
+									<date normal=""/>
 								</chronitem>
 							</chronlist>
 						</xforms:instance>						

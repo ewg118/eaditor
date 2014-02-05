@@ -52,12 +52,12 @@
 .list-hidden {
 	display:none;
 }
-.pair_div {
-	width:80%;
+.pair_div {	
+	border-radius: 5px;
 	border:1px solid silver;
 	margin-bottom:2px;
+	padding:5px;
 	display:table;
-	padding:2px;
 }
 /*
   .xforms-group>div{

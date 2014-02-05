@@ -119,7 +119,7 @@
 									</div>
 									<xforms:group ref=".[count(instance('feed')//atom:entry) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" size="10">
-											<xforms:label>Location</xforms:label>
+											<xforms:label>Term</xforms:label>
 											<xforms:itemset nodeset="instance('feed')//atom:entry">
 												<xforms:label ref="atom:title"/>
 												<xforms:value ref="atom:link[@rel='alternate' and not(@type)]/@href"/>
@@ -156,7 +156,7 @@
 									</div>
 									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
 										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
-											<xforms:label>Location</xforms:label>
+											<xforms:label>Term</xforms:label>
 											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
 												<xforms:label ref="@name"/>
 												<xforms:value ref="@name"/>

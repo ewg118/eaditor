@@ -112,7 +112,7 @@
 			<xforms:instance id="revisiondesc-template" xxforms:exclude-result-prefixes="#all">
 				<revisiondesc>
 					<change>
-						<date/>
+						<date normal=""/>
 						<item/>
 					</change>
 				</revisiondesc>
@@ -145,12 +145,12 @@
 			</xforms:instance>
 			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
 				<change>
-					<date/>
+					<date normal=""/>
 					<item/>
 				</change>
 			</xforms:instance>
 			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
-				<date/>
+				<date normal=""/>
 			</xforms:instance>
 			<xforms:instance id="descrules-template" xxforms:exclude-result-prefixes="#all">
 				<descrules/>
@@ -238,20 +238,23 @@
 				</xforms:bind>
 				<xforms:bind nodeset="ead:archdesc">
 					<xforms:bind nodeset="@level" required="true()"/>
-					<xforms:bind nodeset="ead:did">
-						<xforms:bind nodeset="ead:unittitle" required="true()"/>
+					<xforms:bind nodeset="ead:did">						
+						<xforms:bind nodeset="ead:unitid" required="true()"/>
 						<xforms:bind nodeset="ead:langmaterial">
 							<xforms:bind ref="ead:language">
 								<xforms:bind constraint="string-length(@langcode) &gt; 0"/>
 							</xforms:bind>
 						</xforms:bind>
+						<xforms:bind nodeset="ead:physdesc">
+							<xforms:bind nodeset="ead:extent"/>
+						</xforms:bind>
+						<xforms:bind nodeset="ead:abstract" required="true()"/>
 					</xforms:bind>
 					<xforms:bind nodeset="ead:dsc">
 						<xforms:bind nodeset="ead:c">
 							<xforms:bind nodeset="@id" required="true()"/>
 							<xforms:bind nodeset="@level" required="true()"/>
 							<xforms:bind nodeset="@otherlevel" type="xs:NMTOKEN"/>
-							<xforms:bind nodeset="ead:did/ead:unittitle" required="true()"/>
 						</xforms:bind>
 					</xforms:bind>
 				</xforms:bind>
@@ -268,15 +271,19 @@
 				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()"/>
 				<xforms:bind nodeset="//ead:daoloc/@xlink:label" constraint="string-length(.) &gt; 0"/>
 				<xforms:bind nodeset="//ead:daodesc">
-					<xforms:bind nodeset="ead:head" required="true()"/>
-					<xforms:bind nodeset="ead:p" required="true()"/>
+					<xforms:bind nodeset="ead:head" required="true()"/>					
 				</xforms:bind>
 				<xforms:bind nodeset="//ead:defitem">
 					<xforms:bind nodeset="ead:label" required="true()"/>
 					<xforms:bind nodeset="ead:item" required="true()"/>
 				</xforms:bind>
-				<xforms:bind nodeset="//ead:unitdate/@normal" type="iso8601date"/>
-				<xforms:bind nodeset="//ead:date/@normal" type="iso8601date"/>
+				<xforms:bind nodeset="//ead:unittitle" required="true()"/>
+				<xforms:bind nodeset="//ead:unitdate" required="true()">
+					<xforms:bind nodeset="@normal" type="iso8601date"/>
+				</xforms:bind>
+				<xforms:bind nodeset="//ead:date" required="true()">
+					<xforms:bind nodeset="@normal" type="iso8601date"/>
+				</xforms:bind>
 				<xforms:bind nodeset="//ead:p">
 					<xforms:bind constraint="string-length(.) &gt; 0"/>
 				</xforms:bind>
@@ -323,9 +330,34 @@
 			</xforms:submission>
 
 			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
-				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
+				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EAD core template.</xforms:message>
+				<!-- set date on new document -->
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- automatically set eadid -->
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-ids'], 'AGENCYCODE', instance('config')/templates/agencycodes/agencycode[1]/@value)"/>
+					<xforms:send submission="xquery-collection"/>
+					<!-- process results -->
+					<xforms:action ev:event="xforms-submit-done">
+						<xforms:var name="code" select="substring-after(instance('config')/templates/agencycodes/agencycode[1]/@value, '-')"/>
+						<xforms:action if="count(instance('xquery-result')//item) &gt; 0">						
+							<xforms:var name="number" select="number(substring-after(instance('xquery-result')//item[last()], $code))"/>
+							<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, format-number($number+1, '0000'))"/>
+						</xforms:action>
+						<xforms:action if="count(instance('xquery-result')//item) = 0">
+							<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, '0001')"/>
+						</xforms:action>
+					</xforms:action>
+					
+					<!-- only need to set @normal; date XBL will handle human readability -->
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:publicationstmt/ead:date/@normal" value="substring(string(current-date()), 1, 10)"/>
+				</xforms:action>
+			</xforms:submission>
+			
 			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
-				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
+				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load component template.</xforms:message>
+			</xforms:submission>
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
@@ -387,23 +419,6 @@
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
 				<xforms:send submission="load-collections"/>
-			</xforms:action>
-			
-			<!-- automatically set next number on xforms-ready -->
-			<xforms:action ev:event="xforms-ready">
-				<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-ids'], 'AGENCYCODE', instance('config')/templates/agencycodes/agencycode[1]/@value)"/>
-				<xforms:send submission="xquery-collection"/>
-				<!-- process results -->
-				<xforms:action ev:event="xforms-submit-done">
-					<xforms:var name="code" select="substring-after(instance('config')/templates/agencycodes/agencycode[1]/@value, '-')"/>
-					<xforms:action if="count(instance('xquery-result')//item) &gt; 0">						
-						<xforms:var name="number" select="number(substring-after(instance('xquery-result')//item[last()], $code))"/>
-						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, format-number($number+1, '0000'))"/>
-					</xforms:action>
-					<xforms:action if="count(instance('xquery-result')//item) = 0">
-						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, '0001')"/>
-					</xforms:action>
-				</xforms:action>
 			</xforms:action>
 		</xforms:model>
 
@@ -474,7 +489,6 @@
 		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/unitdate/unitdate.xbl" xxi:omit-xml-base="true"/>
 		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
 
 		<!-- navigation -->
@@ -703,6 +717,7 @@
 														<div>
 															<xforms:input ref=".">
 																<xforms:label>Author</xforms:label>
+																<xforms:alert>Required</xforms:alert>
 															</xforms:input>
 															<xforms:trigger appearance="minimal">
 																<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -749,7 +764,7 @@
 														<div>
 															<xforms:input ref=".">
 																<xforms:label>Edition</xforms:label>
-																<xforms:alert>Required.</xforms:alert>
+																<xforms:alert>Required</xforms:alert>
 															</xforms:input>
 														</div>
 													</xforms:group>
@@ -1139,11 +1154,11 @@
 									<eaditor:c/>
 								</xforms:repeat>
 							</fr:tab>
-							<!--<fr:tab id="preview">
+							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>-->
+							</fr:tab>
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>
