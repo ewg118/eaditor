@@ -95,6 +95,9 @@
 				<xsl:when test="@source='viaf'">
 					<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>					
 				</xsl:when>
+				<xsl:when test="@source='aat'">
+					<xsl:value-of select="concat('http://vocab.getty.edu/aat/', @authfilenumber)"/>					
+				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		

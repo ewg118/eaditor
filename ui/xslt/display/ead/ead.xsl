@@ -721,6 +721,11 @@
 							</a>
 							<xsl:if test="@source">
 								<xsl:choose>
+									<xsl:when test="@source='aat'">
+										<a href="http://vocab.getty.edu/aat/{@authfilenumber}" target="_blank" title="Getty AAT" rel="dcterms:format">
+											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+										</a>
+									</xsl:when>
 									<xsl:when test="@source='geonames'">
 										<a href="http://www.geonames.org/{@authfilenumber}" target="_blank" title="Geonames" rel="dcterms:coverage">
 											<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
