@@ -320,9 +320,9 @@
 							</xforms:repeat>
 
 							<!-- genreform -->
-							<!--<xforms:group ref="$binding/ead:genreform">
+							<xforms:repeat nodeset="ead:genreform">
 								<eaditor:genreform/>
-							</xforms:group>-->
+							</xforms:repeat>
 
 							<xforms:repeat nodeset="ead:physfacet">
 								<xhtml:div class="pair_div">
