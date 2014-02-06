@@ -217,7 +217,6 @@
 
 			<xforms:bind node="instance('guide')">
 				<xforms:bind nodeset="//*/@id" type="xs:ID"/>
-				<!--<xforms:bind nodeset="@id" required="true()"/>-->
 				<xforms:bind nodeset="ead:eadheader">
 					<xforms:bind nodeset="ead:eadid">
 						<xforms:bind constraint="string-length(.) &gt; 0"/>
@@ -284,9 +283,8 @@
 				<xforms:bind nodeset="//ead:date" required="true()">
 					<xforms:bind nodeset="@normal" type="iso8601date"/>
 				</xforms:bind>
-				<xforms:bind nodeset="//ead:p">
-					<xforms:bind constraint="string-length(.) &gt; 0"/>
-				</xforms:bind>
+				<xforms:bind nodeset="//ead:p" constraint="string-length(.) &gt; 0"/>
+				<xforms:bind nodeset="//ead:head" required="true()"/>
 			</xforms:bind>
 
 			<!-- bind tabs -->
