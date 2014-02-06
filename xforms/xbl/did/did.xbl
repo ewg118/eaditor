@@ -130,6 +130,7 @@
 						<xhtml:div>
 							<xforms:textarea ref=".">
 								<xforms:label>Abstract</xforms:label>
+								<xforms:alert>Required</xforms:alert>
 							</xforms:textarea>
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -308,8 +309,8 @@
 								<xhtml:div>
 									<xforms:input ref=".">
 										<xforms:label>Extent</xforms:label>
+										<xforms:alert>Required</xforms:alert>
 									</xforms:input>
-
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
@@ -320,9 +321,9 @@
 							</xforms:repeat>
 
 							<!-- genreform -->
-							<!--<xforms:group ref="$binding/ead:genreform">
+							<xforms:repeat nodeset="ead:genreform">
 								<eaditor:genreform/>
-							</xforms:group>-->
+							</xforms:repeat>
 
 							<xforms:repeat nodeset="ead:physfacet">
 								<xhtml:div class="pair_div">
@@ -430,6 +431,9 @@
 						<xforms:instance id="dimensions-template" xxforms:exclude-result-prefixes="#all">
 							<dimensions/>
 						</xforms:instance>
+						<xforms:instance id="genreform-template" xxforms:exclude-result-prefixes="#all">
+							<genreform/>
+						</xforms:instance>
 						<xforms:instance id="extent-template" xxforms:exclude-result-prefixes="#all">
 							<extent/>
 						</xforms:instance>
@@ -457,18 +461,6 @@
 						<!-- controlled instances-->
 						<!-- languages -->
 						<xforms:instance id="languageselect-template" src="oxf:/apps/eaditor/xforms/instances/languages.xml"/>
-
-						<!-- container types -->
-						<!--<xforms:instance id="containertype-template">
-							<containertypes xmlns="">
-								<container value="">Select...</container>
-								<container value="box">Box</container>
-								<container value="box-folder">Box-Folder</container>
-								<container value="folder">Folder</container>
-								<container value="reel">Reel</container>
-								<container value="table">Tape</container>
-							</containertypes>
-						</xforms:instance>-->
 					</xforms:model>
 				</xforms:group>
 			</xforms:group>
