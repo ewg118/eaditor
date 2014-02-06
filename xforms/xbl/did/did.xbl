@@ -430,6 +430,9 @@
 						<xforms:instance id="dimensions-template" xxforms:exclude-result-prefixes="#all">
 							<dimensions/>
 						</xforms:instance>
+						<xforms:instance id="genreform-template" xxforms:exclude-result-prefixes="#all">
+							<genreform/>
+						</xforms:instance>
 						<xforms:instance id="extent-template" xxforms:exclude-result-prefixes="#all">
 							<extent/>
 						</xforms:instance>
@@ -457,18 +460,6 @@
 						<!-- controlled instances-->
 						<!-- languages -->
 						<xforms:instance id="languageselect-template" src="oxf:/apps/eaditor/xforms/instances/languages.xml"/>
-
-						<!-- container types -->
-						<!--<xforms:instance id="containertype-template">
-							<containertypes xmlns="">
-								<container value="">Select...</container>
-								<container value="box">Box</container>
-								<container value="box-folder">Box-Folder</container>
-								<container value="folder">Folder</container>
-								<container value="reel">Reel</container>
-								<container value="table">Tape</container>
-							</containertypes>
-						</xforms:instance>-->
 					</xforms:model>
 				</xforms:group>
 			</xforms:group>
