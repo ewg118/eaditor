@@ -130,6 +130,7 @@
 						<xhtml:div>
 							<xforms:textarea ref=".">
 								<xforms:label>Abstract</xforms:label>
+								<xforms:alert>Required</xforms:alert>
 							</xforms:textarea>
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -308,8 +309,8 @@
 								<xhtml:div>
 									<xforms:input ref=".">
 										<xforms:label>Extent</xforms:label>
+										<xforms:alert>Required</xforms:alert>
 									</xforms:input>
-
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
