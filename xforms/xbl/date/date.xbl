@@ -172,7 +172,7 @@
 						<xforms:instance id="control-instance">
 							<controls xmlns="">
 								<interface>date</interface>
-								<loaded/>
+								<loaded>false</loaded>
 								<inputs>
 									<date/>
 									<dateRange>

@@ -108,26 +108,10 @@
 
 			<xforms:bind node="instance('guide')">
 				<xforms:bind nodeset="//*/@id" type="xs:ID"/>
-				<xforms:bind nodeset="ead:eadheader">
-					<xforms:bind nodeset="ead:eadid">
-						<xforms:bind constraint="string-length(.) &gt; 0"/>
-						<xforms:bind nodeset="@countrycode">
-							<xforms:bind constraint="string-length(.) &gt; 0"/>
-						</xforms:bind>
-						<xforms:bind nodeset="@mainagencycode">
-							<xforms:bind constraint="string-length(.) &gt; 0"/>
-						</xforms:bind>
-					</xforms:bind>
-					<xforms:bind nodeset="ead:filedesc">
-						<xforms:bind nodeset="ead:titlestmt">
-							<xforms:bind nodeset="ead:titleproper" required="true()"/>
-						</xforms:bind>
-						<!--<xforms:bind nodeset="editionstmt"
-							relevant="count(//editionstmt) &lt; 3"/>-->
-					</xforms:bind>
-				</xforms:bind>
-				<xforms:bind nodeset="ead:archdesc">
+				<xforms:bind nodeset="//ead:c">
+					<xforms:bind nodeset="@id" required="true()"/>
 					<xforms:bind nodeset="@level" required="true()"/>
+					<xforms:bind nodeset="@otherlevel" type="xs:NMTOKEN"/>
 					<xforms:bind nodeset="ead:did">						
 						<xforms:bind nodeset="ead:unitid" required="true()"/>
 						<xforms:bind nodeset="ead:langmaterial">
@@ -139,13 +123,6 @@
 							<xforms:bind nodeset="ead:extent" required="true()"/>
 						</xforms:bind>
 						<xforms:bind nodeset="ead:abstract" required="true()"/>
-					</xforms:bind>
-					<xforms:bind nodeset="ead:dsc">
-						<xforms:bind nodeset="ead:c">
-							<xforms:bind nodeset="@id" required="true()"/>
-							<xforms:bind nodeset="@level" required="true()"/>
-							<xforms:bind nodeset="@otherlevel" type="xs:NMTOKEN"/>
-						</xforms:bind>
 					</xforms:bind>
 				</xforms:bind>
 				<xforms:bind nodeset="//ead:tgroup/@cols" required="true()" type="xs:integer"/>

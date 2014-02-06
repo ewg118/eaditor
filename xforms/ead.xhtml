@@ -230,9 +230,8 @@
 					<xforms:bind nodeset="ead:filedesc">
 						<xforms:bind nodeset="ead:titlestmt">
 							<xforms:bind nodeset="ead:titleproper" required="true()"/>
+							<xforms:bind nodeset="ead:author" required="true()"/>
 						</xforms:bind>
-						<!--<xforms:bind nodeset="editionstmt"
-							relevant="count(//editionstmt) &lt; 3"/>-->
 					</xforms:bind>
 				</xforms:bind>
 				<xforms:bind nodeset="ead:archdesc">
