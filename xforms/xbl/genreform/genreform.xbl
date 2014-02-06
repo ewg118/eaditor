@@ -277,9 +277,9 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 SELECT ?c ?label WHERE {
 ?c rdf:type gvp:Concept .
-?c skos:prefLabel ?label
+?c skos:prefLabel ?label .
+?c luc:term "SEARCH_QUERY"
 FILTER langMatches(lang(?label), "en") .
-FILTER regex(?label, "SEARCH_QUERY", "i") .
 }
 ORDER BY ASC(?label)
 LIMIT 25]]>
