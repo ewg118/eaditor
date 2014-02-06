@@ -39,6 +39,7 @@
 					<query_input/>
 					<query_sent/>
 					<solr-core/>
+					<data_path>/usr/local/projects/nyead/ead</data_path>
 				</controls>
 			</xforms:instance>
 
@@ -189,7 +190,34 @@
 			<xforms:instance id="guide">
 				<ead xmlns=""/>
 			</xforms:instance>
+			
+			<!-- saving and deleting files in the XTF data dir -->
+			<xforms:instance id="xtf-load-config">
+				<config xmlns="">
+					<url/>
+					<content-type>application/xml</content-type>
+					<mode>xml</mode>
+				</config>
+			</xforms:instance>
+			
+			<xforms:instance id="xtf-save-config">
+				<config xmlns="">
+					<url/>
+					<content-type>application/xml</content-type>
+					<make-directories>true</make-directories>
+					<append>false</append>
+				</config>
+			</xforms:instance>
+			
+			<xforms:instance id="xtf-delete-config">
+				<config xmlns="">
+					<delete>
+						<url/>
+					</delete>
+				</config>
+			</xforms:instance>
 
+			<!-- ******** XQUERY INSTANCES ******* -->
 			<xforms:instance id="eXist-xquery">
 				<exist:query xmlns="">
 					<exist:text/>
@@ -436,7 +464,13 @@
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:action xxforms:iterate="instance('pagination-result')//record">
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()/id"/>
-						<xforms:send submission="query-solr-for-publication"/>
+						<!--<xforms:send submission="query-solr-for-publication"/>-->
+						<!-- load file from disk into instance. if the result is <message>error</message>, then it is not published -->
+						<xforms:setvalue ref="instance('xtf-load-config')/url"
+							value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('control-instance')/id, '.xml')"/>
+						<xforms:insert nodeset="instance('guide')"
+							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-load.xpl', 'file', instance('xtf-load-config'), 'data')"/>
+						<xforms:setvalue ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" if="not(instance('guide')='error')">true</xforms:setvalue>
 					</xforms:action>
 				</xforms:action>
 			</xforms:submission>
@@ -614,9 +648,9 @@
 						<li>
 							<a href="upload/">Upload Guide</a>
 						</li>
-					</ul>
-					<h3>Batch Operations</h3>
-					<xforms:group ref=".[count(instance('pagination-result')//record) &gt; 0]">
+					</ul>					
+					<!--<xforms:group ref=".[count(instance('pagination-result')//record) &gt; 0]">
+						<h3>Batch Operations</h3>
 						<ul>
 							<li>
 								<xforms:trigger appearance="minimal">
@@ -637,7 +671,7 @@
 								</xforms:trigger>
 							</li>
 						</ul>
-					</xforms:group>
+					</xforms:group>-->
 					<!-- search -->
 					<xforms:group ref="instance('control-instance')[number(numFound) &gt; 0]">
 						<div>
@@ -939,7 +973,7 @@
 					</xforms:group>
 				</div>
 				<!-- instance inspector -->
-				<!--<fr:xforms-inspector/>-->
+				<fr:xforms-inspector/>
 			</div>
 			<div id="temp" style="display:none"/>
 			<span id="collection-name" style="visibility:hidden">
@@ -1030,6 +1064,15 @@
 			<fr:negative-choice/>
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
+					<!-- save to XTF dir -->
+					<xforms:send submission="load-guide"/>
+					<xforms:action ev:event="xforms-submit-done">
+						<xforms:setvalue ref="instance('xtf-save-config')/url"
+							value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('control-instance')/id, '.xml')"/>
+						<xforms:insert nodeset="instance('dump')"
+							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-save.xpl', ('doc', 'configuration'), (instance('guide'), instance('xtf-save-config')), 'data')"/>
+					</xforms:action>					
+					<!-- post to solr -->					
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="doc-to-solr"/>
 					<xforms:send submission="commit"/>
@@ -1047,6 +1090,12 @@
 			<fr:negative-choice/>
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
+					<!-- delete file from XTF dir -->					
+					<xforms:setvalue ref="instance('xtf-delete-config')/delete/url"
+						value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('control-instance')/id, '.xml')"/>
+					<xforms:insert nodeset="instance('dump')"
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-delete.xpl', 'file', instance('xtf-delete-config'), 'data')"/>
+					<!-- delete from Solr -->
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="delete-solr-doc"/>
@@ -1064,7 +1113,12 @@
 			<fr:negative-choice/>
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
-					<!-- dleete from exist and solr -->
+					<!-- delete file from XTF dir -->					
+					<xforms:setvalue ref="instance('xtf-delete-config')/delete/url"
+						value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('control-instance')/id, '.xml')"/>
+					<xforms:insert nodeset="instance('dump')"
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-delete.xpl', 'file', instance('xtf-delete-config'), 'data')"/>					
+					<!-- delete from exist and solr -->
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
 					<xforms:send submission="delete-guide"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
