@@ -37,6 +37,10 @@
 					</eadheader>
 				</ead>
 			</xforms:instance>
+			
+			<xforms:instance id="temp-guide">
+				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+			</xforms:instance>
 
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-config">
@@ -51,7 +55,8 @@
 				<controls xmlns="">
 					<collection-name/>
 					<id/>
-					<status/>					
+					<status/>	
+					<data_path>/usr/local/projects/nyead/ead</data_path>					
 				</controls>
 			</xforms:instance>
 			
@@ -72,6 +77,24 @@
 			<!-- table of contents for navigation -->
 			<xforms:instance id="toc">
 				<dsc xmlns=""/>
+			</xforms:instance>
+			
+			<!-- saving and deleting files in the XTF data dir -->
+			<xforms:instance id="xtf-load-config">
+				<config xmlns="">
+					<url/>
+					<content-type>application/xml</content-type>
+					<mode>xml</mode>
+				</config>
+			</xforms:instance>
+			
+			<xforms:instance id="xtf-save-config">
+				<config xmlns="">
+					<url/>
+					<content-type>application/xml</content-type>
+					<make-directories>true</make-directories>
+					<append>false</append>
+				</config>
 			</xforms:instance>
 
 			<!-- solr response for id query -->
@@ -210,6 +233,17 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
 					<xforms:send submission="query-solr-for-publication"/>
+					<!-- re-save to disk of XML file already found -->
+					<xforms:setvalue ref="instance('xtf-load-config')/url"
+						value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
+					<xforms:insert nodeset="instance('temp-guide')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-load.xpl', 'file', instance('xtf-load-config'), 'data')"/>
+					<!-- if temp-guide is not an error, thus exists on the filesystem, re-save to filesystem -->
+					<xforms:action if="not(instance('temp-guide')='error')">
+						<xforms:setvalue ref="instance('xtf-save-config')/url"
+							value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
+						<xforms:insert nodeset="instance('dump')"
+							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-save.xpl', ('doc', 'configuration'), (instance('guide'), instance('xtf-save-config')), 'data')"/>
+					</xforms:action>					
 					<!-- reload toc -->
 					<xforms:send submission="load-toc"/>
 				</xforms:action>

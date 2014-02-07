@@ -867,8 +867,8 @@
 									<tr>
 										<th style="width:5%">Type</th>
 										<th style="width:50%">Title</th>
-										<th style="width:10%">Public<br/>View</th>
-										<th style="width:10%">Private<br/>View</th>
+										<th style="width:10%">XTF<br/>View</th>
+										<th style="width:10%">EADitor<br/>View</th>
 										<th style="width:15%">Actions</th>
 										<th style="width:5%">Publish</th>
 										<th style="width:5%">Delete</th>
@@ -909,12 +909,8 @@
 												</xforms:group>
 											</td>
 											<td class="{$class} center">
-												<xforms:group ref=".[instance('config')/ark/@enabled=true()]">
-													<a href="{instance('config')/url}ark:/{instance('config')/ark/naan}/{$id}.xml" target="_blank">xml</a> | <a
-														href="{instance('config')/url}ark:/{instance('config')/ark/naan}/{$id}" target="_blank">html</a>
-												</xforms:group>
-												<xforms:group ref=".[instance('config')/ark/@enabled=false()]">
-													<a href="{instance('config')/url}id/{$id}.xml" target="_blank">xml</a> | <a href="{instance('config')/url}id/{$id}" target="_blank">html</a>
+												<xforms:group ref=".[published = 'true']">
+													<a href="http://64.72.72.152:8080/xtf/view?docId=ead/{instance('control-instance')/collection-name}/{$id}.xml" target="_blank">html</a>
 												</xforms:group>
 											</td>
 											<td class="{$class} center"><a href="{instance('control-instance')/collection-name}/id/{$id}.xml" target="_blank">xml</a> | <a
