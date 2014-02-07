@@ -26,14 +26,6 @@
 							<xforms:output ref="$binding">
 								<xforms:label>Genreform</xforms:label>
 							</xforms:output>
-							<!--<xforms:group ref=".[string($binding/@authfilenumber)]">
-								<xforms:trigger appearance="xxforms:link">
-									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/external.png"/>
-									</xforms:label>
-									<xforms:load ev:event="DOMActivate" ref="$binding/@authfilenumber" show="new"/>
-								</xforms:trigger>
-							</xforms:group>-->
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:setvalue ref="instance('suggest-query')"/>
@@ -120,8 +112,9 @@
 										<xforms:input ref="instance('search-query')"/>										
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
+												<xforms:var name="search_query" select="string-join(tokenize(instance('search-query'), ' '), ' AND ')"/>
 												<xforms:setvalue ref="instance('sparqlQuery')"
-													value="normalize-space(replace(instance('sparqlQueryTemplate'), 'SEARCH_QUERY', instance('search-query')))"/>
+													value="normalize-space(replace(instance('sparqlQueryTemplate'), 'SEARCH_QUERY', $search_query))"/>
 												<xforms:send submission="query-aat"/>
 											</xforms:action>
 											<xforms:label>Search</xforms:label>
@@ -275,7 +268,6 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 SELECT ?c ?label WHERE {
-PREFIX aat: <http://vocab.getty.edu/aat/>
 ?c rdf:type gvp:Concept .
 ?c skos:inScheme <http://vocab.getty.edu/aat/> .
 ?c skos:prefLabel ?label .
