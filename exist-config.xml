@@ -11,4 +11,5 @@ Note: do not forget trailing / after db!
 	<username>admin</username>
 	<password/>
 	<url>http://localhost:8080/exist/rest/db/</url>
+	<data_path>/usr/local/projects/nyead/ead</data_path>
 </exist-config>

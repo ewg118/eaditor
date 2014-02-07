@@ -55,7 +55,6 @@
 				<controls xmlns="">
 					<collection-name/>
 					<status/>
-					<data_path>/usr/local/projects/nyead/ead</data_path>
 				</controls>
 			</xforms:instance>
 
@@ -403,12 +402,12 @@
 					<xforms:send submission="query-solr-for-publication"/>
 					<!-- re-save to disk of XML file already found -->
 					<xforms:setvalue ref="instance('xtf-load-config')/url"
-						value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
+						value="concat('file://', instance('exist-config')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
 					<xforms:insert nodeset="instance('temp-guide')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-load.xpl', 'file', instance('xtf-load-config'), 'data')"/>
 					<!-- if temp-guide is not an error, thus exists on the filesystem, re-save to filesystem -->
 					<xforms:action if="not(instance('temp-guide')='error')">
 						<xforms:setvalue ref="instance('xtf-save-config')/url"
-							value="concat('file://', instance('control-instance')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
+							value="concat('file://', instance('exist-config')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
 						<xforms:insert nodeset="instance('dump')"
 							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-save.xpl', ('doc', 'configuration'), (instance('guide'), instance('xtf-save-config')), 'data')"/>
 					</xforms:action>				
