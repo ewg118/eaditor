@@ -137,7 +137,7 @@
 				</xsl:choose>
 			</field>
 
-			<field name="fulltext">
+			<field name="text">
 				<xsl:value-of select="@id"/>
 				<xsl:text> </xsl:text>
 				<xsl:for-each select="descendant-or-self::node()">

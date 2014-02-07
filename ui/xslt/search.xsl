@@ -52,7 +52,7 @@
 	</xsl:template>
 
 	<xsl:template name="search_options">
-		<option value="fulltext" class="search_option" id="keyword_option">Keyword</option>
+		<option value="text" class="search_option" id="keyword_option">Keyword</option>
 		<option value="corpname_text" class="search_option" id="corpname_option">Corporate Name</option>
 		<option value="famname_text" class="search_option" id="famname_option">Family Name</option>
 		<option value="unitid_display" class="search_option" id="unitid_option">Finding Aid ID</option>

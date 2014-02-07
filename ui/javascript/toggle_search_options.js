@@ -14,7 +14,7 @@ $(document).ready(function() {
 		var selected_id = $(this) .children("option:selected") .attr('id');
 		var num = $(this) .parent() .attr('id') .split('_')[1];
 		var field = $(this).children('option:selected').val();
-		if (field == 'fulltext' || field.indexOf('_text') > 0 || field.indexOf('_display') > 0) {
+		if (field == 'text' || field.indexOf('_text') > 0 || field.indexOf('_display') > 0) {
 			if ($(this) .parent() .children('.option_container') .children('input') .attr('class') != 'search_text') {
 				$(this) .parent() .children('.option_container') .html('');
 				$(this) .parent() .children('.option_container') .html('<input type="text" id="search_text" class="search_text"/>');
