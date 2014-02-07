@@ -117,9 +117,7 @@
 							<xforms:switch>
 								<xforms:case id="aat-search">
 									<div>
-										<xforms:input ref="instance('search-query')">
-											<xforms:label>Search</xforms:label>
-										</xforms:input>
+										<xforms:input ref="instance('search-query')"/>										
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="instance('sparqlQuery')"
