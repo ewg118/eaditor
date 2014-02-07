@@ -231,7 +231,7 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
-					<xforms:send submission="query-solr-for-publication"/>
+					<!--<xforms:send submission="query-solr-for-publication"/>-->
 					<!-- re-save to disk of XML file already found -->
 					<xforms:setvalue ref="instance('xtf-load-config')/url"
 						value="concat('file://', instance('exist-config')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>

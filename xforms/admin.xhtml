@@ -1067,9 +1067,9 @@
 							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-save.xpl', ('doc', 'configuration'), (instance('guide'), instance('xtf-save-config')), 'data')"/>
 					</xforms:action>
 					<!-- post to solr -->
-					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
+					<!--<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
 					<xforms:send submission="doc-to-solr"/>
-					<xforms:send submission="commit"/>
+					<xforms:send submission="commit"/>-->
 					<!-- reload table -->
 					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
 					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
@@ -1089,9 +1089,9 @@
 						value="concat('file://', instance('exist-config')/data_path, '/', instance('control-instance')/collection-name, '/', instance('control-instance')/id, '.xml')"/>
 					<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xtf-delete.xpl', 'file', instance('xtf-delete-config'), 'data')"/>
 					<!-- delete from Solr -->
-					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
+					<!--<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
 					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
-					<xforms:send submission="delete-solr-doc"/>
+					<xforms:send submission="delete-solr-doc"/>-->
 					<!-- reload table -->
 					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
 					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
@@ -1113,8 +1113,8 @@
 					<!-- delete from exist and solr -->
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"/>
 					<xforms:send submission="delete-guide"/>
-					<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
-					<xforms:send submission="delete-solr-doc"/>
+					<!--<xforms:setvalue ref="instance('control-instance')/solr-core" value="instance('config')/solr_published"/>
+					<xforms:send submission="delete-solr-doc"/>-->
 
 					<!-- get new numCount -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"/>

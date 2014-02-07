@@ -399,7 +399,7 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
 					<!-- check to see if the document is already published to Solr -->
-					<xforms:send submission="query-solr-for-publication"/>
+					<!--<xforms:send submission="query-solr-for-publication"/>-->
 					<!-- re-save to disk of XML file already found -->
 					<xforms:setvalue ref="instance('xtf-load-config')/url"
 						value="concat('file://', instance('exist-config')/data_path, '/', instance('control-instance')/collection-name, '/', instance('guide')/ead:eadheader/ead:eadid, '.xml')"/>
