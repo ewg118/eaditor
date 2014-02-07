@@ -41,7 +41,7 @@
 					<xsl:when test="$elem = 'extent'">Extent</xsl:when>
 					<xsl:when test="$elem = 'famname'">Family Name</xsl:when>
 					<xsl:when test="$elem = 'fileplan'">Fileplan</xsl:when>
-					<xsl:when test="$elem = 'fulltext'">Keyword</xsl:when>
+					<xsl:when test="$elem = 'text'">Keyword</xsl:when>
 					<xsl:when test="$elem = 'function'">Function</xsl:when>
 					<xsl:when test="$elem = 'genreform'">Genre/Format</xsl:when>
 					<xsl:when test="$elem = 'geogname'">Geographical Name</xsl:when>

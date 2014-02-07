@@ -69,7 +69,7 @@
 						<xsl:value-of select="normalize-space(.)"/>
 					</field>
 				</xsl:for-each>
-				<field name="fulltext">
+				<field name="text">
 					<xsl:for-each select="descendant-or-self::node()">
 						<xsl:value-of select="text()"/>
 						<xsl:text> </xsl:text>
