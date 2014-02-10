@@ -34,13 +34,23 @@
 								<xsl:value-of select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 							</xsl:otherwise>
 						</xsl:choose>
-					</xsl:variable>					
-					<xsl:copy-of select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/config.xml'))"/>
+					</xsl:variable>	
+
+					<config>
+						<url>
+							<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/config.xml')"/>
+						</url>
+						<content-type>application/xml</content-type>
+						<encoding>utf-8</encoding>
+					</config>
 				</xsl:template>
 			</xsl:stylesheet>
 		</p:input>
-		<p:output name="data" ref="data"/>
+		<p:output name="data" id="generator-config"/>
 	</p:processor>
 
-
+	<p:processor name="oxf:url-generator">
+		<p:input name="config" href="#generator-config"/>
+		<p:output name="data" ref="data"/>
+	</p:processor>
 </p:config>

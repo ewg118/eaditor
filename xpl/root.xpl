@@ -22,6 +22,4 @@
 		</p:input>
 		<p:output name="data" ref="data"/>
 	</p:processor>
-
-
 </p:config>
