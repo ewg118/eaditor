@@ -161,12 +161,19 @@
 	</xsl:param>
 
 	<xsl:template match="/">
-		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+		<xsl:apply-templates select="/content/*[not(local-name()='config')]" mode="root"/>
 	</xsl:template>
 
-	<xsl:template match="ead:ead|mods:mods|tei:TEI">
-		<html xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
-			<head>
+	<xsl:template match="*" mode="root">
+		<html>
+			<head prefix="dcterms: http://purl.org/dc/terms/
+				foaf: http://xmlns.com/foaf/0.1/
+				owl:  http://www.w3.org/2002/07/owl#
+				rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+				skos: http://www.w3.org/2004/02/skos/core#
+				dcterms: http://purl.org/dc/terms/
+				arch: http://purl.org/archival/vocab/arch#
+				xsd: http://www.w3.org/2001/XMLSchema#">
 				<title>
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
@@ -174,17 +181,20 @@
 						<xsl:when test="string(ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper)">
 							<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
 						</xsl:when>
-						<xsl:when test="string(ead:c/ead:did/ead:unittitle)">
-							<xsl:value-of select="ead:c/ead:did/ead:unittitle"/>
+						<xsl:when test="string(ead:did/ead:unittitle)">
+							<xsl:value-of select="ead:did/ead:unittitle"/>
 						</xsl:when>
 						<xsl:when test="string(mods:titleInfo/mods:title)">
 							<xsl:value-of select="mods:titleInfo/mods:title"/>
 						</xsl:when>
+						<xsl:when test="string(tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title)">
+							<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
+						</xsl:when>
 					</xsl:choose>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{$uri}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{$uri}.rdf"/>
+				<link rel="alternate" type="text/xml" href="{$path}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$path}.rdf"/>
 
 				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
@@ -256,10 +266,10 @@
 				<a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a>
 			</div>
 			<div class="icon">
-				<a href="{$uri}.rdf">RDF/XML</a>
+				<a href="{$id}.rdf">RDF/XML</a>
 			</div>
 			<div class="icon">
-				<a href="{$uri}.xml">XML</a>
+				<a href="{$id}.xml">XML</a>
 			</div>
 		</div>
 	</xsl:template>

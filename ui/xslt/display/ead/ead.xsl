@@ -9,7 +9,7 @@
 				<div class="yui3-g">
 					<div class="yui3-u-1">
 						<div class="content">
-							<xsl:apply-templates select="ead:c" mode="component"/>
+							<xsl:call-template name="component-template"/>
 						</div>
 					</div>
 				</div>

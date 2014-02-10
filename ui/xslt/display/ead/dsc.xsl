@@ -27,10 +27,6 @@
 		</p>
 	</xsl:template>
 
-	<xsl:template match="ead:c" mode="component">
-		<xsl:call-template name="component-template"/>
-	</xsl:template>
-
 	<xsl:template match="ead:c">
 		<li>
 			<xsl:call-template name="component-template"/>
