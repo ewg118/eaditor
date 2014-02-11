@@ -266,10 +266,10 @@
 				<a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a>
 			</div>
 			<div class="icon">
-				<a href="{$id}.rdf">RDF/XML</a>
+				<a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a>
 			</div>
 			<div class="icon">
-				<a href="{$id}.xml">XML</a>
+				<a href="{tokenize($path, '/')[last()]}.xml">XML</a>
 			</div>
 		</div>
 	</xsl:template>
