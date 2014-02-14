@@ -10,6 +10,10 @@ $(document).ready(function () {
 		$('#image-container').html('');
 		$('#annot').html('');
 		
+		//reset selected class
+		$('img.selected').removeAttr('class');
+		$(this).children('img').attr('class','selected');
+		
 		//then destroy annotations before reloading
 		anno.destroy();
 		
@@ -17,12 +21,115 @@ $(document).ready(function () {
 		var image = $(this).attr('href');
 		var id = $(this).attr('id');
 		load_image(id, image);
+		
+		//enable/disable prev/next page links
+		if (id == $('#first-page').text()) {
+			$('#prev-page').attr('class','disabled');
+			$('#next-page').removeAttr('class');
+		}
+		if (id == $('#last-page').text()) {
+			$('#next-page').attr('class','disabled');
+			$('#prev-page').removeAttr('class');
+		}	
+		//alter goto page dropdown
+		$('#goto-page').val(id);		
 		return false;
 	});
+	
+	/* navigation pagination */
 	$('#prev-page').click(function () {
-		alert('test');
+		var current_id = $('img.selected').parent('.page-image').attr('id');
+		var prev_id = $('#' + current_id).prev('.page-image').attr('id');
+		if (prev_id != null){
+			//first clear container div and annot div
+			$('#image-container').html('');
+			$('#annot').html('');
+			
+			//reset selected class
+			$('img.selected').removeAttr('class');
+			$('#' + prev_id).children('img').attr('class','selected');
+			
+			//then destroy annotations before reloading
+			anno.destroy();
+			
+			//reload
+			var image = $('#' + prev_id).attr('href');
+			var id = $('#' + prev_id).attr('id');
+			load_image(id, image);
+		}	
+		//enable/disable link
+		if (prev_id == $('#first-page').text()) {
+			$('#prev-page').attr('class','disabled');
+			$('#next-page').removeAttr('class');
+		}
+		//alter goto page dropdown
+		$('#goto-page').val(prev_id);
 		return false;
 	});
+	$('#next-page').click(function () {
+		var current_id = $('img.selected').parent('.page-image').attr('id');
+		var next_id = $('#' + current_id).next('.page-image').attr('id');
+		if (next_id != null){
+			//first clear container div and annot div
+			$('#image-container').html('');
+			$('#annot').html('');
+			
+			//reset selected class
+			$('img.selected').removeAttr('class');
+			$('#' + next_id).children('img').attr('class','selected');
+			
+			//then destroy annotations before reloading
+			anno.destroy();
+			
+			//reload
+			var image = $('#' + next_id).attr('href');
+			var id = $('#' + next_id).attr('id');
+			load_image(id, image);
+		}
+		//enable/disable link
+		if (next_id == $('#last-page').text()) {
+			$('#next-page').attr('class','disabled');
+			$('#prev-page').removeAttr('class');
+		}		
+		//alter goto page dropdown
+		$('#goto-page').val(next_id);		
+		return false;
+	});
+	
+	/* go to page dropdown */
+	$('#goto-page').change(function(){
+		var id = $(this).val();
+		
+		//first clear container div and annot div
+		$('#image-container').html('');
+		$('#annot').html('');
+		
+		//reset selected class
+		$('img.selected').removeAttr('class');
+		$('#' + id).children('img').attr('class','selected');
+		
+		//then destroy annotations before reloading
+		anno.destroy();
+		
+		//reload
+		var image = $('#' + id).attr('href');
+		load_image(id, image);
+			
+		//enable/disable link
+		if (id == $('#first-page').text()) {
+			$('#prev-page').attr('class','disabled');
+			$('#next-page').removeAttr('class');
+		} else if (id == $('#last-page').text()) {
+			$('#next-page').attr('class','disabled');
+			$('#prev-page').removeAttr('class');
+		} else {
+			$('#next-page').removeAttr('class');
+			$('#prev-page').removeAttr('class');
+		}
+		return false;
+	});
+	
+	/* image scroller */
 	$('#left-scroll').click(function () {
 		$('#slider-thumbs').animate({
 			scrollLeft: - 500

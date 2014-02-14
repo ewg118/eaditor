@@ -45,50 +45,54 @@
 			</div>
 			<div id="slider">
 				<div id="left-scroll">
-					<span>&lt;</span>
+					<div>⇐</div>
 				</div>
 				<div id="slider-thumbs">
 					<xsl:apply-templates select="tei:facsimile" mode="slider"/>
 				</div>
 				<div id="right-scroll">
-					<span>&gt;</span>
+					<div>⇒</div>
 				</div>
 			</div>
 
-			<span id="image-path" style="display:none">
-				<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
-			</span>
-			<span id="image-id" style="display:none">
-				<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-			</span>
-			<div id="display_path" style="display:none">
-				<xsl:value-of select="$display_path"/>
-			</div>
-			<div id="doc" style="display:none">
-				<xsl:value-of select="$doc"/>
-			</div>
-			<span id="image-container"/>
-			<!--<ul id="facsimile-list">
-				<xsl:for-each select="tei:facsimile">
-					<li>
-						<a href="{concat($include_path, 'ui/media/archive/', tei:graphic/@url, '.jpg')}">
-							<xsl:value-of select="@xml:id"/>
-						</a>
-					</li>
-				</xsl:for-each>
-			</ul>-->
+			<!-- controls -->
+			<div style="display:none">
+				<span id="image-path">
+					<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
+				</span>
+				<span id="image-id">
+					<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+				</span>
+				<span id="display_path">
+					<xsl:value-of select="$display_path"/>
+				</span>
+				<span id="doc">
+					<xsl:value-of select="$doc"/>
+				</span>
+				<span id="first-page">
+					<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+				</span>
+				<span id="last-page">
+					<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
+				</span>
+				<span id="image-container"/>
+			</div>			
 		</div>
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="slider">
 		<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" title="{tei:graphic/@n}" class="page-image" id="{@xml:id}">
-			<img src="{$include_path}ui/media/thumbnail/{tei:graphic/@url}.jpg" alt="{tei:graphic/@n}"/>
+			<img src="{$include_path}ui/media/thumbnail/{tei:graphic/@url}.jpg" alt="{tei:graphic/@n}">
+				<xsl:if test="position()=1">
+					<xsl:attribute name="class">selected</xsl:attribute>
+				</xsl:if>
+			</img>
 		</a>
 	</xsl:template>
 
 	<xsl:template name="page-navigation">
 		<div class="nav">
-			<a href="#" id="prev-page">&lt;&lt;Previous</a>
+			<a href="#" id="prev-page" class="disabled">⇐Previous</a>
 			<span id="goto-container">
 				<xsl:text>Go to page: </xsl:text>
 				<select id="goto-page">
@@ -104,7 +108,7 @@
 					</xsl:for-each>
 				</select>
 			</span>
-			<a href="#" id="next-page">Next&gt;&gt;</a>
+			<a href="#" id="next-page">Next⇒</a>
 		</div>
 	</xsl:template>
 
