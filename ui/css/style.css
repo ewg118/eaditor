@@ -481,17 +481,19 @@ button.ui-multiselect {
   TEI Display
   ***************************************
  */
-/*#map-annotate-button {
-	position:absolute;
-	top:3px;
-	right:3px;
-	background-color:#000;
-	color:#fff;
-	padding:3px 8px;
-	z-index:10000;
-	font-size:11px;
-	text-decoration:none;
-}*/
+/*
+  #map-annotate-button {
+  position:absolute;
+  top:3px;
+  right:3px;
+  background-color:#000;
+  color:#fff;
+  padding:3px 8px;
+  z-index:10000;
+  font-size:11px;
+  text-decoration:none;
+  }
+ */
 #annot-parent {
 	position:relative;
 	width:50%;
@@ -499,19 +501,46 @@ button.ui-multiselect {
 }
 #annot {
 	background-color:white;
-	width:50%;
+	width:100%;
 	height:600px;
 }
-#slider {
-	padding:20px;
+/*#slider {
+	margin:20px 0;	
+}*/
+#slider-thumbs {
+	float:left;
+	width:150px;
+	height:200px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space:nowrap;
+	border-top:1px solid silver;
+	border-bottom:1px solid silver;
+}
+#left-scroll, #right-scroll {
+	width:5%;	
+	height:200px;
+	float:left;
+	background-color:#ebebeb;
+	border:1px solid silver;
+}
+#left-scroll span, #right-scroll span {
+	vertical-align:middle;	
 }
 .page-image {
 	margin:5px;
 }
 #image-container {
-	position: absolute;
-	visibility: hidden;
-	display: block
+	display:none;
+}
+.nav {
+	background-color:#efefef;
+	border:1px solid silver;
+	margin:10px 0;
+}
+#prev-page, #goto-container, #next-page {
+	border-right: 1px solid silver;
+	padding:0 5px;
 }
 /*
   ***************************************

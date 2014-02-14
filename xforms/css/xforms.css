@@ -229,7 +229,5 @@
 	height:600px;
 }
 #image-container {
-	position: absolute;
-	visibility: hidden;
-	display: block
+	display: none;
 }

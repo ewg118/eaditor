@@ -14,18 +14,34 @@ $(document).ready(function () {
 		anno.destroy();
 		
 		//reload
-		var image = $(this).children('a').attr('href');
+		var image = $(this).attr('href');
 		var id = $(this).attr('id');
 		load_image(id, image);
 		return false;
+	});
+	$('#prev-page').click(function () {
+		alert('test');
+		return false;
+	});
+	$('#left-scroll').click(function () {
+		$('#slider-thumbs').animate({
+			scrollLeft: - 500
+		},
+		1000)
+	});
+	$('#right-scroll').click(function () {
+		$('#slider-thumbs').animate({
+			scrollLeft: 500
+		},
+		1000)
 	});
 });
 
 function load_image(id, image) {
 	var dimensions = new Array();
 	$('<img/>').on("load", function () {
-		dimensions[ "height"] = $(this).height();
-		dimensions[ "width"] = $(this).width();
+		dimensions[ "height"] = this.naturalHeight;
+		dimensions[ "width"] = this.naturalWidth;
 		render_map(id, image, dimensions);
 	}).attr('src', image).appendTo('#image-container');
 }
