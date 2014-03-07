@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/"
 	xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-	exclude-result-prefixes="#all" version="2.0">
+	xmlns:dc="http://purl.org/dc/elements/1.1/" exclude-result-prefixes="#all" version="2.0">
 
 	<xsl:template match="/">
 		<xsl:text>{"label":"</xsl:text>
 		<xsl:call-template name="get_label"/>
 		<xsl:text>"}</xsl:text>
 	</xsl:template>
-	
+
 	<xsl:template name="get_label">
-		<xsl:choose>	
+		<xsl:choose>
 			<xsl:when test="count(descendant::skos:prefLabel) &gt; 0">
 				<xsl:choose>
 					<xsl:when test="string(descendant::skos:prefLabel[@xml:lang='en'])">
@@ -31,7 +31,10 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="count(descendant::dc:Title) &gt; 0">
+				<xsl:value-of select="descendant::dc:Title[1]"/>
+			</xsl:when>
+			<xsl:otherwise>				
 				<xsl:value-of select="response"/>
 			</xsl:otherwise>
 		</xsl:choose>
