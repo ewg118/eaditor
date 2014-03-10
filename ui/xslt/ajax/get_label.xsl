@@ -32,7 +32,7 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="count(descendant::dc:Title) &gt; 0">
-				<xsl:value-of select="descendant::dc:Title[1]"/>
+				<xsl:value-of select="replace(descendant::dc:Title[1], '&#x022;', '\\&#x022;')"/>
 			</xsl:when>
 			<xsl:otherwise>				
 				<xsl:value-of select="response"/>

@@ -307,16 +307,30 @@
 																</xforms:trigger>
 															</td>
 															<td>
+																<xforms:group ref=".[not(tei:graphic/@n)]">
+																	<xforms:trigger appearance="minimal">
+																		<xforms:alert><img src="/apps/eaditor/xforms/images/add.gif"/>Page Number</xforms:alert>
+																	</xforms:trigger>
+																	<xforms:insert ev:event="DOMActivate" context="tei:graphic" origin="xxforms:attribute('n', '')"/>
+																</xforms:group>
 																<div>
 																	<xforms:output ref="@xml:id">
 																		<xforms:label>ID</xforms:label>
 																	</xforms:output>
 																</div>
-																<div>
-																	<xforms:input ref="tei:graphic/@n">
-																		<xforms:label>Page Number</xforms:label>
-																	</xforms:input>
-																</div>
+																<xforms:group ref="tei:graphic/@n">
+																	<div>
+																		<xforms:input ref=".">
+																			<xforms:label>Page Number</xforms:label>
+																		</xforms:input>
+																		<xforms:trigger appearance="minimal">
+																			<xforms:delete ev:event="DOMActivate" context="."/>
+																			<xforms:label>
+																				<img src="/apps/eaditor/xforms/images/remove.gif"/>
+																			</xforms:label>
+																		</xforms:trigger>
+																	</div>
+																</xforms:group>																
 																<div>
 																	<xforms:output value="count(tei:surface)">
 																		<xforms:label>Annotations</xforms:label>
