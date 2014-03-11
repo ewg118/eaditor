@@ -309,9 +309,9 @@
 															<td>
 																<xforms:group ref=".[not(tei:graphic/@n)]">
 																	<xforms:trigger appearance="minimal">
-																		<xforms:alert><img src="/apps/eaditor/xforms/images/add.gif"/>Page Number</xforms:alert>
-																	</xforms:trigger>
-																	<xforms:insert ev:event="DOMActivate" context="tei:graphic" origin="xxforms:attribute('n', '')"/>
+																		<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Page Number</xforms:label>
+																		<xforms:insert ev:event="DOMActivate" context="tei:graphic" origin="xxforms:attribute('n', '')"/>
+																	</xforms:trigger>																	
 																</xforms:group>
 																<div>
 																	<xforms:output ref="@xml:id">

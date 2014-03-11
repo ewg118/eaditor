@@ -43,17 +43,22 @@
 			<div>
 				<div id="annot"/>
 			</div>
-			<div id="slider">
-				<div id="left-scroll">
-					<div>⇐</div>
-				</div>
-				<div id="slider-thumbs">
-					<xsl:apply-templates select="tei:facsimile" mode="slider"/>
-				</div>
-				<div id="right-scroll">
-					<div>⇒</div>
-				</div>
-			</div>
+			<table id="slider">
+				<tr>
+					<td id="left-scroll">
+						<span>⇐</span>
+					</td>
+					<td>
+						<div id="slider-thumbs">
+							<xsl:apply-templates select="tei:facsimile" mode="slider"/>
+						</div>						
+					</td>
+					<td id="right-scroll">
+						<span>⇒</span>
+					</td>
+				</tr>
+				
+			</table>
 
 			<!-- controls -->
 			<div style="display:none">
