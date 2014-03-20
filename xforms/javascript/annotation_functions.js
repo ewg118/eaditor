@@ -109,6 +109,7 @@ anno.addHandler('onAnnotationUpdated', function (annotation) {
 	//set modified to true
 	ORBEON.xforms.Document.setValue('doc-modified', 'true');
 });
+
 /********** URI PARSING **********/
 //construct HTML links from regular expressions
 function replaceURLWithHTMLLinks(text) {
