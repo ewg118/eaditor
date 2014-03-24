@@ -108,7 +108,6 @@
 									</div>
 									<xforms:group ref=".[count(instance('sparqlResponse')//res:result) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" length="20">
-											<xforms:label>Term</xforms:label>
 											<xforms:itemset nodeset="instance('sparqlResponse')//res:result">
 												<xforms:label ref="res:binding[@name='label']/res:literal"/>
 												<xforms:value ref="res:binding[@name='c']/res:uri"/>
