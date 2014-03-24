@@ -1,6 +1,6 @@
 <!-- 	author: Ethan Gruber, American Numismatic Society 
-	last modified: June, 2011
-	function: EAD genreform component; user taps into LCSH or local vocabulary for genreforms
+	last modified: March, 2014
+	function: query Getty AAT SPARQL endpoint or use local vocabulary
 -->
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -190,7 +190,7 @@
 									</div>
 									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
 										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
-											<xforms:label>Location</xforms:label>
+											<xforms:label>Term</xforms:label>
 											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
 												<xforms:label ref="@name"/>
 												<xforms:value ref="@name"/>
@@ -268,14 +268,10 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 SELECT ?c ?label WHERE {
-?c rdf:type gvp:Concept .
-?c skos:inScheme <http://vocab.getty.edu/aat/> .
-?c skos:prefLabel ?label .
-?c luc:term "SEARCH_QUERY"
-FILTER langMatches(lang(?label), "en") .
-}
-ORDER BY ASC(?label)
-LIMIT 25]]>
+?c rdf:type gvp:Concept ;
+skos:inScheme aat: ;
+gvp:prefLabelGVP/xl:literalForm ?label ;
+luc:term "SEARCH_QUERY" } LIMIT 25]]>
 							</query>
 						</xforms:instance>
 
