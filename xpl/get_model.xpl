@@ -80,8 +80,42 @@
 			
 			<p:processor name="oxf:url-generator">
 				<p:input name="config" href="#generator-config"/>
-				<p:output name="data" ref="data"/>
+				<p:output name="data" id="url-data"/>
 			</p:processor>
+			
+			<p:processor name="oxf:exception-catcher">
+				<p:input name="data" href="#url-data"/>
+				<p:output name="data" id="url-data-checked"/>
+			</p:processor>
+			
+			<!-- Check whether we had an exception -->
+			<p:choose href="#url-data-checked">
+				<p:when test="/exceptions">
+					<!-- Extract the message -->
+					<p:processor name="oxf:xslt">
+						<p:input name="request" href="#request"/>
+						<p:input name="data" href="#url-data-checked"/>
+						<p:input name="config">
+							<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+								<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
+								<xsl:template match="/">
+									<response>
+										<xsl:value-of select="$uri"/>
+									</response>
+								</xsl:template>
+							</xsl:stylesheet>
+						</p:input>
+						<p:output name="data" ref="data"/>
+					</p:processor>
+				</p:when>
+				<p:otherwise>
+					<!-- Just return the document -->
+					<p:processor name="oxf:identity">
+						<p:input name="data" href="#url-data-checked"/>
+						<p:output name="data" ref="data"/>
+					</p:processor>
+				</p:otherwise>
+			</p:choose>
 		</p:when>
 		<p:otherwise>
 			<p:processor name="oxf:unsafe-xslt">
