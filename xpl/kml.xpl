@@ -13,7 +13,7 @@
 
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="#data"/>				
-		<p:input name="config" href="../ui/xslt/geographic/solr-to-kml.xsl"/>
+		<p:input name="config" href="../ui/xslt/serializations/solr/kml.xsl"/>
 		<p:output name="data" id="model"/>
 	</p:processor>
 	

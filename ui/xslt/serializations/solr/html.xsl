@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	exclude-result-prefixes="#all" version="2.0">
-	<xsl:include href="templates.xsl"/>
-	<xsl:include href="functions.xsl"/>
+	<xsl:include href="../../templates.xsl"/>
+	<xsl:include href="../../functions.xsl"/>
 
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="facets">
