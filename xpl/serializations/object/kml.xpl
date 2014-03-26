@@ -30,7 +30,7 @@
 	</p:processor>
 	
 	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="config.xpl"/>		
+		<p:input name="config" href="../../models/config.xpl"/>		
 		<p:output name="data" id="config"/>
 	</p:processor>
 	
@@ -38,15 +38,15 @@
 		<p:input name="request" href="#request"/>
 		<p:input name="params" href="#params"/>
 		<p:input name="data" href="aggregate('content', #data, #config)"/>		
-		<p:input name="config" href="../ui/xslt/linked_data/object-to-rdf.xsl"/>
+		<p:input name="config" href="../../../ui/xslt/serializations/object/kml.xsl"/>
 		<p:output name="data" id="model"/>		
 	</p:processor>
-	
+
 	<p:processor name="oxf:xml-serializer">
 		<p:input name="data" href="#model"/>
 		<p:input name="config">
 			<config>
-				<content-type>application/rdf+xml</content-type>
+				<content-type>application/vnd.google-earth.kml+xml</content-type>
 			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>

@@ -4,9 +4,9 @@
 	xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:tei="http://www.tei-c.org/ns/1.0"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" exclude-result-prefixes="mods ead xlink tei" version="2.0">
-	<xsl:include href="../display/ead/rdf.xsl"/>
-	<xsl:include href="../display/mods/rdf.xsl"/>
-	<xsl:include href="../display/tei/rdf.xsl"/>
+	<xsl:include href="../ead/rdf.xsl"/>
+	<xsl:include href="../mods/rdf.xsl"/>
+	<xsl:include href="../tei/rdf.xsl"/>
 
 	<!-- url params -->
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>

@@ -3,9 +3,9 @@
 	exclude-result-prefixes="#all" version="2.0">
 
 	<!-- includes -->
-	<xsl:include href="display/ead/solr.xsl"/>
-	<xsl:include href="display/mods/solr.xsl"/>
-	<xsl:include href="display/tei/solr.xsl"/>
+	<xsl:include href="../ead/solr.xsl"/>
+	<xsl:include href="../mods/solr.xsl"/>
+	<xsl:include href="../tei/solr.xsl"/>
 
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
