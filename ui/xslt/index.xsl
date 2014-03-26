@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="xhtml" encoding="UTF-8"/>
 	<xsl:include href="templates.xsl"/>
 
 	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
@@ -13,22 +12,17 @@
 				<title>
 					<xsl:value-of select="/config/title"/>
 				</title>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
-
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-
-				<!-- menu -->
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
+				<link rel="stylesheet" href="{$display_path}ui/css/style.css"/>
+				<xsl:if test="string(/config/google_analytics)">
+					<script type="text/javascript">
+						<xsl:value-of select="/config/google_analytics"/>
+					</script>
+				</xsl:if>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -39,12 +33,12 @@
 	</xsl:template>
 
 	<xsl:template name="index">
-		<div class="yui3-g">
-			<div class="yui3-u-4-5">
-				<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-8">
 					<h2>Introduction</h2>
 					<p>EADitor is an XForms framework for the creation and editing of <a href="http://www.loc.gov/ead/" rel="nofollow">Encoded Archival Description</a> (EAD) finding aids using <a
-							href="http://www.orbeon.com" rel="nofollow">Orbeon</a>, an enterprise-level XForms Java application, which runs in Apache Tomcat. </p>
+						href="http://www.orbeon.com" rel="nofollow">Orbeon</a>, an enterprise-level XForms Java application, which runs in Apache Tomcat. </p>
 					<h2>Why XForms?</h2>
 					<p>Many institutions have faced challenges in the efficient creation of electronic finding aids since the introduction of EAD in 1998. For finding aids to be useful to patrons of
 						archives, robust metadata is required to adequately describe the conceptual organization of a manuscript collection. Subject specialists contribute their knowledge to provide
@@ -59,15 +53,13 @@
 						communities. </p>
 					<h2>More Info</h2>
 					<p>Technical list, geared toward XForms developers in libraries: <a href="https://list.mail.virginia.edu/mailman/listinfo/xforms4lib" rel="nofollow"
-							>https://list.mail.virginia.edu/mailman/listinfo/xforms4lib</a>
+						>https://list.mail.virginia.edu/mailman/listinfo/xforms4lib</a>
 					</p>
 					<p>Non-technical list, for librarians and archivists interested in EADitor specifically: <a href="http://groups.google.com/group/eaditor" rel="nofollow"
-							>http://groups.google.com/group/eaditor</a>
+						>http://groups.google.com/group/eaditor</a>
 					</p>
 				</div>
-			</div>
-			<div class="yui3-u-1-5">
-				<div class="content">
+				<div class="col-md-4">
 					<div class="quick_search">
 						<h3>Search Entire Collection</h3>
 						<form action="results/" method="GET">
@@ -95,9 +87,4 @@
 			</div>
 		</div>
 	</xsl:template>
-
-
-
-
-
 </xsl:stylesheet>
