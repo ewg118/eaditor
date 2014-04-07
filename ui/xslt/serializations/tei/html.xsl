@@ -96,7 +96,7 @@
 	</xsl:template>
 
 	<xsl:template name="page-navigation">
-		<div class="nav">
+		<div class="facs-nav">
 			<a href="#" id="prev-page" class="disabled">⇐Previous</a>
 			<span id="goto-container">
 				<xsl:text>Go to page: </xsl:text>

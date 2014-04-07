@@ -6,8 +6,12 @@
 		<html>
 			<head>
 				<title>EADitor</title>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-				<!-- EADitor styling -->
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet"
+					href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
 			</head>
 			<body>
@@ -17,9 +21,9 @@
 	</xsl:template>
 
 	<xsl:template name="content">
-		<div class="yui3-g">
-			<div class="yui3-u-1">
-				<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
 					<h2>EADitor</h2>
 					<p>Please select one of the following collections:</p>
 					<ul>

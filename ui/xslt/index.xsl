@@ -60,15 +60,8 @@
 					</p>
 				</div>
 				<div class="col-md-4">
-					<div class="quick_search">
-						<h3>Search Entire Collection</h3>
-						<form action="results/" method="GET">
-							<input type="text" id="qs_text" name="q"/>
-							<input id="qs_button" type="submit" value="Search"/>
-						</form>
-					</div>
-					<div id="linked_data">
-						<h3>Linked Data</h3>
+					<div>
+						<h3>Export Options</h3>
 						<a href="feed/?q=*:*">
 							<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>

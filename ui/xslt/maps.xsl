@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all"
-	version="2.0">	
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
-	
-	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>	
+
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="include_path">../../</xsl:variable>
 	<xsl:variable name="pipeline">maps</xsl:variable>
 
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang"
+		select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 
 	<xsl:template match="/">
@@ -21,7 +23,8 @@
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: Maps</xsl:text>
 				</title>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
+				<link rel="stylesheet" type="text/css"
+					href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
 				<!-- EADitor styling -->
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
@@ -76,7 +79,9 @@
 						<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
 							<div style="display:table;width:100%">
 								<ul id="filter_list" section="maps">
-									<xsl:apply-templates select="/content//lst[@name='facet_fields']/lst[descendant::int]"/>
+									<xsl:apply-templates
+										select="/content//lst[@name='facet_fields']/lst[descendant::int]"
+									/>
 								</ul>
 							</div>
 							<div id="mapcontainer"/>
@@ -120,7 +125,9 @@
 				<xsl:when test="contains(@name, '_hier')">
 					<xsl:variable name="title" select="eaditor:normalize_fields(@name, $lang)"/>
 
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all hierarchical-facet" type="button" title="{$title}" aria-haspopup="true" style="width: 200px;"
+					<button
+						class="ui-multiselect ui-widget ui-state-default ui-corner-all hierarchical-facet"
+						type="button" title="{$title}" aria-haspopup="true" style="width: 200px;"
 						id="{@name}_link" label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>
@@ -128,26 +135,37 @@
 						</span>
 					</button>
 
-					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all hierarchical-div" id="{substring-before(@name, '_hier')}-container" style="width: 200px;">
-						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
+					<div
+						class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all hierarchical-div"
+						id="{substring-before(@name, '_hier')}-container" style="width: 200px;">
+						<div
+							class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
 							<ul class="ui-helper-reset">
 								<li class="ui-multiselect-close">
-									<a class="ui-multiselect-close hier-close" href="#"> close<span class="ui-icon ui-icon-circle-close"/>
+									<a class="ui-multiselect-close hier-close" href="#"> close<span
+											class="ui-icon ui-icon-circle-close"/>
 									</a>
 								</li>
 							</ul>
 						</div>
-						<ul class="{substring-before(@name, '_hier')}-multiselect-checkboxes ui-helper-reset hierarchical-list" id="{@name}-list" style="height: 195px;" title="{$title}"/>
+						<ul
+							class="{substring-before(@name, '_hier')}-multiselect-checkboxes ui-helper-reset hierarchical-list"
+							id="{@name}-list" style="height: 195px;" title="{$title}"/>
 					</div>
 					<br/>
 				</xsl:when>
 				<xsl:when test="@name='century_num'">
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 200px;" id="{@name}_link" label="{$q}">
+					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all"
+						type="button" title="Date" aria-haspopup="true" style="width: 200px;"
+						id="{@name}_link" label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
 					</button>
-					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all date-div" style="width: 192px;">
-						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
+					<div
+						class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all date-div"
+						style="width: 192px;">
+						<div
+							class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
 							<ul class="ui-helper-reset">
 								<li class="ui-multiselect-close">
 									<a class="ui-multiselect-close century-close" href="#">
@@ -156,23 +174,30 @@
 								</li>
 							</ul>
 						</div>
-						<ul class="century-multiselect-checkboxes ui-helper-reset" id="{@name}-list" style="height: 192px;">
+						<ul class="century-multiselect-checkboxes ui-helper-reset" id="{@name}-list"
+							style="height: 192px;">
 							<xsl:for-each select="int">
 								<li>
 									<span class="expand_century" century="{@name}" q="{$q}">
-										<img src="{$include_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
+										<img
+											src="{$include_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif"
+											alt="expand"/>
 									</span>
 									<xsl:choose>
 										<xsl:when test="contains($q, concat(':',@name))">
-											<input type="checkbox" value="{@name}" checked="checked" class="century_checkbox"/>
+											<input type="checkbox" value="{@name}" checked="checked"
+												class="century_checkbox"/>
 										</xsl:when>
 										<xsl:otherwise>
-											<input type="checkbox" value="{@name}" class="century_checkbox"/>
+											<input type="checkbox" value="{@name}"
+												class="century_checkbox"/>
 										</xsl:otherwise>
 									</xsl:choose>
 									<!-- output for 1800s, 1900s, etc. -->
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
-									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}"/>
+									<ul id="century_{@name}_list" class="decades-list"
+										style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}"
+									/>
 								</li>
 							</xsl:for-each>
 						</ul>
@@ -189,7 +214,9 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}">
+					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10"
+						title="{$title}" q="{$q}"
+						new_query="{if (contains($q, @name)) then $select_new_query else ''}">
 						<xsl:if test="$pipeline='maps'">
 							<xsl:attribute name="style">width:200px</xsl:attribute>
 						</xsl:if>

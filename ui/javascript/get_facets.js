@@ -9,6 +9,7 @@ $(document).ready(function() {
 	var popupStatus = 0;
 	var langStr = getURLParameter('lang');
 	var pipeline = 'results';
+	var path = '../';
 	if (langStr == 'null'){
 		var lang = '';
 	} else {
@@ -31,118 +32,75 @@ $(document).ready(function() {
 		disablePopup();
 	});
 	
-	//hover over remove facet link
-	$(".remove_filter").hover(
-		function () {
-			$(this).parent().addClass("ui-state-hover");
-		},
-		function () {
-			$(this).parent().removeClass("ui-state-hover");
-		}
-	);
-	$("#clear_all").hover(
-		function () {
-			$(this).parent().addClass("ui-state-hover");
-		},
-		function () {
-			$(this).parent().removeClass("ui-state-hover");
-		}
-	);
+	/***** SEARCH *****/
+	$('#search_button') .click(function () {
+		var q = getQuery();
+		$('#facet_form_query').attr('value', q);
+	});
 	
-	//enable multiselect
-	$(".multiselect").multiselect({
-		//selectedList: 3,
-		minWidth: 'auto',
-		header: '<a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"/><span>Uncheck all</span></a>',
-		create: function () {
-			var title = $(this).attr('title');
-			var array_of_checked_values = $(this).multiselect("getChecked").map(function () {
-				return this.value;
-			}).get();
-			var length = array_of_checked_values.length;
-			//fix spacing
-			if (length > 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + length + ' selected');
-			} else if (length > 0 && length <= 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + array_of_checked_values.join(', '));
-			} else if (length == 0) {
-				$(this).next('button').children('span:nth-child(2)').text(title);
-			}
-		},
-		beforeopen: function () {
-			var id = $(this) .attr('id');
-			var q = getQuery();
-			var category = id.split('-select')[0];			
-			$.get('../get_facets/', {
-				q: q, category: category, sort: 'index', limit: - 1, lang: lang, pipeline: pipeline
-			},
-			function (data) {
-				$('#ajax-temp').html(data);
-				$('#' + id) .html('');
-				$('#ajax-temp option').each(function(){
-					$(this).clone().appendTo('#' + id);
+	//multiselect facets
+	$('.multiselect').multiselect({
+		buttonWidth: '250px',
+		enableFiltering: true,
+		maxHeight: 250,
+		buttonText: function (options, select) {
+			if (options.length == 0) {
+				return select.attr('title') + ' <b class="caret"></b>';
+			} else if (options.length > 2) {
+				return select.attr('title') + ': ' + options.length + ' selected <b class="caret"></b>';
+			} else {
+				var selected = '';
+				options.each(function () {
+					selected += $(this).text() + ', ';
 				});
-					$("#" + id).multiselect('refresh');
-				});
-		},
-		//close menu: restore button title if no checkboxes are selected
-		close: function () {
-			var title = $(this).attr('title');
-			var id = $(this) .attr('id');
-			var array_of_checked_values = $(this).multiselect("getChecked").map(function () {
-				return this.value;
-			}).get();
-			if (array_of_checked_values.length == 0) {
-				$(this).next('button').children('span:nth-child(2)').text(title);
-			}
-		},
-		click: function () {
-			var title = $(this).attr('title');
-			var id = $(this) .attr('id');
-			var array_of_checked_values = $(this).multiselect("getChecked").map(function () {
-				return this.value;
-			}).get();
-			var length = array_of_checked_values.length;
-			if (length > 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + length + ' selected');
-			} else if (length > 0 && length <= 3) {
-				var label = title + ': ' + array_of_checked_values.join(', ');
-				$(this).next('button').children('span:nth-child(2)').text(label);
-			} else if (length == 0) {
-				var q = getQuery();
-				if (q.length > 0) {
-					var category = id.split('-select')[0];
-					$.get('../get_facets/', {
-						q: q, category: category, sort: 'index', limit: - 1, lang: lang, pipeline: pipeline
-					},
-					function (data) {
-						$('#' + id) .attr('new_query', '');
-						$('#' + id) .html(data);
-						$('#' + id).multiselect('refresh');
-					});
+				label = selected.substr(0, selected.length - 2);
+				if (label.length > 20) {
+					label = label.substr(0, 20) + '...';
 				}
+				return select.attr('title') + ': ' + label + ' <b class="caret"></b>';
 			}
 		},
-		uncheckAll: function () {
-			var id = $(this) .attr('id');
-			var q = getQuery();
-			if (q.length > 0) {
+		onChange: function (element, checked) {
+			//if there are 0 selected checks in the multiselect, re-initialize ajax to populate list
+			id = element.parent('select').attr('id');
+			if ($('#' + id).val() == null) {
+				var q = getQuery();
 				var category = id.split('-select')[0];
-				var mincount = $(this).attr('mincount');
-				$.get('../get_facets/', {
-					q: q, category: category, sort: 'index', limit: - 1, lang: lang, pipeline: pipeline
+				$.get(path + 'get_facets/', {
+					q: q, category: category, sort: 'index', lang: lang
 				},
 				function (data) {
-					$('#' + id) .attr('new_query', '');
-					$('#' + id) .html(data);
-					$('#' + id).multiselect('refresh');
+					$('#ajax-temp').html(data);
+					$('#' + id) .html('');
+					$('#ajax-temp option').each(function () {
+						$(this).clone().appendTo('#' + id);
+					});
+					$("#" + id).multiselect('rebuild');
 				});
 			}
 		}
-	}).multiselectfilter();
+	});
+	
+	//on open
+	$('button.multiselect').on('click', function () {
+		var q = getQuery();
+		var id = $(this).parent('div').prev('select').attr('id');
+		var category = id.split('-select')[0];
+		$.get(path + 'get_facets/', {
+			q: q, category: category, sort: 'index', lang: lang, pipeline: pipeline
+		},
+		function (data) {
+			$('#ajax-temp').html(data);
+			$('#' + id) .html('');
+			$('#ajax-temp option').each(function () {
+				$(this).clone().appendTo('#' + id);
+			});
+			$("#" + id).multiselect('rebuild');
+		});
+	});
 	
 	/***************** DRILLDOWN HIERARCHICAL FACETS ********************/
-	$('.hierarchical-facet').hover(function () {
+	/*$('.hierarchical-facet').hover(function () {
 		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
 	},
 	function () {
@@ -215,10 +173,10 @@ $(document).ready(function() {
 			$('#' + field + '_hier_link').children('span:nth-child(2)').html(title);
 		}
 		
-	});
+	});*/
 	
 	/***************** DRILLDOWN FOR DATES ********************/
-	$('#century_num_link').hover(function () {
+	/*$('#century_num_link').hover(function () {
 		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
 	},
 	function () {
@@ -284,12 +242,8 @@ $(document).ready(function() {
 		//set label
 		dateLabel();
 	});	
+	*/
 	
-	/***** SEARCH *****/
-	$('#search_button') .click(function () {
-		var q = getQuery();
-		window.location = './?q=' + q;	
-	});
 
 	/***************************/
 	//@Author: Adrian "yEnS" Mato Gondelle

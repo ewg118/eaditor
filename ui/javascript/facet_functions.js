@@ -1,7 +1,5 @@
 /*******************
 FUNCTIONS USED IN FACET-BASED PAGES: BROWSE, COLLECTION, AND MAPS
-
-
 ********************/
 function getQuery() {
 	//get categories
@@ -49,17 +47,18 @@ function getQuery() {
 		query.push(getDate());
 	}
 	
-	//get multiselects
-	$('.multiselect').each(function () {
+	$('select.multiselect').each(function () {
+		var val = $(this).val();
 		var facet = $(this).attr('id').split('-')[0];
-		var segment = $(this).multiselect("getChecked").map(function () {
-			return facet + ':"' + this.value + '"';
-		}).get();
-		if (segment[0] != null) {
-			if (segment.length > 1) {
-				query.push('(' + segment.join(' OR ') + ')');
+		if (val != null) {
+			segments = new Array();
+			for (var i = 0; i < val.length; i++) {
+				segments.push(facet + ':"' + val[i] + '"');
+			}
+			if (segments.length > 1) {
+				query.push('(' + segments.join(' OR ') + ')');
 			} else {
-				query.push(segment[0]);
+				query.push(segments[0]);
 			}
 		}
 	});

@@ -32,19 +32,19 @@
 					<xsl:when test="$elem = 'century'">Century</xsl:when>
 					<xsl:when test="$elem = 'container'">Container</xsl:when>
 					<xsl:when test="$elem = 'controlaccess'">Controlled Access Headings</xsl:when>
-					<xsl:when test="$elem = 'corpname'">Corporate Name</xsl:when>
+					<xsl:when test="$elem = 'corpname'">Organization</xsl:when>
 					<xsl:when test="$elem = 'custodhist'">Custodial History</xsl:when>
 					<xsl:when test="$elem = 'date'">Date</xsl:when>
 					<xsl:when test="$elem = 'decade'">Decade</xsl:when>
 					<xsl:when test="$elem = 'descgrp'">Descriptive Group</xsl:when>
 					<xsl:when test="$elem = 'dimensions'">Dimensions</xsl:when>
 					<xsl:when test="$elem = 'extent'">Extent</xsl:when>
-					<xsl:when test="$elem = 'famname'">Family Name</xsl:when>
+					<xsl:when test="$elem = 'famname'">Family</xsl:when>
 					<xsl:when test="$elem = 'fileplan'">Fileplan</xsl:when>
 					<xsl:when test="$elem = 'text'">Keyword</xsl:when>
 					<xsl:when test="$elem = 'function'">Function</xsl:when>
 					<xsl:when test="$elem = 'genreform'">Genre/Format</xsl:when>
-					<xsl:when test="$elem = 'geogname'">Geographical Name</xsl:when>
+					<xsl:when test="$elem = 'geogname'">Place</xsl:when>
 					<xsl:when test="$elem = 'langmaterial'">Language</xsl:when>
 					<xsl:when test="$elem = 'language'">Language</xsl:when>
 					<xsl:when test="$elem = 'level'">Level</xsl:when>
@@ -56,7 +56,7 @@
 					<xsl:when test="$elem = 'originalsloc'">Location of Originals</xsl:when>
 					<xsl:when test="$elem = 'origination'">Creator</xsl:when>
 					<xsl:when test="$elem = 'otherfindaid'">Other Finding Aid</xsl:when>
-					<xsl:when test="$elem = 'persname'">Personal Name</xsl:when>
+					<xsl:when test="$elem = 'persname'">Person</xsl:when>
 					<xsl:when test="$elem = 'physdesc'">Physical Description</xsl:when>
 					<xsl:when test="$elem = 'physfacet'">Physical Facet</xsl:when>
 					<xsl:when test="$elem = 'physloc'">Location</xsl:when>

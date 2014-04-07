@@ -8,101 +8,83 @@ and piecing together the search query.
 ************************************/
 $(document).ready(function() {
 
-	
-	// display error if server doesn't respond
-	$("#search") .ajaxError(function (request, settings) {
-		$(this) .html('<div id="error">Error requesting page/service unavailable.</div>');
-	});
-	
-	// total options for advanced search - used for unique id's on dynamically created elements
-	var total_options = 1;
-	
-	// the boolean (and/or) items. these are set when a new search criteria option is created
-	var gate_items = {
-	};
-	
-	// focus the text field after selecting the field to search on
-	$('.searchItemTemplate select') .change(function () {
-		$(this) .siblings('.search_text') .focus();
-	})
-	// copy the base template
-	
-	
-	function gateTypeBtnClick(btn) {
-		// increment - this is really just used to created unique ids for new dom elements
-		total_options++;
-		
-		var tpl = $('#searchItemTemplate') .clone();
-		
-		// reset the id
-		tpl.attr('id', 'searchItemTemplate_' + total_options);
-		// reset the copied item's select element id
-		$(tpl) .children('select') .attr('id', 'search_option_' + total_options);
-		$(tpl) .children('div') .attr('id', 'container_' + total_options);
-		// reset the copied item's remove button id
-		$(tpl) .children('#removeBtn_1') .attr('id', 'removeBtn_' + total_options);
-		
-		// focus the text field after select
-		$(tpl) .children('select') .change(function () {
-			$(this) .siblings('input') .focus();
-		});
-		
-		// assign the handler for all gateTypeBtn elements within the new item/template
-		$(tpl) .children('.gateTypeBtn') .click(function () {
-			gateTypeBtnClick($(this));
-		});
-		
-		// store in a "lookup" object
-		gate_items[total_options] = btn.text();
-		
-		// add the new template to the dom
-		$(btn) .parent() .after(tpl);		
-		
-		//apply jquery ui selectmenu
-		$('#searchItemTemplate_' + total_options).children('.category_list').selectmenu({'style':'dropdown'});
-		
-		// display the entire new template
-		tpl.fadeIn('slow');
-		
-		// re-adjust the footer (footer is absolutely positioned)
-		$('#footer') .css('top', $('#advancedSearchForm') .height() + 'px');
-		
-		// text style the remove part of the new template
-		$('#removeBtn_' + total_options) .before(' |&nbsp;');
-		
-		// make the remove button visible
-		$('#removeBtn_' + total_options) .css('visibility', 'visible');
-		// assign the remove button click handler
-		$('#removeBtn_' + total_options) .click(function () {
-			var id = $(this) .attr('id');
-			var num = id.substring(id.indexOf('_') + 1);
-			// remove the gate/boolean item so the query is still valid
-			delete gate_items[num];
-			// fade out the entire template
-			$(this) .parent() .fadeOut('slow', function () {
-				$(this) .remove();
-			});
-			// move the footer back up
-			$('#footer') .css('top', $('#advancedSearchForm') .height() + 'px');
-		});
-	}
-	
-	// assign the gate/boolean button click handler
-	$('.gateTypeBtn') .click(function () {
+	/***** TOGGLING FACET FORM*****/
+	$('.inputContainer') .on('click', '.searchItemTemplate .gateTypeBtn', function () {
 		gateTypeBtnClick($(this));
+		//disable date select option if there is already a date select option
+		if ($(this).closest('form').attr('id') == 'sparqlForm') {
+			var count = countDate();
+			if (count == 1) {
+				$('#sparqlForm .searchItemTemplate').each(function () {
+					//disable all new searchItemTemplates which are not already set to date
+					if ($(this).children('.sparql_facets').val() != 'date') {
+						$(this).find('option[value=date]').attr('disabled', true);
+					}
+				});
+			}
+		}
+		
+		return false;
+	});
+	$('.inputContainer').on('click', '.searchItemTemplate .removeBtn', function () {
+		//enable date option in sparql form if the date is being removed
+		if ($(this).closest('form').attr('id') == 'sparqlForm') {
+			$('#sparqlForm .searchItemTemplate').each(function () {
+				$(this).find('option[value=date]').attr('disabled', false);
+				//enable submit
+				$('#sparqlForm input[type=submit]').attr('disabled', false);
+				//hide error
+				$('#sparqlForm-alert').hide();
+			});
+		}
+		
+		// fade out the entire template
+		$(this) .parent() .fadeOut('fast', function () {
+			$(this) .remove();
+		});
+		return false;
 	});
 	
+	$('.inputContainer').on('change', '.searchItemTemplate .category_list', function () {
+		var selected_id = $(this) .children("option:selected") .attr('id');
+		var num = $(this) .parent() .attr('id') .split('_')[1];
+		var field = $(this).children('option:selected').val();
+		if (field == 'text' || field.indexOf('_text') > 0 || field.indexOf('_display') > 0) {
+			if ($(this) .parent() .children('.option_container') .children('input') .attr('class') != 'search_text') {
+				$(this) .parent() .children('.option_container') .html('');
+				$(this) .parent() .children('.option_container') .html('<input type="text" id="search_text" class="search_text"/>');
+			}
+		}
+		//SELECTING OTHER DROP DOWN MENUS SECTION
+		else {
+			var category = $(this) .children("option:selected") .attr('value');
+			$(this) .parent('.searchItemTemplate') .children('.option_container') .html('<select class="search_text"></select>');			
+			$.get('../get_facets/', {
+				q : category + ':[* TO *]', category:category, sort: 'index', limit:-1
+			}, function (data) {
+				$('#ajax-temp').html(data);
+				if ($('#ajax-temp').html().indexOf('<option') > 0){
+					$('#ajax-temp option').each(function(){
+						$(this).clone().appendTo($('#container_' + num).children('.search_text'));
+					});
+					$('#container_' + num).children('.search_text').selectmenu({'style':'dropdown'});
+				} else {
+					$('#container_' + num).text('None found');
+				}
+			});				
+		}
+		
+	});
 	
 	// activates the advanced search action
-	$('#search_button') .click(function () {
+	$('#advancedSearchForm').submit(function() {
 		var query = new Array();
 		
 		// loop through each ".searchItemTemplate" and build the query
-		$('#advancedSearchForm .searchItemTemplate') .each(function () {
-			var val = $(this) .children('.category_list') .attr('value');
-			
-			if ($(this).children('.option_container').html().indexOf('search_text') > 0 && $(this) .children('.option_container') .children('.search_text') .attr('value').length > 0) {
-				query.push (val + ':' + $(this) .children('.option_container') .children('.search_text') .attr('value'));
+		$('.inputContainer .searchItemTemplate') .each(function () {
+			var field = $(this) .children('.category_list') .val();
+			if ($(this).children('.option_container').html().indexOf('search_text') > 0 && $(this) .children('.option_container') .children('.search_text') .val().length > 0) {
+				query.push (field + ':' + $(this) .children('.option_container') .children('.search_text') .val());
 			} 
 		});
 		// pass the query to the search_results url passing the needed url params:
@@ -114,4 +96,39 @@ $(document).ready(function() {
 		
 	});
 });
+
+// copy the base template
+function gateTypeBtnClick(btn) {
+	var formId = btn.closest('form').attr('id');
+	
+	//clone the template
+	var tpl = cloneTemplate(formId);
+	
+	// focus the text field after select
+	$(tpl) .children('select') .change(function () {
+		$(this) .siblings('input') .focus();
+	});
+	
+	// add the new template to the dom
+	$(btn) .parent() .after(tpl);
+	
+	tpl.children('.removeBtn').removeAttr('style');
+	tpl.children('.removeBtn') .before(' |&nbsp;');
+	
+	// display the entire new template
+	tpl.fadeIn('fast');
+}
+
+function cloneTemplate(formId) {
+	if (formId == 'sparqlForm') {
+		var tpl = $('#sparqlItemTemplate') .clone();
+	} else {
+		var tpl = $('#searchItemTemplate') .clone();
+	}
+	
+	//remove id to avoid duplication with the template
+	tpl.removeAttr('id');
+	
+	return tpl;
+}
 	

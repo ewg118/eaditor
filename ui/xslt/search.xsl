@@ -13,42 +13,38 @@
 					<xsl:value-of select="/config/title"/>
 					<xsl:text>: Search</xsl:text>
 				</title>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-				<!-- EADitor styling -->
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
-
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-
-				<!-- menu -->
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
-				
-				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
+				<xsl:if test="string(/config/google_analytics)">
+					<script type="text/javascript">
+						<xsl:value-of select="/config/google_analytics"/>
+					</script>
+				</xsl:if>
 				<script type="text/javascript" src="{$include_path}ui/javascript/search.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/toggle_search_options.js"/>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
-				<div class="yui3-g">
-					<div class="yui3-u-1">
-						<div class="content">
-							<h1>Search</h1>
-							<p>Use the drop down menu below for keyword or particular field searches.</p>
-							<xsl:call-template name="search_forms"/>
-							<select style="display:none" id="ajax-temp"/>
-						</div>
-					</div>
-				</div>
-				<xsl:call-template name="footer"/>
+				<xsl:call-template name="content"/>
+				<!--<xsl:call-template name="footer"/>-->
 			</body>
 		</html>
+	</xsl:template>
+	
+	<xsl:template name="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-8">
+					<h1>Search</h1>
+					<p>Use the drop down menu below for keyword or particular field searches.</p>
+					<xsl:call-template name="search_forms"/>
+					<select style="display:none" id="ajax-temp"/>
+				</div>
+			</div>
+		</div>
 	</xsl:template>
 
 	<xsl:template name="search_options">
@@ -65,33 +61,37 @@
 	<xsl:template name="search_forms">
 		<div class="search-form">
 			<form id="advancedSearchForm" method="GET" action="../results/">
-				<div id="searchItemTemplate_1" class="searchItemTemplate">
-					<select id="search_option_1" class="category_list">
-						<xsl:call-template name="search_options"/>
-					</select>
-					<div style="display:inline;" class="option_container" id="container_1">
-						<input type="text" id="search_text" class="search_text" style="display: inline;"/>
+				<div class="inputContainer">
+					<div class="searchItemTemplate">
+						<select id="search_option_1" class="category_list form-control">
+							<xsl:call-template name="search_options"/>
+						</select>
+						<div style="display:inline;" class="option_container" id="container_1">
+							<input type="text" id="search_text" class="search_text form-control" style="display: inline;"/>
+						</div>
+						<a class="gateTypeBtn" href="#">
+							<span class="glyphicon glyphicon-plus"/>
+						</a>
 					</div>
-					<a class="gateTypeBtn" href="#">add »</a>
-					<a id="removeBtn_1" class="removeBtn" href="#">« remove</a>
 				</div>
-				<br/>
-				<br/>
-				<br/>
 				<input name="q" id="q_input" type="hidden"/>
-				<input type="submit" value="Search" id="search_button"/>
+				<input type="submit" value="Search" id="search_button" class="btn btn-default"/>
 			</form>
 		</div>
 
 		<div id="searchItemTemplate" class="searchItemTemplate">
-			<select id="search_option" class="category_list">
+			<select id="search_option" class="category_list form-control">
 				<xsl:call-template name="search_options"/>
 			</select>
 			<div style="display:inline;" class="option_container" id="container">
-				<input type="text" id="search_text" class="search_text" style="display: inline;"/>
+				<input type="text" id="search_text" class="search_text form-control" style="display: inline;"/>
 			</div>
-			<a class="gateTypeBtn" href="#">add »</a>
-			<a id="removeBtn_1" class="removeBtn" href="#">« remove</a>
+			<a class="gateTypeBtn" href="#">
+				<span class="glyphicon glyphicon-plus"/>
+			</a>
+			<a class="removeBtn" href="#" style="display:none;">
+				<span class="glyphicon glyphicon-remove"/>
+			</a>
 		</div>
 	</xsl:template>
 </xsl:stylesheet>

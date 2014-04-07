@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="../../templates.xsl"/>
 	<xsl:include href="../../functions.xsl"/>
@@ -11,31 +12,36 @@
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
+	<xsl:variable name="request-uri"
+		select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
-	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="include_path">../../</xsl:variable>
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
 	<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
-	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang"
+		select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 	<xsl:param name="sort">
 		<xsl:if test="string(doc('input:request')/request/parameters/parameter[name='sort']/value)">
-			<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
+			<xsl:value-of
+				select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
 		</xsl:if>
 	</xsl:param>
 	<xsl:param name="rows">10</xsl:param>
 	<xsl:param name="start">
 		<xsl:choose>
-			<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='start']/value)">
-				<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='start']/value"/>
+			<xsl:when
+				test="string(doc('input:request')/request/parameters/parameter[name='start']/value)">
+				<xsl:value-of
+					select="doc('input:request')/request/parameters/parameter[name='start']/value"/>
 			</xsl:when>
 			<xsl:otherwise>0</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
+	<xsl:variable name="numFound" select="//result[@name='response']/@numFound" as="xs:integer"/>
 
 	<xsl:template match="/">
 		<html>
@@ -44,61 +50,29 @@
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: Search Results</xsl:text>
 				</title>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-				<!-- EADitor styling -->
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet"
+					href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
 
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-
-				<!-- menu -->
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
-
-				<!-- page js/style -->
-				<link rel="stylesheet" href="{$include_path}ui/css/jquery.multiselect.css"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox-1.3.4.css"/>
-
-				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselect.min.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselectfilter.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
-				
+				<script type="text/javascript" src="{$include_path}ui/javascript/result_functions.js"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/get_facets.js"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/facet_functions.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/result_map_functions.js"/>
-				
-				<!--<script type="text/javascript" src="{$include_path}ui/javascript/quick_search.js"/>-->
-				<script type="text/javascript" src="{$include_path}ui/javascript/sort_results.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/bootstrap-multiselect.js"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/bootstrap-multiselect.css"
+					type="text/css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
+				<!--<script type="text/javascript" src="{$include_path}ui/javascript/result_map_functions.js"/>-->
+
+				<!--<script type="text/javascript" src="{$include_path}ui/javascript/sort_results.js"/>
 				<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript">//</script>
-				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>
+				<script src="http://maps.google.com/maps/api/js?v=3.2&amp;sensor=false">//</script>-->
 				<!--<xsl:copy-of select="/content/config/google_analytics/*"/>-->
 
-
-				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#map_results").fancybox({
-							onComplete: function(){
-								if  ($('#resultMap').html().length == 0){								
-									$('#resultMap').html('');
-									initialize_map('<xsl:value-of select="$q"/>');
-								}
-							}
-						});
-						$(".thumbImage a").fancybox();
-						$('.flickr-link').click(function(){
-							var href = $(this).attr('href');
-							$.fancybox.close();
-							window.open(href, '_blank');
-						});
-					});
-				</script>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
@@ -115,45 +89,47 @@
 	</xsl:template>
 
 	<xsl:template match="response">
-		<div class="yui3-g">
-			<div id="backgroundPopup"/>
-			<div class="yui3-u-1-5">
-				<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3">
 					<xsl:if test="//result[@name='response']/@numFound &gt; 0">
 						<div class="data_options">
 							<h3>Data Options</h3>
-							<a href="{$display_path}feed/?q=*:*">
-								<img alt="Atom" title="Atom" src="{$include_path}ui/images/atom-medium.png"/>
+							<a href="{$display_path}feed/?q={if (string($q)) then $q else '*:*'}">
+								<img alt="Atom" title="Atom"
+									src="{$include_path}ui/images/atom-medium.png"/>
 							</a>
 							<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
-								<a href="{$display_path}query.kml?q={$q}">
-									<img src="{$include_path}ui/images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
+								<a href="{$display_path}query.kml?q={if (string($q)) then $q else '*:*'}">
+									<img src="{$include_path}ui/images/googleearth.png" alt="KML"
+										title="KML: Limit, 500 objects"/>
 								</a>
 							</xsl:if>
 						</div>
 						<h3>Refine Results</h3>
-						<!--<xsl:call-template name="quick_search"/>-->
+						<xsl:call-template name="quick_search"/>
 						<xsl:apply-templates select="descendant::lst[@name='facet_fields']"/>
 					</xsl:if>
 				</div>
-			</div>
-			<div class="yui3-u-4-5">
-				<div class="content">
-					<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
+				<div class="col-md-9">
+					<!--<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
 						<div style="display:none">
 							<div id="resultMap"/>
 						</div>
-					</xsl:if>
+					</xsl:if>-->
 					<xsl:call-template name="remove_facets"/>
 					<xsl:choose>
 						<xsl:when test="//result[@name='response']/@numFound &gt; 0">
 							<xsl:call-template name="paging"/>
 							<xsl:call-template name="sort"/>
-							<xsl:apply-templates select="descendant::doc"/>
+							<table class="table table-striped">
+								<xsl:apply-templates select="descendant::doc"/>
+							</table>
 							<xsl:call-template name="paging"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start over.</a></h2>
+							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start
+									over.</a></h2>
 						</xsl:otherwise>
 					</xsl:choose>
 					<span style="display:none" id="pipeline">
@@ -172,125 +148,139 @@
 			<xsl:value-of select="eaditor:normalize_fields($sort_category, $lang)"/>
 		</xsl:variable>
 
-		<div class="result_div">
-			<dl class="result_info">
-				<dt>
-					<xsl:value-of select="eaditor:normalize_fields('title', $lang)"/>
-				</dt>
-				<dd>
-					<xsl:variable name="objectUri">
-						<xsl:choose>
-							<xsl:when test="//config/ark[@enabled='true']">
-								<xsl:choose>
-									<xsl:when test="string(str[@name='cid'])">
-										<xsl:value-of
-											select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:choose>
-									<xsl:when test="string(str[@name='cid'])">
-										<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					<a href="{$objectUri}">
-						<xsl:value-of select="str[@name='unittitle_display']"/>
-					</a>
-				</dd>
-				<xsl:if test="string(str[@name='unitdate_display'])">
+		<tr>
+			<td>
+				<dl class="dl-horizontal">
 					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
+						<xsl:value-of select="eaditor:normalize_fields('title', $lang)"/>
 					</dt>
 					<dd>
-						<xsl:value-of select="str[@name='unitdate_display']"/>
-					</dd>
-				</xsl:if>
-				<xsl:if test="string(str[@name='publisher_display'])">
-					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
-					</dt>
-					<dd>
-						<xsl:value-of select="str[@name='publisher_display']"/>
-						<xsl:if test="str[@name='agencycode_facet']">
-							<xsl:value-of select="concat(' (', str[@name='agencycode_facet'], ')')"/>
-						</xsl:if>
-					</dd>
-				</xsl:if>
-				<xsl:if test="string(str[@name='physdesc_display'])">
-					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
-					</dt>
-					<dd>
-						<xsl:value-of select="str[@name='physdesc_display']"/>
-					</dd>
-				</xsl:if>
-				<xsl:if test="string(arr[@name='level_facet']/str[1])">
-					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
-					</dt>
-					<dd>
-						<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
-					</dd>
-				</xsl:if>
-				<!-- hierarchy -->
-				<xsl:if test="count(arr[@name='dsc_hier']/str) &gt; 0">
-					<xsl:variable name="ark" select="//config/ark/@enabled" as="xs:boolean"/>
-					<xsl:variable name="naan" select="normalize-space(//config/ark/naan)"/>
-					<dt>Organization</dt>
-					<dd>
-						<xsl:for-each select="arr[@name='dsc_hier']/str">
-							<xsl:variable name="pieces" select="tokenize(., '\|')"/>
+						<xsl:variable name="objectUri">
 							<xsl:choose>
-								<xsl:when test="$ark = true()">
-									<a href="{$display_path}ark:/{$naan}/{$pieces[2]}">
-										<xsl:value-of select="$pieces[3]"/>
-										<xsl:text>: </xsl:text>
-										<xsl:value-of select="$pieces[4]"/>
-									</a>
+								<xsl:when test="//config/ark[@enabled='true']">
+									<xsl:choose>
+										<xsl:when test="string(str[@name='cid'])">
+											<xsl:value-of
+												select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"
+											/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of
+												select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"
+											/>
+										</xsl:otherwise>
+									</xsl:choose>
 								</xsl:when>
 								<xsl:otherwise>
-									<a href="{$display_path}id/{$pieces[2]}">
-										<xsl:value-of select="$pieces[3]"/>
-										<xsl:text>: </xsl:text>
-										<xsl:value-of select="$pieces[4]"/>
-									</a>
+									<xsl:choose>
+										<xsl:when test="string(str[@name='cid'])">
+											<xsl:value-of
+												select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"
+											/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of
+												select="concat($display_path, 'id/', str[@name='recordId'])"
+											/>
+										</xsl:otherwise>
+									</xsl:choose>
 								</xsl:otherwise>
 							</xsl:choose>
-							<xsl:if test="not(position()=last())">
-								<xsl:text> | </xsl:text>
-							</xsl:if>
-						</xsl:for-each>
+						</xsl:variable>
+						<a href="{$objectUri}">
+							<xsl:value-of select="str[@name='unittitle_display']"/>
+						</a>
 					</dd>
+					<xsl:if test="string(str[@name='unitdate_display'])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="str[@name='unitdate_display']"/>
+						</dd>
+					</xsl:if>
+					<xsl:if test="string(str[@name='publisher_display'])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="str[@name='publisher_display']"/>
+							<xsl:if test="str[@name='agencycode_facet']">
+								<xsl:value-of
+									select="concat(' (', str[@name='agencycode_facet'], ')')"/>
+							</xsl:if>
+						</dd>
+					</xsl:if>
+					<xsl:if test="string(str[@name='physdesc_display'])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="str[@name='physdesc_display']"/>
+						</dd>
+					</xsl:if>
+					<xsl:if test="string(arr[@name='level_facet']/str[1])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
+						</dd>
+					</xsl:if>
+					<!-- hierarchy -->
+					<xsl:if test="count(arr[@name='dsc_hier']/str) &gt; 0">
+						<xsl:variable name="ark" select="//config/ark/@enabled" as="xs:boolean"/>
+						<xsl:variable name="naan" select="normalize-space(//config/ark/naan)"/>
+						<dt>Organization</dt>
+						<dd>
+							<xsl:for-each select="arr[@name='dsc_hier']/str">
+								<xsl:variable name="pieces" select="tokenize(., '\|')"/>
+								<xsl:choose>
+									<xsl:when test="$ark = true()">
+										<a href="{$display_path}ark:/{$naan}/{$pieces[2]}">
+											<xsl:value-of select="$pieces[3]"/>
+											<xsl:text>: </xsl:text>
+											<xsl:value-of select="$pieces[4]"/>
+										</a>
+									</xsl:when>
+									<xsl:otherwise>
+										<a href="{$display_path}id/{$pieces[2]}">
+											<xsl:value-of select="$pieces[3]"/>
+											<xsl:text>: </xsl:text>
+											<xsl:value-of select="$pieces[4]"/>
+										</a>
+									</xsl:otherwise>
+								</xsl:choose>
+								<xsl:if test="not(position()=last())">
+									<xsl:text> | </xsl:text>
+								</xsl:if>
+							</xsl:for-each>
+						</dd>
+					</xsl:if>
+				</dl>
+			</td>
+			<td class="col-md-4">
+				<xsl:if test="count(arr[@name='collection_thumb']/str) &gt; 0">
+					<div style="float:right">
+						<xsl:apply-templates select="arr[@name='collection_thumb']/str"/>
+					</div>
 				</xsl:if>
-			</dl>
-			<xsl:if test="count(arr[@name='collection_thumb']/str) &gt; 0">
-				<div style="float:right">
-					<xsl:apply-templates select="arr[@name='collection_thumb']/str"/>
-				</div>
-			</xsl:if>
-		</div>
+			</td>
+		</tr>
 	</xsl:template>
 
 	<xsl:template match="arr[@name='collection_thumb']/str">
 		<div class="thumbImage">
 			<xsl:choose>
 				<xsl:when test="contains(., 'flickr.com')">
-					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
+					<xsl:variable name="photo_id"
+						select="substring-before(tokenize(., '/')[last()], '_')"/>
 					<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
 					<xsl:variable name="photo_count"
 						select="count(ancestor::doc/arr[@name='thumb_image']/str) + count(ancestor::doc/arr[@name='collection_thumb']/str)"/>
 					<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
-					<a href="#{generate-id()}" rel="{ancestor::doc/str[@name='recordId']}-gallery" title="{$title}: {position()} of {$photo_count}">
+					<a href="#{generate-id()}" rel="{ancestor::doc/str[@name='recordId']}-gallery"
+						title="{$title}: {position()} of {$photo_count}">
 						<img class="ci" src="{.}"/>
 					</a>
 					<xsl:if test="count(ancestor::doc/arr[@name='thumb_image']/str) &gt; 0">
@@ -299,13 +289,17 @@
 					<div style="display:none">
 						<div id="{generate-id()}">
 							<span href="{$flickr_uri}" class="flickr-link">
-								<img src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"/>
+								<img
+									src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"
+								/>
 							</span>
 						</div>
 						<xsl:for-each select="ancestor::doc/arr[@name='thumb_image']/str">
-							<xsl:variable name="dao_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
+							<xsl:variable name="dao_id"
+								select="substring-before(tokenize(., '/')[last()], '_')"/>
 							<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($dao_id)"/>
-							<a class="image-gallery" rel="{ancestor::doc/str[@name='recordId']}-gallery"
+							<a class="image-gallery"
+								rel="{ancestor::doc/str[@name='recordId']}-gallery"
 								href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $dao_id)][1]}"
 								title="{$title}: {position() + count(ancestor::doc/arr[@name='collection_thumb']/str)} of {$photo_count}">
 								<img src="{.}" alt="image"/>
@@ -321,17 +315,13 @@
 	</xsl:template>
 
 	<xsl:template name="paging">
-		<xsl:variable name="start_var">
+		<xsl:variable name="start_var" as="xs:integer">
 			<xsl:choose>
 				<xsl:when test="string($start)">
 					<xsl:value-of select="$start"/>
 				</xsl:when>
 				<xsl:otherwise>0</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
-
-		<xsl:variable name="numFound">
-			<xsl:value-of select="//result[@name='response']/@numFound"/>
 		</xsl:variable>
 
 		<xsl:variable name="next">
@@ -350,205 +340,92 @@
 		<xsl:variable name="current" select="$start_var div $rows + 1"/>
 		<xsl:variable name="total" select="ceiling($numFound div $rows)"/>
 
-		<div class="paging_div">
-			<div style="float:left;">
-				<xsl:text>Displaying records </xsl:text>
-				<b>
-					<xsl:value-of select="$start_var + 1"/>
-				</b>
-				<xsl:text> to </xsl:text>
-				<xsl:choose>
-					<xsl:when test="$numFound &gt; ($start_var + $rows)">
-						<b>
+		<div class="paging_div row">
+			<div class="col-md-6">
+				<xsl:variable name="startRecord" select="$start_var + 1"/>
+				<xsl:variable name="endRecord">
+					<xsl:choose>
+						<xsl:when test="$numFound &gt; ($start_var + $rows)">
 							<xsl:value-of select="$start_var + $rows"/>
-						</b>
-					</xsl:when>
-					<xsl:otherwise>
-						<b>
+						</xsl:when>
+						<xsl:otherwise>
 							<xsl:value-of select="$numFound"/>
-						</b>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:text> of </xsl:text>
-				<b>
-					<xsl:value-of select="$numFound"/>
-				</b>
-				<xsl:text> total results.</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<span>
+					<b>
+						<xsl:value-of select="$startRecord"/>
+					</b>
+					<xsl:text> to </xsl:text>
+					<b>
+						<xsl:value-of select="$endRecord"/>
+					</b>
+					<text> of </text>
+					<b>
+						<xsl:value-of select="$numFound"/>
+					</b>
+					<xsl:text> total results.</xsl:text>
+				</span>
 			</div>
 
 			<!-- paging functionality -->
-			<div style="float:right;">
-				<xsl:choose>
-					<xsl:when test="$start_var &gt;= $rows">
+			<div class="col-md-6 page-nos">
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group" style="float:right">
 						<xsl:choose>
-							<xsl:when test="string($sort)">
-								<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$previous}&amp;sort={$sort}">«Previous</a>
+							<xsl:when test="$start_var &gt;= $rows">
+								<a class="btn btn-default" title="First"
+									href="?q={encode-for-uri($q)}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-fast-backward"/>
+								</a>
+								<a class="btn btn-default" title="Previous"
+									href="?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-backward"/>
+								</a>
 							</xsl:when>
 							<xsl:otherwise>
-								<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$previous}">«Previous</a>
+								<a class="btn btn-default disabled" title="First"
+									href="?q={encode-for-uri($q)}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-fast-backward"/>
+								</a>
+								<a class="btn btn-default disabled" title="Previous"
+									href="?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-backward"/>
+								</a>
 							</xsl:otherwise>
 						</xsl:choose>
-
-					</xsl:when>
-					<xsl:otherwise>
-						<span class="pagingSep">«Previous</span>
-					</xsl:otherwise>
-				</xsl:choose>
-
-				<!-- always display links to the first two pages -->
-				<xsl:if test="$start_var div $rows &gt;= 3">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start=0&amp;sort={$sort}">
-								<xsl:text>1</xsl:text>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start=0">
-								<xsl:text>1</xsl:text>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-
-				</xsl:if>
-				<xsl:if test="$start_var div $rows &gt;= 4">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$rows}&amp;sort={$sort}">
-								<xsl:text>2</xsl:text>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$rows}">
-								<xsl:text>2</xsl:text>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-
-				</xsl:if>
-
-				<!-- display only if you are on page 6 or greater -->
-				<xsl:if test="$start_var div $rows &gt;= 5">
-					<span class="pagingSep">...</span>
-				</xsl:if>
-
-				<!-- always display links to the previous two pages -->
-				<xsl:if test="$start_var div $rows &gt;= 2">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var - ($rows * 2)}&amp;sort={$sort}">
-								<xsl:value-of select="($start_var div $rows) -1"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var - ($rows * 2)}">
-								<xsl:value-of select="($start_var div $rows) -1"/>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="$start_var div $rows &gt;= 1">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var - $rows}&amp;sort={$sort}">
-								<xsl:value-of select="$start_var div $rows"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var - $rows}">
-								<xsl:value-of select="$start_var div $rows"/>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-
-				</xsl:if>
-
-				<span class="pagingBtn">
-					<b>
-						<xsl:value-of select="$current"/>
-					</b>
-				</span>
-
-				<!-- next two pages -->
-				<xsl:if test="($start_var div $rows) + 1 &lt; $total">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var + $rows}&amp;sort={$sort}">
-								<xsl:value-of select="($start_var div $rows) +2"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var + $rows}">
-								<xsl:value-of select="($start_var div $rows) +2"/>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-
-				</xsl:if>
-				<xsl:if test="($start_var div $rows) + 2 &lt; $total">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var + ($rows * 2)}&amp;sort={$sort}">
-								<xsl:value-of select="($start_var div $rows) +3"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$start_var + ($rows * 2)}">
-								<xsl:value-of select="($start_var div $rows) +3"/>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-
-				</xsl:if>
-				<xsl:if test="$start_var div $rows &lt;= $total - 6">
-					<span class="pagingSep">...</span>
-				</xsl:if>
-
-				<!-- last two pages -->
-				<xsl:if test="$start_var div $rows &lt;= $total - 5">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={($total * $rows) - ($rows * 2)}&amp;sort={$sort}">
-								<xsl:value-of select="$total - 1"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={($total * $rows) - ($rows * 2)}">
-								<xsl:value-of select="$total - 1"/>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="$start_var div $rows &lt;= $total - 4">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={($total * $rows) - $rows}&amp;sort={$sort}">
-								<xsl:value-of select="$total"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={($total * $rows) - $rows}">
-								<xsl:value-of select="$total"/>
-							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-
-				<xsl:choose>
-					<xsl:when test="$numFound - $start_var &gt; $rows">
+						<!-- current page -->
+						<button type="button" class="btn btn-default disabled">
+							<b>
+								<xsl:value-of select="$current"/>
+							</b>
+						</button>
+						<!-- next page -->
 						<xsl:choose>
-							<xsl:when test="string($sort)">
-								<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$next}&amp;sort={$sort}">Next»</a>
+							<xsl:when test="$numFound - $start_var &gt; $rows">
+								<a class="btn btn-default" title="Next"
+									href="?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-forward"/>
+								</a>
+								<a class="btn btn-default"
+									href="?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-fast-forward"/>
+								</a>
 							</xsl:when>
 							<xsl:otherwise>
-								<a class="pagingBtn" href="{$display_path}results/?q={$q}&amp;start={$next}">Next»</a>
+								<a class="btn btn-default disabled" title="Next"
+									href="?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-forward"/>
+								</a>
+								<a class="btn btn-default disabled"
+									href="?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+									<span class="glyphicon glyphicon-fast-forward"/>
+								</a>
 							</xsl:otherwise>
 						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>
-						<span class="pagingSep">Next»</span>
-					</xsl:otherwise>
-				</xsl:choose>
+					</div>
+				</div>
 			</div>
 		</div>
 	</xsl:template>
@@ -557,11 +434,12 @@
 		<xsl:variable name="sort_categories_string">
 			<xsl:text>agency,genreform,language,timestamp,unittitle_display,year_num</xsl:text>
 		</xsl:variable>
-		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
+		<xsl:variable name="sort_categories"
+			select="tokenize(normalize-space($sort_categories_string), ',')"/>
 
 		<div class="sort_div">
-			<form class="sortForm" action="{$display_path}results/">
-				<select class="sortForm_categories">
+			<form role="form" class="sortForm" action="." method="GET">
+				<select class="sortForm_categories form-control">
 					<option>Select from list...</option>
 					<xsl:for-each select="$sort_categories">
 						<xsl:choose>
@@ -578,7 +456,7 @@
 						</xsl:choose>
 					</xsl:for-each>
 				</select>
-				<select class="sortForm_order">
+				<select class="sortForm_order form-control">
 					<xsl:choose>
 						<xsl:when test="contains(substring-after($sort, ' '), 'asc')">
 							<option value="asc" selected="selected">Ascending</option>
@@ -599,14 +477,16 @@
 				<xsl:if test="string($lang)">
 					<input type="hidden" name="lang" value="{$lang}"/>
 				</xsl:if>
-				<input type="hidden" name="q" value="{$q}"/>
+				<input type="hidden" name="q" value="{if (string($q)) then $q else '*:*'}"/>
 				<input type="hidden" name="sort" value="" class="sort_param"/>
 				<xsl:choose>
 					<xsl:when test="string($sort)">
-						<input id="sort_button" type="submit" value="Sort Results"/>
+						<input id="sort_button" type="submit" value="Sort Results"
+							class="btn btn-default"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<input id="sort_button" type="submit" value="Sort Results"/>
+						<input id="sort_button" type="submit" value="Sort Results"
+							class="btn btn-default"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</form>
@@ -614,8 +494,18 @@
 	</xsl:template>
 
 	<xsl:template name="quick_search">
-		<h3>Keyword</h3>
-		<input type="text" id="qs_text"/>
+		<div class="quick_search">
+			<form role="form" action="." method="GET" id="qs_form">
+				<input type="hidden" name="q" id="qs_query" value="{$q}"/>
+				<xsl:if test="string($lang)">
+					<input type="hidden" name="lang" value="{$lang}"/>
+				</xsl:if>
+				<input type="text" class="form-control" id="qs_text" placeholder="Search"/>
+				<button class="btn btn-default" type="submit">
+					<i class="glyphicon glyphicon-search"/>
+				</button>
+			</form>
+		</div>
 	</xsl:template>
 
 	<xsl:template match="lst[@name='facet_fields']">
@@ -645,7 +535,7 @@
 
 			<xsl:choose>
 				<xsl:when test="@name='century_num'">
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true"
+					<!--<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true"
 						style="width: 180px;" id="{@name}_link" label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
@@ -674,53 +564,60 @@
 											<input type="checkbox" value="{@name}" class="century_checkbox"/>
 										</xsl:otherwise>
 									</xsl:choose>
-									<!-- output for 1800s, 1900s, etc. -->
+									<!-\- output for 1800s, 1900s, etc. -\->
 									<xsl:value-of select="eaditor:normalize_century(@name)"/>
 									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
-										<!--<xsl:if test="contains($q, concat(':',@name))">
+										<!-\-<xsl:if test="contains($q, concat(':',@name))">
 											<xsl:copy-of
 												select="document(concat($request-uri, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"
 											/>
-										</xsl:if>-->
+										</xsl:if>-\->
 									</ul>
 								</li>
 							</xsl:for-each>
 						</ul>
-					</div>
+					</div>-->
 				</xsl:when>
 				<xsl:otherwise>
-					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}"
-						new_query="{if (contains($q, @name)) then $select_new_query else ''}" style="width:180px">
-						<!--<xsl:if test="contains($q, @name)">
+					<select id="{@name}-select" title="{$title}" q="{$q}"
+						new_query="{if (contains($q, @name)) then $select_new_query else ''}"
+						class="multiselect" multiple="multiple">
+						<xsl:if test="contains($q, @name)">
 							<xsl:copy-of
 								select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"
 							/>
-						</xsl:if>-->
+						</xsl:if>
 					</select>
 				</xsl:otherwise>
 			</xsl:choose>
 			<br/>
 		</xsl:for-each>
-		<input type="hidden" name="q" id="facet_form_query" value="{if (string($q)) then $q else '*:*'}"/>
-		<br/>
-		<div class="submit_div">
-			<input type="submit" value="Refine Search" id="search_button"/>
-		</div>
+		<form method="GET" action="./" id="facet_form">
+			<input type="hidden" name="q" id="facet_form_query"
+				value="{if (string($q)) then $q else '*:*'}"/>
+			<br/>
+			<div class="submit_div">
+				<input type="submit" value="Refine Search" id="search_button"
+					class="btn btn-default"/>
+			</div>
+		</form>
 	</xsl:template>
 
 	<xsl:template name="remove_facets">
 		<div class="remove_facets">
 			<xsl:choose>
 				<xsl:when test="$q = '*:*'">
-					<h1>All Terms <xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
+					<h1>All Terms
+						<!--<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
 							<a href="#resultMap" id="map_results">Map Results</a>
-						</xsl:if>
+						</xsl:if>-->
 					</h1>
 				</xsl:when>
 				<xsl:otherwise>
-					<h1>Filters <xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
+					<h1>Filters
+						<!--<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
 							<a href="#resultMap" id="map_results">Map Results</a>
-						</xsl:if>
+						</xsl:if>-->
 					</h1>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -745,13 +642,16 @@
 								<xsl:when test="string($field)">
 									<xsl:value-of select="eaditor:normalize_fields($field, $lang)"/>
 								</xsl:when>
-								<xsl:otherwise>Keyword</xsl:otherwise>
+								<xsl:otherwise>
+									<xsl:value-of select="eaditor:normalize_fields($field, $lang)"/>
+								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
 						<xsl:variable name="term">
 							<xsl:choose>
 								<xsl:when test="string(substring-before(., ':'))">
-									<xsl:value-of select="replace(substring-after(., ':'), '&#x022;', '')"/>
+									<xsl:value-of
+										select="replace(substring-after(., ':'), '&#x022;', '')"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="replace(., '&#x022;', '')"/>
@@ -759,13 +659,39 @@
 							</xsl:choose>
 						</xsl:variable>
 
-						<div class="ui-widget ui-state-default ui-corner-all stacked_term">
-							<span class="term">
-								<b><xsl:value-of select="$name"/>: </b>
-								<xsl:value-of select="if ($field = 'century_num') then eaditor:normalize_century($term) else $term"/>
-							</span>
-							<a class="ui-icon ui-icon-closethick remove_filter"
-								href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
+						<div class="stacked_term bg-info row">
+							<!-- establish orientation based on language parameter -->
+							<div class="col-md-10">
+								<span>
+									<b><xsl:value-of select="$name"/>: </b>
+									<xsl:choose>
+										<xsl:when test="$field='century_num'">
+											<!--<xsl:value-of select="numishare:normalize_century($term)"/>-->
+										</xsl:when>
+										<xsl:when test="contains($field, '_hier')">
+											<xsl:variable name="tokens"
+												select="tokenize(substring($term, 2, string-length($term)-2), '\+')"/>
+											<xsl:for-each select="$tokens[position() &gt; 1]">
+												<xsl:sort/>
+												<xsl:value-of
+												select="normalize-space(substring-after(., '|'))"/>
+												<xsl:if test="not(position()=last())">
+												<xsl:text>--</xsl:text>
+												</xsl:if>
+											</xsl:for-each>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$term"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</span>
+							</div>
+							<div class="col-md-2 right">
+								<a
+									href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
+									<span class="glyphicon glyphicon-remove"/>
+								</a>
+							</div>
 						</div>
 
 					</xsl:when>
@@ -773,105 +699,169 @@
 					<xsl:when test="substring(., 1, 1) = '('">
 						<xsl:variable name="tokenized-fragments" select="tokenize(., ' OR ')"/>
 
-						<div class="ui-widget ui-state-default ui-corner-all stacked_term">
-							<span class="term">
-								<xsl:for-each select="$tokenized-fragments">
-									<xsl:variable name="field" select="substring-before(translate(., '()', ''), ':')"/>
-									<xsl:variable name="after-colon" select="substring-after(., ':')"/>
+						<div class="stacked_term bg-info row">
+							<div class="col-md-10">
+								<span>
+									<xsl:for-each select="$tokenized-fragments">
+										<xsl:variable name="field"
+											select="substring-before(translate(., '()', ''), ':')"/>
+										<xsl:variable name="after-colon"
+											select="substring-after(., ':')"/>
 
-									<xsl:variable name="value">
-										<xsl:choose>
-											<xsl:when test="substring($after-colon, 1, 1) = '&#x022;'">
-												<xsl:analyze-string select="$after-colon" regex="&#x022;([^&#x022;]+)&#x022;">
-													<xsl:matching-substring>
-														<xsl:value-of select="concat('&#x022;', regex-group(1), '&#x022;')"/>
-													</xsl:matching-substring>
+										<xsl:variable name="value">
+											<xsl:choose>
+												<xsl:when
+												test="substring($after-colon, 1, 1) = '&#x022;'">
+												<xsl:analyze-string select="$after-colon"
+												regex="&#x022;([^&#x022;]+)&#x022;">
+												<xsl:matching-substring>
+												<xsl:value-of
+												select="concat('&#x022;', regex-group(1), '&#x022;')"
+												/>
+												</xsl:matching-substring>
 												</xsl:analyze-string>
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:analyze-string select="$after-colon" regex="([0-9]+)">
-													<xsl:matching-substring>
-														<xsl:value-of select="regex-group(1)"/>
-													</xsl:matching-substring>
+												</xsl:when>
+												<xsl:when test="substring($after-colon, 1, 1) = '('">
+												<xsl:analyze-string select="$after-colon"
+												regex="\(([^\)]+)\)">
+												<xsl:matching-substring>
+												<xsl:value-of
+												select="concat('(', regex-group(1), ')')"/>
+												</xsl:matching-substring>
 												</xsl:analyze-string>
-											</xsl:otherwise>
-										</xsl:choose>
-									</xsl:variable>
+												</xsl:when>
+												<xsl:otherwise>
+												<xsl:analyze-string select="$after-colon"
+												regex="([0-9]+)">
+												<xsl:matching-substring>
+												<xsl:value-of select="regex-group(1)"/>
+												</xsl:matching-substring>
+												</xsl:analyze-string>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
 
-									<xsl:variable name="q_string" select="concat($field, ':', $value)"/>
+										<xsl:variable name="q_string"
+											select="concat($field, ':', $value)"/>
 
-									<!--<xsl:variable name="value" select="."/>-->
-									<xsl:variable name="new_multicategory">
-										<xsl:for-each select="$tokenized-fragments[not(contains(.,$q_string))]">
-											<xsl:variable name="other_field" select="substring-before(translate(., '()', ''), ':')"/>
-											<xsl:variable name="after-colon" select="substring-after(., ':')"/>
+										<!--<xsl:variable name="value" select="."/>-->
+										<xsl:variable name="new_multicategory">
+											<xsl:for-each
+												select="$tokenized-fragments[not(contains(.,$q_string))]">
+												<xsl:variable name="other_field"
+												select="substring-before(translate(., '()', ''), ':')"/>
+												<xsl:variable name="after-colon"
+												select="substring-after(., ':')"/>
 
-											<xsl:variable name="other_value">
+												<xsl:variable name="other_value">
 												<xsl:choose>
-													<xsl:when test="substring($after-colon, 1, 1) = '&#x022;'">
-														<xsl:analyze-string select="$after-colon" regex="&#x022;([^&#x022;]+)&#x022;">
-															<xsl:matching-substring>
-																<xsl:value-of select="concat('&#x022;', regex-group(1), '&#x022;')"/>
-															</xsl:matching-substring>
-														</xsl:analyze-string>
-													</xsl:when>
-													<xsl:otherwise>
-														<xsl:analyze-string select="$after-colon" regex="([0-9]+)">
-															<xsl:matching-substring>
-																<xsl:value-of select="regex-group(1)"/>
-															</xsl:matching-substring>
-														</xsl:analyze-string>
-													</xsl:otherwise>
+												<xsl:when
+												test="substring($after-colon, 1, 1) = '&#x022;'">
+												<xsl:analyze-string select="$after-colon"
+												regex="&#x022;([^&#x022;]+)&#x022;">
+												<xsl:matching-substring>
+												<xsl:value-of
+												select="concat('&#x022;', regex-group(1), '&#x022;')"
+												/>
+												</xsl:matching-substring>
+												</xsl:analyze-string>
+												</xsl:when>
+												<xsl:when
+												test="substring($after-colon, 1, 1) = '('">
+												<xsl:analyze-string select="$after-colon"
+												regex="\(([^\)]+)\)">
+												<xsl:matching-substring>
+												<xsl:value-of
+												select="concat('(', regex-group(1), ')')"/>
+												</xsl:matching-substring>
+												</xsl:analyze-string>
+												</xsl:when>
+												<xsl:otherwise>
+												<xsl:analyze-string select="$after-colon"
+												regex="([0-9]+)">
+												<xsl:matching-substring>
+												<xsl:value-of select="regex-group(1)"/>
+												</xsl:matching-substring>
+												</xsl:analyze-string>
+												</xsl:otherwise>
 												</xsl:choose>
-											</xsl:variable>
-											<xsl:value-of select="concat($other_field, ':', $other_value)"/>
-											<xsl:if test="position() != last()">
+												</xsl:variable>
+												<xsl:value-of
+												select="concat($other_field, ':', encode-for-uri($other_value))"/>
+												<xsl:if test="position() != last()">
 												<xsl:text> OR </xsl:text>
-											</xsl:if>
-										</xsl:for-each>
-									</xsl:variable>
-									<xsl:variable name="multicategory_query">
+												</xsl:if>
+											</xsl:for-each>
+										</xsl:variable>
+										<xsl:variable name="multicategory_query">
+											<xsl:choose>
+												<xsl:when
+												test="contains($new_multicategory, ' OR ')">
+												<xsl:value-of
+												select="concat('(', $new_multicategory, ')')"/>
+												</xsl:when>
+												<xsl:otherwise>
+												<xsl:value-of select="$new_multicategory"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:variable>
+
+
+										<b>
+											<xsl:value-of
+												select="eaditor:normalize_fields($field, $lang)"/>
+											<xsl:text>: </xsl:text>
+										</b>
+
 										<xsl:choose>
-											<xsl:when test="contains($new_multicategory, ' OR ')">
-												<xsl:value-of select="concat('(', $new_multicategory, ')')"/>
+											<xsl:when test="$field='century_num'">
+												<!--<xsl:value-of select="numishare:normalize_century($value)"/>-->
+											</xsl:when>
+											<xsl:when test="contains($field, '_hier')">
+												<xsl:variable name="tokens"
+												select="tokenize(substring($value, 2, string-length($value)-2), '\+')"/>
+												<xsl:for-each select="$tokens[position() &gt; 1]">
+												<xsl:sort/>
+												<xsl:value-of
+												select="normalize-space(replace(substring-after(., '|'), '&#x022;', ''))"/>
+												<xsl:if test="not(position()=last())">
+												<xsl:text>--</xsl:text>
+												</xsl:if>
+												</xsl:for-each>
 											</xsl:when>
 											<xsl:otherwise>
-												<xsl:value-of select="$new_multicategory"/>
+												<xsl:value-of select="$value"/>
 											</xsl:otherwise>
 										</xsl:choose>
-									</xsl:variable>
 
-									<!-- display either the term or the regularized name for the century -->
-									<b>
-										<xsl:value-of select="eaditor:normalize_fields($field, $lang)"/>
-										<xsl:text>: </xsl:text>
-									</b>
-									<xsl:value-of select="if ($field='century_num') then eaditor:normalize_century($value) else $value"/>
+										<!-- concatenate the query with the multicategory removed with the new multicategory, or if the multicategory is empty, display just the $new_query -->
+										<a
+											href="{$display_path}results/?q={if (string($multicategory_query) and string($new_query)) then concat($new_query, ' AND ', $multicategory_query) else if (string($multicategory_query) and not(string($new_query))) then $multicategory_query else $new_query}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
+											<span class="glyphicon glyphicon-remove"/>
+										</a>
 
-
-
-									<xsl:text>[</xsl:text>
-									<!-- concatenate the query with the multicategory removed with the new multicategory, or if the multicategory is empty, display just the $new_query -->
-									<a
-										href="{$display_path}results/?q={if (string($multicategory_query) and string($new_query)) then encode-for-uri(concat($new_query, ' AND ', $multicategory_query)) else if (string($multicategory_query) and not(string($new_query))) then encode-for-uri($multicategory_query) else $new_query}"
-										>X</a>
-									<xsl:text>]</xsl:text>
-									<xsl:if test="position() != last()">
-										<xsl:text> OR </xsl:text>
-									</xsl:if>
-								</xsl:for-each>
-							</span>
-							<a class="ui-icon ui-icon-closethick remove_filter"
-								href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}">X</a>
-
+										<xsl:if test="position() != last()">
+											<xsl:text> OR </xsl:text>
+										</xsl:if>
+									</xsl:for-each>
+								</span>
+							</div>
+							<div class="col-md-2 right">
+								<a
+									href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
+									<span class="glyphicon glyphicon-remove"/>
+								</a>
+							</div>
 						</div>
 					</xsl:when>
 					<xsl:when test="not(contains(., ':'))">
-						<div class="ui-widget ui-state-default ui-corner-all stacked_term">
-							<span>
-								<b>Keyword: </b>
-								<xsl:value-of select="."/>
-							</span>
+						<div class="stacked_term bg-info row">
+							<div class="col-md-12">
+								<span>
+									<b>Keyword: </b>
+									<xsl:value-of select="."/>
+								</span>
+							</div>
 						</div>
 					</xsl:when>
 				</xsl:choose>
@@ -889,22 +879,28 @@
 						<xsl:when test="substring-after($sort, ' ') = 'desc'">Descending</xsl:when>
 					</xsl:choose>
 				</xsl:variable>
-				<div class="ui-widget ui-state-default ui-corner-all stacked_term">
-					<span class="term">
-						<b>Sort Category: </b>
-						<xsl:value-of select="$name"/>
-						<xsl:text>, </xsl:text>
-						<xsl:value-of select="$order"/>
-					</span>
-
-					<a class="ui-icon ui-icon-closethick remove_filter" href="{$display_path}results/?q={$q}">X</a>
+				<div class="stacked_term bg-info row">
+					<div class="col-md-10">
+						<span>
+							<b>Sort Category: </b>
+							<xsl:value-of select="$name"/>
+							<xsl:text>, </xsl:text>
+							<xsl:value-of select="$order"/>
+						</span>
+					</div>
+					<div class="col-md-2">
+						<a class="remove_filter" href="?q={$q}">
+							<span class="glyphicon glyphicon-remove"/>
+						</a>
+					</div>
 				</div>
 			</xsl:if>
 			<xsl:if test="string($tokenized_q[2])">
-				<div class="ui-widget ui-state-default ui-corner-all stacked_term">
-					<span class="term" id="clear_all">
-						<a href="{$display_path}results/?q=*:*">Clear All Terms</a>
-					</span>
+				<div class="stacked_term bg-info row">
+					<div class="col-md-12">
+						<a id="clear_all" href="?q=*:*"><span class="glyphicon glyphicon-remove"
+							/>Clear All Terms</a>
+					</div>
 				</div>
 			</xsl:if>
 		</div>
