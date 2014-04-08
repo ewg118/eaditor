@@ -131,14 +131,16 @@ $(document).ready(function () {
 	
 	/* image scroller */
 	$('#left-scroll').on('click', function (event) {
+		pos = $('#slider-thumbs').scrollLeft();
 		$('#slider-thumbs').animate({
-			scrollLeft: - 500
+			scrollLeft: pos - 500
 		},
 		1000)
 	});
 	$('#right-scroll').on('click', function (event) {
+		pos = $('#slider-thumbs').scrollLeft();
 		$('#slider-thumbs').animate({
-			scrollLeft: 500
+			scrollLeft: pos + 500
 		},
 		1000)
 	});
