@@ -130,13 +130,13 @@ $(document).ready(function () {
 	});
 	
 	/* image scroller */
-	$('#left-scroll').click(function () {
+	$('#left-scroll').on('click', function (event) {
 		$('#slider-thumbs').animate({
 			scrollLeft: - 500
 		},
 		1000)
 	});
-	$('#right-scroll').click(function () {
+	$('#right-scroll').on('click', function (event) {
 		$('#slider-thumbs').animate({
 			scrollLeft: 500
 		},
