@@ -6,10 +6,11 @@
 	<xsl:include href="functions.xsl"/>
 
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
-	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="include_path">../../</xsl:variable>
 	<xsl:variable name="pipeline">maps</xsl:variable>
+	<xsl:variable name="path"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
 	<xsl:param name="lang"

@@ -88,30 +88,6 @@ a > img {
 #dsc-toc li {
 	list-style-type:circle;
 }
-.archdesc-did-elements {
-	display:table;
-	width:100%;
-}
-.archdesc-did-elements dt {
-	float:left;
-	width:200px;
-	margin-right:25px;
-	text-align:right;
-}
-.archdesc-did-elements dd {
-	margin-left:225px;
-}
-.c-did-elements {
-	margin:0.5em 0 0.5em 10px;
-}
-.c-did-elements dt {
-	float:left;
-	width:100px;
-	font-weight:normal;
-}
-.c-did-elements dd {
-	margin-left:125px;
-}
 #dsc-list li {
 	list-style-type:none;
 }

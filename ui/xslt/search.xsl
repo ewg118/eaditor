@@ -2,7 +2,10 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 	<xsl:output doctype-public="-//W3C//DTD HTML 4.01//EN" method="html" encoding="UTF-8"/>
 	<xsl:include href="templates.xsl"/>
-	<xsl:variable name="ui-theme" select="/config/theme/jquery_ui_theme"/>
+	<!-- pipeline variables -->
+	<xsl:variable name="pipeline"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="path"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="include_path">../../</xsl:variable>
 

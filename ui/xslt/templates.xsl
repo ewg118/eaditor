@@ -27,18 +27,23 @@
 							<a href="{$display_path}maps/">Maps</a>
 						</li>
 					</ul>
-					<div class="col-sm-3 col-md-3 pull-right">
-						<form class="navbar-form" role="search" action="{$display_path}results/" method="GET">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Search" name="q" id="srch-term"/>
-								<div class="input-group-btn">
-									<button class="btn btn-default" type="submit">
-										<i class="glyphicon glyphicon-search"/>
-									</button>
-								</div>
+					<xsl:if test="$pipeline='display'">
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
+							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
+							<li><a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a></li>
+						</ul>
+					</xsl:if>
+					<form class="navbar-form navbar-right" role="search" action="{$display_path}results/" method="GET">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" name="q" id="srch-term"/>
+							<div class="input-group-btn">
+								<button class="btn btn-default" type="submit">
+									<i class="glyphicon glyphicon-search"/>
+								</button>
 							</div>
-						</form>
-					</div>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

@@ -10,6 +10,7 @@
 
 	<!-- path and document params -->
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="pipeline">display</xsl:variable>
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
 	<xsl:param name="path">
 		<xsl:choose>
@@ -174,7 +175,7 @@
 				dcterms: http://purl.org/dc/terms/
 				arch: http://purl.org/archival/vocab/arch#
 				xsd: http://www.w3.org/2001/XMLSchema#">
-				<title>
+				<title id="{$path}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:choose>
@@ -195,36 +196,27 @@
 				<!-- alternates -->
 				<link rel="alternate" type="text/xml" href="{$path}.xml"/>
 				<link rel="alternate" type="application/rdf+xml" href="{$path}.rdf"/>
-
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-				<!-- EADitor styling -->
+				
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet"
+					href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
+				
 				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
 					<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
 					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
 					<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/> 
 				</xsl:if>
-				<!-- jquery -->
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"/>
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
 				<!-- include annotation functions for TEI files -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
-					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
+					<!--<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>-->
 					<script type="text/javascript" src="{$include_path}ui/javascript/display_annotation_functions.js"/> 
 				</xsl:if>
-				
-				<!-- menu -->
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
-
 				<xsl:if test="$hasPoints = true()">
 					<!-- mapping -->
 					<!--<link type="text/css" href="{$include_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>-->
@@ -240,7 +232,6 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
-				<xsl:call-template name="icons"/>
 				<xsl:choose>
 					<xsl:when test="namespace-uri()='http://www.loc.gov/mods/v3'">
 						<xsl:call-template name="mods-content"/>
@@ -253,24 +244,10 @@
 					</xsl:when>
 				</xsl:choose>
 				<div id="path" style="display:none">
-					<xsl:value-of select="$path"/>
+					<xsl:value-of select="$display_path"/>
 				</div>				
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
-	</xsl:template>
-
-	<xsl:template name="icons">
-		<div class="submenu">
-			<div class="icon">
-				<a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a>
-			</div>
-			<div class="icon">
-				<a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a>
-			</div>
-			<div class="icon">
-				<a href="{tokenize($path, '/')[last()]}.xml">XML</a>
-			</div>
-		</div>
 	</xsl:template>
 </xsl:stylesheet>

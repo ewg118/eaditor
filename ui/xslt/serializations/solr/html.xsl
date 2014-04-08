@@ -42,6 +42,9 @@
 		</xsl:choose>
 	</xsl:param>
 	<xsl:variable name="numFound" select="//result[@name='response']/@numFound" as="xs:integer"/>
+	
+	<xsl:variable name="path"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 
 	<xsl:template match="/">
 		<html>

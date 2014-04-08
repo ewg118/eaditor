@@ -54,7 +54,7 @@
 	<page path="/eaditor/admin/[^\/]+/id/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/models/xml-private.xpl"/>
 
 	<!-- private html view -->
-	<page path="/eaditor/admin/[^\/]+/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/models/xml-private.xpl" view="xpl/pages/display.xpl"/>
+	<page path="/eaditor/admin/[^\/]+/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/models/xml-private.xpl" view="xpl/serializations/object/html.xpl"/>
 	
 	<!-- logout -->
 	<page path="/eaditor/admin/logout">		
@@ -96,6 +96,9 @@
 
 	<!-- OAI-PMH feed -->
 	<page path="/eaditor/[^\/]+/oai/" matcher="oxf:perl5-matcher" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>
+	
+	<!-- APIs -->
+	<page path-info="/eaditor/[^\/]+/api/get" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/api-get.xpl"/>
 
 	<!-- Pelagios -->
 	<page path="/eaditor/[^\/]+/pelagios.void.rdf" matcher="oxf:perl5-matcher" model="xpl/models/config.xpl" view="xpl/void.xpl"/>

@@ -73,7 +73,7 @@
 	<xsl:template match="ead:did">
 		<xsl:apply-templates select="ead:unittitle" mode="content"/>
 		<xsl:if test="ead:unitid or ead:repository or ead:physdesc or ead:origination or ead:physloc or ead:langmaterial or ead:materialspec or ead:abstract or ead:note or ead:container">
-			<dl class="c-did-elements">
+			<dl class="dl-horizontal">
 				<xsl:apply-templates select="ead:unitid"/>
 				<xsl:apply-templates select="ead:container"/>
 				<xsl:apply-templates select="ead:repository"/>
