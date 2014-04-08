@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all"
-	version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
@@ -23,34 +23,24 @@
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: Maps</xsl:text>
 				</title>
-				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-				<!-- EADitor styling -->
-				<link rel="stylesheet" href="{$include_path}ui/css/fullscreen.css"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/themes/{$ui-theme}.css"/>
-
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"/>
-				<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"/>
-
-				<!-- menu -->
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.core.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.widget.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.position.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.button.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menu.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/ui/jquery.ui.menubar.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/menu.js"/>
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<xsl:if test="string(//config/google_analytics)">
+					<script type="text/javascript">
+						<xsl:value-of select="//config/google_analytics"/>
+					</script>
+				</xsl:if>
 
 				<!-- map functions -->
 				<xsl:if test="/content//result[@name='response']/@numFound &gt; 0">
-					<!-- fancybox -->
-					<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox-1.3.4.css"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox-1.3.4.min.js"/>
-
-					<!-- multselect -->
-					<link rel="stylesheet" href="{$include_path}ui/css/jquery.multiselect.css"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselect.min.js"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.multiselectfilter.js"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.livequery.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/bootstrap-multiselect.js"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/bootstrap-multiselect.css" type="text/css"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 
 					<!-- maps -->
 					<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"/>
@@ -79,6 +69,9 @@
 				</xsl:if>
 				<span style="display:none" id="pipeline">
 					<xsl:value-of select="$pipeline"/>
+				</span>
+				<span style="display:none" id="path">
+					<xsl:value-of select="$display_path"/>
 				</span>
 				<select style="display:none" id="ajax-temp"/>
 				<ul style="display:none" id="decades-temp"/>
@@ -123,15 +116,16 @@
 				<xsl:when test="contains(@name, '_hier')">
 					<xsl:variable name="title" select="eaditor:normalize_fields(@name, $lang)"/>
 
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all hierarchical-facet" type="button" title="{$title}" aria-haspopup="true" style="width: 200px;"
-						id="{@name}_link" label="{$q}">
+					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all hierarchical-facet" type="button" title="{$title}" aria-haspopup="true"
+						style="width: 200px;" id="{@name}_link" label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>
 							<xsl:value-of select="$title"/>
 						</span>
 					</button>
 
-					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all hierarchical-div" id="{substring-before(@name, '_hier')}-container" style="width: 200px;">
+					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all hierarchical-div" id="{substring-before(@name, '_hier')}-container"
+						style="width: 200px;">
 						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
 							<ul class="ui-helper-reset">
 								<li class="ui-multiselect-close">
@@ -140,12 +134,14 @@
 								</li>
 							</ul>
 						</div>
-						<ul class="{substring-before(@name, '_hier')}-multiselect-checkboxes ui-helper-reset hierarchical-list" id="{@name}-list" style="height: 195px;" title="{$title}"/>
+						<ul class="{substring-before(@name, '_hier')}-multiselect-checkboxes ui-helper-reset hierarchical-list" id="{@name}-list" style="height: 195px;"
+							title="{$title}"/>
 					</div>
 					<br/>
 				</xsl:when>
 				<xsl:when test="@name='century_num'">
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 200px;" id="{@name}_link" label="{$q}">
+					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 200px;" id="{@name}_link"
+						label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
 					</button>
@@ -172,7 +168,8 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}">
+					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}"
+						new_query="{if (contains($q, @name)) then $select_new_query else ''}">
 						<xsl:if test="$pipeline='maps'">
 							<xsl:attribute name="style">width:200px</xsl:attribute>
 						</xsl:if>

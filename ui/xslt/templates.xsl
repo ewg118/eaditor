@@ -11,30 +11,32 @@
 						<span class="icon-bar"/>
 						<span class="icon-bar"/>
 					</button>
-					<a class="navbar-brand" href="{$display_path}./">
+					<a class="navbar-brand" href="{//config/url}./">
 						<xsl:value-of select="//config/title"/>
 					</a>
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li>
-							<a href="{$display_path}results/">Browse</a>
+							<a href="{//config/url}results/">Browse</a>
 						</li>
 						<li>
-							<a href="{$display_path}search/">Search</a>
+							<a href="{//config/url}search/">Search</a>
 						</li>
 						<li>
-							<a href="{$display_path}maps/">Maps</a>
+							<a href="{//config/url}maps/">Maps</a>
 						</li>
 					</ul>
 					<xsl:if test="$pipeline='display'">
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
 							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
-							<li><a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a></li>
+							<xsl:if test="$collection-name != 'admin'">
+								<li><a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a></li>
+							</xsl:if>
 						</ul>
 					</xsl:if>
-					<form class="navbar-form navbar-right" role="search" action="{$display_path}results/" method="GET">
+					<form class="navbar-form navbar-right" role="search" action="{//config/url}results/" method="GET">
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="Search" name="q" id="srch-term"/>
 							<div class="input-group-btn">
@@ -50,8 +52,8 @@
 	</xsl:template>
 
 	<xsl:template name="footer">
-		<div id="ft">
-			<a href="https://github.com/ewg118/eaditor">EADitor</a> ©2013 Ethan Gruber. <a href="http://www.apache.org/licenses/LICENSE-2.0.html">License.</a>
+		<div id="footer">
+			<a href="https://github.com/ewg118/eaditor">EADitor</a> ©2014 Ethan Gruber. <a href="http://www.apache.org/licenses/LICENSE-2.0.html">License.</a>
 		</div>
 	</xsl:template>
 

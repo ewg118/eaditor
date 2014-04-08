@@ -26,7 +26,7 @@
 	<page path="/eaditor/admin/edit/component/" view="xforms/component.xhtml"/>
 	<!-- TEI -->
 	<page path="/eaditor/admin/edit/tei/" view="xforms/tei.xhtml"/>
-	
+
 	<!-- admin functions -->
 	<page path="/eaditor/admin/upload/" view="xforms/upload.xhtml"/>
 	<page path="/eaditor/admin/vocab/" view="xforms/vocab.xhtml"/>
@@ -40,13 +40,13 @@
 
 	<!-- test page -->
 	<page path="/eaditor/admin/test/" view="xforms/test.xhtml"/>
-	
+
 	<!-- an ajax call to display the toc in the admin page -->
 	<page path="/eaditor/admin/navigation/" model="xpl/models/xml-private.xpl" view="xpl/navigation.xpl"/>
-	
+
 	<!-- generate toc in core or component form -->
 	<page path="/eaditor/admin/toc/" model="xpl/models/xml-private.xpl" view="xpl/toc.xpl"/>
-	
+
 	<!-- get attributes for given element from xsd -->
 	<page path="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
 
@@ -55,14 +55,14 @@
 
 	<!-- private html view -->
 	<page path="/eaditor/admin/[^\/]+/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/models/xml-private.xpl" view="xpl/serializations/object/html.xpl"/>
-	
+
 	<!-- logout -->
-	<page path="/eaditor/admin/logout">		
+	<page path="/eaditor/admin/logout">
 		<action action="xpl/logout.xpl">
 			<result page="index"/>
 		</action>
 	</page>
-	
+
 	<!-- ****************
 	* PUBLIC INTERFACE *
 	***************** -->
@@ -74,7 +74,7 @@
 	<page path="/eaditor/[^\/]+/id/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/kml.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/solr.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/html.xpl"/>
-	
+
 	<!-- ARK URIs -->
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.xml" matcher="oxf:perl5-matcher" view="xpl/models/xml-public.xpl"/>
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.kml" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/kml.xpl"/>
@@ -82,7 +82,7 @@
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.solr" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/solr.xpl"/>
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/html.xpl"/>
 
-	<!-- index -->	
+	<!-- index -->
 	<page path="/eaditor/[^\/]+/" matcher="oxf:perl5-matcher" model="xpl/models/config.xpl" view="xpl/pages/index.xpl"/>
 
 	<!-- public search/browse interface -->
@@ -96,7 +96,7 @@
 
 	<!-- OAI-PMH feed -->
 	<page path="/eaditor/[^\/]+/oai/" matcher="oxf:perl5-matcher" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>
-	
+
 	<!-- APIs -->
 	<page path-info="/eaditor/[^\/]+/api/get" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/api-get.xpl"/>
 
@@ -117,7 +117,7 @@
 	<page path="/eaditor/[^\/]+/get_annotations/" matcher="oxf:perl5-matcher" view="xpl/ajax/get_annotations.xpl"/>
 	<!-- generate JSON output for labels of URIs from nomisma, Mantis, etc. to power links in annotations -->
 	<page path="/eaditor/[^\/]+/get_label/" matcher="oxf:perl5-matcher" model="xpl/models/get_model.xpl" view="xpl/ajax/get_label.xpl"/>
-	
+
 	<!-- EADitor public interface root page -->
 	<page path="/eaditor/" view="xpl/root.xpl" id="index"/>
 

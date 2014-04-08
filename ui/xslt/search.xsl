@@ -32,7 +32,7 @@
 			<body>
 				<xsl:call-template name="header"/>
 				<xsl:call-template name="content"/>
-				<!--<xsl:call-template name="footer"/>-->
+				<xsl:call-template name="footer"/>
 			</body>
 		</html>
 	</xsl:template>

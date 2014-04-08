@@ -15,6 +15,7 @@ $(document).ready(function () {
 	} else {
 		var lang = langStr;
 	}
+	var path = $('#path').text();
 	
 	
 	//set hierarchical labels on load
@@ -25,7 +26,7 @@ $(document).ready(function () {
 	});
 	dateLabel();
 	
-	$("#backgroundPopup").livequery('click', function (event) {
+	$("#backgroundPopup").on('click', function (event) {
 		disablePopup();
 	});
 	
@@ -98,103 +99,70 @@ $(document).ready(function () {
 		"featureselected": onFeatureSelect, "featureunselected": onFeatureUnselect
 	});
 	
-	//enable multiselect
-	$(".multiselect").multiselect({
-		minWidth: 'auto',
-		header: '<a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"/><span>Uncheck all</span></a>',
-		create: function () {
-			var title = $(this).attr('title');
-			var array_of_checked_values = $(this).multiselect("getChecked").map(function () {
-				return this.value;
-			}).get();
-			var length = array_of_checked_values.length;
-			
-			if (length > 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + length + ' selected');
-			} else if (length > 0 && length <= 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + array_of_checked_values.join(', '));
-			} else if (length == 0) {
-				$(this).next('button').children('span:nth-child(2)').text(title);
-			}
-		},
-		beforeopen: function () {
-			var id = $(this) .attr('id');
-			var q = getQuery();
-			var category = id.split('-select')[0];
-			
-			$.get('../get_facets/', {
-				q: q, category: category, sort: 'index', lang: lang, pipeline: pipeline
-			},
-			function (data) {
-				$('#ajax-temp').html(data);
-				$('#' + id) .html('');
-				$('#ajax-temp option').each(function(){
-					$(this).clone().appendTo('#' + id);
+	//multiselect facets
+	$('.multiselect').multiselect({
+		buttonWidth: '250px',
+		enableFiltering: true,
+		maxHeight: 250,
+		buttonText: function (options, select) {
+			if (options.length == 0) {
+				return select.attr('title') + ' <b class="caret"></b>';
+			} else if (options.length > 2) {
+				return select.attr('title') + ': ' + options.length + ' selected <b class="caret"></b>';
+			} else {
+				var selected = '';
+				options.each(function () {
+					selected += $(this).text() + ', ';
 				});
-					$("#" + id).multiselect('refresh');
-			});
-		},
-		click: function () {
-			var title = $(this).attr('title');
-			var id = $(this) .attr('id');
-			var array_of_checked_values = $(this).multiselect("getChecked").map(function () {
-				return this.value;
-			}).get();
-			var length = array_of_checked_values.length;
-			if (length > 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + length + ' selected');
-			} else if (length > 0 && length <= 3) {
-				$(this).next('button').children('span:nth-child(2)').text(title + ': ' + array_of_checked_values.join(', '));
-			} else if (length == 0){
-				$(this).next('button').children('span:nth-child(2)').text(title);
+				label = selected.substr(0, selected.length - 2);
+				if (label.length > 20) {
+					label = label.substr(0, 20) + '...';
+				}
+				return select.attr('title') + ': ' + label + ' <b class="caret"></b>';
 			}
-
-			//refresh dynamically 
-			var q = getQuery();
-			if (q.length > 0) {
+		},
+		onChange: function (element, checked) {
+			//if there are 0 selected checks in the multiselect, re-initialize ajax to populate list
+			id = element.parent('select').attr('id');
+			if ($('#' + id).val() == null) {
+				var q = getQuery();
 				var category = id.split('-select')[0];
-				$.get('../get_facets/', {
-					q: q, category: category, sort: 'index', lang: lang, pipeline: pipeline
+				$.get(path + 'get_facets/', {
+					q: q, category: category, sort: 'index', lang: lang
 				},
 				function (data) {
 					$('#ajax-temp').html(data);
 					$('#' + id) .html('');
-					$('#ajax-temp option').each(function(){
+					$('#ajax-temp option').each(function () {
 						$(this).clone().appendTo('#' + id);
 					});
-					$("#" + id).multiselect('refresh');				
+					$("#" + id).multiselect('rebuild');
 				});
 			}
-			
-			if ($('#mapcontainer').length > 0) {
-				//update map
-				refreshMap();
-			}
-		},
-		uncheckAll: function () {	
-			//reset title
-			var title = $(this).attr('title');
-			$(this).next('button').children('span:nth-child(2)').text(title);	
-			
-			var id = $(this) .attr('id');
-			q = getQuery();
-			var category = id.split('-select')[0];
-			$.get('../get_facets/', {
-				q: q, category: category, sort: 'index', lang: lang, pipeline: pipeline
-			},
-			function (data) {
-				$('#' + id) .attr('new_query', '');
-				$('#' + id) .html(data);
-				$('#' + id).multiselect('refresh');
-			});
-			
 			if ($('#mapcontainer').length > 0) {
 				//update map
 				refreshMap();
 			}
 		}
 	});
-	//.multiselectfilter();
+	
+	//on open
+	$('button.multiselect').on('click', function () {
+		var q = getQuery();
+		var id = $(this).parent('div').prev('select').attr('id');
+		var category = id.split('-select')[0];
+		$.get(path + 'get_facets/', {
+			q: q, category: category, sort: 'index', lang: lang, pipeline: pipeline
+		},
+		function (data) {
+			$('#ajax-temp').html(data);
+			$('#' + id) .html('');
+			$('#ajax-temp option').each(function () {
+				$(this).clone().appendTo('#' + id);
+			});
+			$("#" + id).multiselect('rebuild');
+		});
+	});
 	
 	function refreshMap() {
 		var query = getQuery();
@@ -210,7 +178,7 @@ $(document).ready(function () {
 		map.zoomToExtent(placeLayer.getDataExtent());
 	}
 	
-	$('a.pagingBtn') .livequery('click', function (event) {
+	$('#results') .on('click', '.paging_div .page-nos .btn-toolbar .pagination a.pagingBtn', function (event) {
 		var href = '../results_ajax/' + $(this) .attr('href');
 		$.get(href, {
 		},
@@ -221,25 +189,18 @@ $(document).ready(function () {
 	});
 	
 	//clear query
-	$('#clear_all').livequery('click', function (event) {
+	$('#results').on('click', 'h1 small #clear_all', function () {
 		$('#results').html('');
 		return false;
 	});
 	
-	/***************** DRILLDOWN HIERARCHICAL FACETS ********************/
-	$('.hierarchical-facet').hover(function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
-	},
-	function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all');
-	});	
-	
+	/***************** DRILLDOWN HIERARCHICAL FACETS ********************/	
 	$('.hier-close') .click(function () {
 		disablePopup();
 		return false;
 	});	
 	
-	$('.hierarchical-facet').click(function () {
+	/*$('.hierarchical-facet').click(function () {
 		if (popupStatus == 0) {
 			$("#backgroundPopup").fadeIn("fast");
 			popupStatus = 1;
@@ -257,10 +218,10 @@ $(document).ready(function () {
 		}
 		$('#' + list_id).parent('div').attr('style', 'width: 192px;display:block;');
 		return false;
-	});
+	});*/
 	
 	//expand category when expand/compact image pressed
-	$('.expand_category') .livequery('click', function (event) {
+	/*$('.expand_category') .livequery('click', function (event) {
 		var fq = $(this).next('input').val();
 		var list = $(this) .attr('id').split('__')[0].split('|')[1] + '__list';
 		var field = $(this).attr('field');
@@ -281,10 +242,10 @@ $(document).ready(function () {
 			$(this) .parent('li') .children('.' + field + '_level') .hide();
 			$(this) .children('img') .attr('src', $(this) .children('img').attr('src').replace('minus', 'plus'));
 		}
-	});
+	});*/
 	
 	//remove all ancestor or descendent checks on uncheck
-	$('.h_item input') .livequery('click', function (event) {
+	/*$('.h_item input') .livequery('click', function (event) {
 		var field = $(this).closest('.ui-multiselect-menu').attr('id').split('-')[0];
 		var title = $('.' + field + '-multiselect-checkboxes').attr('title');
 		
@@ -301,30 +262,23 @@ $(document).ready(function () {
 			$('#' + field + '_hier_link').children('span:nth-child(2)').html(title);
 		}
 		
-	});
+	});*/
 	
 	/***************** DRILLDOWN FOR DATES ********************/
-	$('#century_num_link').hover(function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
-	},
-	function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all');
-	});
-	
-	$('.century-close').livequery('click', function (event) {
+	/*$('.century-close').livequery('click', function (event) {
 		disablePopup();
-	});
+	});*/
 	
-	$('#century_num_link').livequery('click', function (event) {
+	/*$('#century_num_link').livequery('click', function (event) {
 		if (popupStatus == 0) {
 			$("#backgroundPopup").fadeIn("fast");
 			popupStatus = 1;
 		}
 		var list_id = $(this) .attr('id').split('_link')[0] + '-list';
 		$('#' + list_id).parent('div').attr('style', 'width: 192px;display:block;');
-	});
+	});*/
 	
-	$('.expand_century').livequery('click', function (event) {
+	/*$('.expand_century').livequery('click', function (event) {
 		var century = $(this).attr('century');
 		if (century < 0) {
 			century = "\\" + century;
@@ -352,26 +306,26 @@ $(document).ready(function () {
 			}
 			$('#century_' + century + '_list') .show();
 		}
-	});
+	});*/
 	
 	//check parent century box when a decade box is checked
-	$('.decade_checkbox').livequery('click', function (event) {
+	/*$('.decade_checkbox').livequery('click', function (event) {
 		if ($(this) .is(':checked')) {
 			$(this) .parent('li').parent('ul').parent('li') .children('input') .attr('checked', true);
 		}
 		//set label
 		dateLabel();
 		refreshMap();
-	});
+	});*/
 	//uncheck child decades when century is unchecked
-	$('.century_checkbox').livequery('click', function (event) {
+	/*$('.century_checkbox').livequery('click', function (event) {
 		if ($(this).not(':checked')) {
 			$(this).parent('li').children('ul').children('li').children('.decade_checkbox').attr('checked', false);
 		}
 		//set label
 		dateLabel();
 		refreshMap();
-	});
+	});*/
 	
 	/***************************/
 	//@Author: Adrian "yEnS" Mato Gondelle
@@ -457,7 +411,7 @@ $(document).ready(function () {
 		event.popup = popup;
 		map.addPopup(popup);
 		
-		$('.show_coins').livequery('click', function (event) {
+		$('.show_coins').on('click', function (event) {
 			var query = $(this).attr('q');
 			$.get('../results_ajax/', {
 				q: query,
