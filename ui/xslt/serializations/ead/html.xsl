@@ -9,19 +9,15 @@
 		<!-- display component if there's an $id, otherwise whole finding aid -->
 		<xsl:choose>
 			<xsl:when test="string($id)">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-md-12">
-							<xsl:call-template name="component-template"/>
-						</div>
+				<div class="row">
+					<div class="col-md-12">
+						<xsl:call-template name="component-template"/>
 					</div>
 				</div>
 			</xsl:when>
 			<xsl:otherwise>
-				<div class="container-fluid">
-					<xsl:call-template name="head"/>
-					<xsl:call-template name="body"/>
-				</div>
+				<xsl:call-template name="head"/>
+				<xsl:call-template name="body"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -633,7 +629,7 @@
 		</xsl:variable>
 
 		<div>
-			
+
 			<!-- add class for component level controlaccess only, not within archdesc -->
 			<xsl:if test="string($class)">
 				<xsl:attribute name="class" select="$class"/>

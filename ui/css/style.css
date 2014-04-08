@@ -16,8 +16,11 @@ a > img {
 	background-color: #F8F8F8;
 	border: 1px solid #E7E7E7;
 	border-radius: 4px;
-	margin-bottom: 14px;
-	padding: 9px 14px;
+	margin: 10px 0;
+	padding: 10px 15px;
+}
+ul li, ol li {
+	list-style-type:none;
 }
 /*
   ***************************************
@@ -200,7 +203,6 @@ div.container {
 	display:block;
 	width:100%;
 }
-
 button.multiselect {
 	margin:5px 0;
 }
@@ -218,9 +220,8 @@ button.multiselect {
 .stacked_term {
 	margin:5px 0;
 }
-
 .right {
-	text-align:right;	
+	text-align:right;
 }
 .remove_filter {
 	float:right;
@@ -237,7 +238,7 @@ button.multiselect {
 	margin:0 0 0 25px;
 }
 .sort_div {
-	margin:10px 0;	
+	margin:10px 0;
 }
 #backgroundPopup {
 	display:none;
@@ -321,40 +322,6 @@ button.multiselect {
 	padding:0px 5px;
 	max-width:120px;
 }
-/*
-  .filter_facet {
-  width:12%;
-  float:left;
-  padding:2px;
-  margin:2px 2px;
-  z-index:0;
-  background-color:#D9D4C8;
-  border:1px solid #C2B9A9;
-  cursor:pointer;
-  }
-  .filter_facet_selected {
-  width:12%;
-  float:left;
-  padding:2px;
-  margin:2px 2px;
-  z-index:0;
-  background-color:#C2B9A9;
-  border:1px solid #C2B9A9;
-  cursor:pointer;
-  }
-  .filter_facet:hover {
-  color:gray;
-  }
-  .filter_heading {
-  width:100%;
-  }
-  .filter_terms {
-  position:absolute;
-  z-index:2002;
-  width:200px;
-  padding:3px;
-  }
- */
 #filter_list {
 	margin:0;
 	padding:0;
@@ -428,11 +395,6 @@ img.selected {
 	border:2px solid orange;
 	opacity:1.0;
 }
-.facs-nav {
-	background-color:#efefef;
-	border:1px solid silver;
-	margin:20px 0;
-}
 #prev-page, #goto-container, #next-page {
 	border-right: 1px solid silver;
 	padding:0 5px;
@@ -441,6 +403,10 @@ img.selected {
 	color:black;
 	font-style:italic;
 	pointer-events:none;
+}
+#goto-page {
+	max-width:250px;
+	display:inline;
 }
 /*
   ***************************************
