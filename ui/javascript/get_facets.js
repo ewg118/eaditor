@@ -17,7 +17,7 @@ $(document).ready(function() {
 	}
 	
 	//set date label if there is a date facet
-	if ($('#century_num_link').length != 0){
+	/*if ($('#century_num_link').length != 0){
 		dateLabel();
 	}
 	
@@ -30,7 +30,7 @@ $(document).ready(function() {
 	
 	$("#backgroundPopup").click(function() {
 		disablePopup();
-	});
+	});*/
 	
 	/***** SEARCH *****/
 	$('#search_button') .click(function () {

@@ -126,21 +126,6 @@ div.container {
 .external_link {
 	margin-left:10px;
 }
-.submenu {
-	width:100%;
-	vertical-align:bottom;
-	display:table;
-	text-align:right;
-	margin-top:3px;
-}
-.icon {
-	border-left:1px solid silver;
-	float:right;
-	vertical-align:text-bottom;
-	padding-left:15px;
-	padding-right:15px;
-	font-size:12px;
-}
 /*
   ****************************************
   SEARCH PAGE
@@ -419,7 +404,7 @@ div#timelinecontainer {
 }
 div#mapcontainer {
 	width:100%;
-	height: 400px;
+	height: 600px;
 }
 div#display-mapcontainer {
 	width:100%;

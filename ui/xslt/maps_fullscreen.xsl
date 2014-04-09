@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all"
+	version="2.0">
 	<xsl:include href="templates.xsl"/>
 	<xsl:include href="functions.xsl"/>
 
@@ -28,7 +28,7 @@
 				<!-- bootstrap -->
 				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
-				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/fullscreen.css"/>
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="//config/google_analytics"/>
@@ -57,64 +57,76 @@
 	</xsl:template>
 
 	<xsl:template name="content">
-		<xsl:choose>
-			<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
-				<div id="backgroundPopup"/>
-				<div id="mapcontainer"/>
-				<a name="results"/>
-				<div id="results"/>
-				<input id="facet_form_query" name="q" value="*:*" type="hidden"/>
-				<xsl:if test="string($lang)">
-					<input type="hidden" name="lang" value="{$lang}"/>
-				</xsl:if>
-				<span style="display:none" id="pipeline">
-					<xsl:value-of select="$pipeline"/>
-				</span>
-				<span style="display:none" id="path">
-					<xsl:value-of select="$display_path"/>
-				</span>
-				<select style="display:none" id="ajax-temp"/>
-				<ul style="display:none" id="decades-temp"/>
-				<div id="legend" class="ui-corner-all">
-					<h2>
-						<a href="#map_filters" id="show_filters">Refine Results</a>
-					</h2>
-
-				</div>
-				<div style="display:none">
-					<div id="map_filters">
-						<h2>Refine Results</h2>
-						<ul id="filter_list" section="maps">
-							<xsl:apply-templates select="/content//lst[@name='facet_fields']/lst[descendant::int]"/>
-						</ul>
-						<input type="button" id="close" value="Close"/>
+		<div class="container-fluid" style="height:100%">
+			<xsl:choose>
+				<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
+					<div id="legend">
+						<h3>
+							<a href="#map_filters" id="show_filters">Refine Results</a>
+						</h3>
 					</div>
-				</div>
-			</xsl:when>
-			<xsl:otherwise>
-				<h2> No results found.</h2>
-			</xsl:otherwise>
-		</xsl:choose>
+					<div style="display:none">
+						<div id="map_filters">
+							<h2>Refine Results</h2>
+							<xsl:apply-templates select="/content//lst[@name='facet_fields']/lst[descendant::int]"/>
+							<input type="button" class="btn btn-default" id="close" value="Close"/>
+						</div>
+					</div>
+					<div class="row" style="height:100%">
+						<div class="col-md-12" style="height:100%">
+							<div id="mapcontainer"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<a name="results"/>
+							<div id="results"/>
+						</div>
+					</div>
+					<div style="display:none">
+						<input id="facet_form_query" name="q" value="*:*" type="hidden"/>
+						<xsl:if test="string($lang)">
+							<input type="hidden" name="lang" value="{$lang}"/>
+						</xsl:if>
+						<span id="pipeline">
+							<xsl:value-of select="$pipeline"/>
+						</span>
+						<span id="path">
+							<xsl:value-of select="$display_path"/>
+						</span>
+						<select id="ajax-temp"/>
+						<ul id="decades-temp"/>
+					</div>
+				</xsl:when>
+				<xsl:otherwise>
+					<div class="row">
+						<div class="col-md-12">
+							<h2> No results found.</h2>
+						</div>
+					</div>
+				</xsl:otherwise>
+			</xsl:choose>
+		</div>
 	</xsl:template>
 
 	<xsl:template match="lst">
-		<li class="fl">
-			<xsl:variable name="val" select="@name"/>
-			<xsl:variable name="new_query">
-				<xsl:for-each select="$tokenized_q[not(contains(., $val))]">
-					<xsl:value-of select="."/>
-					<xsl:if test="position() != last()">
-						<xsl:text> AND </xsl:text>
-					</xsl:if>
-				</xsl:for-each>
-			</xsl:variable>
 
-			<xsl:variable name="title">
-				<xsl:value-of select="eaditor:normalize_fields(@name, $lang)"/>
-			</xsl:variable>
-			<xsl:choose>
-				<xsl:when test="contains(@name, '_hier')">
-					<xsl:variable name="title" select="eaditor:normalize_fields(@name, $lang)"/>
+		<xsl:variable name="val" select="@name"/>
+		<xsl:variable name="new_query">
+			<xsl:for-each select="$tokenized_q[not(contains(., $val))]">
+				<xsl:value-of select="."/>
+				<xsl:if test="position() != last()">
+					<xsl:text> AND </xsl:text>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:variable>
+
+		<xsl:variable name="title">
+			<xsl:value-of select="eaditor:normalize_fields(@name, $lang)"/>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="contains(@name, '_hier')">
+				<!--<xsl:variable name="title" select="eaditor:normalize_fields(@name, $lang)"/>
 
 					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all hierarchical-facet" type="button" title="{$title}" aria-haspopup="true"
 						style="width: 200px;" id="{@name}_link" label="{$q}">
@@ -136,11 +148,10 @@
 						</div>
 						<ul class="{substring-before(@name, '_hier')}-multiselect-checkboxes ui-helper-reset hierarchical-list" id="{@name}-list" style="height: 195px;"
 							title="{$title}"/>
-					</div>
-					<br/>
-				</xsl:when>
-				<xsl:when test="@name='century_num'">
-					<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 200px;" id="{@name}_link"
+					</div>-->
+			</xsl:when>
+			<xsl:when test="@name='century_num'">
+				<!--<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true" style="width: 200px;" id="{@name}_link"
 						label="{$q}">
 						<span class="ui-icon ui-icon-triangle-2-n-s"/>
 						<span>Date</span>
@@ -155,27 +166,25 @@
 							</ul>
 						</div>
 						<ul class="century-multiselect-checkboxes ui-helper-reset" id="{@name}-list" style="height: 195px;"/>
-					</div>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:variable name="select_new_query">
-						<xsl:choose>
-							<xsl:when test="string($new_query)">
-								<xsl:value-of select="$new_query"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>*:*</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					<select id="{@name}-select" multiple="multiple" class="multiselect" size="10" title="{$title}" q="{$q}"
-						new_query="{if (contains($q, @name)) then $select_new_query else ''}">
-						<xsl:if test="$pipeline='maps'">
-							<xsl:attribute name="style">width:200px</xsl:attribute>
-						</xsl:if>
-					</select>
-				</xsl:otherwise>
-			</xsl:choose>
-		</li>
+					</div>-->
+			</xsl:when>
+			<xsl:otherwise>
+
+				<xsl:variable name="select_new_query">
+					<xsl:choose>
+						<xsl:when test="string($new_query)">
+							<xsl:value-of select="$new_query"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>*:*</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<div class="col-md-4">
+					<select id="{@name}-select" multiple="multiple" class="multiselect" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}"/>
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+
 	</xsl:template>
 </xsl:stylesheet>

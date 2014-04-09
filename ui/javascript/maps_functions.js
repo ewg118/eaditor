@@ -17,9 +17,8 @@ $(document).ready(function () {
 	}
 	var path = $('#path').text();
 	
-	
 	//set hierarchical labels on load
-	$('.hierarchical-facet').each(function(){
+	/*$('.hierarchical-facet').each(function(){
 		var field = $(this).attr('id').split('_hier')[0];
 		var title = $(this).attr('title');
 		hierarchyLabel(field, title);
@@ -28,11 +27,10 @@ $(document).ready(function () {
 	
 	$("#backgroundPopup").on('click', function (event) {
 		disablePopup();
-	});
+	});*/
 	
 	/* INITIALIZE MAP */
 	var q = '*:*';
-	//alert(q);
 	
 	//initialize map
 	var style = new OpenLayers.Style({
@@ -58,7 +56,7 @@ $(document).ready(function () {
 		new OpenLayers.Strategy.Fixed(),
 		new OpenLayers.Strategy.Cluster()],
 		protocol: new OpenLayers.Protocol.HTTP({
-			url: "../query.kml?q=" + q + (lang.length > 0 ? '&lang=' + lang : ''),
+			url: path + "query.kml?q=" + q + (lang.length > 0 ? '&lang=' + lang : ''),
 			format: new OpenLayers.Format.KML({
 				extractStyles: false,
 				extractAttributes: true
@@ -168,7 +166,7 @@ $(document).ready(function () {
 		var query = getQuery();
 		
 		//refresh maps.
-		var placeQuery = "../query.kml?q=" + query + (lang.length > 0 ? '&lang=' + lang : '');
+		var placeQuery = path + "query.kml?q=" + query + (lang.length > 0 ? '&lang=' + lang : '');
 		placeLayer.loaded = false;		
 		//the refresh will force it to get the new KML data//
 		placeLayer.refresh({
@@ -179,7 +177,7 @@ $(document).ready(function () {
 	}
 	
 	$('#results') .on('click', '.paging_div .page-nos .btn-toolbar .pagination a.pagingBtn', function (event) {
-		var href = '../results_ajax/' + $(this) .attr('href');
+		var href = path + 'results_ajax/' + $(this) .attr('href');
 		$.get(href, {
 		},
 		function (data) {
@@ -195,12 +193,12 @@ $(document).ready(function () {
 	});
 	
 	/***************** DRILLDOWN HIERARCHICAL FACETS ********************/	
-	$('.hier-close') .click(function () {
+	/*$('.hier-close') .click(function () {
 		disablePopup();
 		return false;
 	});	
 	
-	/*$('.hierarchical-facet').click(function () {
+	$('.hierarchical-facet').click(function () {
 		if (popupStatus == 0) {
 			$("#backgroundPopup").fadeIn("fast");
 			popupStatus = 1;
@@ -209,7 +207,7 @@ $(document).ready(function () {
 		var field = $(this) .attr('id').split('_hier')[0];
 		var q = getQuery();
 		if ($('#' + list_id).html().indexOf('<li') < 0) {
-			$.get('../get_hier', {
+			$.get(path + 'get_hier', {
 				q: q, field: field, prefix: 'L1', fq: '*', section: 'collection', link: '', lang: lang
 			},
 			function (data) {
@@ -230,7 +228,7 @@ $(document).ready(function () {
 		var section = $(this) .attr('section');
 		var link = $(this) .attr('link');
 		if ($(this) .children('img') .attr('src') .indexOf('plus') >= 0) {
-			$.get('../get_hier', {
+			$.get(path + 'get_hier', {
 				q: q, field:field, prefix: prefix, fq: '"' +fq + '"', link: link, section: section, lang: lang
 			},
 			function (data) {
@@ -294,7 +292,7 @@ $(document).ready(function () {
 			$(this).children('img').attr('src', expand_image.replace('plus', 'minus'));
 			//perform ajax load on first click of expand button
 			if ($(this).parent('li').children('ul').html().indexOf('<li') < 0) {
-				$.get('../get_decades/', {
+				$.get(path + 'get_decades/', {
 					q: q, century: century, pipeline: pipeline
 				},
 				function (data) {
@@ -404,21 +402,23 @@ $(document).ready(function () {
 		var query = q + ' AND ' + place_query;
 		
 		message += '.<br/><br/>';
-		message += "<a href='#results' class='show_coins' q='" + query + "'>View</a> records that meet the search criteria from " + (event.feature.cluster.length > 1? 'these ' + name + 's': 'this ' + name) + '.';
+		message += "<a href='#results' class='show_records' q='" + query + "'>View</a> records that meet the search criteria from " + (event.feature.cluster.length > 1? 'these ' + name + 's': 'this ' + name) + '.';
 		message += '</div>';
 		
 		popup = new OpenLayers.Popup.FramedCloud("id", event.feature.geometry.bounds.getCenterLonLat(), null, message, null, true, onPopupClose);
 		event.popup = popup;
 		map.addPopup(popup);
 		
-		$('.show_coins').on('click', function (event) {
+		$('.show_records').on('click', function (event) {
 			var query = $(this).attr('q');
-			$.get('../results_ajax/', {
+			$.get(path + 'results_ajax/', {
 				q: query,
 				lang: lang
 			},
 			function (data) {
-				$('#results') .html(data);
+				$('#results') .html(data);					
+			}).done(function() {
+				$('span.thumbImage a').fancybox();
 			});
 			return false;
 		});

@@ -63,111 +63,104 @@
 			<xsl:value-of select="eaditor:normalize_fields($sort_category, $lang)"/>
 		</xsl:variable>
 
-		<div class="result_div">
-			<dl class="dl-horizontal">
-				<dt>
-					<xsl:value-of select="eaditor:normalize_fields('title', $lang)"/>
-				</dt>
-				<dd>
-					<xsl:variable name="objectUri">
+		<div class="result_div row">
+			<xsl:variable name="objectUri">
+				<xsl:choose>
+					<xsl:when test="//config/ark[@enabled='true']">
 						<xsl:choose>
-							<xsl:when test="//config/ark[@enabled='true']">
-								<xsl:choose>
-									<xsl:when test="string(str[@name='cid'])">
-										<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
-									</xsl:otherwise>
-								</xsl:choose>
+							<xsl:when test="string(str[@name='cid'])">
+								<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:choose>
-									<xsl:when test="string(str[@name='cid'])">
-										<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
 							</xsl:otherwise>
 						</xsl:choose>
-					</xsl:variable>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+							<xsl:when test="string(str[@name='cid'])">
+								<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+
+			<div class="col-md-7">
+				<h3>
 					<a href="{$objectUri}">
 						<xsl:value-of select="str[@name='unittitle_display']"/>
 					</a>
-				</dd>
-				<dt>
-					<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
-				</dt>
-				<dd>
-					<xsl:choose>
-						<xsl:when test="string(str[@name='unitdate_display'])">
-							<xsl:value-of select="str[@name='unitdate_display']"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text>[Unknown]</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose>
-				</dd>
-				<xsl:if test="string(str[@name='publisher_display'])">
+				</h3>
+				<dl class="dl-horizontal">
 					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
+						<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
 					</dt>
 					<dd>
-						<xsl:value-of select="str[@name='publisher_display']"/>
-						<xsl:if test="str[@name='agencycode_facet']">
-							<xsl:value-of select="concat(' (', str[@name='agencycode_facet'], ')')"/>
-						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="string(str[@name='unitdate_display'])">
+								<xsl:value-of select="str[@name='unitdate_display']"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>[Unknown]</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
 					</dd>
-				</xsl:if>
-				<xsl:if test="string(str[@name='physdesc_display'])">
-					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
-					</dt>
-					<dd>
-						<xsl:value-of select="str[@name='physdesc_display']"/>
-					</dd>
-				</xsl:if>
-				<xsl:if test="string(arr[@name='level_facet']/str[1])">
-					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
-					</dt>
-					<dd>
-						<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
-					</dd>
-				</xsl:if>
-			</dl>
+					<xsl:if test="string(str[@name='publisher_display'])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="str[@name='publisher_display']"/>
+							<xsl:if test="str[@name='agencycode_facet']">
+								<xsl:value-of select="concat(' (', str[@name='agencycode_facet'], ')')"/>
+							</xsl:if>
+						</dd>
+					</xsl:if>
+					<xsl:if test="string(str[@name='physdesc_display'])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="str[@name='physdesc_display']"/>
+						</dd>
+					</xsl:if>
+					<xsl:if test="string(arr[@name='level_facet']/str[1])">
+						<dt>
+							<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
+						</dt>
+						<dd>
+							<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
+						</dd>
+					</xsl:if>
+				</dl>
+			</div>
 			<xsl:if test="count(arr[@name='thumb_image']/str) &gt; 0">
-				<div style="float:right">
-					<xsl:apply-templates select="arr[@name='thumb_image']/str"/>
+				<div class="col-md-5 img-container">
+					<xsl:apply-templates select="arr[@name='thumb_image']/str[position() &lt;=5]"/>
 				</div>
 			</xsl:if>
 		</div>
 	</xsl:template>
 
 	<xsl:template match="arr[@name='thumb_image']/str">
-		<div class="thumbImage">
+		<span class="thumbImage">
 			<xsl:choose>
 				<xsl:when test="contains(., 'flickr.com')">
 					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
 					<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
-					<a href="#{generate-id()}">
+					<a href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $photo_id)]}">
 						<img class="gi" src="{.}"/>
-					</a>
-					<div style="display:none">
-						<div id="{generate-id()}">
-							<span href="{$flickr_uri}" class="flickr-link">
-								<img class="gi" src="{ancestor::doc/arr[@name='reference_image']/str[contains(., $photo_id)]}"/>
-							</span>
-						</div>
-					</div>
+					</a>					
 				</xsl:when>
 				<xsl:otherwise>
 					<img src="."/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</div>
+		</span>
 	</xsl:template>
 
 	<xsl:template name="paging">
@@ -234,8 +227,7 @@
 								<a class="btn btn-default" title="First" href="?q={encode-for-uri($q)}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-fast-backward"/>
 								</a>
-								<a class="btn btn-default" title="Previous"
-									href="?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+								<a class="btn btn-default" title="Previous" href="?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-backward"/>
 								</a>
 							</xsl:when>
@@ -243,8 +235,7 @@
 								<a class="btn btn-default disabled" title="First" href="?q={encode-for-uri($q)}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-fast-backward"/>
 								</a>
-								<a class="btn btn-default disabled" title="Previous"
-									href="?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+								<a class="btn btn-default disabled" title="Previous" href="?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-backward"/>
 								</a>
 							</xsl:otherwise>
@@ -258,22 +249,18 @@
 						<!-- next page -->
 						<xsl:choose>
 							<xsl:when test="$numFound - $start_var &gt; $rows">
-								<a class="btn btn-default" title="Next"
-									href="?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+								<a class="btn btn-default" title="Next" href="?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-forward"/>
 								</a>
-								<a class="btn btn-default"
-									href="?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+								<a class="btn btn-default" href="?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-fast-forward"/>
 								</a>
 							</xsl:when>
 							<xsl:otherwise>
-								<a class="btn btn-default disabled" title="Next"
-									href="?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+								<a class="btn btn-default disabled" title="Next" href="?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-forward"/>
 								</a>
-								<a class="btn btn-default disabled"
-									href="?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
+								<a class="btn btn-default disabled" href="?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
 									<span class="glyphicon glyphicon-fast-forward"/>
 								</a>
 							</xsl:otherwise>

@@ -53,7 +53,7 @@
 
 	<xsl:template name="footer">
 		<div id="footer">
-			<a href="https://github.com/ewg118/eaditor">EADitor</a> ©2014 Ethan Gruber. <a href="http://www.apache.org/licenses/LICENSE-2.0.html">License.</a>
+			<xsl:copy-of select="//config/content/footer/*"/>
 		</div>
 	</xsl:template>
 

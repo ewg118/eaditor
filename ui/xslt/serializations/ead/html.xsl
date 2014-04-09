@@ -132,7 +132,7 @@
 					<xsl:if test="$hasPoints = true()">
 						<div class="tab-pane" id="mapTab">
 							<div id="timemap">
-								<div id="mapcontainer">
+								<div id="display-mapcontainer">
 									<div id="map"/>
 								</div>
 								<div id="timelinecontainer">
