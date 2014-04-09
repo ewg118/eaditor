@@ -61,9 +61,12 @@
 			<xsl:choose>
 				<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
 					<div id="legend">
-						<h3>
+						<h4>
 							<a href="#map_filters" id="show_filters">Refine Results</a>
-						</h3>
+						</h4>
+						<small>
+							<a href="{$display_path}maps/"><span class="glyphicon glyphicon-arrow-left"/>Return</a>
+						</small>
 					</div>
 					<div style="display:none">
 						<div id="map_filters">
