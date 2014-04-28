@@ -42,7 +42,7 @@
 		<xsl:param name="title"/>
 		<xsl:param name="recordId"/>
 		<xsl:param name="archdesc-level"/>
-		<xsl:variable name="id" select="if (string(@id)) then @id else ead:eadheader/ead:eadid"/>
+		<xsl:variable name="id" select="if (string(ead:eadheader/ead:eadid)) then ead:eadheader/ead:eadid else @id"/>
 
 		<doc>
 			<field name="id">
