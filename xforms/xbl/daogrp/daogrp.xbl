@@ -371,11 +371,11 @@
 						</xforms:instance>
 
 						<xforms:instance id="config">
-							<config/>
+							<config xmlns=""/>
 						</xforms:instance>
 						
 						<!-- authentication -->
-						<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="collections-list">
 							<collections xmlns=""/>
 						</xforms:instance>
 						
@@ -384,7 +384,7 @@
 						</xforms:instance>
 
 						<xforms:instance id="control-instance">
-							<controls>
+							<controls xmlns="">
 								<collection-name/>				
 								<flickr_uri/>
 								<photo_id/>
@@ -398,28 +398,28 @@
 
 						<!-- flickr parameter values -->
 						<xforms:instance id="flickr-uri">
-							<uri/>
+							<uri xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="photo_id">
-							<photo_id/>
+							<photo_id xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="tags">
-							<tags/>
+							<tags xmlns=""/>
 						</xforms:instance>
 
 						<!-- flickr responses -->
 						<xforms:instance id="flickr-response">
-							<rsp/>
+							<rsp xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="flickr-sizes">
-							<rsp/>
+							<rsp xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="flickr-info">
-							<rsp/>
+							<rsp xmlns=""/>
 						</xforms:instance>
 
 						<!-- flickr oauth authentication -->
