@@ -6,7 +6,7 @@
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
-	xmlns:saxon="http://saxon.sf.net/">
+	xmlns:atom="http://www.w3.org/2005/Atom">
 	<head>
 		<title>EADitor: Edit Settings</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -44,6 +44,8 @@
 					<status/>
 					<api-key-accepted/>
 					<save-trigger/>
+					<xeac/>
+					<xeac-success>false</xeac-success>
 				</controls>
 			</xforms:instance>
 
@@ -61,7 +63,7 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config xmlns="" version="0.53">
+				<config xmlns="" version="0.55">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
@@ -76,6 +78,7 @@
 					<banner_image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
+					<xeac/>
 					<ark enabled="false">
 						<naan/>
 					</ark>
@@ -158,43 +161,19 @@
 				<flickr_api_secret xmlns=""/>
 			</xforms:instance>
 
-			<!-- jQuery UI themes -->
-			<xforms:instance id="jquery-ui-themes">
-				<themes xmlns="">
-					<theme>base</theme>
-					<theme>black-tie</theme>
-					<theme>blitzer</theme>
-					<theme>cupertino</theme>
-					<theme>dark-hive</theme>
-					<theme>dot-luv</theme>
-					<theme>eggplant</theme>
-					<theme>excite-bike</theme>
-					<theme>flick</theme>
-					<theme>hot-sneaks</theme>
-					<theme>humanity</theme>
-					<theme>le-frog</theme>
-					<theme>mint-choc</theme>
-					<theme>overcast</theme>
-					<theme>pepper-grinder</theme>
-					<theme>redmond</theme>
-					<theme>smoothness</theme>
-					<theme>south-street</theme>
-					<theme>start</theme>
-					<theme>sunny</theme>
-					<theme>swanky-purse</theme>
-					<theme>trontastic</theme>
-					<theme>ui-darkness</theme>
-					<theme>ui-lightness</theme>
-					<theme>vader</theme>
-				</themes>
+			<!-- connecting to xEAC -->
+			<xforms:instance id="xeac-response">
+				<feed xmlns="http://www.w3.org/2005/Atom"/>
 			</xforms:instance>
+
+			<!-- connecting to a SPARQL endpoint -->
 
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"/>
 				<xforms:bind nodeset="description" required="../export/pelagios = true()" readonly="../export/pelagios = false()"/>
-				<xforms:bind nodeset="theme/jquery_ui_theme" required="true()"/>
 				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
+				<xforms:bind nodeset="xeac" as="xs:anyURI"/>
 				<xforms:bind nodeset="ark">
 					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
 					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
@@ -212,12 +191,15 @@
 				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
 			</xforms:bind>
 
-			<xforms:bind nodeset="instance('control-instance')/save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>
+			<xforms:bind nodeset="instance('control-instance')">
+				<xforms:bind nodeset="save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>
+				<xforms:bind nodeset="xeac-success" type="xs:boolean"/>
+			</xforms:bind>
 			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"/>
 
-			<!-- submissions -->
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<!-- ********** SUBMISSIONS ********** -->
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set default if security is false -->
@@ -243,13 +225,14 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-config" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put"
-				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<xforms:setvalue ref="instance('status')" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
 			</xforms:submission>
@@ -260,16 +243,23 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set readonly for save button if the api key is a string and failed -->
-					<xforms:setvalue ref="instance('control-instance')/api-key-accepted" if="not(instance('flickr-response')/@stat = 'ok') and string-length(instance('config')/flickr_api_key) &gt; 0"
-						value="'false'"/>
+					<xforms:setvalue ref="instance('control-instance')/api-key-accepted"
+						if="not(instance('flickr-response')/@stat = 'ok') and string-length(instance('config')/flickr_api_key) &gt; 0" value="'false'"/>
 
 					<!-- activate button if the api key is okay or blank -->
-					<xforms:setvalue ref="instance('control-instance')/api-key-accepted" if="instance('flickr-response')/@stat = 'ok' or string-length(instance('config')/flickr_api_key) = 0"
-						value="'true'"/>
+					<xforms:setvalue ref="instance('control-instance')/api-key-accepted"
+						if="instance('flickr-response')/@stat = 'ok' or string-length(instance('config')/flickr_api_key) = 0" value="'true'"/>
 				</xforms:action>
 			</xforms:submission>
 
-			<!-- load eaditor config file on xforms construction -->
+			<!-- query xeac -->
+			<xforms:submission id="query-xeac" serialization="none" method="get"
+				action="{instance('control-instance')/xeac}/feed/" replace="instance" instance="xeac-response">
+				<xforms:setvalue ref="instance('control-instance')/xeac-success" ev:event="xforms-submit-error">false</xforms:setvalue>
+				<xforms:setvalue ref="instance('control-instance')/xeac-success" ev:event="xforms-submit-done">true</xforms:setvalue>
+			</xforms:submission>
+
+			<!-- ********** XFORMS-MODEL-CONSTRUCT-DONE ********** -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
@@ -344,8 +334,32 @@
 												<xforms:label>URL</xforms:label>
 												<xforms:alert>Required</xforms:alert>
 											</xforms:input>
-											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor be
-												contained on different servers.</p>
+											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private
+												aspects of EADitor be contained on different servers.</p>
+										</div>
+										<div>
+											<xforms:output ref="xeac">
+												<xforms:label>xEAC URL</xforms:label>
+											</xforms:output>
+											<xforms:trigger>
+												<xforms:label>Connect</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:setvalue ref="instance('control-instance')/xeac" value="instance('config')/xeac"/>
+													<xxforms:show dialog="xeac-dialog"/>
+												</xforms:action>
+											</xforms:trigger>
+											<xforms:group ref=".[string(xeac)]">
+												<xforms:trigger>
+													<xforms:label>Clear</xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:setvalue ref="instance('control-instance')/xeac"/>
+														<xforms:setvalue ref="instance('control-instance')/xeac-success">false</xforms:setvalue>
+														<xforms:setvalue ref="instance('config')/xeac"/>
+													</xforms:action>
+												</xforms:trigger>
+											</xforms:group>
+											<p>Home page for a xEAC installation for linking EADitor to CPF authority records. The Atom feed URL will be programmatically
+												ascertained.</p>
 										</div>
 										<!--<xforms:group ref="banner_image">
 										<numishare:banner-upload/>
@@ -353,8 +367,8 @@
 									</div>
 									<div class="section">
 										<h3>ARK</h3>
-										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output
-												value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"/></p>
+										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI:
+												<xforms:output value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"/></p>
 										<div>
 											<xforms:input ref="ark/@enabled">
 												<xforms:label>Enabled</xforms:label>
@@ -371,9 +385,9 @@
 										<h3>Export</h3>
 										<div class="subsection">
 											<h4>OAI-PMH</h4>
-											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only
-												passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier
-												is derived from the URL on this settings page.</p>
+											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important:
+												</b> Validation only passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the
+												:8080 Tomcat port. The OAI unique identifier is derived from the URL on this settings page.</p>
 											<div>
 												<xforms:input ref="export/oai-pmh">
 													<xforms:label>Enabled</xforms:label>
@@ -396,8 +410,8 @@
 										</div>
 										<div class="subsection">
 											<h4>Pelagios</h4>
-											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF documents for objects
-												which have been tied to Pleiades IDs.</p>
+											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF
+												documents for objects which have been tied to Pleiades IDs.</p>
 											<div>
 												<xforms:input ref="export/pelagios">
 													<xforms:label>Enabled</xforms:label>
@@ -450,13 +464,15 @@
 												<xforms:label>flickr API Key</xforms:label>
 												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"/>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr
+												image linking.</p>
 										</div>
 										<div>
 											<xforms:input ref="flickr_api_secret" incremental="true">
 												<xforms:label>flickr API Secret</xforms:label>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through
+												EADitor.</p>
 										</div>
 										<div>
 											<xforms:input ref="geonames_api_key" incremental="true">
@@ -479,29 +495,18 @@
 							<fr:tab bind="visual-tab">
 								<fr:label>Themes and Layout</fr:label>
 								<div class="section">
-									<h2>Theme</h2>
-									<div>
-										<xforms:select1 ref="jquery_ui_theme">
-											<xforms:label>jQuery UI Theme</xforms:label>
-											<xforms:alert>Required</xforms:alert>
-											<xforms:itemset nodeset="instance('jquery-ui-themes')/theme">
-												<xforms:label ref="."/>
-												<xforms:value ref="."/>
-											</xforms:itemset>
-										</xforms:select1>
-									</div>
-								</div>
-								<div class="section">
 									<h2>Facets</h2>
 									<span class="add">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<img src="/apps/eaditor/xforms/images/add.gif"/>Facet </xforms:label>
-											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')" ev:event="DOMActivate"/>
+											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')" ev:event="DOMActivate"
+											/>
 										</xforms:trigger>
 									</span>
-									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will cause the browse and
-										map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
+									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will
+										cause the browse and map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and
+										maps pages.</p>
 									<xforms:repeat nodeset="instance('facets')/facet">
 										<xforms:var name="position" select="position()"/>
 										<div>
@@ -564,5 +569,49 @@
 				</div>
 			</div>
 		</div>
+		<xxforms:dialog id="xeac-dialog" appearance="full" level="modal" close="true" draggable="true" visible="false">
+			<xforms:label>Connect to xEAC</xforms:label>
+			<p>Insert the URL for a xEAC installation below.</p>
+			<xforms:group ref="instance('control-instance')">
+				<div>
+					<xforms:input ref="xeac">
+						<xforms:label>xEAC URL</xforms:label>
+					</xforms:input>
+					<xforms:trigger>
+						<xforms:label>Connect</xforms:label>
+						<xforms:send submission="query-xeac" ev:event="DOMActivate"/>
+					</xforms:trigger>
+					<xforms:group ref=".[string(instance('config')/xeac)]">
+						<xforms:trigger>
+							<xforms:label>Clear</xforms:label>
+							<xforms:action ev:event="DOMActivate">
+								<xforms:setvalue ref="instance('config')/xeac"/>
+								<xxforms:hide dialog="xeac-dialog"/>
+							</xforms:action>
+						</xforms:trigger>
+					</xforms:group>
+				</div>
+				<xforms:group ref=".[xeac-success=true()]">
+					<p>xEAC installation found.</p>
+					<div>
+						<xforms:output ref="instance('xeac-response')/atom:title">
+							<xforms:label>Title</xforms:label>
+						</xforms:output>
+						<xforms:trigger>
+							<xforms:label>Select</xforms:label>
+							<xforms:action ev:event="DOMActivate">
+								<xforms:setvalue ref="instance('config')/xeac" value="instance('control-instance')/xeac"/>
+								<xxforms:hide dialog="xeac-dialog"/>
+							</xforms:action>
+						</xforms:trigger>
+					</div>
+				</xforms:group>
+				<xforms:group ref=".[xeac-success=false() and string-length(xeac) &gt; 0]">
+					<div>
+						<p>Unable to parse RDF from xEAC index page.</p>
+					</div>
+				</xforms:group>
+			</xforms:group>
+		</xxforms:dialog>
 	</body>
 </html>
