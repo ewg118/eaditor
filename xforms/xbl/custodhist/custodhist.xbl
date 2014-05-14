@@ -12,6 +12,7 @@
 						
 					<xhtml:div class="subsection">
 						<xhtml:h2>Custodial History</xhtml:h2>
+						<eaditor:attributes ref="."/>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>

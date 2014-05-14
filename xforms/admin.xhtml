@@ -55,12 +55,12 @@
 				<dump xmlns=""/>
 			</xforms:instance>
 
-			<xforms:instance id="config">
-				<config xmlns=""/>
+			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
+				<config/>
 			</xforms:instance>
 
-			<xforms:instance id="config-template">
-				<config xmlns="" version="0.55">
+			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
+				<config version="0.55">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
@@ -75,6 +75,7 @@
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
 					<xeac/>
+					<sparql/>
 					<ark enabled="false">
 						<naan/>
 					</ark>
@@ -198,6 +199,7 @@
 					<archdesc level="collection">
 						<did>
 							<unittitle/>
+							<origination/>
 						</did>
 					</archdesc>
 				</ead>

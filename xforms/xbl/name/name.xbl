@@ -13,6 +13,7 @@
 						<xhtml:div>
 							<xforms:input ref="$binding">
 								<xforms:label>Name</xforms:label>
+								<xforms:alert>Required</xforms:alert>
 							</xforms:input>
 						</xhtml:div>
 						<xforms:group ref="$binding[count(@role) &lt; 1]">

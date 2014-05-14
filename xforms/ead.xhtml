@@ -284,6 +284,16 @@
 				</xforms:bind>
 				<xforms:bind nodeset="//ead:p" constraint="string-length(.) &gt; 0"/>
 				<xforms:bind nodeset="//ead:head" required="true()"/>
+				<!-- require content for controlled access headings -->
+				<xforms:bind nodeset="//ead:corpname" required="true()"/>
+				<xforms:bind nodeset="//ead:famname" required="true()"/>
+				<xforms:bind nodeset="//ead:function" required="true()"/>
+				<xforms:bind nodeset="//ead:genreform" required="true()"/>
+				<xforms:bind nodeset="//ead:geogname" required="true()"/>
+				<xforms:bind nodeset="//ead:name" required="true()"/>
+				<xforms:bind nodeset="//ead:occupation" required="true()"/>
+				<xforms:bind nodeset="//ead:persname" required="true()"/>
+				<xforms:bind nodeset="//ead:subject" required="true()"/>
 			</xforms:bind>
 
 			<!-- bind tabs -->

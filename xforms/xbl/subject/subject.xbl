@@ -31,14 +31,7 @@
 							<xforms:output ref="$binding">
 								<xforms:label>Subject</xforms:label>
 							</xforms:output>
-							<!--<xforms:group ref=".[string($binding/@authfilenumber)]">
-								<xforms:trigger appearance="xxforms:link">
-									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/external.png"/>
-									</xforms:label>
-									<xforms:load ev:event="DOMActivate" ref="$binding/@authfilenumber" show="new"/>
-								</xforms:trigger>
-								</xforms:group>-->
+							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:setvalue ref="instance('search-query')"/>
@@ -48,20 +41,21 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
-							<eaditor:attributes ref="$binding"/>
 						</div>
 					</xforms:group>
 
 					<xforms:group ref=".[not(string($binding))]">
 						<div style="display:table;width:100%;">
 							<h4>Subject</h4>
+							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
-							<eaditor:attributes ref="$binding"/>
+							<p class="bg-warning">Content is required.</p>
+							
 							<div>
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">

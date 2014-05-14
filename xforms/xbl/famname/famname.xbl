@@ -45,11 +45,12 @@
 							<h4>Family Name</h4>
 							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
-								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
+							<p class="bg-warning">Content is required.</p>
 							<div>
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">

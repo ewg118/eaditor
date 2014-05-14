@@ -23,15 +23,7 @@
 							<div>
 								<xforms:output ref=".">
 									<xforms:label>Geographic Name</xforms:label>
-								</xforms:output>
-								<!--<xforms:group ref=".[string(@source)]">
-									<xforms:trigger appearance="minimal">
-										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/external.png"/>
-										</xforms:label>
-										<xforms:load ev:event="DOMActivate" show="new" ref="@authfilenumber"/>
-									</xforms:trigger>
-									</xforms:group>-->								
+								</xforms:output>							
 								<xforms:trigger appearance="minimal">
 									<xforms:action ev:event="DOMActivate">
 										<!-- delete all holdover values before removing bind, possible orbeon bug -->
@@ -50,7 +42,8 @@
 							</div>
 						</xforms:group>
 						<xforms:group ref=".[not(string(text()))]">
-							<h4>Geographic Name</h4>							
+							<h4>Geographic Name</h4>
+							<eaditor:attributes ref="$binding"/>							
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -59,7 +52,8 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
-							<eaditor:attributes ref="$binding"/>
+							
+							<p class="bg-warning">Content is required.</p>
 							<div style="display:table;width:100%;">
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">

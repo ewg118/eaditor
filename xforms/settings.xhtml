@@ -14,7 +14,8 @@
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
 
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
@@ -46,6 +47,9 @@
 					<save-trigger/>
 					<xeac/>
 					<xeac-success>false</xeac-success>
+					<sparql/>
+					<sparql-success>false</sparql-success>
+					<sparql-query>SELECT * WHERE {?s ?p ?o} LIMIT 1</sparql-query>
 				</controls>
 			</xforms:instance>
 
@@ -59,11 +63,11 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-backup" xxforms:exclude-result-prefixes="#all">
-				<config xmlns=""/>
+				<config/>
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config xmlns="" version="0.55">
+				<config version="0.55">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
@@ -74,11 +78,10 @@
 					<publisher_email/>
 					<description/>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
-					<banner_text>EADitor: XForms for EAD</banner_text>
-					<banner_image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
 					<xeac/>
+					<sparql/>
 					<ark enabled="false">
 						<naan/>
 					</ark>
@@ -167,6 +170,9 @@
 			</xforms:instance>
 
 			<!-- connecting to a SPARQL endpoint -->
+			<xforms:instance id="sparql-response">
+				<sparql xmlns="http://www.w3.org/2005/sparql-results#"/>
+			</xforms:instance>
 
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"/>
@@ -174,6 +180,7 @@
 				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="xeac" as="xs:anyURI"/>
+				<xforms:bind nodeset="sparql" as="xs:anyURI"/>
 				<xforms:bind nodeset="ark">
 					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
 					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
@@ -194,6 +201,7 @@
 			<xforms:bind nodeset="instance('control-instance')">
 				<xforms:bind nodeset="save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>
 				<xforms:bind nodeset="xeac-success" type="xs:boolean"/>
+				<xforms:bind nodeset="sparql-success" type="xs:boolean"/>
 			</xforms:bind>
 			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"/>
 
@@ -234,7 +242,7 @@
 			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
 				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
-				<xforms:setvalue ref="instance('status')" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
+				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- test for flickr echo -->
@@ -253,10 +261,17 @@
 			</xforms:submission>
 
 			<!-- query xeac -->
-			<xforms:submission id="query-xeac" serialization="none" method="get"
-				action="{instance('control-instance')/xeac}/feed/" replace="instance" instance="xeac-response">
+			<xforms:submission id="query-xeac" serialization="none" method="get" action="{instance('control-instance')/xeac}/feed/" replace="instance" instance="xeac-response">
 				<xforms:setvalue ref="instance('control-instance')/xeac-success" ev:event="xforms-submit-error">false</xforms:setvalue>
 				<xforms:setvalue ref="instance('control-instance')/xeac-success" ev:event="xforms-submit-done">true</xforms:setvalue>
+			</xforms:submission>
+
+			<!-- query SPARQL endpoint -->
+			<xforms:submission id="query-sparql" serialization="none" method="get"
+				action="{instance('control-instance')/sparql}?query={encode-for-uri(instance('control-instance')/sparql-query)}&amp;output=xml" replace="instance"
+				instance="sparql-response">
+				<xforms:setvalue ref="instance('control-instance')/sparql-success" ev:event="xforms-submit-error">false</xforms:setvalue>
+				<xforms:setvalue ref="instance('control-instance')/sparql-success" ev:event="xforms-submit-done">true</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- ********** XFORMS-MODEL-CONSTRUCT-DONE ********** -->
@@ -269,16 +284,16 @@
 	</head>
 
 	<body>
-		<div class="yui3-g">
-			<div class="yui3-u-1">
-				<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
 					<!-- header -->
 					<xforms:var name="display_path">../</xforms:var>
 					<xi:include href="header.xml"/>
 					<div id="form">
-						<xforms:group ref="instance('status')/text()">
-							<div class="success">
-								<xforms:output ref="instance('status')"/>
+						<xforms:group ref="instance('control-instance')/status/text()">
+							<div class="bg-success">
+								<xforms:output ref="instance('control-instance')/status"/>
 							</div>
 						</xforms:group>
 						<p>
@@ -286,7 +301,7 @@
 						</p>
 						<div class="submission">
 							<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
-								<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
+								<xforms:label><span class="glyphicon glyphicon-save"/>Save</xforms:label>
 								<xforms:action ev:event="DOMActivate">
 									<!-- first re-assemble the facets template into comma separated values into the config -->
 									<xforms:setvalue ref="instance('config')/theme/facets" value="string-join(instance('facets')/facet, ',')"/>
@@ -361,9 +376,30 @@
 											<p>Home page for a xEAC installation for linking EADitor to CPF authority records. The Atom feed URL will be programmatically
 												ascertained.</p>
 										</div>
-										<!--<xforms:group ref="banner_image">
-										<numishare:banner-upload/>
-										</xforms:group>-->
+										<div>
+											<xforms:output ref="sparql">
+												<xforms:label>SPARQL</xforms:label>
+											</xforms:output>
+											<xforms:trigger>
+												<xforms:label>Connect</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:setvalue ref="instance('control-instance')/sparql" value="instance('config')/sparql"/>
+													<xxforms:show dialog="sparql-dialog"/>
+												</xforms:action>
+											</xforms:trigger>
+											<xforms:group ref=".[string(sparql)]">
+												<xforms:trigger>
+													<xforms:label>Clear</xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:setvalue ref="instance('control-instance')/sparql"/>
+														<xforms:setvalue ref="instance('control-instance')/sparql-success">false</xforms:setvalue>
+														<xforms:setvalue ref="instance('config')/sparql"/>
+													</xforms:action>
+												</xforms:trigger>
+											</xforms:group>
+											<p>Connect EADitor to a SPARQL endpoint for more widespread dissemination and querying. This should be the URL of the query web
+												service.</p>
+										</div>
 									</div>
 									<div class="section">
 										<h3>ARK</h3>
@@ -499,7 +535,7 @@
 									<span class="add">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Facet </xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Facet</xforms:label>
 											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')" ev:event="DOMActivate"
 											/>
 										</xforms:trigger>
@@ -515,7 +551,7 @@
 											</xforms:input>
 											<xforms:group ref=".[$position != 1]">
 												<xforms:trigger appearance="minimal">
-													<xforms:label><img alt="up" src="/eaditor/xforms/xbl/tree-view/images/up.gif"/></xforms:label>
+													<xforms:label><span class="glyphicon glyphicon-arrow-up"/></xforms:label>
 													<xforms:action ev:event="DOMActivate">
 														<xforms:insert context="instance('facets')" nodeset="facet[$position - 2]" origin="instance('facets')/facet[$position]"/>
 														<xforms:delete nodeset="."/>
@@ -524,7 +560,7 @@
 											</xforms:group>
 											<xforms:group ref=".[not($position=count(instance('facets')/facet))]">
 												<xforms:trigger appearance="minimal">
-													<xforms:label><img alt="down" src="/eaditor/xforms/xbl/tree-view/images/down.gif"/></xforms:label>
+													<xforms:label><span class="glyphicon glyphicon-arrow-down"/></xforms:label>
 													<xforms:action ev:event="DOMActivate">
 														<xforms:insert context="instance('facets')" nodeset="facet[$position+1]" origin="instance('facets')/facet[$position]"/>
 														<xforms:delete nodeset="."/>
@@ -534,7 +570,7 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" context="."/>
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													<span class="glyphicon glyphicon-remove"/>
 												</xforms:label>
 											</xforms:trigger>
 										</div>
@@ -608,7 +644,51 @@
 				</xforms:group>
 				<xforms:group ref=".[xeac-success=false() and string-length(xeac) &gt; 0]">
 					<div>
-						<p>Unable to parse RDF from xEAC index page.</p>
+						<p class="bg-danger">Unable to parse xEAC Atom feed.</p>
+					</div>
+				</xforms:group>
+			</xforms:group>
+		</xxforms:dialog>
+		<xxforms:dialog id="sparql-dialog" appearance="full" level="modal" close="true" draggable="true" visible="false">
+			<xforms:label>Connect to SPARQL Endpoint</xforms:label>
+			<p>Insert the URL for a SPARQL endpoint query service below.</p>
+			<xforms:group ref="instance('control-instance')">
+				<div>
+					<xforms:input ref="sparql">
+						<xforms:label>Endpoint URL</xforms:label>
+					</xforms:input>
+					<xforms:trigger>
+						<xforms:label>Connect</xforms:label>
+						<xforms:send submission="query-sparql" ev:event="DOMActivate"/>
+					</xforms:trigger>
+					<xforms:group ref=".[string(instance('config')/sparql)]">
+						<xforms:trigger>
+							<xforms:label>Clear</xforms:label>
+							<xforms:action ev:event="DOMActivate">
+								<xforms:setvalue ref="instance('config')/sparql"/>
+								<xxforms:hide dialog="sparql-dialog"/>
+							</xforms:action>
+						</xforms:trigger>
+					</xforms:group>
+				</div>
+				<xforms:group ref=".[sparql-success=true()]">
+					<p>SPARQL endpoint found.</p>
+					<div>
+						<xforms:output ref="instance('control-instance')/sparql">
+							<xforms:label>Endpoint</xforms:label>
+						</xforms:output>
+						<xforms:trigger>
+							<xforms:label>Select</xforms:label>
+							<xforms:action ev:event="DOMActivate">
+								<xforms:setvalue ref="instance('config')/sparql" value="instance('control-instance')/sparql"/>
+								<xxforms:hide dialog="sparql-dialog"/>
+							</xforms:action>
+						</xforms:trigger>
+					</div>
+				</xforms:group>
+				<xforms:group ref=".[sparql-success=false() and string-length(sparql) &gt; 0]">
+					<div>
+						<p class="bg-danger">Unable to query SPARQL endpoint.</p>
 					</div>
 				</xforms:group>
 			</xforms:group>
