@@ -1187,5 +1187,8 @@
 			</xsl:for-each>
 		</div>
 	</xsl:template>
+	
+	<!-- suppress eaditor-injected odd for the component parent (used in RDF) -->
+	<xsl:template match="ead:odd[@type='eaditor:parent']"/>
 
 </xsl:stylesheet>

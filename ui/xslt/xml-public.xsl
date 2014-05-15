@@ -6,7 +6,7 @@
 	Function: Identity transform for the xml pipeline in EADitor.  Internal components are suppressed unless they have external
 	descendants, in which case only the unittitles are displayed 
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:ead="urn:isbn:1-931666-22-9" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:ead="urn:isbn:1-931666-22-9" exclude-result-prefixes="#all" version="2.0">
 	<xsl:output encoding="utf-8" indent="yes" method="xml"/>
 	<xsl:strip-space elements="*"/>
 
@@ -35,7 +35,7 @@
 
 		<xsl:choose>
 			<xsl:when test="$audience='internal' and descendant::ead:c[@audience='external']">
-				<c>
+				<c xmlns="urn:isbn:1-931666-22-9">
 					<xsl:for-each select="@*">
 						<xsl:attribute name="{name()}">
 							<xsl:value-of select="."/>
@@ -45,12 +45,39 @@
 						<xsl:apply-templates select="ead:did/ead:unittitle"/>
 					</did>
 					<xsl:apply-templates select="ead:c"/>
+					
+					<!-- insert odd to encode parent id -->
+					<odd type="eaditor:parent">
+						<xsl:choose>
+							<xsl:when test="parent::ead:dsc">
+								<xsl:value-of select="ancestor::ead:ead/ead:eadheader/ead:eadid"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="parent::ead:c/@id"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</odd>
 				</c>
 			</xsl:when>
 			<xsl:when test="$audience='external'">
-				<xsl:copy>
-					<xsl:apply-templates select="@*|node()"/>
-				</xsl:copy>
+				<c xmlns="urn:isbn:1-931666-22-9">
+					<xsl:for-each select="@*">
+						<xsl:attribute name="{name()}">
+							<xsl:value-of select="."/>
+						</xsl:attribute>
+					</xsl:for-each>
+					<odd type="eaditor:parent">
+						<xsl:choose>
+							<xsl:when test="parent::ead:dsc">
+								<xsl:value-of select="ancestor::ead:ead/ead:eadheader/ead:eadid"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="concat(ancestor::ead:ead/ead:eadheader/ead:eadid, '/', parent::ead:c/@id)"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</odd>
+					<xsl:apply-templates select="node()"/>
+				</c>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>

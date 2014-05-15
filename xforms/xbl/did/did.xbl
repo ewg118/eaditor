@@ -126,7 +126,7 @@
 									<img src="/apps/eaditor/xforms/images/remove.gif"/>
 								</xforms:label>
 							</xforms:trigger>
-							<xforms:group ref=".[not(child::node())]">
+							<xforms:group ref=".[not(child::*)]">
 								<div>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
@@ -155,7 +155,7 @@
 								</div>
 							</xforms:group>
 
-							<xforms:group ref=".[string-length(text()) &gt; 0]">
+							<xforms:group ref=".[not(child::*) and string-length(.) &gt; 0]">
 								<div>
 									<xforms:output ref=".">
 										<xforms:label>Value</xforms:label>

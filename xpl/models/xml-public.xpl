@@ -208,7 +208,7 @@
 								<xsl:when test="string($id)">
 									<xsl:apply-templates
 										select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/descendant::*[@id=$id or @xml:id=$id]"
-									/>
+									/>	
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:apply-templates

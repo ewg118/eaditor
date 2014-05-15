@@ -5,8 +5,9 @@
     Apache License 2.0: https://github.com/ewg118/eaditor    
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:exist="http://exist.sourceforge.net/NS/exist">
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<head>
 		<title>EADitor: Edit Guide</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
@@ -43,8 +44,8 @@
 				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
-			<xforms:instance id="config">
-				<config xmlns=""/>
+			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
+				<config/>
 			</xforms:instance>
 
 			<xforms:instance id="control-instance">
@@ -77,8 +78,8 @@
 
 			<xforms:instance id="xqueries">
 				<queries xmlns="">
-					<query id="get-ids">&lt;report> { for $foo in collection() where $foo[descendant::ead:eadid/@mainagencycode='AGENCYCODE'] order by $foo//ead:eadid return &lt;item> {
-						data($foo//*[local-name()='eadid']) } &lt;/item> } &lt;/report></query>
+					<query id="get-ids">&lt;report> { for $foo in collection() where $foo[descendant::ead:eadid/@mainagencycode='AGENCYCODE'] order by $foo//ead:eadid return
+						&lt;item> { data($foo//*[local-name()='eadid']) } &lt;/item> } &lt;/report></query>
 				</queries>
 			</xforms:instance>
 
@@ -97,6 +98,21 @@
 			<!-- Instance for Solr commit-->
 			<xforms:instance id="sendCommit">
 				<commit/>
+			</xforms:instance>
+
+			<!-- linked data publication instances -->
+			<xforms:instance id="rdf" xxforms:exclude-result-prefixes="#all">
+				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+			</xforms:instance>
+
+			<xforms:instance id="sparqlUpdate-template">
+				<query>
+					<![CDATA[DELETE {?s ?p ?o} WHERE { <URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>) }]]>
+				</query>
+			</xforms:instance>
+
+			<xforms:instance id="sparqlUpdate">
+				<query/>
 			</xforms:instance>
 
 			<!-- table of contents for navigation -->
@@ -236,7 +252,7 @@
 				</xforms:bind>
 				<xforms:bind nodeset="ead:archdesc">
 					<xforms:bind nodeset="@level" required="true()"/>
-					<xforms:bind nodeset="ead:did">						
+					<xforms:bind nodeset="ead:did">
 						<xforms:bind nodeset="ead:unitid" required="true()"/>
 						<xforms:bind nodeset="ead:langmaterial">
 							<xforms:bind ref="ead:language">
@@ -269,7 +285,7 @@
 				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()"/>
 				<xforms:bind nodeset="//ead:daoloc/@xlink:label" constraint="string-length(.) &gt; 0"/>
 				<xforms:bind nodeset="//ead:daodesc">
-					<xforms:bind nodeset="ead:head" required="true()"/>					
+					<xforms:bind nodeset="ead:head" required="true()"/>
 				</xforms:bind>
 				<xforms:bind nodeset="//ead:defitem">
 					<xforms:bind nodeset="ead:label" required="true()"/>
@@ -300,8 +316,9 @@
 			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"/>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-config" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
@@ -336,18 +353,20 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
-				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-ead-template" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml" replace="instance" instance="guide"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EAD core template.</xforms:message>
 				<!-- set date on new document -->
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- automatically set eadid -->
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-ids'], 'AGENCYCODE', instance('config')/templates/agencycodes/agencycode[1]/@value)"/>
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+						value="replace(instance('xqueries')/query[@id='get-ids'], 'AGENCYCODE', instance('config')/templates/agencycodes/agencycode[1]/@value)"/>
 					<xforms:send submission="xquery-collection"/>
 					<!-- process results -->
 					<xforms:action ev:event="xforms-submit-done">
 						<xforms:var name="code" select="substring-after(instance('config')/templates/agencycodes/agencycode[1]/@value, '-')"/>
-						<xforms:action if="count(instance('xquery-result')//item) &gt; 0">						
+						<xforms:action if="count(instance('xquery-result')//item) &gt; 0">
 							<xforms:var name="number" select="number(substring-after(instance('xquery-result')//item[last()], $code))"/>
 							<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, format-number($number+1, '0000'))"/>
 						</xforms:action>
@@ -355,34 +374,36 @@
 							<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="concat($code, '0001')"/>
 						</xforms:action>
 					</xforms:action>
-					
+
 					<!-- only need to set @normal; date XBL will handle human readability -->
 					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:publicationstmt/ead:date/@normal" value="substring(string(current-date()), 1, 10)"/>
 				</xforms:action>
 			</xforms:submission>
-			
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
-				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+
+			<xforms:submission id="load-c-template" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" replace="instance" instance="c-template"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load component template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml"
+				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 			<!-- load table of contents after loading the ead guide -->
 			<xforms:submission id="load-toc" serialization="none" method="get"
-				action="/eaditor/admin/toc/?collection={instance('control-instance')/collection-name}&amp;guide={instance('guide')/ead:eadheader/ead:eadid}" replace="instance" instance="toc">
+				action="/eaditor/admin/toc/?collection={instance('control-instance')/collection-name}&amp;guide={instance('guide')/ead:eadheader/ead:eadid}" replace="instance"
+				instance="toc">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load table of contents</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-submission" ref="instance('guide')"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put"
+				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
@@ -392,14 +413,20 @@
 					<xforms:send submission="load-toc"/>
 				</xforms:action>
 			</xforms:submission>
-			
+
 			<!-- ************** SOLR ***************** -->
 			<!-- submission to query solr to see if the document is published -->
 			<xforms:submission id="query-solr-for-publication" serialization="none" method="get"
 				action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('guide')/ead:eadheader/ead:eadid}&#x022;" replace="instance" instance="is-published">
 				<!-- if the document is found in solr, get the updated solr doc -->
-				<xforms:send ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'" submission="doc-to-solr"/>
+				<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
+					<!-- post doc to solr -->
+					<xforms:send submission="doc-to-solr"/>
+					<!-- post to SPARQL, if the URLs are available in the config -->
+					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)"/>
+				</xforms:action>
 			</xforms:submission>
+
 			<!-- access service to read in pre-transformed solr doc -->
 			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none"
 				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('guide')/ead:eadheader/ead:eadid}.solr">
@@ -407,19 +434,50 @@
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
 			<!-- post instance to Solr -->
-			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
+			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance"
+				method="post">
 				<xforms:send ev:event="xforms-submit-done" submission="submit-commit"/>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">EAD guide saved and updated to search index.</xforms:setvalue>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
 			<!-- send commit -->
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"/>
-			
+
 			<!-- ************** XQUERY ***************** -->
-			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post"
-				replace="instance" instance="xquery-result">
+			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post" replace="instance" instance="xquery-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
+
+			<!-- ************** POST RDF TO TRIPLESTORE ***************** -->
+			<xforms:submission id="get-rdf" method="get" replace="instance" instance="rdf" serialization="none"
+				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('guide')/ead:eadheader/ead:eadid}.rdf">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to get RDF/XML serialization.</xforms:message>
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- first remove existing graphs -->
+					<xforms:action xxforms:iterate="instance('rdf')//@rdf:about">
+						<xforms:var name="uri" select="."/>
+						<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"/>
+						<xforms:send submission="delete-graph"/>
+					</xforms:action>
+					<!-- then post RDF -->
+					<xforms:send submission="post-rdf"/>
+				</xforms:action>
+			</xforms:submission>
+
+			<xforms:submission id="post-rdf" action="{instance('config')/sparql/store}?default" ref="instance('rdf')" replace="none" method="post" mediatype="application/rdf+xml">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:message level="modal">Post to endpoint failed.</xforms:message>
+				</xforms:action>
+			</xforms:submission>
+
+			<xforms:submission id="delete-graph" action="{instance('config')/sparql/update}" ref="instance('sparqlUpdate')" serialization="text/plain" replace="none" method="post"
+				mediatype="application/sparql-update">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:message level="modal">SPARQL update failed.</xforms:message>
+				</xforms:action>
+			</xforms:submission>
+
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<!-- load id parameter from url into @id attribute for EAD guide -->
 			<xforms:action ev:event="xforms-model-construct-done">
@@ -635,15 +693,16 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Edition Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after" origin="instance('editionstmt-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after"
+														origin="instance('editionstmt-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:publicationstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Publication Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
-														origin="instance('publicationstmt-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
+														nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt" origin="instance('publicationstmt-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:seriesstmt) &lt; 1]">
@@ -659,7 +718,8 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
 														<img src="/apps/eaditor/xforms/images/add.gif"/>Note Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]" origin="instance('notestmt-template')"/>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]"
+														origin="instance('notestmt-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 										</xxforms:dialog>
@@ -680,8 +740,8 @@
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
 																<img src="/apps/eaditor/xforms/images/add.gif"/>Subtitle</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
-																origin="instance('subtitle-template')"/>
+															<xforms:insert ev:event="DOMActivate" context="."
+																nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper" origin="instance('subtitle-template')"/>
 														</xforms:trigger>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
