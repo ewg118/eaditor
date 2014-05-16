@@ -1,7 +1,7 @@
 EADitor
 =======
 
-EADitor is an open source, [XForms](http://en.wikipedia.org/wiki/XForms)-based editing and publication tool for [Encoded Archival Description (EAD)](http://www.loc.gov/ead/) finding aids. It is composed of other open source Java-based web services that run in a framework such as Apache Tomcat. [Orbeon](http://www.orbeon.com) is the XForms processor for creating, editing, and publishing EAD documents, interacting with web services to integrate linked open data controlled vocabulary and concepts defined by URIs. It is also the processor the powers the user interface. [Apache Solr](http://lucene.apache.org/solr/) is the search index and [eXist](http://exist-db.org/exist/apps/homepage/index.html) is the XML database for storing EAD files. EADitor also offers rudimentary support for the publication of MODS and TEI (focused primarily on the annotation of facsimile images with [Annotorious](http://annotorious.github.io/) and [OpenLayers](http://openlayers.org).
+EADitor is an open source, [XForms](http://en.wikipedia.org/wiki/XForms)-based editing and publication tool for [Encoded Archival Description (EAD)](http://www.loc.gov/ead/) finding aids. It is composed of other open source Java-based web services that run in a framework such as Apache Tomcat. EADitor also offers rudimentary support for the publication of MODS and TEI (focused primarily on the annotation of facsimile images with [Annotorious](http://annotorious.github.io/) and [OpenLayers](http://openlayers.org). At the moment, support for creating EAD 2002 XSD schema-compliant documents is fairly robust, but migration to [EAD 3](http://www2.archivists.org/groups/technical-subcommittee-on-encoded-archival-description-ead/ead-revision) is planned by 2015.
 
 Controlled Vocabulary
 ---------------------
@@ -32,3 +32,10 @@ Linked Data
 -----------
 EADitor optionally allows connection to an RDF triplestore and SPARQL endpoints to facilitate the publication of archival materials in the form of linked open data.
 
+Architecture
+------------
+xEAC is comprised of three server-side application which run in Apache Tomcat: [Orbeon](http://www.orbeon.com) (XForms processor and public user interface), [Solr](http://lucene.apache.org/solr/) (search index used for publication), and [eXist](http://exist-db.org/exist/apps/homepage/index.html) (XML database).  XForms submissions allow these three applications to communicate through REST.
+
+Installation and Use
+--------------------
+Installation and usage instructions may be found in the xEAC wiki, hosted by the American Numismatic Society: [http://wiki.numismatics.org/eaditor:eaditor](http://wiki.numismatics.org/eaditor:eaditor)
