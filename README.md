@@ -1,20 +1,34 @@
-EADitor: XForms for EAD
-Introduction
+EADitor
+=======
 
-EADitor is an XForms framework for the creation and editing of Encoded Archival Description (EAD) finding aids using Orbeon, an enterprise-level XForms Java application, which runs in Apache Tomcat. By default, Orbeon is configured to read from an eXist XML database within the Orbeon application, but one can reconfigure the software to read and write from/to a filesystem or interact with a REST or SOAP interface, like a Fedora repository or a separate eXist database. Although the web form is certainly the most important aspect of the application since it can be integrated with existing content management and dissemination systems, EADitor also includes an easily customizable public interface for searching, sorting, and browsing collections of finding aids. This enables institutions to use a single application for content creation and publication. The public search interface utilizes Solr for faceted browsing.
+EADitor is an open source, [XForms](http://en.wikipedia.org/wiki/XForms)-based editing and publication tool for [Encoded Archival Description (EAD)](http://www.loc.gov/ead/) finding aids. It is composed of other open source Java-based web services that run in a framework such as Apache Tomcat. [Orbeon](http://www.orbeon.com) is the XForms processor for creating, editing, and publishing EAD documents, interacting with web services to integrate linked open data controlled vocabulary and concepts defined by URIs. It is also the processor the powers the user interface. [Apache Solr](http://lucene.apache.org/solr/) is the search index and [eXist](http://exist-db.org/exist/apps/homepage/index.html) is the XML database for storing EAD files. EADitor also offers rudimentary support for the publication of MODS and TEI (focused primarily on the annotation of facsimile images with [Annotorious](http://annotorious.github.io/) and [OpenLayers](http://openlayers.org).
 
-EADitor includes a simple interface for listing EAD guides and components of those guides for editing. The administrative interface links to an HTML version of the finding aid and the XML in eXist. New EAD finding aids can be uploaded into the system using a form, and the XML guide is preprocessed to correct encoding inconsistencies and upgrade documents that validate to the EAD 2002 DTD to be schema-conformant. The administrative interface includes check boxes for publishing the guide to Solr, as well as an advanced controlled vocabulary and default template management system.
+Controlled Vocabulary
+---------------------
+The XForms editing backend for EAD links to the following web services for controlled vocabulary and ingesting of URIs/authority file numbers:
 
-The prepackaged downloads include Tomcat with Orbeon and EADitor loaded, and one can get the application up and running on a system that has the latest Java installed in minutes. Tomcat also contains an instance of Solr 1.4 to provide autosuggest functionality for subjects and other controlled access terms. The subjects are derived from the LCSH terms provided in the public domain by the Library of Congress. The index built into EADitor can be updated with a simple button click with the Atom feed provided at id.loc.gov. EADitor also queries VIAF for personal and corporate names. Moreover, EADitor interacts with geonames.org to provide easy access to more than 7.5 million place names, enabling out-of-the-box georeferencing and mapping of archival collections.
-Why XForms?
+* Corporate names: [VIAF](http://viaf.org/), [xEAC](https://github.com/ewg118/xEAC)
+* Family names:  [xEAC](https://github.com/ewg118/xEAC)
+* Functions: [Getty AAT]((http://vocab.getty.edu/aat/))
+* Geographical names: [Geonames](http://www.geonames.org), [Pleiades](http://pleiades.stoa.org)
+* Genres/formats: [LCGFT](http://id.loc.gov/authorities/genreForms), [Getty AAT](http://vocab.getty.edu/aat/)
+* Occupations: [Getty AAT]((http://vocab.getty.edu/aat/))
+* Personal names: [VIAF](http://viaf.org/), [xEAC](https://github.com/ewg118/xEAC)
+* Subjects: [LCSH](http://id.loc.gov/authorities/subjects)
 
-Many institutions have faced challenges in the efficient creation of electronic finding aids since the introduction of EAD in 1998. For finding aids to be useful to patrons of archives, robust metadata is required to adequately describe the conceptual organization of a manuscript collection. Subject specialists contribute their knowledge to provide context to the collection, which allows it to be searched more relevantly. EAD is a complex descriptive schema, and not all archivists or subject specialists can (or should) be required to be competent in XML encoding. The use of XForms, a W3C standard, to allow the creation of robust metadata through a next-generation web form removes barriers from subject specialists in the creation of EAD guides and reduces the potential for human errors in semantic usage or invalid XML.
+Lookup mechanisms for other Getty thesauri will be incorporated into EADitor once they become available through SPARQL.
 
-Since XForms is used for creating true XML, it is also possible to import EAD files from the "wild" into EADitor with some minor transformation to correct encoding inconsistencies. This is a feature that cannot be easily accomplished in Archon or Archivists' Toolkit, which flatten out complicated hierarchical XML structure to fit into a series of database tables. XForms and XForms applications, like Orbeon, are ripe for integrating into the Library, Archive, and Museum (LAM) universe. Other organizations are endeavoring to utilize XForms for the creation of MODS, Dublin Core, and VRA Core records. XForms represent the future for metadata creation in the library and archival communities.
-More Info
+Export/Alternative Data Models and Serializations
+-------------------------------------------------
+In addition to making the EAD XML available for download, EADitor provides alternative models (derived from both EAD finding aids and Solr query results):
 
-Technical list, geared toward XForms developers in libraries: https://list.mail.virginia.edu/mailman/listinfo/xforms4lib
+* EAD->RDF/XML ([Arch ontology](http://gslis.simmons.edu/archival/arch/index.html))
+* EAD->KML
+* Solr->KML
+* Solr->Atom
+* Solr->Pelagios RDF/XML (for making content associated with ancient places defined by Pleiades)
 
-Non-technical list, for librarians and archivists interested in EADitor specifically: http://groups.google.com/group/eaditor
+Linked Data
+-----------
+EADitor optionally allows connection to an RDF triplestore and SPARQL endpoints to facilitate the publication of archival materials in the form of linked open data.
 
-SAA 2010 Slideshow: http://people.virginia.edu/~ewg4x/saa10_eaditor.ppt 
