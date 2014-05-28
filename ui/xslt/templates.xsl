@@ -26,6 +26,11 @@
 						<li>
 							<a href="{$display_path}maps/">Maps</a>
 						</li>
+						<xsl:if test="//config/sparql/endpoint=true()">
+							<li>
+								<a href="{$display_path}sparql">SPARQL</a>
+							</li>
+						</xsl:if>
 					</ul>
 					<xsl:if test="$pipeline='display'">
 						<ul class="nav navbar-nav navbar-right">

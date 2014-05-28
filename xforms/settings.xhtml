@@ -89,6 +89,7 @@
 					<url>http://localhost:8080/orbeon/eaditor/</url>
 					<xeac/>
 					<sparql>
+						<endpoint/>
 						<update/>
 						<query/>
 						<store/>
@@ -219,9 +220,10 @@
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="xeac" as="xs:anyURI"/>
 				<xforms:bind nodeset="sparql">
-					<xforms:bind nodeset="query" as="xs:anyURI"/>
-					<xforms:bind nodeset="store" as="xs:anyURI"/>
-					<xforms:bind nodeset="update" as="xs:anyURI"/>
+					<xforms:bind nodeset="endpoint" type="xs:boolean"/>
+					<xforms:bind nodeset="query" type="xs:anyURI"/>
+					<xforms:bind nodeset="store" type="xs:anyURI"/>
+					<xforms:bind nodeset="update" type="xs:anyURI"/>
 				</xforms:bind>
 				<xforms:bind nodeset="ark">
 					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
@@ -498,12 +500,19 @@
 															<xforms:setvalue ref="update"/>
 															<xforms:setvalue ref="query"/>
 															<xforms:setvalue ref="store"/>
+															<xforms:setvalue ref="endpoint">false</xforms:setvalue>
 														</xforms:action>
 													</xforms:trigger>
 												</xforms:group>
 											</div>
 											<p>Connect EADitor to a SPARQL endpoint for more widespread dissemination and querying.</p>
 											<xforms:group ref=".[string(query) and string(update) and string(store)]">
+												<div>
+													<xforms:input ref="endpoint">
+														<xforms:label>Expose Endpoint</xforms:label>
+														<xforms:alert>Invalid</xforms:alert>
+													</xforms:input>
+												</div>
 												<div>
 													<xforms:output ref="query">
 														<xforms:label>Query Service</xforms:label>

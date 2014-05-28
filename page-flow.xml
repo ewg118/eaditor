@@ -96,6 +96,10 @@
 
 	<!-- OAI-PMH feed -->
 	<page path="/eaditor/[^\/]+/oai/" matcher="oxf:perl5-matcher" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>
+	
+	<!-- SPARQL -->
+	<page path="/eaditor/[^\/]+/sparql" matcher="oxf:perl5-matcher" view="xpl/pages/sparql.xpl"/>
+	<page path="/eaditor/[^\/]+/query" matcher="oxf:perl5-matcher" view="xpl/serializations/sparql/query.xpl"/>
 
 	<!-- APIs -->
 	<page path-info="/eaditor/[^\/]+/api/get" matcher="oxf:perl5-matcher" model="xpl/models/xml-public.xpl" view="xpl/api-get.xpl"/>
