@@ -9,10 +9,10 @@ The XForms editing backend for EAD links to the following web services for contr
 
 * Corporate names: [VIAF](http://viaf.org/), [xEAC](https://github.com/ewg118/xEAC)
 * Family names:  [xEAC](https://github.com/ewg118/xEAC)
-* Functions: [Getty AAT]((http://vocab.getty.edu/aat/))
+* Functions: [Getty AAT](http://vocab.getty.edu/aat/)
 * Geographical names: [Geonames](http://www.geonames.org), [Pleiades](http://pleiades.stoa.org)
 * Genres/formats: [LCGFT](http://id.loc.gov/authorities/genreForms), [Getty AAT](http://vocab.getty.edu/aat/)
-* Occupations: [Getty AAT]((http://vocab.getty.edu/aat/))
+* Occupations: [Getty AAT](http://vocab.getty.edu/aat/)
 * Personal names: [VIAF](http://viaf.org/), [xEAC](https://github.com/ewg118/xEAC)
 * Subjects: [LCSH](http://id.loc.gov/authorities/subjects)
 

@@ -62,10 +62,6 @@
 											<xforms:label>Geonames</xforms:label>
 											<xforms:value>geonames</xforms:value>
 										</xforms:item>
-										<!--<xforms:item>
-											<xforms:label>Nomisma</xforms:label>
-											<xforms:value>nomisma</xforms:value>
-										</xforms:item>-->
 										<xforms:item>
 											<xforms:label>Pleiades</xforms:label>
 											<xforms:value>pleiades</xforms:value>
@@ -91,24 +87,7 @@
 												<!-- set source if the attributes already exist -->												
 												<xforms:setvalue if="$binding/@source" ref="$binding/@source">geonames</xforms:setvalue>												
 												<xforms:toggle case="geonames-search"/>
-											</xforms:action>
-											<xforms:action if=". = 'nomisma'">
-												<!-- clear temp -->
-												<xforms:setvalue ref="instance('temp')"/>
-												<xforms:setvalue ref="instance('temp')/@href"/>
-												<!-- remove temporary values, applicable when switching back to geonames from local -->
-												<xforms:delete context="instance('geonames')/*"/>
-												<xforms:delete context="instance('feed')/*"/>
-												<xforms:setvalue ref="instance('search-query')"/>
-
-												<!-- create attributes, clear $binding text when applicable -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'nomisma')"/>
-												
-												<!-- clear authfilenumber and set source if the attributes already exist -->												
-												<xforms:setvalue if="$binding/@source" ref="$binding/@source">nomisma</xforms:setvalue>
-												<xforms:toggle case="nomisma-search"/>
-											</xforms:action>
+											</xforms:action>											
 											<xforms:action if=". = 'pleiades'">
 												<!-- clear temp -->
 												<xforms:setvalue ref="instance('temp')"/>
@@ -188,57 +167,7 @@
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-								</xforms:case>
-								<!--<xforms:case id="nomisma-search">
-									<div>
-										<xforms:input ref="instance('search-query')">
-											<xforms:label>Search</xforms:label>
-										</xforms:input>
-										<xforms:trigger>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:delete context="instance('feed')/*"/>
-												<xforms:send submission="query-nomisma"/>
-											</xforms:action>
-											<xforms:label>Search</xforms:label>
-										</xforms:trigger>
-									</div>
-
-									<xforms:group ref=".[count(instance('feed')//*[local-name()='entry']) &gt; 0]">
-										<xforms:select1 ref="instance('temp')/@href" appearance="compact" id="nomisma-list" size="10">
-											<xforms:label>Location</xforms:label>
-											<xforms:itemset nodeset="instance('feed')//*[local-name()='entry']">
-												<xforms:label ref="*[local-name()='title']"/>
-												<xforms:value ref="*[local-name()='link'][1]/@href"/>
-											</xforms:itemset>
-											<xforms:action ev:event="xforms-value-changed">
-												<xforms:setvalue ref="instance('description')"
-													value="instance('feed')//*[local-name()='entry'][*[local-name()='link'][1]/@href = instance('temp')/@href]/*[local-name()='content']"/>
-											</xforms:action>
-										</xforms:select1>
-										<xforms:trigger>
-											<xforms:label>Select</xforms:label>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
-												<xforms:setvalue ref="$binding"
-													value="instance('feed')//*[local-name()='entry'][*[local-name()='link'][1]/@href = instance('temp')/@href]/*[local-name()='title']"/>
-											</xforms:action>
-										</xforms:trigger>
-									</xforms:group>
-
-									<!-\-<xforms:group ref=".[string(instance('temp')/@href)]">
-										<div>
-											<xforms:output ref="instance('description')">
-												<xforms:label>Description</xforms:label>
-											</xforms:output>
-											<xforms:trigger appearance="xxforms:link">
-												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/external.png"/>
-												</xforms:label>
-												<xforms:load ev:event="DOMActivate" show="new" ref="instance('temp')/@href"/>
-											</xforms:trigger>
-										</div>
-									</xforms:group>-\->
-								</xforms:case>-->
+								</xforms:case>								
 								<xforms:case id="pleiades-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
@@ -490,7 +419,7 @@
 							<interface/>
 						</xforms:instance>
 						
-						<!-- submissions -->
+						<!-- ********* SUBMISSIONS ***********-->
 						<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
 							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<!-- if the config loads successfully, set the collection names based on authentication -->
@@ -539,16 +468,14 @@
 								</xforms:action>
 							</xforms:action>
 						</xforms:submission>
-
-						<!-- query nomisma for ancient places -->
-						<xforms:submission id="query-nomisma" serialization="none" method="get" action="http://nomisma.org/feed/?q=(typeof:mint+OR+typeof:head_1911_region)+{instance('search-query')}"
-							instance="feed" replace="instance">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with nomisma.org Atom feed.</xforms:message>
-						</xforms:submission>
-
+						
 						<!-- query pleiades for ancient places -->
 						<xforms:submission id="query-pleiades" serialization="none" method="get" action="http://pleiades.stoa.org/search_rss?Title={instance('search-query')}&amp;portal_type=Place"
 							instance="feed" replace="instance">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with Pleiades RSS feed.</xforms:message>
 						</xforms:submission>
 
