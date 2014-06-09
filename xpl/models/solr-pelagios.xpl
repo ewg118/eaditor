@@ -34,7 +34,7 @@
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
 				<xsl:variable name="service">
-					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+pleiades_uri:*&amp;sort=timestamp%20desc&amp;rows=10000&amp;fl=id,unittitle_display,pleiades_uri')"/>
+					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+pleiades_uri:*&amp;sort=timestamp%20desc&amp;rows=10000&amp;fl=id,cid,recordId,unittitle_display,pleiades_uri,genreform_uri,timestamp')"/>
 				</xsl:variable>
 
 				<xsl:template match="/">
