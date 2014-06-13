@@ -39,9 +39,9 @@
 		<div class="row">
 			<xsl:choose>
 				<!-- render some biographical information from EAC-CPF if the creator a xeac:entity -->
-				<xsl:when test="ead:archdesc/ead:did/ead:origination/*[@type='xeac:entity']">
+				<xsl:when test="ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']">
 					<xsl:variable name="abstract" as="element()*">
-						<xsl:copy-of select="document(concat(ead:archdesc/ead:did/ead:origination/*[@type='xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
+						<xsl:copy-of select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
 					</xsl:variable>
 
 					<div class="col-md-12">
@@ -52,7 +52,7 @@
 						<dl class="dl-horizontal">
 							<dt>Name</dt>
 							<dd>
-								<xsl:apply-templates select="ead:archdesc/ead:did/ead:origination/*[@type='xeac:entity']"/>
+								<xsl:apply-templates select="ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']"/>
 							</dd>
 							<xsl:if test="string($abstract)">
 								<dt>Abstract</dt>
@@ -340,7 +340,7 @@
 			<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
 			<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
 			<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
-			<xsl:apply-templates select="ead:origination[not(child::*[@type='xeac:entity'])]"/>
+			<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
 			<xsl:apply-templates select="ead:physloc"/>
 			<xsl:apply-templates select="ead:langmaterial"/>
 			<xsl:apply-templates select="ead:materialspec"/>

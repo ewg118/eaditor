@@ -70,9 +70,9 @@
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
 												
-												<!-- insert @type if it doesn't exist, set to xeac:entity, otherwise reset @type to xeac:entity -->
-												<xforms:insert if="not($binding/@type)" context="$binding" origin="xxforms:attribute('type', 'xeac:entity')"/>
-												<xforms:setvalue ref="$binding/@type" if="not($binding/@type='xeac:entity')">xeac:entity</xforms:setvalue>
+												<!-- insert @role if it doesn't exist, set to xeac:entity, otherwise reset @role to xeac:entity -->
+												<xforms:insert if="not($binding/@role)" context="$binding" origin="xxforms:attribute('type', 'xeac:entity')"/>
+												<xforms:setvalue ref="$binding/@role" if="not($binding/@role='xeac:entity')">xeac:entity</xforms:setvalue>
 												
 												<!-- pre-populate the select list -->
 												<xforms:toggle case="xeac-search"/>
@@ -85,8 +85,8 @@
 												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
 												
-												<!-- delete @type if it is xeac:enity -->
-												<xforms:delete context="$binding/@type" if="$binding/@type='xeac:entity'"/>
+												<!-- delete @role if it is xeac:enity -->
+												<xforms:delete context="$binding/@role" if="$binding/@role='xeac:entity'"/>
 												<xforms:toggle case="local-search"/>
 											</xforms:action>
 										</xforms:action>
