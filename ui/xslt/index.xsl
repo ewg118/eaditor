@@ -36,6 +36,20 @@
 	</xsl:template>
 
 	<xsl:template name="index">
+		<div class="jumbotron">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<h1>
+							<xsl:value-of select="/config/title"/>
+						</h1>
+						<p>
+							<xsl:value-of select="/config/description"/>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-8">
@@ -44,16 +58,16 @@
 				<div class="col-md-4">
 					<div class="highlight">
 						<h3>Export Options</h3>
-						<a href="feed/?q=*:*">
+						<a href="feed/?q=*:*" style="margin:5px">
 							<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
 						<xsl:if test="/config/export/oai-pmh='true'">
-							<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead">
+							<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead" style="margin:5px">
 								<img src="{$include_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
 							</a>
 						</xsl:if>
 						<xsl:if test="/config/export/pelagios='true'">
-							<a href="pelagios.void.rdf">
+							<a href="pelagios.void.rdf" style="margin:5px">
 								<img src="{$include_path}ui/images/pelagios_icon.png" title="Pelagios" alt="Pelagios"/>
 							</a>
 						</xsl:if>
