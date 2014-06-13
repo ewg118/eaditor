@@ -53,21 +53,33 @@
 						<xsl:text>, </xsl:text>
 					</xsl:if>
 					<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
-				</field>
-				<field name="genreform_facet">
-					<xsl:value-of select="normalize-space(mods:physicalDescription/mods:form)"/>
-				</field>
-				<xsl:if test="mods:relatedItem/mods:physicalDescription/mods:form">
-					<field name="genreform_facet">
-						<xsl:value-of select="normalize-space(mods:relatedItem/mods:physicalDescription/mods:form)"/>
-					</field>
-				</xsl:if>
-				<xsl:for-each select="mods:name/mods:namePart[1]|mods:subject/mods:topic">
-					<xsl:variable name="category" select="if(parent::mods:name[@type='personal']) then 'persname' else if (parent::mods:name[@type='corporate']) then 'corpname' else 'subject'"/>
+				</field>								
+				<xsl:for-each select="mods:name|mods:subject/*|//mods:physicalDescription/mods:form">
+					<xsl:variable name="facet">
+						<xsl:choose>
+							<xsl:when test="local-name()='form'">genreform</xsl:when>
+							<xsl:when test="local-name()='genre'">genreform</xsl:when>	
+							<xsl:when test="local-name()='geographic'">geogname</xsl:when>									
+							<xsl:when test="local-name()='name'">
+								<xsl:choose>
+									<xsl:when test="@type='personal'">persname</xsl:when>
+									<xsl:when test="@type='corporate'">corpname</xsl:when>
+									<xsl:otherwise>persname</xsl:otherwise>
+								</xsl:choose>
+							</xsl:when>
+							<xsl:when test="local-name()='occupation'">occupation</xsl:when>
+							<xsl:when test="local-name()='topic'">subject</xsl:when>									
+						</xsl:choose>
+					</xsl:variable>
 
-					<field name="{$category}_facet">
-						<xsl:value-of select="normalize-space(.)"/>
+					<field name="{$facet}_facet">
+						<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
 					</field>
+					<xsl:if test="string(@valueURI)">
+						<field name="{$facet}_uri">
+							<xsl:value-of select="@valueURI"/>
+						</field>
+					</xsl:if>
 				</xsl:for-each>
 				<field name="text">
 					<xsl:for-each select="descendant-or-self::node()">

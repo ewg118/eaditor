@@ -25,13 +25,7 @@
 					<dd>
 						<xsl:value-of select="mods:identifier"/>
 					</dd>
-					<dt>Form</dt>
-					<dd>
-						<a
-							href="{$display_path}results/?q=genreform_facet:&#x022;{mods:physicalDescription/mods:form}&#x022;">
-							<xsl:value-of select="mods:physicalDescription/mods:form"/>
-						</a>
-					</dd>
+					<xsl:apply-templates select="mods:physicalDescription/mods:form"/>					
 				</dl>
 
 				<h2>Description of Original Item</h2>
@@ -43,16 +37,7 @@
 							/>
 						</dd>
 					</xsl:if>
-					<xsl:if test="string(mods:relatedItem/mods:physicalDescription/mods:form)">
-						<dt>Form</dt>
-						<dd>
-							<a
-								href="{$display_path}results/?q=genreform_facet:&#x022;{mods:relatedItem/mods:physicalDescription/mods:form}&#x022;">
-								<xsl:value-of
-									select="mods:relatedItem/mods:physicalDescription/mods:form"/>
-							</a>
-						</dd>
-					</xsl:if>
+					<xsl:apply-templates select="mods:relatedItem/mods:physicalDescription/mods:form"/>					
 					<xsl:if test="string(mods:relatedItem/mods:physicalDescription/mods:extent)">
 						<dt>Extent</dt>
 						<dd>
@@ -78,12 +63,44 @@
 				<xsl:if test="count(mods:subject/mods:topic) &gt; 0">
 					<h2>Subjects</h2>
 					<dl class="dl-horizontal">
-						<xsl:for-each select="mods:subject/mods:topic">
-							<dt>Term</dt>
+						<xsl:for-each select="mods:subject/*">
+							<dt>
+								<xsl:choose>
+									<xsl:when test="local-name()='genre'">Genre</xsl:when>	
+									<xsl:when test="local-name()='geographic'">Geographic</xsl:when>									
+									<xsl:when test="local-name()='name'">
+										<xsl:choose>
+											<xsl:when test="@type='personal'">Person</xsl:when>
+											<xsl:when test="@type='corporate'">Corporate</xsl:when>
+										</xsl:choose>
+									</xsl:when>
+									<xsl:when test="local-name()='occupation'">Occupation</xsl:when>
+									<xsl:when test="local-name()='topic'">Subject</xsl:when>									
+								</xsl:choose>
+							</dt>
 							<dd>
-								<a href="{$display_path}results/?q=subject_facet:&#x022;{.}&#x022;">
-									<xsl:value-of select="."/>
+								<xsl:variable name="facet">
+									<xsl:choose>
+										<xsl:when test="local-name()='genre'">genreform</xsl:when>	
+										<xsl:when test="local-name()='geographic'">geogname</xsl:when>									
+										<xsl:when test="local-name()='name'">
+											<xsl:choose>
+												<xsl:when test="@type='personal'">persname</xsl:when>
+												<xsl:when test="@type='corporate'">corpname</xsl:when>
+											</xsl:choose>
+										</xsl:when>
+										<xsl:when test="local-name()='occupation'">occupation</xsl:when>
+										<xsl:when test="local-name()='topic'">subject</xsl:when>									
+									</xsl:choose>
+								</xsl:variable>
+								<a href="{$display_path}results/?q={$facet}_facet:&#x022;{.}&#x022;">
+									<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
 								</a>
+								<xsl:if test="string(@valueURI)">
+									<a href="{@valueURI}" rel="dcterms:subject">
+										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+									</a>
+								</xsl:if>
 							</dd>
 						</xsl:for-each>
 					</dl>
@@ -107,6 +124,22 @@
 				<xsl:apply-templates select="mods:location/mods:url[@usage='primary display']"/>
 			</div>
 		</div>
+	</xsl:template>
+	
+	<xsl:template match="mods:form">
+		<dt>Form</dt>
+		<dd>
+			<a
+				href="{$display_path}results/?q=genreform_facet:&#x022;{.}&#x022;">
+				<xsl:value-of
+					select="."/>
+			</a>
+			<xsl:if test="string(@valueURI)">
+				<a href="{@valueURI}" rel="dcterms:subject">
+					<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+				</a>
+			</xsl:if>
+		</dd>
 	</xsl:template>
 
 	<xsl:template match="mods:name">

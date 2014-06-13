@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
-	xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	exclude-result-prefixes="#all" version="2.0">
 	<!-- ***************** MODS-TO-RDF ******************-->
 	<xsl:template name="mods-content">
 		<xsl:apply-templates select="//mods:mods"/>
@@ -14,7 +14,7 @@
 				<xsl:value-of select="mods:titleInfo/mods:title"/>
 			</dcterms:title>
 			<xsl:apply-templates select="mods:relatedItem"/>
-			<xsl:apply-templates select="descendant::mods:subject/mods:topic"/>
+			<xsl:apply-templates select="descendant::mods:name|mods:topic|mods:occupation|mods:form|mods:geographic|mods:genre" mode="topic"/>
 		</rdf:Description>
 	</xsl:template>
 
@@ -42,9 +42,28 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mods:topic">
-		<dcterms:subject>
-			<xsl:value-of select="."/>
-		</dcterms:subject>
+	<xsl:template match="*" mode="topic">
+		<xsl:variable name="element">
+			<xsl:choose>
+				<xsl:when test="local-name()='form'">dcterms:format</xsl:when>
+				<xsl:when test="local-name()='geographic'">dcterms:coverage</xsl:when>
+				<xsl:otherwise>dcterms:subject</xsl:otherwise>
+			</xsl:choose>
+
+		</xsl:variable>
+
+		<xsl:element name="{$element}" namespace="http://purl.org/dc/terms/">
+			<xsl:choose>
+				<xsl:when test="string(@valueURI)">
+					<xsl:attribute name="rdf:resource">
+						<xsl:value-of select="@valueURI"/>
+					</xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:element>
+
 	</xsl:template>
 </xsl:stylesheet>

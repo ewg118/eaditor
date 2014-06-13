@@ -717,39 +717,39 @@
 		<xsl:if test="@source">
 			<xsl:choose>
 				<xsl:when test="@source='aat'">
-					<a href="http://vocab.getty.edu/aat/{@authfilenumber}" target="_blank" title="Getty AAT" rel="dcterms:format">
+					<a href="http://vocab.getty.edu/aat/{@authfilenumber}" title="Getty AAT" rel="dcterms:format">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='geonames'">
-					<a href="http://www.geonames.org/{@authfilenumber}" target="_blank" title="Geonames" rel="dcterms:coverage">
+					<a href="http://www.geonames.org/{@authfilenumber}" title="Geonames" rel="dcterms:coverage">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
-					<a href="http://pleiades.stoa.org/places/{@authfilenumber}" target="_blank" title="Pleiades" rel="dcterms:coverage">
+					<a href="http://pleiades.stoa.org/places/{@authfilenumber}" title="Pleiades" rel="dcterms:coverage">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcsh'">
-					<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCSH" rel="dcterms:subject">
+					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCSH" rel="dcterms:subject">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcgft'">
-					<a href="http://id.loc.gov/authorities/{@authfilenumber}" target="_blank" title="LCGFT" rel="dcterms:format">
+					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCGFT" rel="dcterms:format">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='viaf'">
-					<a href="http://viaf.org/viaf/{@authfilenumber}" target="_blank" title="VIAF" rel="arch:correspondedWith">
+					<a href="http://viaf.org/viaf/{@authfilenumber}" title="VIAF" rel="arch:correspondedWith">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="contains(@authfilenumber, 'http://')">
-			<a href="{@authfilenumber}" target="_blank" rel="{if (parent::ead:origination) then 'dcterms:creator' else 'arch:correspondedWith'}">
+			<a href="{@authfilenumber}" rel="{if (parent::ead:origination) then 'dcterms:creator' else 'arch:correspondedWith'}">
 				<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 			</a>
 		</xsl:if>
