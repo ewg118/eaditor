@@ -55,7 +55,7 @@
 	</xsl:template>
 
 	<xsl:template match="ead:did">
-		<xsl:apply-templates select="ead:unittitle|ead:unitid|ead:unitdate[@normal]|ead:origination|ead:abstract|ead:extent"/>
+		<xsl:apply-templates select="ead:unittitle|ead:unitid|ead:unitdate[@normal]|ead:origination|ead:abstract|ead:extent|ead:daogrp"/>
 	</xsl:template>
 
 	<xsl:template match="ead:controlaccess">
@@ -131,6 +131,21 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="ead:daogrp">		
+		<xsl:if test="string(ead:daoloc[@xlink:label='Thumbnail']/@xlink:href)">
+			<foaf:thumbnail rdf:resource="{ead:daoloc[@xlink:label='Thumbnail']/@xlink:href}"/>
+		</xsl:if>		
+		<xsl:choose>
+			<!-- display Medium primarily, Small secondarily -->
+			<xsl:when test="string(ead:daoloc[@xlink:label='Medium']/@xlink:href)">
+				<foaf:depiction rdf:resource="{ead:daoloc[@xlink:label='Medium']/@xlink:href}"/>				
+			</xsl:when>
+			<xsl:when test="ead:daoloc[@xlink:label='Small']/@xlink:href">
+				<foaf:depiction rdf:resource="{ead:daoloc[@xlink:label='Small']/@xlink:href}"/>
+			</xsl:when>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- only process unitdates that have a @normal attribute -->
