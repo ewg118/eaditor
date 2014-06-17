@@ -40,12 +40,12 @@
 			<xsl:choose>
 				<!-- render some biographical information from EAC-CPF if the creator a xeac:entity -->
 				<xsl:when test="ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']">
-					<xsl:variable name="abstract" as="element()*">
+					<xsl:variable name="eac-cpf" as="element()*">
 						<xsl:copy-of select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
 					</xsl:variable>
 
 					<div class="col-md-12">
-						<xsl:apply-templates select="ead:archdesc/ead:did"/>
+						<xsl:call-template name="did"/>						
 					</div>
 					<div class="col-md-12">
 						<h2>Creator</h2>
@@ -54,48 +54,47 @@
 							<dd>
 								<xsl:apply-templates select="ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']"/>
 							</dd>
-							<xsl:if test="string($abstract)">
+							<xsl:if test="string($eac-cpf//eac:abstract)">
 								<dt>Abstract</dt>
 								<dd>
-									<xsl:value-of select="$abstract//eac:abstract"/>
+									<xsl:value-of select="$eac-cpf//eac:abstract"/>
 								</dd>
 							</xsl:if>
 
 						</dl>
-
-						<!-- render abstract -->
-
 					</div>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="ead:archdesc/ead:did/ead:dao/@xlink:href">
-							<div class="col-md-6">
-								<xsl:apply-templates select="ead:archdesc/ead:did"/>
-							</div>
-							<div class="col-md-6">
-								<xsl:apply-templates select="ead:archdesc/ead:did/ead:dao"/>
-							</div>
-						</xsl:when>
-						<xsl:when test="contains(ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']/@xlink:href, 'flickr.com')">
-							<div class="col-md-6">
-								<xsl:apply-templates select="ead:archdesc/ead:did"/>
-							</div>
-							<div class="col-md-6">
-								<xsl:apply-templates select="ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']" mode="collection-image"/>
-							</div>
-						</xsl:when>
-						<xsl:otherwise>
-							<div class="col-md-12">
-								<xsl:apply-templates select="ead:archdesc/ead:did"/>
-							</div>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="did"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</div>
-
-
+	</xsl:template>
+	
+	<xsl:template name="did">
+		<xsl:choose>
+			<xsl:when test="ead:archdesc/ead:did/ead:dao/@xlink:href">
+				<div class="col-md-6">
+					<xsl:apply-templates select="ead:archdesc/ead:did"/>
+				</div>
+				<div class="col-md-6">
+					<xsl:apply-templates select="ead:archdesc/ead:did/ead:dao"/>
+				</div>
+			</xsl:when>
+			<xsl:when test="contains(ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']/@xlink:href, 'flickr.com')">
+				<div class="col-md-6">
+					<xsl:apply-templates select="ead:archdesc/ead:did"/>
+				</div>
+				<div class="col-md-6">
+					<xsl:apply-templates select="ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']" mode="collection-image"/>
+				</div>
+			</xsl:when>
+			<xsl:otherwise>
+				<div class="col-md-12">
+					<xsl:apply-templates select="ead:archdesc/ead:did"/>
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template name="body">
