@@ -23,7 +23,7 @@
 					<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
 				</arch:Collection>
 
-				<xsl:apply-templates select="ead:archdesc/ead:dsc/ead:c"/>
+				<xsl:apply-templates select="ead:archdesc/ead:dsc//ead:c"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -33,7 +33,7 @@
 	</xsl:template>
 
 	<xsl:template name="c-content">
-		<arch:Collection rdf:about="{$objectUri}">
+		<arch:Collection rdf:about="{$objectUri}/{@id}">
 			<!-- title, creator, abstract, etc. -->
 			<xsl:apply-templates select="ead:did"/>
 			<dcterms:isPartOf>
