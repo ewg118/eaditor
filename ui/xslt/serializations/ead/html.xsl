@@ -44,9 +44,7 @@
 						<xsl:copy-of select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
 					</xsl:variable>
 
-					<div class="col-md-12">
-						<xsl:call-template name="did"/>						
-					</div>
+					<xsl:call-template name="did"/>
 					<div class="col-md-12">
 						<h2>Creator</h2>
 						<dl class="dl-horizontal">
