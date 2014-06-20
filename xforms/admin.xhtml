@@ -1124,12 +1124,6 @@
 					<!-- post to SPARQL endpoint, if it exists -->
 					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"/>
 					<xforms:send submission="post-rdf" if="string(instance('config')/sparql/store)" ev:event="xforms-submit-done"/>
-					
-					<!-- reload table -->
-					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
-					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
-					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
 		</fr:alert-dialog>
@@ -1145,12 +1139,6 @@
 					<xforms:send submission="delete-solr-doc"/>
 					<!-- delete from triplestore -->
 					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"/>
-					
-					<!-- reload table -->
-					<xforms:var name="page" select="number(instance('control-instance')/page)"/>
-					<xforms:var name="start" select="(($page - 1) * 20) + 1"/>
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"/>
-					<xforms:send submission="xquery-pagination"/>
 				</xforms:action>
 			</fr:positive-choice>
 		</fr:alert-dialog>

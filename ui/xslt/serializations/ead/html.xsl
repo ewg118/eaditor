@@ -345,6 +345,8 @@
 			<xsl:apply-templates select="ead:note"/>
 		</dl>
 	</xsl:template>
+	
+	<xsl:template match="ead:odd[@type='eaditor:parent']"/>
 
 	<!--This template formats the repostory, origination, physdesc, abstract,
       unitid, physloc and materialspec elements of ead:archdesc/did which share a common presentaiton.
