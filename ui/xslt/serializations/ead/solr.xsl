@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ead="urn:isbn:1-931666-22-9"
-	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:datetime="http://exslt.org/dates-and-times" exclude-result-prefixes="#all"
-	version="2.0">
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:datetime="http://exslt.org/dates-and-times"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
 	<xsl:template match="ead:ead">
 		<xsl:variable name="title" select="ead:archdesc/ead:did/ead:unittitle"/>
 		<xsl:variable name="recordId" select="ead:eadheader/ead:eadid"/>
@@ -123,7 +123,7 @@
 
 
 			<!-- images -->
-			<xsl:apply-templates select="descendant::ead:daogrp"/>
+			<xsl:apply-templates select="descendant::ead:archdesc/ead:did/ead:daogrp"/>
 
 			<field name="timestamp">
 				<xsl:variable name="timestamp" select="datetime:dateTime()"/>
@@ -153,12 +153,10 @@
 	</xsl:template>
 
 	<xsl:template match="ead:daogrp">
-		<field>
-			<xsl:attribute name="name" select="if (parent::ead:did/parent::ead:archdesc) then 'collection_thumb' else 'thumb_image'"/>
+		<field name="collection_thumb">
 			<xsl:value-of select="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
 		</field>
-		<field>
-			<xsl:attribute name="name" select="if (parent::ead:did/parent::ead:archdesc) then 'collection_reference' else 'reference_image'"/>
+		<field name="collection_reference">
 			<xsl:choose>
 				<!-- display Medium primarily, Small secondarily -->
 				<xsl:when test="string(ead:daoloc[@xlink:label='Medium']/@xlink:href)">
@@ -169,6 +167,12 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</field>
+		<xsl:if test="contains(ead:daoloc[@xlink:label='Thumbnail']/@xlink:href, 'flickr.com')">
+			<field name="flickr_uri">
+				<xsl:variable name="photo_id" select="substring-before(tokenize(ead:daoloc[@xlink:label='Thumbnail']/@xlink:href, '/')[last()], '_')"/>
+				<xsl:value-of select="eaditor:get_flickr_uri($photo_id)"/>
+			</field>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="ead:corpname | ead:famname | ead:genreform | ead:geogname | ead:language | ead:persname | ead:subject">

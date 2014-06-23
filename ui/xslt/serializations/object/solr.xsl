@@ -6,10 +6,12 @@
 	<xsl:include href="../ead/solr.xsl"/>
 	<xsl:include href="../mods/solr.xsl"/>
 	<xsl:include href="../tei/solr.xsl"/>
+	<xsl:include href="../../functions.xsl"/>
 
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>

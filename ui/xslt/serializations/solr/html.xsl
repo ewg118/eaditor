@@ -250,29 +250,17 @@
 			<xsl:choose>
 				<xsl:when test="contains(., 'flickr.com')">
 					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
-					<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
-					<xsl:variable name="photo_count" select="count(ancestor::doc/arr[@name='thumb_image']/str) + count(ancestor::doc/arr[@name='collection_thumb']/str)"/>
+					<xsl:variable name="flickr_uri" select="arr[@name='flickr_uri']/str[1]"/>					
 					<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
-					<a href="#{generate-id()}" rel="{ancestor::doc/str[@name='recordId']}-gallery" title="{$title}: {position()} of {$photo_count}">
+					<a href="#{generate-id()}" title="{$title}">
 						<img class="ci" src="{.}"/>
-					</a>
-					<xsl:if test="count(ancestor::doc/arr[@name='thumb_image']/str) &gt; 0">
-						<br/>
-						<xsl:value-of select="$photo_count"/> images</xsl:if>
+					</a>					
 					<div style="display:none">
 						<div id="{generate-id()}">
 							<span href="{$flickr_uri}" class="flickr-link">
 								<img src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"/>
 							</span>
 						</div>
-						<xsl:for-each select="ancestor::doc/arr[@name='thumb_image']/str">
-							<xsl:variable name="dao_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
-							<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($dao_id)"/>
-							<a class="image-gallery" rel="{ancestor::doc/str[@name='recordId']}-gallery" href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $dao_id)][1]}"
-								title="{$title}: {position() + count(ancestor::doc/arr[@name='collection_thumb']/str)} of {$photo_count}">
-								<img src="{.}" alt="image"/>
-							</a>
-						</xsl:for-each>
 					</div>
 				</xsl:when>
 				<xsl:otherwise>
