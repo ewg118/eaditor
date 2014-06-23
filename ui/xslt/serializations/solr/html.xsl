@@ -250,7 +250,7 @@
 			<xsl:choose>
 				<xsl:when test="contains(., 'flickr.com')">
 					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
-					<xsl:variable name="flickr_uri" select="arr[@name='flickr_uri']/str[1]"/>					
+					<xsl:variable name="flickr_uri" select="ancestor::doc/arr[@name='flickr_uri']/str[1]"/>					
 					<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
 					<a href="#{generate-id()}" title="{$title}">
 						<img class="ci" src="{.}"/>
