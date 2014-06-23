@@ -216,20 +216,7 @@
 					</did>
 				</c>
 			</xforms:instance>
-
-			<xforms:instance id="list">
-				<list xmlns=""/>
-			</xforms:instance>
-
-			<xforms:instance id="item-template">
-				<item xmlns="">
-					<title/>
-					<id/>
-					<published/>
-					<components/>
-				</item>
-			</xforms:instance>
-
+			
 			<xforms:instance id="guide">
 				<ead xmlns=""/>
 			</xforms:instance>
@@ -246,11 +233,11 @@
 					<query id="get-objects"> &lt;report> { for $record in subsequence(collection(), START, 20) let $type := $record/*/local-name() return if ($type='ead') then &lt;record> &lt;type>{
 						$type }&lt;/type> &lt;id>{ $record//*[local-name()='eadid']/text() }&lt;/id> &lt;title>{
 						$record//*[local-name()='archdesc']/*[local-name()='did']/*[local-name()='unittitle']/text() }&lt;/title> &lt;components>{ if (count($record//*[local-name()='c']) &gt; 0) then
-						'true' else 'false' }&lt;/components> &lt;published/> &lt;/record> else if ($type='modsCollection') then &lt;record> &lt;type>mods&lt;/type> &lt;id>{
+						'true' else 'false' }&lt;/components> &lt;published>false&lt;/published> &lt;/record> else if ($type='modsCollection') then &lt;record> &lt;type>mods&lt;/type> &lt;id>{
 						$record//*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier']/text() }&lt;/id> &lt;title>{
-						$record//*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> else if ($type='TEI') then &lt;record>
+						$record//*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title']/text() }&lt;/title> &lt;published>false&lt;/published> &lt;/record> else if ($type='TEI') then &lt;record>
 						&lt;type>{ lower-case($type) }&lt;/type> &lt;id>{ data($record/*[local-name()='TEI']/@xml:id) }&lt;/id> &lt;title>{
-						$record//*[local-name()='titleStmt']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> else '' } &lt;/report> </query>
+						$record//*[local-name()='titleStmt']/*[local-name()='title']/text() }&lt;/title> &lt;published>false&lt;/published> &lt;/record> else '' } &lt;/report> </query>
 					<query id="create-collection"/>
 					<query id="publish-ead">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='ead']]) then &lt;item> { data($foo//*[local-name()='eadid']) } &lt;/item>
 						else '' } &lt;/report></query>
@@ -261,11 +248,11 @@
 						descendant::*[local-name()='idno'] = 'QUERY' or descendant::*[local-name()='TEI']/@xml:id = 'QUERY'] let $type := $record/*/local-name() return if ($type='ead') then
 						&lt;record> &lt;type>{ $type }&lt;/type> &lt;id>{ $record//*[local-name()='eadid']/text() }&lt;/id> &lt;title>{
 						$record//*[local-name()='archdesc']/*[local-name()='did']/*[local-name()='unittitle']/text() }&lt;/title> &lt;components>{ if (count($record//*[local-name()='c']) &gt; 0) then
-						'true' else 'false' }&lt;/components> &lt;published/> &lt;/record> else if ($type='modsCollection') then &lt;record> &lt;type>mods&lt;/type> &lt;id>{
+						'true' else 'false' }&lt;/components> &lt;published>false&lt;/published> &lt;/record> else if ($type='modsCollection') then &lt;record> &lt;type>mods&lt;/type> &lt;id>{
 						$record//*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier']/text() }&lt;/id> &lt;title>{
-						$record//*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> else if ($type='TEI') then &lt;record>
+						$record//*[local-name()='mods']/*[local-name()='titleInfo']/*[local-name()='title']/text() }&lt;/title> &lt;published>false&lt;/published> &lt;/record> else if ($type='TEI') then &lt;record>
 						&lt;type>{ lower-case($type) }&lt;/type> &lt;id>{ data($record/*[local-name()='TEI']/@xml:id) }&lt;/id> &lt;title>{
-						$record//*[local-name()='titleStmt']/*[local-name()='title']/text() }&lt;/title> &lt;published/> &lt;/record> else '' } &lt;/report></query>
+						$record//*[local-name()='titleStmt']/*[local-name()='title']/text() }&lt;/title> &lt;published>false&lt;/published> &lt;/record> else '' } &lt;/report></query>
 				</queries>
 			</xforms:instance>
 
@@ -372,6 +359,13 @@
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="ark">
 					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
+				</xforms:bind>
+			</xforms:bind>
+			
+			<xforms:bind nodeset="instance('pagination-result')">
+				<xforms:bind nodeset="record">
+					<xforms:bind nodeset="published" type="xs:boolean"/>
+					<xforms:bind nodeset="components" type="xs:boolean"/>
 				</xforms:bind>
 			</xforms:bind>
 
@@ -511,7 +505,7 @@
 				replace="instance" instance="published-response">
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:setvalue ev:event="xforms-submit-done" if="instance('published-response')/result[@name='response']/@numFound = '1'"
-					ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="'true'"/>
+					ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="true()"/>
 			</xforms:submission>
 
 			<!-- save templates and add guides collection to eXist on the first run of EADitor -->
@@ -943,7 +937,7 @@
 															<xforms:output ref="title"/>
 															<xforms:output ref="concat('(', $id, ')')"/>
 														</a>
-														<xforms:group ref=".[components = 'true']">
+														<xforms:group ref=".[components = true()]">
 															<span class="expand" cid="{$id}-link">expand</span>
 														</xforms:group>
 													</xforms:group>
@@ -958,7 +952,7 @@
 														</a>
 													</xforms:group>
 												</h4>
-												<xforms:group ref=".[components = 'true']">
+												<xforms:group ref=".[components = true()]">
 													<div class="{$id}_container" style="display:none"/>
 												</xforms:group>
 											</td>
@@ -975,17 +969,17 @@
 													href="{instance('control-instance')/collection-name}/id/{$id}" target="_blank">html</a></td>
 											<td class="{$class} center">
 												<xforms:group ref=".[type='ead']">
-													<xforms:group ref=".[components = 'true']">
+													<xforms:group ref=".[components = true()]">
 														<a href="reorder/?guide={$id}">reorder</a>
 													</xforms:group>
-													<xforms:group ref=".[components != 'true']">reorder</xforms:group> | <xforms:group ref=".[components = 'true']">
+													<xforms:group ref=".[components = false()]">reorder</xforms:group> | <xforms:group ref=".[components = true()]">
 														<a href="permissions/?guide={$id}">permissions</a>
 													</xforms:group>
-													<xforms:group ref=".[components != 'true']">permissions</xforms:group>
+													<xforms:group ref=".[components = false()]">permissions</xforms:group>
 												</xforms:group>
 											</td>
 											<td class="{$class} center">
-												<xforms:group ref=".[published = 'true']">
+												<xforms:group ref=".[published = true()]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>unpublish</xforms:label>
 														<xforms:action ev:event="DOMActivate">
@@ -994,7 +988,7 @@
 														</xforms:action>
 													</xforms:trigger>
 												</xforms:group>
-												<xforms:group ref=".[published != 'true']">
+												<xforms:group ref=".[published != true()]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>publish</xforms:label>
 														<xforms:action ev:event="DOMActivate">
@@ -1124,6 +1118,8 @@
 					<!-- post to SPARQL endpoint, if it exists -->
 					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"/>
 					<xforms:send submission="post-rdf" if="string(instance('config')/sparql/store)" ev:event="xforms-submit-done"/>
+					
+					<xforms:setvalue ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="true()"/>
 				</xforms:action>
 			</fr:positive-choice>
 		</fr:alert-dialog>
@@ -1139,6 +1135,7 @@
 					<xforms:send submission="delete-solr-doc"/>
 					<!-- delete from triplestore -->
 					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"/>
+					<xforms:setvalue ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="false()"/>
 				</xforms:action>
 			</fr:positive-choice>
 		</fr:alert-dialog>
