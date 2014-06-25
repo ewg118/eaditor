@@ -6,31 +6,39 @@ $(document).ready(function () {
 	
 	//activate slider image clicks to load large image in openlayers
 	$('.page-image').click(function () {
+		//get id, either from the page link or the thumbnail link
+		if ($(this).attr('id')){
+			var id = $(this).attr('id');
+		} else if ($(this).attr('facs')){
+			var id = $(this).attr('facs');
+		}
+	
 		//first clear container div and annot div
 		$('#image-container').html('');
 		$('#annot').html('');
 		
 		//reset selected class
 		$('img.selected').removeAttr('class');
-		$(this).children('img').attr('class','selected');
+		$('#' + id).children('img').attr('class','selected');
 		
 		//then destroy annotations before reloading
 		anno.destroy();
 		
 		//reload
-		var image = $(this).attr('href');
-		var id = $(this).attr('id');
+		var image = $(this).attr('href');		
 		load_image(id, image);
 		
 		//enable/disable prev/next page links
 		if (id == $('#first-page').text()) {
 			$('#prev-page').attr('class','disabled');
 			$('#next-page').removeAttr('class');
-		}
-		if (id == $('#last-page').text()) {
+		} else if (id == $('#last-page').text()) {
 			$('#next-page').attr('class','disabled');
 			$('#prev-page').removeAttr('class');
-		}	
+		} else {
+			$('#next-page').removeAttr('class');
+			$('#prev-page').removeAttr('class');
+		}
 		//alter goto page dropdown
 		$('#goto-page').val(id);		
 		return false;
@@ -57,11 +65,13 @@ $(document).ready(function () {
 			var id = $('#' + prev_id).attr('id');
 			load_image(id, image);
 		}	
-		//enable/disable link
+		//enable/disable prev/next page links
 		if (prev_id == $('#first-page').text()) {
 			$('#prev-page').attr('class','disabled');
+			$('#next-page').removeAttr('class');			
+		} else {
 			$('#next-page').removeAttr('class');
-		}
+		}		
 		//alter goto page dropdown
 		$('#goto-page').val(prev_id);
 		return false;
@@ -86,11 +96,13 @@ $(document).ready(function () {
 			var id = $('#' + next_id).attr('id');
 			load_image(id, image);
 		}
-		//enable/disable link
+		//enable/disable link		
 		if (next_id == $('#last-page').text()) {
 			$('#next-page').attr('class','disabled');
+			$('#prev-page').removeAttr('class');			
+		} else {
 			$('#prev-page').removeAttr('class');
-		}		
+		}	
 		//alter goto page dropdown
 		$('#goto-page').val(next_id);		
 		return false;

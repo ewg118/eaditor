@@ -143,7 +143,7 @@
 							</xsl:otherwise>
 						</xsl:choose>
 						<p> Appears on: <xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target=$uri]]">
-								<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" id="{@xml:id}">
+								<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" facs="{@xml:id}">
 									<xsl:choose>
 										<xsl:when test="string(tei:graphic/@n)">
 											<xsl:value-of select="tei:graphic/@n"/>
