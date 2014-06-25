@@ -9,9 +9,9 @@
 		<rdf:Description rdf:about="{$objectUri}">
 			<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
 			<!-- depiction -->
-			<xsl:apply-templates select="descendant::tei:facsimile[@style='depiction']"/>
+			<xsl:apply-templates select="descendant::tei:facsimile[@style='depiction']" mode="depiction"/>
 		</rdf:Description>
-		<xsl:apply-templates select="descendant::tei:facsimile"/>
+		<xsl:apply-templates select="descendant::tei:facsimile" mode="page"/>
 	</xsl:template>
 
 	<xsl:template match="tei:fileDesc">
@@ -24,13 +24,13 @@
 
 	<xsl:template match="tei:title">
 		<dcterms:title>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="normalize-space(.)"/>
 		</dcterms:title>
 	</xsl:template>
 
 	<xsl:template match="tei:extent">
 		<dcterms:extent>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="normalize-space(.)"/>
 		</dcterms:extent>
 	</xsl:template>
 
@@ -49,7 +49,7 @@
 
 	<xsl:template match="tei:note[@type='abstract']">
 		<dcterms:abstract>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="normalize-space(.)"/>
 		</dcterms:abstract>
 	</xsl:template>
 
@@ -72,12 +72,12 @@
 		</dcterms:date>
 	</xsl:template>
 
-	<xsl:template match="tei:facsimile[@style='depiction']">
+	<xsl:template match="tei:facsimile[@style='depiction']" mode="depiction">
 		<foaf:thumbnail rdf:resource="{concat($url, 'ui/media/thumbnail/', tei:graphic/@url, '.jpg')}"/>
 		<foaf:depiction rdf:resource="{concat($url, 'ui/media/reference/', tei:graphic/@url, '.jpg')}"/>
 	</xsl:template>
 
-	<xsl:template match="tei:facsimile">
+	<xsl:template match="tei:facsimile" mode="page">
 		<rdf:Description rdf:about="{$objectUri}/{@xml:id}">
 			<dcterms:title>
 				<xsl:choose>
