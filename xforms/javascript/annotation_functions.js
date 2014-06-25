@@ -118,7 +118,21 @@ function replaceURLWithHTMLLinks(text) {
 }
 
 function constructLink(match, p1, offset, string) {
-	return "<a href='" + p1 + "'>" + getLabel(p1) + "</a>";
+	//parse URI to normalize it
+	if (p1.indexOf('viaf.org') > 0){
+		var pieces = p1.split('/');
+		var normalized = 'http://viaf.org/viaf/' + pieces[4];
+	} else if (p1.indexOf('geonames.org') > 0) {
+		var pieces = p1.split('/');
+		var normalized = 'http://www.geonames.org/' + pieces[3];
+	} else if (p1.indexOf('wikipedia.org') > 0 || p1.indexOf('dbpedia.org') > 0){
+		var pieces = p1.split('/');
+		var normalized = 'http://dbpedia.org/resource/' + pieces[pieces.length - 1];
+	} else {
+		var normalized = p1;
+	}
+	
+	return "<a href='" + normalized + "'>" + getLabel(p1) + "</a>";
 }
 
 //construct the linkable text depending on the URI (handle nomisma and Mantis URIs)

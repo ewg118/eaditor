@@ -59,7 +59,7 @@
 		</xsl:variable>
 
 		<!-- get nomisma RDF -->
-		<xsl:variable name="rdf" as="element()*">
+		<xsl:variable name="nomisma-rdf" as="element()*">
 			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/ns/rdfa#"
 				xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 				<xsl:variable name="id-param">
@@ -72,7 +72,21 @@
 				</xsl:variable>
 
 				<xsl:variable name="rdf_url" select="concat('http://nomisma.org/apis/getRdf?identifiers=', encode-for-uri($id-param))"/>
-				<xsl:copy-of select="document($rdf_url)/rdf:RDF/*"/>
+				<xsl:if test="string-length($id-param) &gt; 0">
+					<xsl:copy-of select="document($rdf_url)/rdf:RDF/*"/>
+				</xsl:if>
+			</rdf:RDF>
+		</xsl:variable>
+		
+		<xsl:variable name="viaf-rdf" as="element()*">
+			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+				xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+				
+				<xsl:for-each select="distinct-values(descendant::tei:term[contains(@target, 'viaf.org')]/@target)">
+					<xsl:variable name="pieces" select="tokenize(., '/')"/>
+					<xsl:variable name="uri" select="concat('http://viaf.org/viaf/', $pieces[5])"/>
+					<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about=$uri]"/>
+				</xsl:for-each>				
 			</rdf:RDF>
 		</xsl:variable>
 
@@ -86,14 +100,19 @@
 					<xsl:variable name="facet">
 						<xsl:choose>
 							<xsl:when test="contains($uri, 'nomisma.org')">
-								<xsl:variable name="type" select="$rdf//*[@rdf:about=$uri]/name()"/>
+								<xsl:variable name="type" select="$nomisma-rdf//*[@rdf:about=$uri]/name()"/>
 								<xsl:choose>
 									<xsl:when test="$type='nm:head_1911_region' or $type='nm:region' or $type = 'nm:nomisma_region' or $type='nm:mint'">geogname</xsl:when>
 									<xsl:otherwise>subject</xsl:otherwise>
 								</xsl:choose>
 							</xsl:when>
 							<xsl:when test="contains($uri, 'geonames.org')">geogname</xsl:when>
-							<xsl:when test="contains($uri, 'viaf.org')">persname</xsl:when>
+							<xsl:when test="contains($uri, 'viaf.org')">
+								<xsl:choose>
+									<xsl:when test="$viaf-rdf//*[@rdf:about=$uri]/rdf:type/@rdf:resource='http://xmlns.com/foaf/0.1/Organization'">corpname</xsl:when>
+									<xsl:when test="$viaf-rdf//*[@rdf:about=$uri]/rdf:type/@rdf:resource='http://xmlns.com/foaf/0.1/Person'">persname</xsl:when>
+								</xsl:choose>								
+							</xsl:when>
 							<!-- wikipedia links cannot easily be parsed, ignore indexing -->
 							<xsl:when test="contains($uri, 'wikipedia')"/>
 							<!-- ignore ANS coins; not useful as subject terms -->

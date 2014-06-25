@@ -269,9 +269,11 @@
 			</field>
 
 			<xsl:for-each select="ead:unitdate">
-				<xsl:if test="string(@normal)">
-					<xsl:call-template name="get_date_hierarchy"/>
-				</xsl:if>
+				<xsl:for-each select="tokenize(@normal, '/')">
+					<xsl:call-template name="get_date_hierarchy">
+						<xsl:with-param name="date" select="."/>
+					</xsl:call-template>
+				</xsl:for-each>
 			</xsl:for-each>
 		</xsl:if>
 		<xsl:if test="string(ead:unitid)">
@@ -284,27 +286,5 @@
 				<xsl:value-of select="ead:physdesc/ead:extent"/>
 			</field>
 		</xsl:if>
-	</xsl:template>
-
-	<xsl:template name="get_date_hierarchy">
-		<xsl:variable name="years" select="tokenize(@normal, '/')"/>
-
-		<xsl:for-each select="$years">
-			<xsl:variable name="year_string" select="."/>
-			<xsl:variable name="year" select="number($year_string)"/>
-			<xsl:variable name="century" select="floor($year div 100)"/>
-			<xsl:variable name="decade_digit" select="floor(number(substring($year_string, string-length($year_string) - 1, string-length($year_string))) div 10) * 10"/>
-			<xsl:variable name="decade" select="concat($century, if($decade_digit = 0) then '00' else $decade_digit)"/>
-
-			<field name="century_num">
-				<xsl:value-of select="$century"/>
-			</field>
-			<field name="decade_num">
-				<xsl:value-of select="$decade"/>
-			</field>
-			<field name="year_num">
-				<xsl:value-of select="$year"/>
-			</field>
-		</xsl:for-each>
 	</xsl:template>
 </xsl:stylesheet>

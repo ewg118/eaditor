@@ -21,6 +21,11 @@
 		<p:output name="data" id="request"/>
 	</p:processor>
 
+	<p:processor name="oxf:pipeline">
+		<p:input name="config" href="config.xpl"/>
+		<p:output name="data" id="config"/>
+	</p:processor>
+
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="#request"/>
 		<p:input name="config">
@@ -33,6 +38,9 @@
 							<xsl:when test="contains($uri, 'http://nomisma.org/')">true</xsl:when>
 							<xsl:when test="contains($uri, 'http://numismatics.org/collection/')">true</xsl:when>
 							<xsl:when test="contains($uri, 'http://numismatics.org/library/')">true</xsl:when>
+							<xsl:when test="contains($uri, 'geonames.org')">true</xsl:when>
+							<xsl:when test="contains($uri, 'viaf.org')">true</xsl:when>
+							<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">true</xsl:when>
 							<xsl:otherwise>false</xsl:otherwise>
 						</xsl:choose>
 					</parser>
@@ -46,10 +54,13 @@
 		<p:when test="parser='true'">
 			<p:processor name="oxf:unsafe-xslt">
 				<p:input name="request" href="#request"/>
-				<p:input name="data" href="../../exist-config.xml"/>
+				<p:input name="data" href="#config"/>
 				<p:input name="config">
 					<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 						<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
+						<xsl:variable name="geonames-url">http://api.geonames.org</xsl:variable>
+						<xsl:variable name="geonames_api_key" select="/config/geonames_api_key"/>
+
 						<xsl:template match="/">
 							<xsl:variable name="service">
 								<xsl:choose>
@@ -61,6 +72,18 @@
 									</xsl:when>
 									<xsl:when test="contains($uri, 'http://numismatics.org/library/')">
 										<xsl:value-of select="concat('http://donum.numismatics.org/cgi-bin/koha/opac-export.pl?format=dc&amp;op=export&amp;bib=', substring-after($uri, 'library/'))"/>
+									</xsl:when>
+									<xsl:when test="contains($uri, 'geonames.org')">
+										<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+										<xsl:value-of select="concat($geonames-url, '/get?geonameId=', $pieces[4], '&amp;username=', $geonames_api_key, '&amp;style=full')"/>
+									</xsl:when>
+									<xsl:when test="contains($uri, 'viaf.org')">
+										<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+										<xsl:value-of select="concat('http://viaf.org/viaf/', $pieces[5], '/rdf')"/>
+									</xsl:when>
+									<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">
+										<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+										<xsl:value-of select="concat('http://dbpedia.org/data/', $pieces[last()], '.rdf')"/>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:variable>
@@ -77,17 +100,17 @@
 				</p:input>
 				<p:output name="data" id="generator-config"/>
 			</p:processor>
-			
+
 			<p:processor name="oxf:url-generator">
 				<p:input name="config" href="#generator-config"/>
 				<p:output name="data" id="url-data"/>
 			</p:processor>
-			
+
 			<p:processor name="oxf:exception-catcher">
 				<p:input name="data" href="#url-data"/>
 				<p:output name="data" id="url-data-checked"/>
 			</p:processor>
-			
+
 			<!-- Check whether we had an exception -->
 			<p:choose href="#url-data-checked">
 				<p:when test="/exceptions">
@@ -98,9 +121,28 @@
 						<p:input name="config">
 							<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 								<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
+								<xsl:variable name="normalized">
+									<xsl:choose>
+										<xsl:when test="contains($uri, 'geonames.org')">
+											<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+											<xsl:value-of select="concat('http://www.geonames.org/', $pieces[4])"/>
+										</xsl:when>
+										<xsl:when test="contains($uri, 'viaf.org')">
+											<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+											<xsl:value-of select="concat('http://viaf.org/viaf/', $pieces[5])"/>
+										</xsl:when>
+										<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">
+											<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+											<xsl:value-of select="concat('http://dbpedia.org/resource/', $pieces[last()])"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$uri"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
 								<xsl:template match="/">
 									<response>
-										<xsl:value-of select="$uri"/>
+										<xsl:value-of select="$normalized"/>
 									</response>
 								</xsl:template>
 							</xsl:stylesheet>
@@ -124,9 +166,28 @@
 				<p:input name="config">
 					<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 						<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
+						<xsl:variable name="normalized">
+							<xsl:choose>
+								<xsl:when test="contains($uri, 'geonames.org')">
+									<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+									<xsl:value-of select="concat('http://www.geonames.org/', $pieces[4])"/>
+								</xsl:when>
+								<xsl:when test="contains($uri, 'viaf.org')">
+									<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+									<xsl:value-of select="concat('http://viaf.org/viaf/', $pieces[5])"/>
+								</xsl:when>
+								<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">
+									<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
+									<xsl:value-of select="concat('http://dbpedia.org/resource/', $pieces[last()])"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$uri"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
 						<xsl:template match="/">
 							<response>
-								<xsl:value-of select="$uri"/>
+								<xsl:value-of select="$normalized"/>
 							</response>
 						</xsl:template>
 					</xsl:stylesheet>
@@ -135,6 +196,4 @@
 			</p:processor>
 		</p:otherwise>
 	</p:choose>
-
-	
 </p:config>

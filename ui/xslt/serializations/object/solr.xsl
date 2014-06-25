@@ -34,4 +34,27 @@
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
 	</xsl:template>
+	
+	<!-- generic templates -->
+	<xsl:template name="get_date_hierarchy">
+		<xsl:param name="date"/>
+		
+		<xsl:if test="$date castable as xs:gYear">
+			<xsl:variable name="year_string" select="$date"/>
+			<xsl:variable name="year" select="number($year_string)"/>
+			<xsl:variable name="century" select="floor($year div 100)"/>
+			<xsl:variable name="decade_digit" select="floor(number(substring($year_string, string-length($year_string) - 1, string-length($year_string))) div 10) * 10"/>
+			<xsl:variable name="decade" select="concat($century, if($decade_digit = 0) then '00' else $decade_digit)"/>
+			
+			<field name="century_num">
+				<xsl:value-of select="$century"/>
+			</field>
+			<field name="decade_num">
+				<xsl:value-of select="$decade"/>
+			</field>
+			<field name="year_num">
+				<xsl:value-of select="$year"/>
+			</field>
+		</xsl:if>		
+	</xsl:template>
 </xsl:stylesheet>

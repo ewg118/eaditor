@@ -75,6 +75,9 @@
 					<field name="{$facet}_facet">
 						<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
 					</field>
+					<field name="{$facet}_text">
+						<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
+					</field>
 					<xsl:if test="string(@valueURI)">
 						<field name="{$facet}_uri">
 							<xsl:value-of select="@valueURI"/>
