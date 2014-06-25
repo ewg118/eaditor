@@ -197,12 +197,15 @@
 		</xsl:variable>
 		
 		<xsl:if test="string-length($facet) &gt; 0">
-			<field name="{$facet}_facet">
-				<xsl:value-of select="."/>
-			</field>
-			<field name="{$facet}_text">
-				<xsl:value-of select="."/>
-			</field>
+			<!-- ignore the indexing of facets that are not normalized terms -->
+			<xsl:if test="not(contains(., 'http://'))">
+				<field name="{$facet}_facet">
+					<xsl:value-of select="."/>
+				</field>
+				<field name="{$facet}_text">
+					<xsl:value-of select="."/>
+				</field>
+			</xsl:if>			
 			<field name="{$facet}_uri">
 				<xsl:value-of select="$uri"/>
 			</field>
