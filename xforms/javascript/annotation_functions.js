@@ -146,7 +146,7 @@ function getLabel(uri) {
 		uri: uri
 	},
 	function (data) {
-		label = data.label;
+		label = data.label.replace('&', '&amp;');
 	});
 	return label;
 }
