@@ -246,12 +246,13 @@
 	</xsl:template>
 
 	<xsl:template match="arr[@name='collection_thumb']/str">
+		<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
 		<div class="thumbImage">
 			<xsl:choose>
 				<xsl:when test="contains(., 'flickr.com')">
 					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
-					<xsl:variable name="flickr_uri" select="ancestor::doc/arr[@name='flickr_uri']/str[1]"/>					
-					<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
+					<xsl:variable name="flickr_uri" select="ancestor::doc/arr[@name='flickr_uri']/str[1]"/>		
+					
 					<a href="#{generate-id()}" title="{$title}">
 						<img class="ci" src="{.}"/>
 					</a>					
@@ -264,7 +265,17 @@
 					</div>
 				</xsl:when>
 				<xsl:otherwise>
-					<img src="."/>
+					<xsl:variable name="position" select="position()"/>
+					<xsl:choose>
+						<xsl:when test="ancestor::doc/arr[@name='collection_reference']/str[position()=$position]">
+							<a href="{ancestor::doc/arr[@name='collection_reference']/str[position()=$position]}" title="{$title}">
+								<img src="{.}" alt="thumb"/>
+							</a>
+						</xsl:when>
+						<xsl:otherwise>
+							<img src="{.}" alt="thumb"/>
+						</xsl:otherwise>
+					</xsl:choose>					
 				</xsl:otherwise>
 			</xsl:choose>
 		</div>
