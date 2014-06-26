@@ -6,12 +6,24 @@
 
 	<!-- ***************** TEI-TO-RDF ******************-->
 	<xsl:template name="tei-content">
-		<rdf:Description rdf:about="{$objectUri}">
-			<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
-			<!-- depiction -->
-			<xsl:apply-templates select="descendant::tei:facsimile[@style='depiction']" mode="depiction"/>
-		</rdf:Description>
-		<xsl:apply-templates select="descendant::tei:facsimile" mode="page"/>
+		<!-- handle serialization of individual facsimiles or the TEI documen as a whole -->
+		<xsl:choose>
+			<xsl:when test="local-name()='facsimile'">
+				<xsl:apply-templates select="." mode="page">
+					<xsl:with-param name="mode">root</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<rdf:Description rdf:about="{$objectUri}">
+					<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
+					<!-- depiction -->
+					<xsl:apply-templates select="descendant::tei:facsimile[@style='depiction']" mode="depiction"/>
+				</rdf:Description>
+				<xsl:apply-templates select="descendant::tei:facsimile" mode="page">
+					<xsl:with-param name="mode">page</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="tei:fileDesc">
@@ -78,7 +90,35 @@
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="page">
-		<rdf:Description rdf:about="{$objectUri}/{@xml:id}">
+		<xsl:param name="mode"/>
+		<xsl:variable name="itemUri">
+			<xsl:choose>
+				<xsl:when test="$mode='root'">
+					<xsl:value-of select="$objectUri"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="concat($objectUri, '/', @xml:id)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="parentUri">
+			<xsl:choose>
+				<xsl:when test="$mode='root'">
+					<xsl:variable name="pieces" select="tokenize($objectUri, '/')"/>
+					<xsl:for-each select="$pieces[not(position()=last())]">
+						<xsl:value-of select="."/>
+						<xsl:if test="not(position()=last())">
+							<xsl:text>/</xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$objectUri"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<rdf:Description rdf:about="{$itemUri}">
 			<dcterms:title>
 				<xsl:choose>
 					<xsl:when test="string(tei:graphic/@n)">
@@ -89,7 +129,7 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</dcterms:title>
-			<dcterms:isPartOf rdf:resource="{$objectUri}"/>
+			<dcterms:isPartOf rdf:resource="{$parentUri}"/>
 			<xsl:for-each select="distinct-values(descendant::tei:ref/@target)">
 				<dcterms:subject rdf:resource="{.}"/>
 			</xsl:for-each>
