@@ -234,6 +234,11 @@
 					<script type="text/javascript" src="{$include_path}ui/javascript/param.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/display_map_functions.js"/>
 				</xsl:if>
+				<xsl:if test="string(//config/google_analytics)">
+					<script type="text/javascript">
+						<xsl:value-of select="//config/google_analytics"/>
+					</script>
+				</xsl:if>
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
