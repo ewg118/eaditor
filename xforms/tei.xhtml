@@ -352,7 +352,7 @@
 																			<!-- handle publication of entire set of RDF triples on Save button click -->
 																			<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
 																				<!-- post to SPARQL, if the URLs are available in the config -->
-																				<xforms:setvalue ref="instance('control-instance')/id-path" value="concat(instance('doc')/@xml:id, '/', $id)"/>
+																				<xforms:setvalue ref="instance('control-instance')/id-path" value="concat(instance('doc')/@xml:id, '/', instance('control-instance')/image-id)"/>
 																				<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)"/>
 																			</xforms:action>
 																		</xforms:action>
