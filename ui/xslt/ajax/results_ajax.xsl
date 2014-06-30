@@ -138,29 +138,48 @@
 					</xsl:if>
 				</dl>
 			</div>
-			<xsl:if test="count(arr[@name='thumb_image']/str) &gt; 0">
-				<div class="col-md-5 img-container">
-					<xsl:apply-templates select="arr[@name='thumb_image']/str[position() &lt;=5]"/>
+			<xsl:if test="count(arr[@name='collection_thumb']/str) &gt; 0">
+				<div class="col-md-5 img-container text-right">
+					<xsl:apply-templates select="arr[@name='collection_thumb']/str[position() &lt;=5]"/>
 				</div>
 			</xsl:if>
 		</div>
 	</xsl:template>
 
-	<xsl:template match="arr[@name='thumb_image']/str">
-		<span class="thumbImage">
+	<xsl:template match="arr[@name='collection_thumb']/str">
+		<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
+		<div class="thumbImage">
 			<xsl:choose>
 				<xsl:when test="contains(., 'flickr.com')">
 					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
-					<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
-					<a href="{ancestor::doc/arr[@name='reference_image']/str[contains(., $photo_id)]}">
-						<img class="gi" src="{.}"/>
+					<xsl:variable name="flickr_uri" select="ancestor::doc/arr[@name='flickr_uri']/str[1]"/>		
+					
+					<a href="#{generate-id()}" title="{$title}">
+						<img class="ci" src="{.}"/>
 					</a>					
+					<div style="display:none">
+						<div id="{generate-id()}">
+							<a target="_blank" href="{$flickr_uri}" class="flickr-link">
+								<img src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"/>
+							</a>
+						</div>
+					</div>
 				</xsl:when>
 				<xsl:otherwise>
-					<img src="."/>
+					<xsl:variable name="position" select="position()"/>
+					<xsl:choose>
+						<xsl:when test="ancestor::doc/arr[@name='collection_reference']/str[position()=$position]">
+							<a href="{ancestor::doc/arr[@name='collection_reference']/str[position()=$position]}" title="{$title}">
+								<img src="{.}" alt="thumb"/>
+							</a>
+						</xsl:when>
+						<xsl:otherwise>
+							<img src="{.}" alt="thumb"/>
+						</xsl:otherwise>
+					</xsl:choose>					
 				</xsl:otherwise>
 			</xsl:choose>
-		</span>
+		</div>
 	</xsl:template>
 
 	<xsl:template name="paging">

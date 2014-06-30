@@ -89,7 +89,7 @@
 	<xsl:function name="eaditor:get_flickr_uri">
 		<xsl:param name="photo_id"/>
 		<xsl:value-of
-			select="document(concat('http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', $flickr-api-key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
+			select="document(concat('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', $flickr-api-key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
 		/>
 	</xsl:function>
 	<!-- ********************************** TEMPLATES ************************************ -->

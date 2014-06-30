@@ -258,9 +258,9 @@
 					</a>					
 					<div style="display:none">
 						<div id="{generate-id()}">
-							<span href="{$flickr_uri}" class="flickr-link">
+							<a href="{$flickr_uri}" class="flickr-link">
 								<img src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"/>
-							</span>
+							</a>
 						</div>
 					</div>
 				</xsl:when>
