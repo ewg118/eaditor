@@ -5,11 +5,6 @@ $(document).ready(function () {
 			}
 		}
 	});
-	$('.flickr-link').click(function () {
-		var href = $(this).attr('href');
-		$.fancybox.close();
-		window.open(href, '_blank');
-	});
 	
 	//sort functions
 	$('.sortForm_categories') .change(function () {

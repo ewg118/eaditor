@@ -258,7 +258,7 @@
 					</a>					
 					<div style="display:none">
 						<div id="{generate-id()}">
-							<a href="{$flickr_uri}" class="flickr-link">
+							<a target="_blank" href="{$flickr_uri}" class="flickr-link">
 								<img src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"/>
 							</a>
 						</div>
