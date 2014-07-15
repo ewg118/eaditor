@@ -121,6 +121,9 @@ div.cchild {
 .external_link {
 	margin-left:10px;
 }
+.display-thumb {
+	height:160px;	
+}
 /*
   ****************************************
   SEARCH PAGE

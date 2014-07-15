@@ -224,12 +224,12 @@
 				</xsl:if>
 			</xsl:variable>
 
-			<div class="thumbImage col-md-2">
+			<div class="thumbImage col-md-2 display-thumb">
 				<xsl:choose>
 					<xsl:when test="contains(@xlink:href, 'flickr.com')">
 						<xsl:variable name="photo_id" select="substring-before(tokenize(@xlink:href, '/')[last()], '_')"/>
 						<xsl:variable name="flickr_uri" select="eaditor:get_flickr_uri($photo_id)"/>
-						<a href="#{generate-id()}" title="{if (string(@title)) then @title else $title}">
+						<a href="#{generate-id()}" title="{if (string(@title)) then @title else ''}" rel="gallery">
 							<img class="ci" src="{@xlink:href}"/>
 						</a>
 						<div style="display:none">
@@ -274,7 +274,7 @@
 						<xsl:choose>
 							<xsl:when test="string($medium-href)">
 								<a href="{$medium-href}">
-									<img src="{$href}" title="{if (string(@title)) then @title else ''}"/>
+									<img src="{$href}" title="{if (string(@title)) then @title else ''}" rel="gallery"/>
 								</a>
 							</xsl:when>
 							<xsl:otherwise>
