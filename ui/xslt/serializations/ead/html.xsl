@@ -118,6 +118,9 @@
 								<xsl:call-template name="archdesc-admininfo"/>
 								<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
 								<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
+								<xsl:if test="count(ead:archdesc/ead:daogrp[count(ead:daoloc) &gt; 0]) &gt; 0">
+									<xsl:call-template name="archdesc-images"/>
+								</xsl:if>
 								<xsl:apply-templates select="ead:archdesc/ead:arrangement"/>
 								<xsl:call-template name="archdesc-relatedmaterial"/>
 								<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
@@ -327,6 +330,15 @@
 
 		</div>
 	</xsl:template>
+	
+	<xsl:template name="archdesc-images">
+		<div class="row">
+			<div class="col-md-12">
+				<h2>Images</h2>
+				<xsl:apply-templates select="ead:archdesc/ead:daogrp | ead:archdesc/ead:dao"/>
+			</div>
+		</div>
+	</xsl:template>
 
 	<xsl:template name="archdesc-did-elements">
 		<dl class="dl-horizontal">
@@ -445,16 +457,12 @@
 	<xsl:template
 		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:descgrp[not(@type='admininfo')] | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note">
 		<div class="{name()}">
-			<a name="{generate-id(.)}"/>
-			<xsl:apply-templates/>
+			<a id="{generate-id(.)}"/>
+			<h2>
+				<xsl:value-of select="if (ead:head) then ead:head else eaditor:normalize_fields(local-name(), $lang)"/>
+			</h2>
+			<xsl:apply-templates select="*[not(name()='ead:head')]"/>
 		</div>
-	</xsl:template>
-
-	<xsl:template
-		match="ead:archdesc/ead:bioghist/ead:head  | ead:archdesc/ead:scopecontent/ead:head | ead:archdesc/ead:arrangement/ead:head | ead:archdesc/ead:phystech/ead:head | ead:archdesc/ead:descgrp/ead:head | ead:archdesc/ead:controlaccess/ead:head | ead:archdesc/ead:odd/ead:head | ead:archdesc/ead:arrangement/ead:head">
-		<h2>
-			<xsl:apply-templates/>
-		</h2>
 	</xsl:template>
 
 	<xsl:template match="ead:p">
