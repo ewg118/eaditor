@@ -223,10 +223,10 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 SELECT ?c ?label {
 ?c a gvp:Concept; skos:inScheme aat: ;
-gvp:broaderTransitive aat:300024980 ;
+gvp:broaderExtended aat:300024980 ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
 luc:term "SEARCH_QUERY*"
-} LIMIT 25]]></query>
+FILTER langMatches(lang(?label), "en")} LIMIT 25]]></query>
 						</xforms:instance>
 
 						<xforms:instance id="sparqlQuery">
@@ -242,6 +242,14 @@ luc:term "SEARCH_QUERY*"
 						<!-- SPARQL queries -->
 						<xforms:submission id="query-aat" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}&amp;format=xml" ref="instance('sparqlResponse')"
 							replace="instance" method="get">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
+							<xforms:header>
+								<xforms:name>Accept</xforms:name>
+								<xforms:value>application/sparql-results+xml</xforms:value>
+							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">SPARQL query failed.</xforms:message>
 						</xforms:submission>
 

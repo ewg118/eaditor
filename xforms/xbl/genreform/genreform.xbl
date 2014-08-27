@@ -272,7 +272,8 @@ SELECT ?c ?label WHERE {
 ?c rdf:type gvp:Concept ;
 skos:inScheme aat: ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
-luc:term "SEARCH_QUERY" } LIMIT 25]]>
+luc:term "SEARCH_QUERY" 
+FILTER langMatches(lang(?label), "en")} LIMIT 25]]>
 							</query>
 						</xforms:instance>
 
@@ -294,6 +295,14 @@ luc:term "SEARCH_QUERY" } LIMIT 25]]>
 						<!-- SPARQL queries -->
 						<xforms:submission id="query-aat" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}&amp;format=xml" ref="instance('sparqlResponse')"
 							replace="instance" method="get">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
+							<xforms:header>
+								<xforms:name>Accept</xforms:name>
+								<xforms:value>application/sparql-results+xml</xforms:value>
+							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">SPARQL query failed.</xforms:message>
 						</xforms:submission>
 
