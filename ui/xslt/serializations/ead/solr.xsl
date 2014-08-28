@@ -215,11 +215,14 @@
 		</xsl:if>
 
 		<!-- uri -->
-		<xsl:if test="string(@source) and string(@authfilenumber)">
+		<xsl:if test="string(@authfilenumber)">
 			<xsl:variable name="resource">
 				<xsl:choose>
 					<xsl:when test="@source='aat'">
 						<xsl:value-of select="concat('http://vocab.getty.edu/aat/', @authfilenumber)"/>
+					</xsl:when>
+					<xsl:when test="@source='tgn'">
+						<xsl:value-of select="concat('http://vocab.getty.edu/tgn/', @authfilenumber)"/>
 					</xsl:when>
 					<xsl:when test="@source='geonames'">
 						<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>
@@ -232,6 +235,9 @@
 					</xsl:when>
 					<xsl:when test="@source='viaf'">
 						<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>
+					</xsl:when>
+					<xsl:when test="contains(@authfilenumber, 'http://')">
+						<xsl:value-of select="@authfilenumber"/>
 					</xsl:when>
 				</xsl:choose>
 			</xsl:variable>

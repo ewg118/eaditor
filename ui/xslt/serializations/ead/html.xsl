@@ -728,6 +728,11 @@
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
+				<xsl:when test="@source='tgn'">
+					<a href="http://vocab.getty.edu/tgn/{@authfilenumber}" title="Getty TGN" rel="dcterms:coverage">
+						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+					</a>
+				</xsl:when>
 				<xsl:when test="@source='geonames'">
 					<a href="http://www.geonames.org/{@authfilenumber}" title="Geonames" rel="dcterms:coverage">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
