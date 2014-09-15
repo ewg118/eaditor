@@ -60,6 +60,20 @@
 											<xforms:value ref="."/>
 										</xforms:itemset>
 										<xforms:action ev:event="xforms-value-changed">
+											<xforms:action if=". = 'snac'">
+												<!-- remove temporary values, applicable when switching back to persnames from local -->
+												<xforms:delete context="instance('snac-response')/*"/>
+												<xforms:setvalue ref="instance('search-query')"/>
+												
+												<!-- create attributes, clear $binding text when applicable -->
+												<xforms:setvalue ref="$binding" if="not($binding/@authfilenumber)"/>
+												<xforms:delete if="$binding/@source" context="$binding/@source"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
+												
+												<!-- pre-populate the select list -->
+												<xforms:delete context="$binding/@role" if="$binding/@role='xeac:entity'"/>
+												<xforms:toggle case="snac-search"/>
+											</xforms:action>
 											<xforms:action if=". = 'xeac'">
 												<!-- remove temporary values, applicable when switching back to persnames from local -->
 												<xforms:delete context="instance('xeac-response')/*"/>
@@ -96,6 +110,40 @@
 							
 							<xforms:switch>
 								<xforms:case id="default"/>
+								<xforms:case id="snac-search">
+									<div>
+										<xforms:input ref="instance('search-query')">
+											<xforms:label>Search</xforms:label>
+										</xforms:input>
+										<xforms:trigger>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:delete context="instance('snac-response')/*"/>
+												<xforms:send submission="query-snac"/>
+											</xforms:action>
+											<xforms:label>Search</xforms:label>
+										</xforms:trigger>
+									</div>
+									
+									<xforms:group ref=".[number(instance('snac-response')/@totalDocs) &gt; 0]">
+										<xforms:output ref="instance('search-results')"/>
+										<br/>
+										<xforms:select1 ref="instance('temp')/@href" appearance="compact">
+											<xforms:label>Name</xforms:label>
+											<xforms:itemset nodeset="instance('snac-response')//docHit">
+												<xforms:label ref="meta/identity[1]"/>
+												<xforms:value ref="concat('http://socialarchive.iath.virginia.edu/ark:/', substring-after(tokenize(@path, '-')[1], ':'), '/', substring-before(tokenize(@path, '-')[2], '.xml'))"/>
+											</xforms:itemset>
+										</xforms:select1>
+										<xforms:trigger>
+											<xforms:label>Select</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:var name="path" select="concat('default:', tokenize(instance('temp')/@href, '/')[5], '-', tokenize(instance('temp')/@href, '/')[6] , '.xml')"/>
+												<xforms:setvalue ref="$binding/@authfilenumber" value="instance('temp')/@href"/>
+												<xforms:setvalue ref="$binding" value="instance('snac-response')//docHit[@path=$path]/meta/identity[1]"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+								</xforms:case>
 								<xforms:case id="xeac-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
@@ -208,6 +256,11 @@
 						<xforms:instance id="xeac-response" exclude-result-prefixed="#all">
 							<feed/>
 						</xforms:instance>
+						
+						<!-- snac query -->
+						<xforms:instance id="snac-response" exclude-result-prefixed="#all">
+							<crossQueryResult/>
+						</xforms:instance>
 
 						<!-- Instances containing the query string -->
 						<xforms:instance id="search-query">
@@ -222,6 +275,7 @@
 						<!-- interface type radio button -->
 						<xforms:instance id="interfaces">
 							<interfaces xmlns="">
+								<interface name="SNAC">snac</interface>
 								<interface name="Local Vocabulary">local</interface>
 							</interfaces>
 						</xforms:instance>
@@ -277,6 +331,17 @@
 								<xforms:message if="number(instance('xeac-response')//opensearch:totalResults) = 0" level="modal">No results found for query.</xforms:message>
 								<xforms:setvalue if="number(instance('xeac-response')//opensearch:totalResults) != 0" ref="instance('search-results')"
 									value="concat('Displaying first 100 of ', instance('xeac-response')//opensearch:totalResults, ' result(s).')"/>
+							</xforms:action>
+						</xforms:submission>
+						
+						<xforms:submission id="query-snac" serialization="none" method="get"
+							action="http://socialarchive.iath.virginia.edu/snac/search?facet-entityType=family&amp;text={instance('search-query')}&amp;sectionType=identity&amp;rmode=slickgrid&amp;raw=1"
+							instance="snac-response" replace="instance">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query SNAC.</xforms:message>
+							<xforms:action ev:event="xforms-submit-done">
+								<xforms:message if="number(instance('snac-response')/@totalDocs) = 0" level="modal">No results found for query.</xforms:message>
+								<xforms:setvalue if="number(instance('snac-response')/@totalDocs) != 0" ref="instance('search-results')"
+									value="concat('Displaying first 25 of ', instance('snac-response')/@totalDocs, ' result(s).')"/>
 							</xforms:action>
 						</xforms:submission>
 

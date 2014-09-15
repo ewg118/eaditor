@@ -93,6 +93,9 @@
 				<xsl:when test="@source='aat'">
 					<xsl:value-of select="concat('http://vocab.getty.edu/aat/', @authfilenumber)"/>
 				</xsl:when>
+				<xsl:when test="@source='tgn'">
+					<xsl:value-of select="concat('http://vocab.getty.edu/tgn/', @authfilenumber)"/>
+				</xsl:when>
 				<xsl:when test="contains(@authfilenumber, 'http://')">
 					<xsl:value-of select="@authfilenumber"/>
 				</xsl:when>
