@@ -60,7 +60,7 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config version="0.55">
+				<config version="0.55" xmlns="">
 					<firstrun/>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
@@ -186,7 +186,7 @@
 			</xforms:instance>
 
 			<!-- templates -->
-			<xforms:instance id="ead-template">
+			<xforms:instance id="ead-template" xxforms:exclude-result-prefixes="#all">
 				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
 					xsi:schemaLocation="urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd">
 					<eadheader langencoding="iso639-2b">
@@ -209,7 +209,7 @@
 					</archdesc>
 				</ead>
 			</xforms:instance>
-			<xforms:instance id="c-template">
+			<xforms:instance id="c-template" xxforms:exclude-result-prefixes="#all">
 				<c id="" level="" xmlns="urn:isbn:1-931666-22-9">
 					<did>
 						<unittitle/>
@@ -379,36 +379,25 @@
 					<!-- set default if security is false -->
 					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
 						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+						<xforms:send submission="load-config"/>
 					</xforms:action>
 					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
 					<xforms:action if="string(instance('control-instance')/request-security/role)">
 						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
 							<xforms:setvalue ref="instance('control-instance')/collection-name"
 								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+							<xforms:send submission="load-config"/>
 						</xforms:action>
 						<xforms:action if="not(string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name))">
 							<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]" origin="instance('collection-template')"/>
 							<xforms:setvalue ref="instance('collections-list')/collection[last()]/@role" value="instance('control-instance')/request-security/role"/>
 						</xforms:action>
 					</xforms:action>
-					<!-- set exist collection value for creating new collection-->
-					<xforms:setvalue ref="instance('xqueries')/query[@id='create-collection']"
-						value="concat(&quot;xmldb:create-collection(&#x0027;/db/eaditor/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
-					<xforms:send submission="load-config"/>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-config.xml is correct), create it -->
 				<xforms:action ev:event="xforms-submit-error">
-					<!-- if there is no security, quietly save collections-list.xml -->
-					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
-						<xforms:send submission="save-collections"/>
-					</xforms:action>
-					<xforms:action if="string(instance('control-instance')/request-security/role)">
-						<xforms:action if="not(instance('control-instance')/request-security/role='admin')">
-							<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]" origin="instance('collection-template')"/>
-							<xforms:setvalue ref="instance('collections-list')/collection[last()]/@role" value="instance('control-instance')/request-security/role"/>
-						</xforms:action>
-					</xforms:action>
+					<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]" origin="instance('collection-template')"/>
+					<xforms:setvalue ref="instance('collections-list')/collection[last()]/@role" value="instance('control-instance')/request-security/role"/>
 				</xforms:action>
 			</xforms:submission>
 
@@ -422,9 +411,6 @@
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:action ev:event="xforms-submit-done">
-					<!-- get first page of objects -->
-					<!--<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='query-objects']"/>
-					<xforms:send submission="xquery-collection"/>-->
 					<!-- get the number of docs in the eXist collection() -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"/>
 					<xforms:send submission="xquery-collection"/>
@@ -1177,11 +1163,11 @@
 			<xforms:label>Welcome to Numishare</xforms:label>
 			<p>Please create a collection for your authenticated group.</p>
 			<xforms:group ref="instance('collections-list')">
-				<h3>
-					<xforms:output ref="instance('control-instance')/request-security/role"/>
+				<h3>					
+					<xforms:output value="if(string(instance('control-instance')/request-security/role)) then instance('control-instance')/request-security/role else '[No Authentication]'"/>
 				</h3>
 				<div>
-					<xforms:input ref="collection[@role=instance('control-instance')/request-security/role]/@name">
+					<xforms:input ref="collection[last()]/@name">
 						<xforms:label>Collection Name</xforms:label>
 						<xforms:alert>Required</xforms:alert>
 					</xforms:input>
@@ -1190,7 +1176,7 @@
 			<xforms:trigger>
 				<xforms:label>Save</xforms:label>
 				<xforms:action ev:event="DOMActivate">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[last()]/@name"/>
 					<!-- set exist collection value for creating new collection-->
 					<xforms:setvalue ref="instance('xqueries')/query[@id='create-collection']"
 						value="concat(&quot;xmldb:create-collection(&#x0027;/db/eaditor/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
