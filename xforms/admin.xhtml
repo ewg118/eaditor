@@ -76,7 +76,7 @@
 					<url>http://localhost:8080/orbeon/eaditor/</url>
 					<xeac/>
 					<sparql>
-						<endpoint/>
+						<endpoint>false</endpoint>
 						<update/>
 						<query/>
 						<store/>
@@ -1180,6 +1180,7 @@
 					<!-- set exist collection value for creating new collection-->
 					<xforms:setvalue ref="instance('xqueries')/query[@id='create-collection']"
 						value="concat(&quot;xmldb:create-collection(&#x0027;/db/eaditor/&quot;, instance(&quot;control-instance&quot;)/collection-name, &quot;&#x0027;, &#x0027;guides&#x0027;)&quot;)"/>
+					<xforms:setvalue ref="instance('config-template')/url" value="concat(instance('config-template')/url, instance('control-instance')/collection-name, '/')"/>
 					<xforms:send submission="save-collections"/>
 					<xxforms:hide dialog="create-collection"/>
 					<xxforms:show dialog="firstrun"/>

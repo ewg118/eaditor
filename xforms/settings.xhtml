@@ -21,13 +21,13 @@
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
-			<xs:schema>
-				<xs:simpleType name="emailAddress">
-					<xs:restriction base="xs:string">
-						<xs:pattern value="[^@]+@[^\.]+\..+"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:schema>
+			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+				<xsd:simpleType name="emailAddress">
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="[^@]+@[^\.]+\..+"></xsd:pattern>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:schema>
 
 
 			<!-- exist URL is stored in an XML file -->
@@ -215,7 +215,7 @@
 
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"/>
-				<xforms:bind nodeset="description" required="../export/pelagios = true()" readonly="../export/pelagios = false()"/>
+				<xforms:bind nodeset="description" required="../export/pelagios = true()" relevant="../export/pelagios = true()"/>
 				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
 				<xforms:bind nodeset="xeac" as="xs:anyURI"/>
@@ -226,7 +226,7 @@
 					<xforms:bind nodeset="update" type="xs:anyURI"/>
 				</xforms:bind>
 				<xforms:bind nodeset="ark">
-					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" readonly="parent::node()/@enabled = false()"/>
+					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" relevant="parent::node()/@enabled = true()" required="parent::node()/@enabled = true()"/>
 					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
 				</xforms:bind>
 				<xforms:bind nodeset="export">
@@ -238,8 +238,8 @@
 					<xforms:bind nodeset="level/@enabled" type="xs:boolean"/>
 				</xforms:bind>
 				<xforms:bind nodeset="publisher" required="../export/oai-pmh = true() or ../export/pelagios = true()"/>
-				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
-				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" readonly="../export/oai-pmh = false()"/>
+				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"/>
+				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"/>
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('control-instance')">
@@ -265,14 +265,13 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set default if security is false -->
 					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+						<xforms:setvalue ref="instance('control-instance')/collection-name"
+							value="instance('collections-list')/collection[@role='']/@name"/>
 					</xforms:action>
 					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
 					<xforms:action if="string(instance('control-instance')/request-security/role)">
-						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
-							<xforms:setvalue ref="instance('control-instance')/collection-name"
-								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
-						</xforms:action>
+						<xforms:setvalue ref="instance('control-instance')/collection-name"
+							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 					</xforms:action>
 					<xforms:send submission="load-config"/>
 
@@ -563,15 +562,15 @@
 												<xforms:input ref="publisher_code">
 													<xforms:label>Publisher Code</xforms:label>
 													<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
+													<xforms:hint>Publisher code used for OAI-PMH export.</xforms:hint>
 												</xforms:input>
-												<p>Publisher code used for OAI-PMH export.</p>
 											</div>
 											<div>
 												<xforms:input ref="publisher_email">
 													<xforms:label>Publisher Email</xforms:label>
 													<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
+													<xforms:hint>Publisher email used for OAI-PMH export.</xforms:hint>
 												</xforms:input>
-												<p>Publisher email used for OAI-PMH export.</p>
 											</div>
 										</div>
 										<div class="subsection">

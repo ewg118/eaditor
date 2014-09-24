@@ -291,14 +291,13 @@
 							<xforms:action ev:event="xforms-submit-done">
 								<!-- set default if security is false -->
 								<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-									<xforms:setvalue ref="instance('control-instance')/collection-name">default</xforms:setvalue>
+									<xforms:setvalue ref="instance('control-instance')/collection-name"
+										value="instance('collections-list')/collection[@role='']/@name"/>
 								</xforms:action>
 								<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
 								<xforms:action if="string(instance('control-instance')/request-security/role)">
-									<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
-										<xforms:setvalue ref="instance('control-instance')/collection-name"
-											value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
-									</xforms:action>
+									<xforms:setvalue ref="instance('control-instance')/collection-name"
+										value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 								</xforms:action>
 								<xforms:send submission="load-config"/>
 							</xforms:action>
