@@ -128,7 +128,7 @@
 									<a href="{$display_path}results/?q={$facet}_facet:&#x022;{$label}&#x022;">
 										<xsl:value-of select="$label"/>
 									</a>
-									<a href="{$uri}">
+									<a href="{$uri}" target="_blank">
 										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 									</a>
 								</strong>
@@ -136,7 +136,7 @@
 							<xsl:otherwise>
 								<strong>
 									<xsl:value-of select="$label"/>
-									<a href="{$uri}">
+									<a href="{$uri}" target="_blank">
 										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 									</a>
 								</strong>
