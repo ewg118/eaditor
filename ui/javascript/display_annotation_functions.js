@@ -40,7 +40,10 @@ $(document).ready(function () {
 			$('#prev-page').removeAttr('class');
 		}
 		//alter goto page dropdown
-		$('#goto-page').val(id);		
+		$('#goto-page').val(id);	
+		
+		//scroll to top
+		window.scrollTo(0,0);		
 		return false;
 	});
 	

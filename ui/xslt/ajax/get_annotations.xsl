@@ -53,7 +53,7 @@
 
 	<xsl:template match="tei:ref">
 		<xsl:variable name="content">
-			<![CDATA[<a href=']]><xsl:value-of select="normalize-space(@target)"/><![CDATA['>]]><xsl:value-of select="normalize-space(.)"/><![CDATA[</a>]]>
+			<![CDATA[<a href=']]><xsl:value-of select="normalize-space(@target)"/><![CDATA[' target='_blank'>]]><xsl:value-of select="normalize-space(.)"/><![CDATA[</a>]]>
 		</xsl:variable>
 		<xsl:value-of select="normalize-space($content)"/>
 	</xsl:template>
