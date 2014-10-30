@@ -190,7 +190,7 @@
 												<!-- flickr authentication -->
 												<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
 												<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"/>
-												<xforms:setvalue ref="instance('flickr-control')/service">http://api.flickr.com/services/rest/</xforms:setvalue>
+												<xforms:setvalue ref="instance('flickr-control')/service">https://api.flickr.com/services/rest/</xforms:setvalue>
 												<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-session-attribute('oauth_token')"/>
 												<!-- generating signature -->
 												<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
@@ -524,22 +524,22 @@
 
 						<!-- query flickr.photos.getSizes API -->
 						<xforms:submission id="query-flickr-getSizes" serialization="none" method="get"
-							action="http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
+							action="https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
 							replace="instance" instance="flickr-sizes"/>
 
 						<!-- query flickr.photos.getInfo API for title and description -->
 						<xforms:submission id="query-flickr-getInfo" serialization="none" method="get"
-							action="http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
+							action="https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
 							replace="instance" instance="flickr-info"/>
 
 						<!-- test for flickr echo -->
 						<xforms:submission id="test-for-echo" serialization="none" method="get"
-							action="http://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance" instance="flickr-response">
+							action="https://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance" instance="flickr-response">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
 						</xforms:submission>
 
 						<xforms:submission id="flickr-setTags" serialization="none" method="get"
-							action="http://api.flickr.com/services/rest/?method=flickr.photos.setTags&amp;photo_id={instance('photo_id')}&amp;tags={encode-for-uri(instance('tags'))}&amp;oauth_consumer_key={instance('config')/flickr_api_key}&amp;oauth_timestamp={instance('flickr-control')/timestamp}&amp;oauth_nonce={instance('flickr-control')/nonce}&amp;oauth_signature_method={instance('flickr-control')/method}&amp;oauth_version={instance('flickr-control')/version}&amp;oauth_token={instance('flickr-control')/token}&amp;oauth_signature={instance('flickr-control')/signature}"
+							action="https://api.flickr.com/services/rest/?method=flickr.photos.setTags&amp;photo_id={instance('photo_id')}&amp;tags={encode-for-uri(instance('tags'))}&amp;oauth_consumer_key={instance('config')/flickr_api_key}&amp;oauth_timestamp={instance('flickr-control')/timestamp}&amp;oauth_nonce={instance('flickr-control')/nonce}&amp;oauth_signature_method={instance('flickr-control')/method}&amp;oauth_version={instance('flickr-control')/version}&amp;oauth_token={instance('flickr-control')/token}&amp;oauth_signature={instance('flickr-control')/signature}"
 							replace="instance" instance="flickr-response">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error posting tags.</xforms:message>
 						</xforms:submission>
