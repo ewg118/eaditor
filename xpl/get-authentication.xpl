@@ -31,7 +31,6 @@
 				<role>nhc</role>
 				<role>nalcsr</role>
 				<role>nic</role>
-				<role>nic</role>
 				<role>nhyf</role>
 				<role>nnfr</role>
 				<role>noneoc</role>
@@ -54,7 +53,15 @@
 				<role>nbuuar</role>
 				<role>nsyu</role>
 				<role>npv</role>
-				<role>nbuhi</role>		
+				<role>nycrhs</role>		
+				<role>nyorbhma</role>
+				<role>nypklge</role>
+				<role>nnepeml</role>
+				<role>nsrl</role>
+				<role>nhycia</role>
+				<role>nkish</role>
+				<role>nynephhs</role>
+				<role>nnepsu</role>
 			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>
