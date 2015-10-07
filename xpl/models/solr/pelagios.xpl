@@ -20,7 +20,7 @@
 	</p:processor>
 
 	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="config.xpl"/>
+		<p:input name="config" href="../config.xpl"/>
 		<p:output name="data" id="config"/>
 	</p:processor>
 
@@ -30,36 +30,11 @@
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
-				<!-- url params -->
-				<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
-				<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
-				<xsl:param name="sort">
-					<xsl:if test="string(doc('input:request')/request/parameters/parameter[name='sort']/value)">
-						<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
-					</xsl:if>
-				</xsl:param>
-				<xsl:param name="rows" as="xs:integer">10</xsl:param>
-				<xsl:param name="start" as="xs:integer">
-					<xsl:choose>
-						<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='start']/value)">
-							<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='start']/value"/>
-						</xsl:when>
-						<xsl:otherwise>0</xsl:otherwise>
-					</xsl:choose>
-				</xsl:param>
-
 				<!-- config variables -->
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
 				<xsl:variable name="service">
-					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, '&amp;sort=', encode-for-uri($sort), '&amp;rows=', $rows)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, '&amp;rows=', $rows)"/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+pleiades_uri:*&amp;sort=timestamp%20desc&amp;rows=10000&amp;fl=id,cid,recordId,unittitle_display,pleiades_uri,genreform_uri,timestamp')"/>
 				</xsl:variable>
 
 				<xsl:template match="/">
@@ -75,7 +50,7 @@
 		</p:input>
 		<p:output name="data" id="generator-config"/>
 	</p:processor>
-	
+
 	<p:processor name="oxf:url-generator">
 		<p:input name="config" href="#generator-config"/>
 		<p:output name="data" ref="data"/>

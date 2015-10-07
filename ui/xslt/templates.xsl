@@ -18,13 +18,13 @@
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
 						<li>
-							<a href="{$display_path}results/">Browse</a>
+							<a href="{$display_path}results">Browse</a>
 						</li>
 						<li>
-							<a href="{$display_path}search/">Search</a>
+							<a href="{$display_path}search">Search</a>
 						</li>
 						<li>
-							<a href="{$display_path}maps/">Maps</a>
+							<a href="{$display_path}maps">Maps</a>
 						</li>
 						<xsl:if test="//config/sparql/endpoint=true()">
 							<li>
@@ -32,7 +32,7 @@
 							</li>
 						</xsl:if>
 					</ul>
-					<xsl:if test="$pipeline='display'">
+					<!--<xsl:if test="$pipeline='display'">
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
 							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
@@ -40,8 +40,8 @@
 								<li><a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a></li>
 							</xsl:if>
 						</ul>
-					</xsl:if>
-					<form class="navbar-form navbar-right" role="search" action="{$display_path}results/" method="GET">
+					</xsl:if>-->
+					<form class="navbar-form navbar-right" role="search" action="{$display_path}results" method="GET">
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="Search" name="q" id="srch-term"/>
 							<div class="input-group-btn">

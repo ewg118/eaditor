@@ -3,6 +3,7 @@
 	version="2.0">
 	<xsl:include href="../../templates.xsl"/>
 	<xsl:include href="../../functions.xsl"/>
+	<xsl:include href="html-templates.xsl"/>
 
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="facets">
@@ -13,19 +14,24 @@
 	</xsl:variable>
 	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
-	<xsl:variable name="display_path">../</xsl:variable>
-	<xsl:variable name="include_path">../../</xsl:variable>
+	
+	<xsl:variable name="display_path">./</xsl:variable>
+	
+	<xsl:variable name="include_path">
+		<xsl:choose>
+			<xsl:when test="/content/config/aggregator='true'">./</xsl:when>
+			<xsl:otherwise>../</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
 	<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
 	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
-	<xsl:param name="sort">
-		<xsl:if test="string(doc('input:request')/request/parameters/parameter[name='sort']/value)">
-			<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
-		</xsl:if>
-	</xsl:param>
+	<xsl:param name="sort" select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
+	
 	<xsl:param name="rows">10</xsl:param>
 	<xsl:param name="start">
 		<xsl:choose>
@@ -36,8 +42,7 @@
 		</xsl:choose>
 	</xsl:param>
 	<xsl:variable name="numFound" select="//result[@name='response']/@numFound" as="xs:integer"/>
-
-	<xsl:variable name="path"/>
+	
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 
 	<xsl:template match="/">
@@ -117,11 +122,17 @@
 							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start over.</a></h2>
 						</xsl:otherwise>
 					</xsl:choose>
-					<span style="display:none" id="pipeline">
-						<xsl:value-of select="$pipeline"/>
-					</span>
-					<select style="display:none" id="ajax-temp"/>
-					<ul style="display:none" id="decades-temp"/>
+					<div class="hidden">
+						<span id="pipeline">
+							<xsl:value-of select="$pipeline"/>
+						</span>
+						<select id="ajax-temp"/>
+						<ul id="decades-temp"/>
+						<span id="path">
+							<xsl:value-of select="$display_path"/>
+						</span>
+					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -142,27 +153,56 @@
 					<dd>
 						<xsl:variable name="objectUri">
 							<xsl:choose>
-								<xsl:when test="//config/ark[@enabled='true']">
+								<xsl:when test="//config/aggregator='true'">
 									<xsl:choose>
-										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+										<xsl:when test="//config/ark[@enabled='true']">
+											<xsl:choose>
+												<xsl:when test="string(str[@name='cid'])">
+													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+												</xsl:otherwise>
+											</xsl:choose>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+											<xsl:choose>
+												<xsl:when test="string(str[@name='cid'])">
+													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/id/', str[@name='recordId'])"/>
+												</xsl:otherwise>
+											</xsl:choose>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:choose>
-										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+										<xsl:when test="//config/ark[@enabled='true']">
+											<xsl:choose>
+												<xsl:when test="string(str[@name='cid'])">
+													<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+												</xsl:otherwise>
+											</xsl:choose>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
+											<xsl:choose>
+												<xsl:when test="string(str[@name='cid'])">
+													<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
+												</xsl:otherwise>
+											</xsl:choose>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:otherwise>
 							</xsl:choose>
+							
 						</xsl:variable>
 						<a href="{$objectUri}">
 							<xsl:value-of select="str[@name='unittitle_display']"/>
@@ -243,150 +283,6 @@
 				</xsl:if>
 			</td>
 		</tr>
-	</xsl:template>
-
-	<xsl:template match="arr[@name='collection_thumb']/str">
-		<xsl:variable name="title" select="ancestor::doc/str[@name='unittitle_display']"/>
-		<div class="thumbImage">
-			<xsl:choose>
-				<xsl:when test="contains(., 'flickr.com')">
-					<xsl:variable name="photo_id" select="substring-before(tokenize(., '/')[last()], '_')"/>
-					<xsl:variable name="flickr_uri" select="ancestor::doc/arr[@name='flickr_uri']/str[1]"/>		
-					
-					<a href="#{generate-id()}" title="{$title}">
-						<img class="ci" src="{.}"/>
-					</a>					
-					<div style="display:none">
-						<div id="{generate-id()}">
-							<a target="_blank" href="{$flickr_uri}" class="flickr-link">
-								<img src="{ancestor::doc/arr[@name='collection_reference']/str[contains(., $photo_id)]}"/>
-							</a>
-						</div>
-					</div>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:variable name="position" select="position()"/>
-					<xsl:choose>
-						<xsl:when test="ancestor::doc/arr[@name='collection_reference']/str[position()=$position]">
-							<a href="{ancestor::doc/arr[@name='collection_reference']/str[position()=$position]}" title="{$title}">
-								<img src="{.}" alt="thumb"/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<img src="{.}" alt="thumb"/>
-						</xsl:otherwise>
-					</xsl:choose>					
-				</xsl:otherwise>
-			</xsl:choose>
-		</div>
-	</xsl:template>
-
-	<xsl:template name="paging">
-		<xsl:variable name="start_var" as="xs:integer">
-			<xsl:choose>
-				<xsl:when test="string($start)">
-					<xsl:value-of select="$start"/>
-				</xsl:when>
-				<xsl:otherwise>0</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
-		<xsl:variable name="next">
-			<xsl:value-of select="$start_var+$rows"/>
-		</xsl:variable>
-
-		<xsl:variable name="previous">
-			<xsl:choose>
-				<xsl:when test="$start_var &gt;= $rows">
-					<xsl:value-of select="$start_var - $rows"/>
-				</xsl:when>
-				<xsl:otherwise>0</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
-		<xsl:variable name="current" select="$start_var div $rows + 1"/>
-		<xsl:variable name="total" select="ceiling($numFound div $rows)"/>
-
-		<div class="paging_div row">
-			<div class="col-md-6">
-				<xsl:variable name="startRecord" select="$start_var + 1"/>
-				<xsl:variable name="endRecord">
-					<xsl:choose>
-						<xsl:when test="$numFound &gt; ($start_var + $rows)">
-							<xsl:value-of select="$start_var + $rows"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="$numFound"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<span>
-					<b>
-						<xsl:value-of select="$startRecord"/>
-					</b>
-					<xsl:text> to </xsl:text>
-					<b>
-						<xsl:value-of select="$endRecord"/>
-					</b>
-					<text> of </text>
-					<b>
-						<xsl:value-of select="$numFound"/>
-					</b>
-					<xsl:text> total results.</xsl:text>
-				</span>
-			</div>
-
-			<!-- paging functionality -->
-			<div class="col-md-6 page-nos">
-				<div class="btn-toolbar" role="toolbar">
-					<div class="btn-group" style="float:right">
-						<xsl:choose>
-							<xsl:when test="$start_var &gt;= $rows">
-								<a class="btn btn-default" title="First" href="./?q={encode-for-uri($q)}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-fast-backward"/>
-								</a>
-								<a class="btn btn-default" title="Previous" href="./?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-backward"/>
-								</a>
-							</xsl:when>
-							<xsl:otherwise>
-								<a class="btn btn-default disabled" title="First" href="./?q={encode-for-uri($q)}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-fast-backward"/>
-								</a>
-								<a class="btn btn-default disabled" title="Previous" href="./?q={encode-for-uri($q)}&amp;start={$previous}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-backward"/>
-								</a>
-							</xsl:otherwise>
-						</xsl:choose>
-						<!-- current page -->
-						<button type="button" class="btn btn-default disabled">
-							<b>
-								<xsl:value-of select="$current"/>
-							</b>
-						</button>
-						<!-- next page -->
-						<xsl:choose>
-							<xsl:when test="$numFound - $start_var &gt; $rows">
-								<a class="btn btn-default" title="Next" href="./?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-forward"/>
-								</a>
-								<a class="btn btn-default" href="./?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-fast-forward"/>
-								</a>
-							</xsl:when>
-							<xsl:otherwise>
-								<a class="btn btn-default disabled" title="Next" href="./?q={encode-for-uri($q)}&amp;start={$next}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-forward"/>
-								</a>
-								<a class="btn btn-default disabled" href="./?q={encode-for-uri($q)}&amp;start={($total * $rows) - $rows}{if (string($sort)) then concat('&amp;sort=', $sort) else ''}">
-									<span class="glyphicon glyphicon-fast-forward"/>
-								</a>
-							</xsl:otherwise>
-						</xsl:choose>
-					</div>
-				</div>
-			</div>
-		</div>
 	</xsl:template>
 
 	<xsl:template name="sort">
@@ -537,16 +433,16 @@
 				<xsl:otherwise>
 					<select id="{@name}-select" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}" class="multiselect" multiple="multiple">
 						<xsl:if test="contains($q, @name)">
-							<xsl:copy-of
-								select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=', $pipeline))//option"
-							/>
+							<xsl:copy-of select="document(concat($request-uri, 'get_facets/?q=', encode-for-uri($q), '&amp;category=', @name, '&amp;sort=index&amp;limit=-1&amp;pipeline=',
+								$pipeline))//option"/>
 						</xsl:if>
 					</select>
 				</xsl:otherwise>
 			</xsl:choose>
 			<br/>
 		</xsl:for-each>
-		<form method="GET" action="./" id="facet_form">
+		
+		<form method="GET" action="results" id="facet_form">
 			<input type="hidden" name="q" id="facet_form_query" value="{if (string($q)) then $q else '*:*'}"/>
 			<br/>
 			<div class="submit_div">
@@ -754,8 +650,9 @@
 										</xsl:choose>
 
 										<!-- concatenate the query with the multicategory removed with the new multicategory, or if the multicategory is empty, display just the $new_query -->
-										<a
-											href="{$display_path}results/?q={if (string($multicategory_query) and string($new_query)) then concat($new_query, ' AND ', $multicategory_query) else if (string($multicategory_query) and not(string($new_query))) then $multicategory_query else $new_query}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
+										<a href="{$display_path}results/?q={if (string($multicategory_query) and string($new_query)) then concat($new_query, ' AND ', $multicategory_query) else if
+											(string($multicategory_query) and not(string($new_query))) then $multicategory_query else $new_query}{if (string($lang)) then concat('&amp;lang=', $lang)
+											else ''}">
 											<span class="glyphicon glyphicon-remove"/>
 										</a>
 

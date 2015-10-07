@@ -68,7 +68,6 @@
 
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
-	<xsl:variable name="ui-theme" select="/content/config/theme/jquery_ui_theme"/>
 	<xsl:variable name="url" select="/content/config/url"/>
 
 	<!-- display path -->

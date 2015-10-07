@@ -28,7 +28,7 @@
 	<p:processor name="oxf:unsafe-xslt">	
 		<p:input name="params" href="#params"/>		
 		<p:input name="data" href="aggregate('content', #data, #config)"/>
-		<p:input name="config" href="../../ui/xslt/maps.xsl"/>
+		<p:input name="config" href="../../ui/xslt/pages/maps.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 	

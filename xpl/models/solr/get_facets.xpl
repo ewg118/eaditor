@@ -20,7 +20,7 @@
 	</p:processor>
 
 	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="config.xpl"/>
+		<p:input name="config" href="../config.xpl"/>
 		<p:output name="data" id="config"/>
 	</p:processor>
 
@@ -42,15 +42,33 @@
 
 				<xsl:variable name="service">
 					<xsl:choose>
-						<xsl:when test="$pipeline='results'">
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;facet.field=', $category, '&amp;facet.sort=', $sort, '&amp;rows=0&amp;facet=true&amp;facet.limit=-1')"/>
+						<!-- when there is a collection name, apply collection name in Solr query -->
+						<xsl:when test="/config/aggregator = 'true'">
+							<xsl:choose>
+								<xsl:when test="$pipeline='results'">
+									<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;facet.field=', $category, '&amp;facet.sort=', $sort, '&amp;rows=0&amp;facet=true&amp;facet.limit=-1')"/>
+								</xsl:when>
+								<xsl:when test="$pipeline='maps'">
+									<xsl:value-of
+										select="concat($solr-url, '?q=', encode-for-uri(concat($q, ' AND georef:*')), '&amp;facet.field=', $category, '&amp;facet.sort=', $sort, '&amp;rows=0&amp;facet=true&amp;facet.limit=-1')"
+									/>
+								</xsl:when>
+							</xsl:choose>
 						</xsl:when>
-						<xsl:when test="$pipeline='maps'">
-							<xsl:value-of
-								select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri(concat($q, ' AND georef:*')), '&amp;facet.field=', $category, '&amp;facet.sort=', $sort, '&amp;rows=0&amp;facet=true&amp;facet.limit=-1')"
-							/>
-						</xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="$pipeline='results'">
+									<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;facet.field=', $category, '&amp;facet.sort=', $sort, '&amp;rows=0&amp;facet=true&amp;facet.limit=-1')"/>
+								</xsl:when>
+								<xsl:when test="$pipeline='maps'">
+									<xsl:value-of
+										select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri(concat($q, ' AND georef:*')), '&amp;facet.field=', $category, '&amp;facet.sort=', $sort, '&amp;rows=0&amp;facet=true&amp;facet.limit=-1')"
+									/>
+								</xsl:when>
+							</xsl:choose>
+						</xsl:otherwise>
 					</xsl:choose>
+					
 				</xsl:variable>
 
 				<xsl:template match="/">

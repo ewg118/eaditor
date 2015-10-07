@@ -20,7 +20,7 @@
 	</p:processor>
 
 	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="config.xpl"/>
+		<p:input name="config" href="../config.xpl"/>
 		<p:output name="data" id="config"/>
 	</p:processor>
 
@@ -28,13 +28,29 @@
 		<p:input name="request" href="#request"/>
 		<p:input name="data" href="#config"/>
 		<p:input name="config">
-			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+				<!-- url params -->
+				<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
+				<xsl:param name="century" select="doc('input:request')/request/parameters/parameter[name='century']/value"/>
+				<xsl:param name="pipeline" select="doc('input:request')/request/parameters/parameter[name='pipeline']/value"/>
+
 				<!-- config variables -->
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
 				<xsl:variable name="service">
-					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+pleiades_uri:*&amp;sort=timestamp%20desc&amp;rows=10000&amp;fl=id,cid,recordId,unittitle_display,pleiades_uri,genreform_uri,timestamp')"/>
+					<xsl:choose>
+						<xsl:when test="$pipeline='results'">
+							<xsl:value-of
+								select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
+							/>
+						</xsl:when>
+						<xsl:when test="$pipeline='maps'">
+							<xsl:value-of
+								select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
+							/>
+						</xsl:when>
+					</xsl:choose>
 				</xsl:variable>
 
 				<xsl:template match="/">

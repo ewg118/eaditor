@@ -9,6 +9,7 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
 
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+	<xsl:param name="code"/>
 <!--	<xsl:strip-space elements="*"/>-->
 
 	<xsl:template match="@*|node()">
@@ -18,26 +19,16 @@
 	</xsl:template>
 
 	<xsl:template match="*[local-name()='ead']">
-		<xsl:variable name="id">
-			<xsl:choose>
-				<xsl:when test="string(@id)">
-					<xsl:value-of select="@id"/>
-				</xsl:when>
-				<xsl:when test="string(//*[local-name()='eadheader']/*[local-name()='eadid'])">
-					<xsl:value-of
-						select="normalize-space(//*[local-name()='eadheader']/*[local-name()='eadid'])"
-					/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="generate-id(.)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
-		<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" id="{$id}">
-			<xsl:apply-templates select="@*[not(name() = 'id')]|node()"/>
+		<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">			
+			<xsl:apply-templates select="@*[not(name() = 'id')]"/>
+			<xsl:if test="not(string(*[local-name()='eadid']))">
+				<eadid countrycode="US" mainagencycode="us-{$code}"></eadid>
+			</xsl:if>
+			<xsl:apply-templates/>
 		</ead>
 	</xsl:template>
+	
+	
 	
 	<xsl:template match="*[local-name()='dsc'] | *[local-name()='archdesc']">
 		<xsl:variable name="id">

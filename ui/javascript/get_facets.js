@@ -8,8 +8,8 @@ If the list is populated and then hidden, when it is re-activated, it fades in r
 $(document).ready(function() {
 	var popupStatus = 0;
 	var langStr = getURLParameter('lang');
-	var pipeline = 'results';
-	var path = '../';
+	var pipeline = $('#pipeline').text();
+	var path = $('#path').text();
 	if (langStr == 'null'){
 		var lang = '';
 	} else {

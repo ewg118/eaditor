@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
-	<xsl:include href="templates.xsl"/>
+	<xsl:include href="../templates.xsl"/>
 
 	<xsl:variable name="pipeline"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 	<xsl:variable name="path"/>
 	<xsl:variable name="display_path"/>
-	<xsl:variable name="include_path">../</xsl:variable>
+	<xsl:variable name="include_path">
+		<xsl:choose>
+			<xsl:when test="/content/config/aggregator='true'"/>
+			<xsl:otherwise>../</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 
 	<xsl:template match="/">
 		<html lang="en">

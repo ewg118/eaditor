@@ -117,7 +117,7 @@
 												<xforms:var name="search_query" select="string-join(tokenize(instance('search-query'), ' '), ' AND ')"/>
 												<xforms:setvalue ref="instance('sparqlQuery')"
 													value="normalize-space(replace(instance('sparqlQueryTemplate'), 'SEARCH_QUERY', $search_query))"/>
-												<xforms:send submission="query-aat"/>
+												<xforms:send submission="query-getty"/>
 											</xforms:action>
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
@@ -268,8 +268,9 @@
 							<query><![CDATA[PREFIX gvp: <http://vocab.getty.edu/ontology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
+PREFIX aat: <http://vocab.getty.edu/aat/>
 SELECT ?c ?label WHERE {
-?c rdf:type gvp:Concept ;
+?c a gvp:Concept ;
 skos:inScheme aat: ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
 luc:term "SEARCH_QUERY" 
@@ -293,8 +294,8 @@ FILTER langMatches(lang(?label), "en")} LIMIT 25]]>
 						</xforms:submission>
 
 						<!-- SPARQL queries -->
-						<xforms:submission id="query-aat" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}&amp;format=xml" ref="instance('sparqlResponse')"
-							replace="instance" method="get">
+						<xforms:submission id="query-getty" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}" ref="instance('sparqlResponse')" replace="instance"
+							method="get">
 							<xforms:header>
 								<xforms:name>User-Agent</xforms:name>
 								<xforms:value>XForms/EADitor</xforms:value>
