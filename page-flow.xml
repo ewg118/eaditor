@@ -66,70 +66,77 @@
 	<!-- ****************
 	* PUBLIC INTERFACE *
 	***************** -->
-	<!-- master public search/browse interface -->
+	<!-- ***** MASTER AGGREGATION ***** -->
 	<page path="/eaditor/config.xml" view="xpl/models/config.xpl"/>
 	<page path="/eaditor/results" model="xpl/models/solr/results.xpl" view="xpl/serializations/solr/html.xpl"/>
 	<page path="/eaditor/search" model="xpl/models/config.xpl" view="xpl/pages/search.xpl"/>
 	<page path="/eaditor/maps" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps.xpl"/>
 	<page path="/eaditor/maps/fullscreen" model="xpl/models/solr-maps.xpl" view="xpl/pages/maps-fullscreen.xpl"/>
 	
+	<!-- ajax -->
+	<page path="/eaditor/get_facets/" model="xpl/models/solr/get_facets.xpl" view="xpl/ajax/get_facets.xpl"/>
+	<page path="/eaditor/get_decades/" model="xpl/models/solr/get_decades.xpl" view="xpl/ajax/get_decades.xpl"/>
+	<page path="/eaditor/results_ajax/" model="xpl/models/solr/results_ajax.xpl" view="xpl/ajax/results_ajax.xpl"/>
 	
-	<page path="/eaditor/[^\/]+/config.xml" view="xpl/models/config.xpl"/>
+	<!-- Services -->
+	<page path="/eaditor/feed/" model="xpl/models/solr-feed.xpl" view="xpl/serializations/solr/atom.xpl"/>
+	<page path="/eaditor/oai/" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>
+	<page path="/eaditor/sparql" view="xpl/pages/sparql.xpl"/>
+	<page path="/eaditor/query" view="xpl/serializations/sparql/query.xpl"/>
+	<page path="/eaditor/api/get" model="xpl/models/xml-public.xpl" view="xpl/api-get.xpl"/>
+	<page path="/eaditor/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/void.xpl"/>
+	<page path="/eaditor/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/serializations/solr/rdf-pelagios.xpl"/>
+	<page path="/eaditor/query.kml" model="xpl/models/solr/kml.xpl" view="xpl/serializations/solr/kml.xpl"/>
 	
-	<!-- individual projects -->
-	<!-- public xml view (internal elements supressed) -->
-	<page path="/eaditor/[^\/]+/id/(.*)\.xml" view="xpl/models/xml-public.xpl"/>
-	<page path="/eaditor/[^\/]+/id/(.*)\.rdf" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/rdf.xpl"/>
-	<page path="/eaditor/[^\/]+/id/(.*)\.kml" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/kml.xpl"/>
-	<page path="/eaditor/[^\/]+/id/(.*)\.solr" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/solr.xpl"/>
-	<page path="/eaditor/[^\/]+/id/(.*)" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/html.xpl"/>
-
-	<!-- ARK URIs -->
-	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.xml" view="xpl/models/xml-public.xpl"/>
-	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.kml" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/kml.xpl"/>
-	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.rdf" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/rdf.xpl"/>
-	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.solr" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/solr.xpl"/>
-	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/html.xpl"/>
-
-	<!-- index -->
+	<!-- ***** INDIVIDUAL PROJECTS ***** -->
+	<!--<page path="/eaditor/[^\/]+/config.xml" view="xpl/models/config.xpl"/>-->
 	<page path="/eaditor/[^\/]+/" model="xpl/models/config.xpl" view="xpl/pages/index.xpl"/>
-
-	<!-- public search/browse interface -->
 	<page path="/eaditor/[^\/]+/results" model="xpl/models/solr/results.xpl" view="xpl/serializations/solr/html.xpl"/>
 	<page path="/eaditor/[^\/]+/search" model="xpl/models/config.xpl" view="xpl/pages/search.xpl"/>
 	<page path="/eaditor/[^\/]+/maps" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps.xpl"/>
 	<page path="/eaditor/[^\/]+/maps/fullscreen" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps-fullscreen.xpl"/>
 
+
+	<!-- Services -->
 	<!-- Atom feed -->
 	<page path="/eaditor/[^\/]+/feed/" model="xpl/models/solr-feed.xpl" view="xpl/serializations/solr/atom.xpl"/>
-
 	<!-- OAI-PMH feed -->
-	<page path="/eaditor/[^\/]+/oai/" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>
-	
+	<page path="/eaditor/[^\/]+/oai/" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>	
 	<!-- SPARQL -->
 	<page path="/eaditor/[^\/]+/sparql" view="xpl/pages/sparql.xpl"/>
 	<page path="/eaditor/[^\/]+/query" view="xpl/serializations/sparql/query.xpl"/>
-
 	<!-- APIs -->
 	<page path-info="/eaditor/[^\/]+/api/get" model="xpl/models/xml-public.xpl" view="xpl/api-get.xpl"/>
-
 	<!-- Pelagios -->
 	<page path="/eaditor/[^\/]+/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/void.xpl"/>
 	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/solr-pelagios.xpl" view="xpl/serializations/solr/rdf-pelagios.xpl"/>
-
-	<!-- KML service -->
+	<!-- KML -->
 	<page path="/eaditor/[^\/]+/query.kml" model="xpl/models/solr/kml.xpl" view="xpl/serializations/solr/kml.xpl"/>
 
-	<!-- AJAX CALLS -->
+	<!-- ajax -->
 	<!-- facet results -->
 	<page path="/eaditor/[^\/]+/get_facets/" model="xpl/models/solr/get_facets.xpl" view="xpl/ajax/get_facets.xpl"/>
-	<!-- decades results for nested checkbox -->
 	<page path="/eaditor/[^\/]+/get_decades/" model="xpl/models/solr/get_decades.xpl" view="xpl/ajax/get_decades.xpl"/>
 	<page path="/eaditor/[^\/]+/results_ajax/" model="xpl/models/solr/results_ajax.xpl" view="xpl/ajax/results_ajax.xpl"/>
 	<!-- generate Annotorious annotations from TEI, using doc and facsimile ids -->
 	<page path="/eaditor/[^\/]+/get_annotations/" view="xpl/ajax/get_annotations.xpl"/>
 	<!-- generate JSON output for labels of URIs from nomisma, Mantis, etc. to power links in annotations -->
 	<page path="/eaditor/[^\/]+/get_label/" model="xpl/models/get_model.xpl" view="xpl/ajax/get_label.xpl"/>
+	
+	<!-- ***** RECORD SERIALIZATIONS ***** -->
+	<!-- public xml view (internal elements supressed) -->
+	<page path="/eaditor/[^\/]+/id/(.*)\.xml" view="xpl/models/xml-public.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.rdf" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/rdf.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.kml" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/kml.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.solr" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/solr.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/html.xpl"/>
+	
+	<!-- ARK URIs -->
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.xml" view="xpl/models/xml-public.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.kml" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/kml.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.rdf" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/rdf.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.solr" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/solr.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)" model="xpl/models/xml-public.xpl" view="xpl/serializations/object/html.xpl"/>
 
 	<!-- EADitor public interface root page -->
 	<page path="/eaditor/" view="xpl/root.xpl" id="index"/>

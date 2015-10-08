@@ -5,6 +5,7 @@
 	<xsl:include href="../../functions.xsl"/>
 	<xsl:include href="html-templates.xsl"/>
 
+	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="facets">
 		<xsl:for-each select="tokenize(/content/config/theme/facets, ',')">
@@ -12,19 +13,18 @@
 			<xsl:value-of select="."/>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
 	
-	<xsl:variable name="display_path">./</xsl:variable>
-	
+	<!-- paths and pipelines -->
+	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
+	<xsl:variable name="pipeline">results</xsl:variable>
+	<xsl:variable name="display_path"/>
 	<xsl:variable name="include_path">
 		<xsl:choose>
-			<xsl:when test="/content/config/aggregator='true'">./</xsl:when>
+			<xsl:when test="/content/config/aggregator='true'"/>
 			<xsl:otherwise>../</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
-	<xsl:variable name="pipeline">results</xsl:variable>
 
 	<!-- URL parameters -->
 	<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
@@ -122,7 +122,7 @@
 							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start over.</a></h2>
 						</xsl:otherwise>
 					</xsl:choose>
-					<div class="hidden">
+					<div style="display:none">
 						<span id="pipeline">
 							<xsl:value-of select="$pipeline"/>
 						</span>
@@ -136,153 +136,6 @@
 				</div>
 			</div>
 		</div>
-	</xsl:template>
-
-	<xsl:template match="doc">
-		<xsl:variable name="sort_category" select="substring-before($sort, ' ')"/>
-		<xsl:variable name="regularized_sort">
-			<xsl:value-of select="eaditor:normalize_fields($sort_category, $lang)"/>
-		</xsl:variable>
-
-		<tr>
-			<td>
-				<dl class="dl-horizontal">
-					<dt>
-						<xsl:value-of select="eaditor:normalize_fields('title', $lang)"/>
-					</dt>
-					<dd>
-						<xsl:variable name="objectUri">
-							<xsl:choose>
-								<xsl:when test="//config/aggregator='true'">
-									<xsl:choose>
-										<xsl:when test="//config/ark[@enabled='true']">
-											<xsl:choose>
-												<xsl:when test="string(str[@name='cid'])">
-													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:choose>
-												<xsl:when test="string(str[@name='cid'])">
-													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/id/', str[@name='recordId'], '/', str[@name='cid'])"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="concat($display_path, str[@name='collection-name'], '/id/', str[@name='recordId'])"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:choose>
-										<xsl:when test="//config/ark[@enabled='true']">
-											<xsl:choose>
-												<xsl:when test="string(str[@name='cid'])">
-													<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="concat($display_path, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:choose>
-												<xsl:when test="string(str[@name='cid'])">
-													<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'], '/', str[@name='cid'])"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="concat($display_path, 'id/', str[@name='recordId'])"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:otherwise>
-							</xsl:choose>
-							
-						</xsl:variable>
-						<a href="{$objectUri}">
-							<xsl:value-of select="str[@name='unittitle_display']"/>
-						</a>
-					</dd>
-					<xsl:if test="string(str[@name='unitdate_display'])">
-						<dt>
-							<xsl:value-of select="eaditor:normalize_fields('date', $lang)"/>
-						</dt>
-						<dd>
-							<xsl:value-of select="str[@name='unitdate_display']"/>
-						</dd>
-					</xsl:if>
-					<xsl:if test="string(str[@name='publisher_display'])">
-						<dt>
-							<xsl:value-of select="eaditor:normalize_fields('publisher', $lang)"/>
-						</dt>
-						<dd>
-							<xsl:value-of select="str[@name='publisher_display']"/>
-							<xsl:if test="str[@name='agencycode_facet']">
-								<xsl:value-of select="concat(' (', str[@name='agencycode_facet'], ')')"/>
-							</xsl:if>
-						</dd>
-					</xsl:if>
-					<xsl:if test="string(str[@name='physdesc_display'])">
-						<dt>
-							<xsl:value-of select="eaditor:normalize_fields('physdesc', $lang)"/>
-						</dt>
-						<dd>
-							<xsl:value-of select="str[@name='physdesc_display']"/>
-						</dd>
-					</xsl:if>
-					<xsl:if test="string(arr[@name='level_facet']/str[1])">
-						<dt>
-							<xsl:value-of select="eaditor:normalize_fields('level_facet', $lang)"/>
-						</dt>
-						<dd>
-							<xsl:value-of select="arr[@name='level_facet']/str[1]"/>
-						</dd>
-					</xsl:if>
-					<!-- hierarchy -->
-					<xsl:if test="count(arr[@name='dsc_hier']/str) &gt; 0">
-						<xsl:variable name="ark" select="//config/ark/@enabled" as="xs:boolean"/>
-						<xsl:variable name="naan" select="normalize-space(//config/ark/naan)"/>
-						<dt>Organization</dt>
-						<dd>
-							<xsl:for-each select="arr[@name='dsc_hier']/str">
-								<xsl:variable name="pieces" select="tokenize(., '\|')"/>
-								<xsl:choose>
-									<xsl:when test="$ark = true()">
-										<a href="{$display_path}ark:/{$naan}/{$pieces[2]}">
-											<xsl:value-of select="$pieces[3]"/>
-											<xsl:text>: </xsl:text>
-											<xsl:value-of select="$pieces[4]"/>
-										</a>
-									</xsl:when>
-									<xsl:otherwise>
-										<a href="{$display_path}id/{$pieces[2]}">
-											<xsl:value-of select="$pieces[3]"/>
-											<xsl:text>: </xsl:text>
-											<xsl:value-of select="$pieces[4]"/>
-										</a>
-									</xsl:otherwise>
-								</xsl:choose>
-								<xsl:if test="not(position()=last())">
-									<xsl:text> | </xsl:text>
-								</xsl:if>
-							</xsl:for-each>
-						</dd>
-					</xsl:if>
-				</dl>
-			</td>
-			<td class="col-md-4">
-				<xsl:if test="count(arr[@name='collection_thumb']/str) &gt; 0">
-					<div style="float:right">
-						<xsl:apply-templates select="arr[@name='collection_thumb']/str"/>
-					</div>
-				</xsl:if>
-			</td>
-		</tr>
 	</xsl:template>
 
 	<xsl:template name="sort">

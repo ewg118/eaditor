@@ -33,11 +33,7 @@
 				<!-- url params -->
 				<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
 				<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
-				<xsl:param name="sort">
-					<xsl:if test="string(doc('input:request')/request/parameters/parameter[name='sort']/value)">
-						<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
-					</xsl:if>
-				</xsl:param>
+				<xsl:param name="sort" select="doc('input:request')/request/parameters/parameter[name='sort']/value"/>
 				<xsl:param name="rows" as="xs:integer">10</xsl:param>
 				<xsl:param name="start" as="xs:integer">
 					<xsl:choose>
@@ -53,13 +49,28 @@
 
 				<xsl:variable name="service">
 					<xsl:choose>
-						<xsl:when test="string($sort)">
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, '&amp;sort=', encode-for-uri($sort), '&amp;rows=', $rows)"/>
+						<!-- when there is a collection name, apply collection name in Solr query -->
+						<xsl:when test="/config/aggregator = 'true'">
+							<xsl:choose>
+								<xsl:when test="string($sort)">
+									<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, '&amp;sort=', encode-for-uri($sort), '&amp;rows=', $rows)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, '&amp;rows=', $rows)"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, '&amp;rows=', $rows)"/>
+							<xsl:choose>
+								<xsl:when test="string($sort)">
+									<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, '&amp;sort=', encode-for-uri($sort), '&amp;rows=', $rows)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, '&amp;rows=', $rows)"/>
+								</xsl:otherwise>
+							</xsl:choose>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose>					
 				</xsl:variable>
 
 				<xsl:template match="/">
