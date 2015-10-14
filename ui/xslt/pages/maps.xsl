@@ -71,7 +71,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<h1>Maps</h1>
-							<p>View maps in <a href="fullscreen">fullscreen</a>.</p>
+							<p>View maps in <a href="maps/fullscreen">fullscreen</a>.</p>
 						</div>
 					</div>
 					<div class="row">

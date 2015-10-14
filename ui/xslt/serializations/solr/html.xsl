@@ -16,7 +16,7 @@
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
 	
 	<!-- paths and pipelines -->
-	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results/'))"/>
+	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results'))"/>
 	<xsl:variable name="pipeline">results</xsl:variable>
 	<xsl:variable name="display_path"/>
 	<xsl:variable name="include_path">
@@ -383,7 +383,7 @@
 								</span>
 							</div>
 							<div class="col-md-2 right">
-								<a href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
+								<a href="{$display_path}results?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
 									<span class="glyphicon glyphicon-remove"/>
 								</a>
 							</div>
@@ -503,7 +503,7 @@
 										</xsl:choose>
 
 										<!-- concatenate the query with the multicategory removed with the new multicategory, or if the multicategory is empty, display just the $new_query -->
-										<a href="{$display_path}results/?q={if (string($multicategory_query) and string($new_query)) then concat($new_query, ' AND ', $multicategory_query) else if
+										<a href="{$display_path}results?q={if (string($multicategory_query) and string($new_query)) then concat($new_query, ' AND ', $multicategory_query) else if
 											(string($multicategory_query) and not(string($new_query))) then $multicategory_query else $new_query}{if (string($lang)) then concat('&amp;lang=', $lang)
 											else ''}">
 											<span class="glyphicon glyphicon-remove"/>
@@ -516,7 +516,7 @@
 								</span>
 							</div>
 							<div class="col-md-2 right">
-								<a href="{$display_path}results/?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
+								<a href="{$display_path}results?q={if (string($new_query)) then encode-for-uri($new_query) else '*:*'}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
 									<span class="glyphicon glyphicon-remove"/>
 								</a>
 							</div>

@@ -13,7 +13,7 @@
 	
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="data" href="#data"/>		
-		<p:input name="config" href="../ui/xslt/linked_data/void.xsl"/>
+		<p:input name="config" href="../../../ui/xslt/serializations/config/void.xsl"/>
 		<p:output name="data" id="model"/>
 	</p:processor>
 	

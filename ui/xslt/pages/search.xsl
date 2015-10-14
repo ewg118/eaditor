@@ -5,11 +5,11 @@
 	<!-- pipeline variables -->
 	<xsl:variable name="pipeline"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
-	<xsl:variable name="path"/>
-	<xsl:variable name="display_path">../</xsl:variable>
+	
+	<xsl:variable name="display_path">./</xsl:variable>	
 	<xsl:variable name="include_path">
 		<xsl:choose>
-			<xsl:when test="/content/config/aggregator='true'"/>
+			<xsl:when test="/config/aggregator='true'"/>
 			<xsl:otherwise>../</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -68,7 +68,7 @@
 
 	<xsl:template name="search_forms">
 		<div class="search-form">
-			<form id="advancedSearchForm" method="GET" action="../results/">
+			<form id="advancedSearchForm" method="GET" action="results">
 				<div class="inputContainer">
 					<div class="searchItemTemplate">
 						<select id="search_option_1" class="category_list form-control">

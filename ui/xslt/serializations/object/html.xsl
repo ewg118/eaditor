@@ -72,43 +72,57 @@
 
 	<!-- display path -->
 	<xsl:variable name="display_path">
+		<xsl:variable name="default">
+			<xsl:choose>
+				<xsl:when test="$mode='private'">
+					<xsl:choose>
+						<xsl:when test="string($id)">
+							<xsl:text>../../../</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>../../</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="contains($uri, 'ark:/')">
+							<xsl:choose>
+								<xsl:when test="string($id)">
+									<xsl:text>../../../</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>../../</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="string($id)">
+									<xsl:text>../../</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>../</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<!-- after default path is set, replace ../ when it is an aggregate collection -->		
 		<xsl:choose>
-			<xsl:when test="$mode='private'">
-				<xsl:choose>
-					<xsl:when test="string($id)">
-						<xsl:text>../../../</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text>../../</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
+			<xsl:when test="/content/config/aggregator='true'">
+				<xsl:value-of select="concat($default, '../')"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:choose>
-					<xsl:when test="contains($uri, 'ark:/')">
-						<xsl:choose>
-							<xsl:when test="string($id)">
-								<xsl:text>../../../</xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>../../</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:choose>
-							<xsl:when test="string($id)">
-								<xsl:text>../../</xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:text>../</xsl:text>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:value-of select="$default"/>
 			</xsl:otherwise>
 		</xsl:choose>
+		
 	</xsl:variable>
+
 	<xsl:variable name="include_path">
 		<xsl:choose>
 			<xsl:when test="$mode='private'">
@@ -170,15 +184,8 @@
 
 	<xsl:template match="*" mode="root">
 		<html>
-			<head
-				prefix="dcterms: http://purl.org/dc/terms/
-				foaf: http://xmlns.com/foaf/0.1/
-				owl:  http://www.w3.org/2002/07/owl#
-				rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
-				skos: http://www.w3.org/2004/02/skos/core#
-				dcterms: http://purl.org/dc/terms/
-				arch: http://purl.org/archival/vocab/arch#
-				xsd: http://www.w3.org/2001/XMLSchema#">
+			<head prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
 				<title id="{$path}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
