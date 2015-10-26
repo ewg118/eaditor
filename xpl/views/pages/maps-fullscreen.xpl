@@ -10,7 +10,7 @@
 
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
-
+	
 	<p:processor name="oxf:request">
 		<p:input name="config">
 			<config>
@@ -24,22 +24,25 @@
 		<p:input name="config" href="../../models/config.xpl"/>		
 		<p:output name="data" id="config"/>
 	</p:processor>
-
-	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="params" href="#params"/>
+	
+	<p:processor name="oxf:unsafe-xslt">	
+		<p:input name="params" href="#params"/>		
 		<p:input name="data" href="aggregate('content', #data, #config)"/>
-		<p:input name="config" href="../../../ui/xslt/serializations/solr/atom.xsl"/>
+		<p:input name="config" href="../../../ui/xslt/pages/maps_fullscreen.xsl"/>
 		<p:output name="data" id="model"/>
 	</p:processor>
 	
-	<p:processor name="oxf:xml-serializer">
+	<p:processor name="oxf:html-converter">
 		<p:input name="data" href="#model"/>
 		<p:input name="config">
 			<config>
-				<content-type>application/xml</content-type>
+				<version>5.0</version>
+				<indent>true</indent>
+				<content-type>text/html</content-type>
+				<encoding>utf-8</encoding>
+				<indent-amount>4</indent-amount>
 			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>
 	</p:processor>
-
 </p:config>

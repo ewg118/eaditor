@@ -21,10 +21,10 @@
 
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="request" href="#request"/>
-		<p:input name="data" href="../../exist-config.xml"/>
+		<p:input name="data" href="../../../exist-config.xml"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-				<xsl:include href="../../ui/xslt/ajax/get_annotations.xsl"/>
+				<xsl:include href="../../../ui/xslt/ajax/get_annotations.xsl"/>
 				<xsl:template match="/">					
 					<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 					<xsl:variable name="doc" select="doc('input:request')/request/parameters/parameter[name='doc']/value"/>

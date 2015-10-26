@@ -7,7 +7,7 @@
 -->
 <p:config xmlns:p="http://www.orbeon.com/oxf/pipeline"
 	xmlns:oxf="http://www.orbeon.com/oxf/processors">
-
+	
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
 	
@@ -20,17 +20,10 @@
 		<p:output name="data" id="params"/>
 	</p:processor>
 	
-	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="../models/config.xpl"/>		
-		<p:output name="data" id="config"/>
-	</p:processor>
-	
-	<p:processor name="oxf:unsafe-xslt">	
+	<p:processor name="oxf:unsafe-xslt">
+		<p:input name="data" href="#data"/>
 		<p:input name="params" href="#params"/>		
-		<p:input name="data" href="aggregate('content', #data, #config)"/>
-		<p:input name="config" href="../../ui/xslt/pages/maps.xsl"/>
+		<p:input name="config" href="../../../ui/xslt/ajax/results_ajax.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
-	
-
 </p:config>

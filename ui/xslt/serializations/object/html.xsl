@@ -166,7 +166,7 @@
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
 
 	<!-- url params -->
-	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
 	<xsl:param name="mode">
 		<xsl:choose>
 			<xsl:when test="contains($uri, 'admin/')">private</xsl:when>

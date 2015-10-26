@@ -20,12 +20,25 @@
 		<p:output name="data" id="params"/>
 	</p:processor>
 	
+	<p:processor name="oxf:pipeline">
+		<p:input name="config" href="../../../models/config.xpl"/>		
+		<p:output name="data" id="config"/>
+	</p:processor>
+
 	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="data" href="#data"/>
 		<p:input name="params" href="#params"/>
-		<p:input name="config" href="../../ui/xslt/ajax/get_decades.xsl"/>
-		<p:output name="data" ref="data"/>
+		<p:input name="data" href="aggregate('content', #data, #config)"/>
+		<p:input name="config" href="../../../../ui/xslt/serializations/solr/rdf-pelagios.xsl"/>
+		<p:output name="data" id="model"/>
 	</p:processor>
 	
-
+	<p:processor name="oxf:xml-serializer">
+		<p:input name="data" href="#model"/>
+		<p:input name="config">
+			<config>
+				<content-type>application/rdf+xml</content-type>
+			</config>
+		</p:input>
+		<p:output name="data" ref="data"/>
+	</p:processor>
 </p:config>

@@ -12,7 +12,7 @@
 	<p:param type="output" name="data"/>	
 	
 	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="../../models/config.xpl"/>		
+		<p:input name="config" href="../../../models/config.xpl"/>		
 		<p:output name="data" id="config"/>
 	</p:processor>
 	
@@ -28,7 +28,7 @@
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="request" href="#request"/>
 		<p:input name="data" href="aggregate('content', #config, #data)"/>		
-		<p:input name="config" href="../../../ui/xslt/serializations/object/solr.xsl"/>
+		<p:input name="config" href="../../../../ui/xslt/serializations/object/solr.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 
