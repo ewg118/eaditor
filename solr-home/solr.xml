@@ -29,6 +29,6 @@
 		If 'null' (or absent), cores will not be manageable via REST
 	-->
 	<cores adminPath="/admin/cores">		
-		<core name="eaditor-published" instanceDir="4.6"/>
+		<core name="eaditor-published" instanceDir="4.10"/>
 	</cores>
 </solr>
