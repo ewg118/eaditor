@@ -45,8 +45,18 @@
 
 				<!-- config variables -->
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
+				
 				<xsl:variable name="service">
-					<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;sort=timestamp%20desc&amp;start=',$start, '&amp;rows=100')"/>
+					<xsl:choose>
+						<!-- when there is a collection name, apply collection name in Solr query -->
+						<xsl:when test="/config/aggregator = 'true'">
+							<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;sort=timestamp%20desc&amp;start=',$start, '&amp;rows=100')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;sort=timestamp%20desc&amp;start=',$start, '&amp;rows=100')"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
 				</xsl:variable>
 
 				<xsl:template match="/">

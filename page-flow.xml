@@ -29,26 +29,24 @@
 
 	<!-- admin functions -->
 	<page path="/eaditor/admin/upload/" view="xforms/upload.xhtml"/>
-	<page path="/eaditor/admin/vocab/" view="xforms/vocab.xhtml"/>
-	<page path="/eaditor/admin/eac-cpf/" view="xforms/eac-cpf.xhtml"/>
 	<page path="/eaditor/admin/templates/" view="xforms/templates.xhtml"/>
 	<page path="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
 	<page path="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
 	<page path="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
-	<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>
+	<!--<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>-->
 	<page path="/eaditor/admin/" id="admin" view="xforms/admin.xhtml"/>
 
 	<!-- test page -->
 	<page path="/eaditor/admin/test/" view="xforms/test.xhtml"/>
 
 	<!-- an ajax call to display the toc in the admin page -->
-	<page path="/eaditor/admin/navigation/" model="xpl/models/object/private.xpl" view="xpl/navigation.xpl"/>
+	<page path="/eaditor/admin/navigation/" model="xpl/models/object/private.xpl" view="xpl/xforms/navigation.xpl"/>
 
 	<!-- generate toc in core or component form -->
-	<page path="/eaditor/admin/toc/" model="xpl/models/object/private.xpl" view="xpl/toc.xpl"/>
+	<page path="/eaditor/admin/toc/" model="xpl/models/object/private.xpl" view="xpl/xforms/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
-	<page path="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xsd-get-attributes.xpl"/>
+	<page path="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xforms/xsd-get-attributes.xpl"/>
 
 	<!-- private xml (all elements shown) -->
 	<page path="/eaditor/admin/[^\/]+/id/(.*)\.xml" view="xpl/models/object/private.xpl"/>
@@ -56,10 +54,12 @@
 	<!-- private html view -->
 	<page path="/eaditor/admin/[^\/]+/id/(.*)" model="xpl/models/object/private.xpl" view="xpl/serializations/object/html.xpl"/>
 
-	<!-- logout -->
+	<!-- authentication -->
+	<page path="/eaditor/login" view="xforms/login.html" id="login"/>
+	<page path="/eaditor/login-failed" view="xforms/login-failed.html"/>
 	<page path="/eaditor/admin/logout">
-		<action action="xpl/logout.xpl">
-			<result page="index"/>
+		<action action="xpl/xforms/logout.xpl">
+			<result page="admin"/>
 		</action>
 	</page>
 
@@ -70,6 +70,7 @@
 	<page path="/eaditor/config.xml" view="xpl/models/config.xpl"/>
 	<page path="/eaditor/results" model="xpl/models/solr/results.xpl" view="xpl/serializations/solr/html.xpl"/>
 	<page path="/eaditor/search" model="xpl/models/config.xpl" view="xpl/pages/search.xpl"/>
+	<page path="/eaditor/sparql" view="xpl/pages/sparql.xpl"/>
 	<page path="/eaditor/maps" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps.xpl"/>
 	<page path="/eaditor/maps/fullscreen" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps-fullscreen.xpl"/>
 	
@@ -79,9 +80,8 @@
 	<page path="/eaditor/results_ajax/" model="xpl/models/solr/results_ajax.xpl" view="xpl/ajax/results_ajax.xpl"/>
 	
 	<!-- Services -->
-	<page path="/eaditor/feed/" model="xpl/models/solr-feed.xpl" view="xpl/serializations/solr/atom.xpl"/>
-	<page path="/eaditor/oai/" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>
-	<page path="/eaditor/sparql" view="xpl/pages/sparql.xpl"/>
+	<page path="/eaditor/feed/" model="xpl/models/solr/feed.xpl" view="xpl/serializations/solr/atom.xpl"/>
+	<page path="/eaditor/oai/" model="xpl/models/solr/oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>	
 	<page path="/eaditor/query" view="xpl/serializations/sparql/query.xpl"/>
 	<page path="/eaditor/api/get" model="xpl/models/object/public.xpl" view="xpl/api-get.xpl"/>
 	<page path="/eaditor/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/serializations/config/void.xpl"/>
@@ -90,26 +90,27 @@
 	
 	<!-- ***** INDIVIDUAL PROJECTS ***** -->
 	<!--<page path="/eaditor/[^\/]+/config.xml" view="xpl/models/config.xpl"/>-->
+	<!-- pages -->
 	<page path="/eaditor/[^\/]+/" model="xpl/models/config.xpl" view="xpl/pages/index.xpl"/>
 	<page path="/eaditor/[^\/]+/results" model="xpl/models/solr/results.xpl" view="xpl/serializations/solr/html.xpl"/>
 	<page path="/eaditor/[^\/]+/search" model="xpl/models/config.xpl" view="xpl/pages/search.xpl"/>
+	<page path="/eaditor/[^\/]+/sparql" view="xpl/pages/sparql.xpl"/>
 	<page path="/eaditor/[^\/]+/maps" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps.xpl"/>
 	<page path="/eaditor/[^\/]+/maps/fullscreen" model="xpl/models/solr/maps.xpl" view="xpl/pages/maps-fullscreen.xpl"/>
 
 
 	<!-- Services -->
 	<!-- Atom feed -->
-	<page path="/eaditor/[^\/]+/feed/" model="xpl/models/solr-feed.xpl" view="xpl/serializations/solr/atom.xpl"/>
+	<page path="/eaditor/[^\/]+/feed/" model="xpl/models/solr/feed.xpl" view="xpl/serializations/solr/atom.xpl"/>
 	<!-- OAI-PMH feed -->
-	<page path="/eaditor/[^\/]+/oai/" model="xpl/models/solr-oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>	
-	<!-- SPARQL -->
-	<page path="/eaditor/[^\/]+/sparql" view="xpl/pages/sparql.xpl"/>
+	<page path="/eaditor/[^\/]+/oai/" model="xpl/models/solr/oai-pmh.xpl" view="xpl/serializations/solr/oai-pmh.xpl"/>		
+	<!-- SPARQL -->	
 	<page path="/eaditor/[^\/]+/query" view="xpl/serializations/sparql/query.xpl"/>
 	<!-- APIs -->
 	<page path-info="/eaditor/[^\/]+/api/get" model="xpl/models/object/public.xpl" view="xpl/api-get.xpl"/>
 	<!-- Pelagios -->
 	<page path="/eaditor/[^\/]+/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/serializations/config/void.xpl"/>
-	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/solr-pelagios.xpl" view="xpl/serializations/solr/rdf-pelagios.xpl"/>
+	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/serializations/solr/rdf-pelagios.xpl"/>
 	<!-- KML -->
 	<page path="/eaditor/[^\/]+/query.kml" model="xpl/models/solr/kml.xpl" view="xpl/serializations/solr/kml.xpl"/>
 
