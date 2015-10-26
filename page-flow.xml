@@ -140,7 +140,7 @@
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/html.xpl"/>
 
 	<!-- EADitor public interface root page -->
-	<page path="/eaditor/" view="xpl/root.xpl" id="index"/>
+	<page path="/eaditor/" view="xpl/controllers/root.xpl" id="index"/>
 	
 	<epilogue url="oxf:/config/epilogue.xpl"/>
 </config>

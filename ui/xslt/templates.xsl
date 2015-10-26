@@ -57,9 +57,7 @@
 	</xsl:template>
 
 	<xsl:template name="footer">
-		<div id="footer">
-			<xsl:copy-of select="//config/content/footer/*"/>
-		</div>
+		<xsl:copy-of select="//config/content/footer/*"/>
 	</xsl:template>
 
 </xsl:stylesheet>

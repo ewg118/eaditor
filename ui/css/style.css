@@ -27,36 +27,12 @@ ul li, ol li {
   FOOTER
   ***************************************
  */
-#footer {
-	background-color: #F8F8F8;
+#footer{
+	background-color:#F8F8F8;
 	border-top:1px solid #E7E7E7;
-	padding:10px 0;
+	padding-top:10px;
+	padding-bottom:10px;
 	text-align:center;
-}
-/*
-  ****************************************
-  TEST PAGE
-  ****************************************
- */
-.error-table {
-	width:100%;
-}
-.error-table td {
-	padding:5px;
-	border:0;
-}
-.error-table th {
-	border:0;
-}
-.indicator {
-	width:5%;
-	text-align:center;
-}
-.test-success {
-	background-color:#47e547;
-}
-.test-fail {
-	background-color:red;
 }
 /*
   ****************************************

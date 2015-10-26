@@ -13,7 +13,7 @@
 	
 	<p:processor name="oxf:unsafe-xslt">				
 		<p:input name="data" href="#data"/>		
-		<p:input name="config" href="../xforms/xslt/html-to-tei.xsl"/>
+		<p:input name="config" href="../../xforms/xslt/html-to-tei.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
 </p:config>

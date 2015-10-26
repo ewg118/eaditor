@@ -458,7 +458,7 @@
 										<!-- process the HTML from instance('annotation')/text into TEI XML -->
 										<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
 										<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]"
-											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"/>
+											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"/>
 									</xforms:action>
 									<!-- DELETE -->
 									<xforms:action if="instance('control-instance')/annotation-action = 'delete'">
@@ -472,7 +472,7 @@
 										<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
 										<xforms:insert
 											context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]"
-											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"/>
+											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"/>
 									</xforms:action>
 								</xforms:action>
 							</xforms:input>

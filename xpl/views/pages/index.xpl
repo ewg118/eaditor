@@ -16,6 +16,4 @@
 		<p:input name="config" href="../../../ui/xslt/pages/index.xsl"/>
 		<p:output name="data" ref="data"/>
 	</p:processor>
-	
-
 </p:config>

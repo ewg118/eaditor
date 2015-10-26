@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-	<xsl:variable name="include_path"/>
+	<xsl:variable name="include_path">
+		<xsl:choose>
+			<xsl:when test="/config/aggregator='true'"/>
+			<xsl:otherwise>../</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 
-	<xsl:template match="collections">
+	<xsl:template match="/collections">
 		<html>
 			<head>
 				<title>EADitor</title>
