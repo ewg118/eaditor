@@ -32,11 +32,10 @@
 				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 				<xsl:variable name="facets">
-					<xsl:for-each select="tokenize(/config/theme/facets, ',')">
-						<xsl:text>&amp;facet.field=</xsl:text>
-						<xsl:value-of select="."/>
-					</xsl:for-each>
+					<xsl:text>&amp;facet.field=</xsl:text>
+					<xsl:value-of select="string-join(/config/facets/facet, '&amp;facet.field=')"/>
 				</xsl:variable>
+				
 				<xsl:variable name="service">	
 					<xsl:choose>
 						<!-- when there is a collection name, apply collection name in Solr query -->

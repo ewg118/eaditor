@@ -135,19 +135,14 @@
 						<level enabled="false">subgrp</level>
 						<level enabled="false">subseries</level>
 					</levels>
-					<templates>
-						<agencycodes>
-							<agencycode value="US-default">Default Agency</agencycode>
-						</agencycodes>
-						<containertypes>
-							<container value="box">Box</container>
-							<container value="box-folder">Box-Folder</container>
-							<container value="folder">Folder</container>
-							<container value="reel">Reel</container>
-							<container value="tape">Tape</container>
-						</containertypes>
-					</templates>
-					<google_analytics/>					
+					<containertypes>
+						<container value="box">Box</container>
+						<container value="box-folder">Box-Folder</container>
+						<container value="folder">Folder</container>
+						<container value="reel">Reel</container>
+						<container value="tape">Tape</container>
+					</containertypes>
+					<google_analytics></google_analytics>
 					<content>
 						<index>
 							<h2>Introduction</h2>
@@ -199,7 +194,7 @@
 				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
 					xsi:schemaLocation="urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd">
 					<eadheader langencoding="iso639-2b">
-						<eadid countrycode="US"></eadid>
+						<eadid countrycode="US" mainagencycode="US-"></eadid>
 						<filedesc>
 							<titlestmt>
 								<titleproper></titleproper>
@@ -207,14 +202,33 @@
 							</titlestmt>
 							<publicationstmt>
 								<date normal=""></date>
+								<publisher></publisher>
+								<address>
+									<addressline></addressline>
+								</address>
 							</publicationstmt>
 						</filedesc>
+						<profiledesc>
+							<creation></creation>
+							<langusage>Finding aid written in English</langusage>
+						</profiledesc>
 					</eadheader>
 					<archdesc level="collection">
 						<did>
 							<unittitle></unittitle>
+							<unitdate normal=""></unitdate>
+							<abstract></abstract>
+							<physdesc>
+								<extent></extent>
+							</physdesc>
+							<langmaterial>
+								<language langcode="eng">English</language>
+							</langmaterial>
 							<origination></origination>
 						</did>
+						<accessrestrict>
+							<p></p>
+						</accessrestrict>
 					</archdesc>
 				</ead>
 			</xforms:instance>
@@ -222,6 +236,7 @@
 				<c id="" level="" xmlns="urn:isbn:1-931666-22-9">
 					<did>
 						<unittitle></unittitle>
+						<unitdate normal=""></unitdate>
 					</did>
 				</c>
 			</xforms:instance>
@@ -229,12 +244,12 @@
 			<xforms:instance id="guide">
 				<ead xmlns=""></ead>
 			</xforms:instance>
-			
+
 			<!-- list templates -->
 			<xforms:instance id="languages">
 				<xi:include href="instances/languages.xml"></xi:include>
 			</xforms:instance>
-			
+
 			<!-- XQuery instances -->
 			<xforms:instance id="eXist-xquery">
 				<exist:query xmlns="">
@@ -396,12 +411,21 @@
 				<xforms:bind nodeset="firstrun" type="xs:boolean"></xforms:bind>
 			</xforms:bind>
 
+			<xforms:bind nodeset="instance('collections-list')" constraint="count(//@name) = count(distinct-values(//@name)) and count(//@role) = count(distinct-values(//@role))">
+				<xforms:bind nodeset="collection">
+					<xforms:bind nodeset="@name" required="true()" type="xs:ID"></xforms:bind>
+					<xforms:bind nodeset="@role" required="true()" type="xs:ID"></xforms:bind>
+				</xforms:bind>
+			</xforms:bind>
+
 			<xforms:bind nodeset="instance('config-template')">
-				<xforms:bind nodeset="title" required="true()"></xforms:bind>
-				<xforms:bind nodeset="description" required="true()"></xforms:bind>
-				<xforms:bind nodeset="url" required="true()"></xforms:bind>
-				<xforms:bind nodeset="solr_published" required="true()"></xforms:bind>
-				<xforms:bind nodeset="aggregator" type="xs:boolean"/>
+				<xforms:bind nodeset="aggregator" type="xs:boolean"></xforms:bind>
+				<xforms:bind nodeset="title" readonly="if (instance('control-instance')/firstrun = true() and ../aggregator=false()) then true() else false()"
+					required="if (instance('control-instance')/firstrun = true() and ../aggregator=false()) then false() else true()"></xforms:bind>
+				<xforms:bind nodeset="description" readonly="if (instance('control-instance')/firstrun = true() and ../aggregator=false()) then true() else false()"
+					required="if (instance('control-instance')/firstrun = true() and ../aggregator=false()) then false() else true()"></xforms:bind>
+				<xforms:bind nodeset="url" required="true()" type="custom.httpURL"></xforms:bind>
+				<xforms:bind nodeset="solr_published" required="true()" type="custom.httpURL"></xforms:bind>
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('config')">
@@ -410,12 +434,56 @@
 				</xforms:bind>
 			</xforms:bind>
 
+			<xforms:bind nodeset="instance('ead-template')">
+				<xforms:bind nodeset="ead:eadheader">
+					<xforms:bind nodeset="ead:eadid">
+						<xforms:bind nodeset="@countrycode" type="data.countrycode" required="true()"></xforms:bind>
+						<xforms:bind nodeset="@mainagencycode" as="xs:NMToken" required="true()"></xforms:bind>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:filedesc/ead:publicationstmt">
+						<xforms:bind nodeset="ead:publisher" required="true()"></xforms:bind>
+						<xforms:bind nodeset="ead:address">
+							<xforms:bind nodeset="ead:addressline" required="true()"></xforms:bind>
+						</xforms:bind>
+					</xforms:bind>
+					<xforms:bind nodeset="ead:profiledesc/ead:langusage" required="true()"></xforms:bind>
+				</xforms:bind>
+
+			</xforms:bind>
+
 			<xforms:bind nodeset="instance('pagination-result')">
 				<xforms:bind nodeset="record">
 					<xforms:bind nodeset="published" type="xs:boolean"></xforms:bind>
 					<xforms:bind nodeset="components" type="xs:boolean"></xforms:bind>
 				</xforms:bind>
 			</xforms:bind>
+
+			<!-- **************** CUSTOM DATATYPES ********************** -->
+			<!-- URL validation. Example from http://stackoverflow.com/questions/3381507/xml-validation-validating-a-uri-type -->
+			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
+				<xs:simpleType name="custom.httpURL">
+					<xs:restriction base="xs:anyURI">
+						<!-- accepts only http:// or https:// URIs. -->
+						<xs:pattern value="https?://.+"></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+
+				<xs:simpleType name="data.repositorycode">
+					<xs:restriction base="xs:token">
+						<xs:pattern
+							value="((AF|AX|AL|DZ|AS|AD|AO|AI|AQ|AG|AR|AM|AW|AU|AT|AZ|BS|BH|BD|BB|BY|BE|BZ|BJ|BM|BT|BO|BA|BW|BV|BR|IO|BN|BG|BF|BI|KH|CM|CA|CV|KY|CF|TD|CL|CN|CX|CC|CO|KM|CG|CD|CK|CR|CI|HR|CU|CY|CZ|DK|DJ|DM|DO|EC|EG|SV|GQ|ER|EE|ET|FK|FO|FJ|FI|FR|GF|PF|TF|GA|GM|GE|DE|GH|GI|GR|GL|GD|GP|GU|GT|GN|GW|GY|HT|HM|VA|HN|HK|HU|IS|IN|ID|IR|IQ|IE|IL|IT|JM|JP|JO|KZ|KE|KI|KP|KR|KW|KG|LA|LV|LB|LS|LR|LY|LI|LT|LU|MO|MK|MG|MW|MY|MV|ML|MT|MH|MQ|MR|MU|YT|MX|FM|MD|MC|MN|MS|MA|MZ|MM|NA|NR|NP|NL|AN|NC|NZ|NI|NE|NG|NU|NF|MP|NO|OM|PK|PW|PS|PA|PG|PY|PE|PH|PN|PL|PT|PR|QA|RE|RO|RU|RW|SH|KN|LC|PM|VC|WS|SM|ST|SA|SN|CS|SC|SL|SG|SK|SI|SB|SO|ZA|GS|ES|LK|SD|SR|SJ|SZ|SE|CH|SY|TW|TJ|TZ|TH|TL|TG|TK|TO|TT|TN|TR|TM|TC|TV|UG|UA|AE|GB|US|UM|UY|UZ|VU|VE|VN|VG|VI|WF|EH|YE|ZM|ZW)|([a-zA-Z]{1})|([a-zA-Z]{3,4}))(-[a-zA-Z0-9:/\-]{1,11})"
+						></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+
+				<xs:simpleType name="data.countrycode">
+					<xs:restriction base="xs:token">
+						<xs:pattern
+							value="(AF|AX|AL|DZ|AS|AD|AO|AI|AQ|AG|AR|AM|AW|AU|AT|AZ|BS|BH|BD|BB|BY|BE|BZ|BJ|BM|BT|BO|BA|BW|BV|BR|IO|BN|BG|BF|BI|KH|CM|CA|CV|KY|CF|TD|CL|CN|CX|CC|CO|KM|CG|CD|CK|CR|CI|HR|CU|CY|CZ|DK|DJ|DM|DO|EC|EG|SV|GQ|ER|EE|ET|FK|FO|FJ|FI|FR|GF|PF|TF|GA|GM|GE|DE|GH|GI|GR|GL|GD|GP|GU|GT|GN|GW|GY|HT|HM|VA|HN|HK|HU|IS|IN|ID|IR|IQ|IE|IL|IT|JM|JP|JO|KZ|KE|KI|KP|KR|KW|KG|LA|LV|LB|LS|LR|LY|LI|LT|LU|MO|MK|MG|MW|MY|MV|ML|MT|MH|MQ|MR|MU|YT|MX|FM|MD|MC|MN|MS|MA|MZ|MM|NA|NR|NP|NL|AN|NC|NZ|NI|NE|NG|NU|NF|MP|NO|OM|PK|PW|PS|PA|PG|PY|PE|PH|PN|PL|PT|PR|QA|RE|RO|RU|RW|SH|KN|LC|PM|VC|WS|SM|ST|SA|SN|CS|SC|SL|SG|SK|SI|SB|SO|ZA|GS|ES|LK|SD|SR|SJ|SZ|SE|CH|SY|TW|TJ|TZ|TH|TL|TG|TK|TO|TT|TN|TR|TM|TC|TV|UG|UA|AE|GB|US|UM|UY|UZ|VU|VE|VN|VG|VI|WF|EH|YE|ZM|ZW)"
+						></xs:pattern>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:schema>
 
 			<!-- **************** DYNAMIC VALIDATION CONTROLS ********************** -->
 			<xforms:action ev:event="xxforms-invalid" ev:observer="collections-list">
@@ -457,22 +525,11 @@
 						</xforms:action>
 					</xforms:action>
 					<xforms:action if="instance('control-instance')/request-security/role = 'eaditor-admin'">
-						<!-- load the config -->
-						<xforms:send submission="load-config"/>
 						<!-- get collection metadata -->
 						<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
 							value="replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ','))"></xforms:setvalue>
 						<xforms:send submission="xquery-db"></xforms:send>
-
-						<!-- set interface -->
-						<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
 					</xforms:action>
-				</xforms:action>
-				<!-- if there isn't a collection list XML, then this is the first time eaditor has been run. If the role is eaditor-admin display the collection creation interface, otherwise block editing to unauthorized individuals -->
-				<xforms:action ev:event="xforms-submit-error">
-					<!-- set interface -->
-					<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/firstrun" value="true()"></xforms:setvalue>
 				</xforms:action>
 			</xforms:submission>
 
@@ -486,8 +543,11 @@
 			</xforms:submission>
 
 			<!-- loading, saving config -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{if (xxforms:is-user-in-role('eaditor-admin')) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml"
+			<xforms:submission id="load-config" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{if (xxforms:is-user-in-role('eaditor-admin')) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+
+				<!-- perform normal tasks if loading the config as an eaditor-user -->
 				<xforms:action ev:event="xforms-submit-done" if="not(xxforms:is-user-in-role('eaditor-admin'))">
 					<!-- get the number of docs in the eXist collection() -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
@@ -539,25 +599,33 @@
 						<xforms:load resource="{instance('request')/request-url}"></xforms:load>
 					</xforms:action>
 				</xforms:action>
-				
+
+				<!-- if the master config successfully loads, then load the collections-list-->
+				<xforms:action ev:event="xforms-submit-done" if="xxforms:is-user-in-role('eaditor-admin')">
+					<xforms:send submission="load-collections"></xforms:send>
+				</xforms:action>
+
 				<!-- if config.xml doesn't exist, display the associated interface -->
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:message level="modal" if="not(xxforms:is-user-in-role('eaditor-admin'))">Error: there is no config for this collection.</xforms:message>
-					<xforms:setvalue ref="instance('control-instance')/firstrun" value="true()" if="xxforms:is-user-in-role('eaditor-admin')"/>
+					<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
+						<xforms:setvalue ref="instance('control-instance')/firstrun" value="true()"></xforms:setvalue>
+					</xforms:action>
 				</xforms:action>
 			</xforms:submission>
-			
+
 			<!-- save templates and add guides collection to eXist on the first run of EADitor -->
-			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-config')/url}eaditor/{if (xxforms:is-user-in-role('eaditor-admin')) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml" method="put"
-				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-config" ref="instance('config-template')"
+				action="{instance('exist-config')/url}eaditor/{if (instance('control-instance')/firstrun = true()) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml"
+				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 			</xforms:submission>
-			
+
 			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
 				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving EAD Template.</xforms:message>
 			</xforms:submission>
-			
+
 			<xforms:submission id="save-c-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
 				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Component Template.</xforms:message>
@@ -577,12 +645,12 @@
 					</xforms:action>
 				</xforms:action>
 			</xforms:submission>
-			
+
 			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor{instance('control-instance')/collection-name}/guides" method="post"
 				replace="instance" instance="xquery-result" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
-			
+
 			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance" instance="xquery-result"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
@@ -594,7 +662,7 @@
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Cannot load finding aid.</xforms:message>
 			</xforms:submission>
-			
+
 			<xforms:submission id="delete-doc" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml"
 				method="delete" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Finding aid successfully deleted.</xforms:setvalue>
@@ -612,7 +680,7 @@
 			<xforms:submission id="republish" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=*:*&amp;rows=10000&amp;start=0&amp;fl=id" replace="instance"
 				instance="list-published-response">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Solr is inaccessible. Please check Solr configuration. [ADM001]</xforms:message>
-				<xforms:action ev:event="xforms-submit-done">					
+				<xforms:action ev:event="xforms-submit-done">
 					<xforms:action xxforms:iterate="instance('list-published-response')//doc">
 						<xforms:var name="id" select="str[@name='id']"></xforms:var>
 						<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
@@ -624,13 +692,13 @@
 			<xforms:submission id="post-to-solr" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
-			
+
 			<!-- delete from Solr -->
 			<xforms:submission id="delete-solr-doc" action="{instance('config')/solr_published}update" ref="instance('deleteId')" instance="deleteId" replace="none" method="post">
 				<xforms:send ev:event="xforms-submit-done" submission="commit"></xforms:send>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr.</xforms:message>
 			</xforms:submission>
-			
+
 			<xforms:submission id="delete-all" action="{instance('config')/solr_published}update" ref="instance('deleteAll')" instance="deleteAll" replace="none" method="post">
 				<xforms:send ev:event="xforms-submit-done" submission="commit"></xforms:send>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">EAD guides removed from search index.</xforms:setvalue>
@@ -646,7 +714,7 @@
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Index optimized.</xforms:setvalue>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Solr optimize failed.</xforms:message>
 			</xforms:submission>
-			
+
 			<!-- submission to query solr to see if the document is published -->
 			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:{instance('control-instance')/id}"
 				replace="instance" instance="published-response">
@@ -694,7 +762,15 @@
 					<xforms:setvalue ref="instance('control-instance')/interface">unauthorized-user</xforms:setvalue>
 				</xforms:action>
 				<xforms:action if="string(instance('control-instance')/request-security/role)">
-					<xforms:send submission="load-collections"></xforms:send>
+					<!-- if it is the eaditor-admin role, then load the master config first -->
+					<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
+						<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
+						<xforms:send submission="load-config"></xforms:send>
+					</xforms:action>
+					<!-- otherwise, load the collections-list -->
+					<xforms:action if="not(xxforms:is-user-in-role('eaditor-admin'))">
+						<xforms:send submission="load-collections"></xforms:send>
+					</xforms:action>
 				</xforms:action>
 			</xforms:action>
 
@@ -702,13 +778,14 @@
 			<!-- set case on xforms-ready -->
 			<xforms:action ev:event="xforms-ready">
 				<xforms:toggle case="{instance('control-instance')/interface}"></xforms:toggle>
-				<xforms:toggle case="firstrun" if="instance('control-instance')/firstrun=true()"/>
+				<xforms:toggle case="firstrun" if="instance('control-instance')/firstrun=true()"></xforms:toggle>
 			</xforms:action>
 		</xforms:model>
 	</head>
 
 	<body>
 		<xforms:var name="display_path"></xforms:var>
+		<xi:include href="header.xml"></xi:include>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
@@ -719,7 +796,6 @@
 								your role. If it is the latter case, please log in as the eaditor-admin role and create a new collection for the associated Tomcat role.</p>
 						</xforms:case>
 						<xforms:case id="eaditor-admin">
-							<xi:include href="header.xml"></xi:include>
 							<div id="form">
 								<xforms:group ref=".[count(distinct-values(instance('collections-list')/collection/@name)) != count(instance('collections-list')/collection/@name)]">
 									<div class="bg-danger alert-box">
@@ -738,11 +814,23 @@
 											<xforms:group ref=".[count(instance('collections-list')/collection) &gt; 0]">
 												<xforms:group ref="instance('collections-list')">
 													<h3>Collections List<small><xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
-																	collection</xforms:label><xforms:action ev:event="DOMActivate">
+																	collection</xforms:label>
+																<xforms:action ev:event="DOMActivate">
+																	<!-- insert new collection template -->
 																	<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]"
 																		origin="xforms:element('collection', (xforms:attribute('name', ''), xforms:attribute('role', '')))"></xforms:insert>
+																	<!-- preset config template with master config variables -->
+																	<xforms:setvalue ref="instance('config-template')/url" value="instance('config')/url"></xforms:setvalue>
+																	<xforms:setvalue ref="instance('config-template')/solr_published" value="instance('config')/solr_published"></xforms:setvalue>
+																	<xforms:setvalue ref="instance('config-template')/geonames_api_key" value="instance('config')/geonames_api_key"></xforms:setvalue>
+																	<xforms:setvalue ref="instance('ead-template')//ead:language/@langcode" value="instance('config')/language"></xforms:setvalue>
+																	<xforms:setvalue ref="instance('ead-template')//ead:language"
+																		value="instance('languages')//language[code=instance('config')/language]/name"></xforms:setvalue>
+																	<xforms:setvalue ref="instance('ead-template')//ead:langusage"
+																		value="concat('Finding aid is written in ', instance('languages')//language[code=instance('config')/language]/name)"></xforms:setvalue>
 																	<xforms:toggle case="add-collection-interface"></xforms:toggle>
-																</xforms:action></xforms:trigger></small></h3>
+																</xforms:action></xforms:trigger>
+														</small></h3>
 													<table class="table">
 														<thead>
 															<tr>
@@ -780,10 +868,20 @@
 												</xforms:group>
 											</xforms:group>
 											<xforms:group ref=".[count(instance('collections-list')/collection) = 0]">
-												<p>There are no collections in EADitor. <xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
-															one.</xforms:label><xforms:action ev:event="DOMActivate">
+												<p>There are no collections in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
+															one.</xforms:label>
+														<xforms:action ev:event="DOMActivate">
+															<!-- insert new collection template -->
 															<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]"
 																origin="xforms:element('collection', (xforms:attribute('name', ''), xforms:attribute('role', '')))"></xforms:insert>
+															<!-- preset config template with master config variables -->
+															<xforms:setvalue ref="instance('config-template')/url" value="instance('config')/url"></xforms:setvalue>
+															<xforms:setvalue ref="instance('config-template')/solr_published" value="instance('config')/solr_published"></xforms:setvalue>
+															<xforms:setvalue ref="instance('config-template')/geonames_api_key" value="instance('config')/geonames_api_key"></xforms:setvalue>
+															<xforms:setvalue ref="instance('ead-template')//ead:language/@langcode" value="instance('config')/language"></xforms:setvalue>
+															<xforms:setvalue ref="instance('ead-template')//ead:language" value="instance('languages')//language[code=instance('config')/language]/name"></xforms:setvalue>
+															<xforms:setvalue ref="instance('ead-template')//ead:langusage"
+																value="concat('Finding aid is written in ', instance('languages')//language[code=instance('config')/language]/name)"></xforms:setvalue>
 															<xforms:toggle case="add-collection-interface"></xforms:toggle>
 														</xforms:action></xforms:trigger></p>
 											</xforms:group>
@@ -806,42 +904,104 @@
 															<xforms:alert>Must conform to xs:ID</xforms:alert>
 															<xforms:action ev:event="xforms-value-changed">
 																<xforms:var name="name" select="."></xforms:var>
-																<xforms:setvalue ref="instance('config-template')/url" value="concat('http://localhost:8080/orbeon/eaditor/', $name, '/')"></xforms:setvalue>
-																<xforms:setvalue ref="instance('config-template')/uri_space" value="concat('http://localhost:8080/orbeon/eaditor/', $name, '/id/')"
-																></xforms:setvalue>
+																<xforms:setvalue ref="instance('config-template')/url" value="concat(instance('config')/url, $name, '/')"></xforms:setvalue>
+																<xforms:setvalue ref="instance('ead-template')/ead:eadheader/ead:eadid/@mainagencycode" value="concat(instance('ead-template')/ead:eadheader/ead:eadid/@countrycode, '-', $name)"></xforms:setvalue>
 															</xforms:action>
 														</xforms:input>
 													</div>
 												</xforms:group>
-												<xforms:group ref="instance('config-template')">
+												<div class="section">
 													<h4>Boilerplate</h4>
-													<div>
-														<xforms:input ref="title">
-															<xforms:label>Collection Title</xforms:label>
-															<xforms:alert>Required</xforms:alert>
-														</xforms:input>
-													</div>
-													<div>
-														<xforms:input ref="description">
-															<xforms:label>Description</xforms:label>
-															<xforms:alert>Required</xforms:alert>
-														</xforms:input>
-													</div>
-													<div>
-														<xforms:select1 ref="language">
-															<xforms:label>Default Language</xforms:label>
-															<xforms:item>
-																<xforms:label>Select Language...</xforms:label>
-																<xforms:value></xforms:value>
-															</xforms:item>
-															<xforms:itemset nodeset="instance('languages')//language">
-																<xforms:label ref="name"></xforms:label>
-																<xforms:value ref="code"></xforms:value>
-															</xforms:itemset>
-															<xforms:alert>Required</xforms:alert>
-														</xforms:select1>
-													</div>
-													<!--<div>
+													<xforms:group ref="instance('config-template')">
+														<xforms:group ref="title">
+															<div>
+																<xforms:input ref=".">
+																	<xforms:label>Collection Title</xforms:label>
+																	<xforms:alert>Required</xforms:alert>
+																</xforms:input>
+															</div>
+														</xforms:group>
+														<xforms:group ref="description">
+															<div>
+																<xforms:input ref=".">
+																	<xforms:label>Description</xforms:label>
+																	<xforms:alert>Required</xforms:alert>
+																</xforms:input>
+															</div>
+														</xforms:group>
+														<div>
+															<xforms:input ref="geonames_api_key">
+																<xforms:label>Geonames API Key</xforms:label>
+															</xforms:input>
+														</div>
+														<div>
+															<xforms:select1 ref="instance('ead-template')//ead:language/@langcode">
+																<xforms:label>Default Language</xforms:label>
+																<xforms:item>
+																	<xforms:label>Select Language...</xforms:label>
+																	<xforms:value></xforms:value>
+																</xforms:item>
+																<xforms:itemset nodeset="instance('languages')//language">
+																	<xforms:label ref="name"></xforms:label>
+																	<xforms:value ref="code"></xforms:value>
+																</xforms:itemset>
+																<xforms:alert>Required</xforms:alert>
+																<xforms:action ev:event="xforms-value-changed">
+																	<xforms:var name="code" select="."></xforms:var>
+																	<xforms:setvalue ref="instance('ead-template')//ead:language[1]" value="instance('languages')//language[code=$code]/name"></xforms:setvalue>
+																	<xforms:setvalue ref="instance('ead-template')//ead:langusage[1]"
+																		value="concat('Finding aid is written in ', instance('languages')//language[code=$code]/name)"></xforms:setvalue>																	
+																</xforms:action>
+															</xforms:select1>
+														</div>
+													</xforms:group>
+													<xforms:group ref="instance('ead-template')">
+														<div>
+															<xforms:input ref="//ead:langusage[1]">
+																<xforms:label>Lang Usage</xforms:label>
+																<xforms:alert>Required</xforms:alert>
+															</xforms:input>
+														</div>
+														<div>
+															<xforms:input ref="ead:eadheader/ead:eadid/@countrycode">
+																<xforms:label>Country Code</xforms:label>
+																<xforms:alert>Must conform to two-letter code.</xforms:alert>
+															</xforms:input>
+														</div>
+														<div>
+															<xforms:input ref="ead:eadheader/ead:eadid/@mainagencycode">
+																<xforms:label>Agency Code</xforms:label>
+																<xforms:alert>Must conform to MARC format.</xforms:alert>
+															</xforms:input>
+														</div>
+														<div>
+															<xforms:input ref="ead:eadheader/ead:filedesc/ead:publicationstmt/ead:publisher">
+																<xforms:label>Publisher</xforms:label>
+																<xforms:alert>Required</xforms:alert>
+															</xforms:input>
+														</div>
+														<xforms:group ref="ead:eadheader/ead:filedesc/ead:publicationstmt/ead:address">
+															<h4>Address</h4>
+															<xforms:trigger appearance="minimal">
+																<xforms:label>
+																	<span class="glyphicon glyphicon-plus"></span>Address Line</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="xforms:element('ead:addressline', '')"/>
+															</xforms:trigger>
+															<xforms:repeat nodeset="ead:addressline">
+																<div>
+																	<div>
+																		<xforms:input ref=".">
+																			<xforms:label>Address Line</xforms:label>
+																			<xforms:alert>Required</xforms:alert>
+																		</xforms:input>
+																	</div>
+																</div>
+															</xforms:repeat>
+														</xforms:group>
+														
+													</xforms:group>
+												</div>
+												<!--<div>
 														<xforms:select1 ref="license">
 															<xforms:label>License</xforms:label>
 															<xforms:alert>Required</xforms:alert>
@@ -855,25 +1015,24 @@
 															</xforms:itemset>
 														</xforms:select1>
 													</div>-->
+												<div class="section">
 													<h4>URLS</h4>
-													<div>
-														<xforms:input ref="url">
-															<xforms:label>Public Site</xforms:label>
-															<xforms:alert>Required, must be a URL</xforms:alert>
-															<xforms:action ev:event="xforms-value-changed">
-																<xforms:var name="uri" select="."></xforms:var>
-																<xforms:setvalue ref="instance('config-template')/uri_space" value="concat($uri, 'id/')"></xforms:setvalue>
-															</xforms:action>
-														</xforms:input>
-													</div>
-													<div>
-														<xforms:input ref="solr_published">
-															<xforms:label>Solr Published</xforms:label>
-															<xforms:alert>Required, must be a URL</xforms:alert>
-															<xforms:hint>Unlikely to need changing.</xforms:hint>
-														</xforms:input>
-													</div>
-												</xforms:group>
+													<xforms:group ref="instance('config-template')">
+														<div>
+															<xforms:input ref="url">
+																<xforms:label value="if (instance('config')/aggregator=true()) then 'URI Space' else 'Public Site'"></xforms:label>
+																<xforms:alert>Required, must be a URL</xforms:alert>
+															</xforms:input>
+														</div>
+														<div>
+															<xforms:input ref="solr_published">
+																<xforms:label>Solr Published</xforms:label>
+																<xforms:alert>Required, must be a URL</xforms:alert>
+																<xforms:hint>Unlikely to need changing.</xforms:hint>
+															</xforms:input>
+														</div>
+													</xforms:group>
+												</div>
 												<xforms:trigger>
 													<xforms:label>Cancel</xforms:label>
 													<xforms:action ev:event="DOMActivate">
@@ -895,43 +1054,90 @@
 									<xforms:case id="firstrun">
 										<div>
 											<h3>Set up EADitor</h3>
-											<p>The initial EADitor configuration file must be set up before proceeding to the next step of creating individual collections in the XML database. Check the Aggregator box if this EADitor installation is being set up to publish multiple collections from a central user interface.</p>
+											<p>The initial EADitor configuration file must be set up before proceeding to the next step of creating individual collections in the XML database. Check
+												the Aggregator box if this EADitor installation is being set up to publish multiple collections from a central user interface. The settings can be
+												further modified in the Settings Editor, once these basic required fields have been entered and saved.</p>
 											<xforms:group ref="instance('config-template')">
-												<div>
-													<xforms:input ref="aggregator">
-														<xforms:label>Aggregation</xforms:label>
-													</xforms:input>
+												<div class="section">
+													<h4>Boilerplate</h4>
+													<div>
+														<xforms:input ref="aggregator">
+															<xforms:label>Aggregation</xforms:label>
+														</xforms:input>
+													</div>
+													<xforms:group ref="title">
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Collection Title</xforms:label>
+																<xforms:alert>Required</xforms:alert>
+															</xforms:input>
+														</div>
+													</xforms:group>
+													<xforms:group ref="description">
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Description</xforms:label>
+																<xforms:alert>Required</xforms:alert>
+															</xforms:input>
+														</div>
+													</xforms:group>
+													<div>
+														<xforms:input ref="geonames_api_key">
+															<xforms:label>Geonames API Key</xforms:label>
+														</xforms:input>
+													</div>
+													<div>
+														<xforms:select1 ref="language">
+															<xforms:label>Default Language</xforms:label>
+															<xforms:itemset nodeset="instance('languages')//language">
+																<xforms:label ref="name"></xforms:label>
+																<xforms:value ref="code"></xforms:value>
+															</xforms:itemset>
+															<xforms:alert>Required</xforms:alert>
+														</xforms:select1>
+													</div>
 												</div>
-												<div>
-													<xforms:input ref="title">
-														<xforms:label>Collection Title</xforms:label>
-														<xforms:alert>Required</xforms:alert>
-													</xforms:input>
-												</div>
-												<div>
-													<xforms:input ref="description">
-														<xforms:label>Description</xforms:label>
-														<xforms:alert>Required</xforms:alert>
-													</xforms:input>
-												</div>
-												<div>
-													<xforms:select1 ref="language">
-														<xforms:label>Default Language</xforms:label>
-														<xforms:itemset nodeset="instance('languages')//language">
-															<xforms:label ref="name"></xforms:label>
-															<xforms:value ref="code"></xforms:value>
-														</xforms:itemset>
-														<xforms:alert>Required</xforms:alert>
-													</xforms:select1>
+												<div class="section">
+													<h4>URLS</h4>
+													<div>
+														<xforms:input ref="url">
+															<xforms:label>Public Site</xforms:label>
+															<xforms:alert>Required, must be a URL</xforms:alert>
+														</xforms:input>
+													</div>
+													<div>
+														<xforms:input ref="solr_published">
+															<xforms:label>Solr Published</xforms:label>
+															<xforms:alert>Required, must be a URL</xforms:alert>
+															<xforms:hint>Unlikely to need changing.</xforms:hint>
+														</xforms:input>
+													</div>
 												</div>
 											</xforms:group>
+											<xforms:trigger>
+												<xforms:label>Create</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<!-- save collections list, config, and XQL files -->
+													<xforms:send submission="save-config"></xforms:send>
+													<xforms:action ev:event="xforms-submit-done">
+														<!-- clear title, description -->
+														<xforms:setvalue ref="instance('config-template')/url"></xforms:setvalue>
+														<xforms:setvalue ref="instance('config-template')/description"></xforms:setvalue>
+														<xforms:setvalue ref="instance('config-template')/aggregator" value="false()"></xforms:setvalue>
+														<!--disable firstrun interface -->
+														<xforms:setvalue ref="instance('control-instance')/firstrun" value="false()"></xforms:setvalue>
+														<xforms:toggle case="collections-list-interface"></xforms:toggle>
+														<xforms:send submission="load-config"></xforms:send>
+													</xforms:action>
+												</xforms:action>
+											</xforms:trigger>
 										</div>
 									</xforms:case>
 								</xforms:switch>
 							</div>
 						</xforms:case>
 						<xforms:case id="eaditor-editor">
-							<xi:include href="header.xml"></xi:include> <div id="form">
+							<div id="form">
 								<xforms:group ref="instance('control-instance')/status/text()">
 									<div class="success">
 										<xforms:output ref="instance('control-instance')/status"></xforms:output>
@@ -1070,12 +1276,12 @@
 											<!-- pagination -->
 											<div class="paging_div row">
 												<div class="col-md-6"> Displaying records <b>
-													<xforms:output value="(($page - 1) * $rows) + 1"></xforms:output>
-												</b> to <b>
-													<xforms:output value="if ($numFound &gt; $page * $rows) then $page * $rows else $numFound"></xforms:output>
-												</b> of <b>
-													<xforms:output value="$numFound"></xforms:output>
-												</b> total results.</div>
+														<xforms:output value="(($page - 1) * $rows) + 1"></xforms:output>
+													</b> to <b>
+														<xforms:output value="if ($numFound &gt; $page * $rows) then $page * $rows else $numFound"></xforms:output>
+													</b> of <b>
+														<xforms:output value="$numFound"></xforms:output>
+													</b> total results.</div>
 												<div class="col-md-6 text-right">
 													<!-- previous -->
 													<xforms:group ref=".[$page &gt; 1]">
@@ -1159,7 +1365,7 @@
 											</thead>
 											<tbody>
 												<xforms:repeat nodeset="instance('pagination-result')//record">
-													<xforms:var name="id" select="id"></xforms:var>													
+													<xforms:var name="id" select="id"></xforms:var>
 													<tr>
 														<td class="text-center">
 															<xforms:output ref="type"></xforms:output>
@@ -1258,7 +1464,7 @@
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<fr:xforms-inspector/>
+				<fr:xforms-inspector></fr:xforms-inspector>
 			</div>
 			<div id="temp" style="display:none"></div>
 			<span id="collection-name" style="visibility:hidden">
@@ -1274,7 +1480,7 @@
 			<fr:message>Do you want to reindex currently published finding aids?</fr:message>
 			<fr:negative-choice></fr:negative-choice>
 			<fr:positive-choice>
-				<xforms:action ev:event="DOMActivate">					
+				<xforms:action ev:event="DOMActivate">
 					<xforms:send submission="republish"></xforms:send>
 					<xforms:send submission="optimize" ev:event="xforms-submit-done"></xforms:send>
 				</xforms:action>
@@ -1286,7 +1492,7 @@
 			<fr:message>Do you want to unpublish all finding aids?</fr:message>
 			<fr:negative-choice></fr:negative-choice>
 			<fr:positive-choice>
-				<xforms:action ev:event="DOMActivate">					
+				<xforms:action ev:event="DOMActivate">
 					<xforms:send submission="delete-all" ev:event="DOMActivate"></xforms:send>
 					<!-- optimize index -->
 					<xforms:send submission="optimize"></xforms:send>
@@ -1324,7 +1530,7 @@
 			<fr:positive-choice>
 				<xforms:action ev:event="DOMActivate">
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='publish-mods']"></xforms:setvalue>
-					<xforms:send submission="xquery-collection"></xforms:send>					
+					<xforms:send submission="xquery-collection"></xforms:send>
 					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()/*[local-name()='recordIdentifier']"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
@@ -1379,7 +1585,7 @@
 				<xforms:action ev:event="DOMActivate">
 					<!-- delete from exist and solr -->
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
-					<xforms:send submission="delete-doc"></xforms:send>					
+					<xforms:send submission="delete-doc"></xforms:send>
 					<xforms:send submission="delete-solr-doc"></xforms:send>
 					<!-- delete from triplestore -->
 					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
