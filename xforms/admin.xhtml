@@ -22,11 +22,11 @@
 
 		<xforms:model>
 			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-config">
+			<xforms:instance id="exist-config" xxforms:exclude-result-prefixes="#all">
 				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
 
-			<xforms:instance id="control-instance">
+			<xforms:instance id="control-instance" xxforms:exclude-result-prefixes="#all">
 				<controls xmlns="">
 					<firstrun>false</firstrun>
 					<collection-name></collection-name>
@@ -57,16 +57,18 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config version="0.55">
+				<config version="0.55" xmlns="">
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
 					<geonames_api_key></geonames_api_key>
 					<title>EADitor</title>
+					<aggregator>false</aggregator>
 					<logo></logo>
 					<publisher></publisher>
 					<publisher_code></publisher_code>
 					<publisher_email></publisher_email>
 					<description></description>
+					<language>eng</language>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
@@ -227,7 +229,13 @@
 			<xforms:instance id="guide">
 				<ead xmlns=""></ead>
 			</xforms:instance>
-
+			
+			<!-- list templates -->
+			<xforms:instance id="languages">
+				<xi:include href="instances/languages.xml"></xi:include>
+			</xforms:instance>
+			
+			<!-- XQuery instances -->
 			<xforms:instance id="eXist-xquery">
 				<exist:query xmlns="">
 					<exist:text></exist:text>
@@ -393,6 +401,7 @@
 				<xforms:bind nodeset="description" required="true()"></xforms:bind>
 				<xforms:bind nodeset="url" required="true()"></xforms:bind>
 				<xforms:bind nodeset="solr_published" required="true()"></xforms:bind>
+				<xforms:bind nodeset="aggregator" type="xs:boolean"/>
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('config')">
@@ -539,11 +548,9 @@
 			</xforms:submission>
 			
 			<!-- save templates and add guides collection to eXist on the first run of EADitor -->
-			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put"
+			<xforms:submission id="save-config" ref="instance('config-template')" action="{instance('exist-config')/url}eaditor/{if (xxforms:is-user-in-role('eaditor-admin')) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml" method="put"
 				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
-				<!-- reload the config after it has been created -->
-				<xforms:send submission="load-config" ev:event="xforms-submit-done"></xforms:send>
 			</xforms:submission>
 			
 			<xforms:submission id="save-ead-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
@@ -821,21 +828,21 @@
 														</xforms:input>
 													</div>
 													<div>
-														<xforms:select1 ref="template/language">
+														<xforms:select1 ref="language">
 															<xforms:label>Default Language</xforms:label>
 															<xforms:item>
 																<xforms:label>Select Language...</xforms:label>
 																<xforms:value></xforms:value>
 															</xforms:item>
 															<xforms:itemset nodeset="instance('languages')//language">
-																<xforms:label ref="."></xforms:label>
-																<xforms:value ref="@value"></xforms:value>
+																<xforms:label ref="name"></xforms:label>
+																<xforms:value ref="code"></xforms:value>
 															</xforms:itemset>
 															<xforms:alert>Required</xforms:alert>
 														</xforms:select1>
 													</div>
-													<div>
-														<xforms:select1 ref="template/license">
+													<!--<div>
+														<xforms:select1 ref="license">
 															<xforms:label>License</xforms:label>
 															<xforms:alert>Required</xforms:alert>
 															<xforms:item>
@@ -847,7 +854,7 @@
 																<xforms:value ref="@href"></xforms:value>
 															</xforms:itemset>
 														</xforms:select1>
-													</div>
+													</div>-->
 													<h4>URLS</h4>
 													<div>
 														<xforms:input ref="url">
@@ -888,7 +895,36 @@
 									<xforms:case id="firstrun">
 										<div>
 											<h3>Set up EADitor</h3>
-											<p>The initial EADitor configuration file must be set up before proceeding to the next step of creating individual collections in the XML database.</p>
+											<p>The initial EADitor configuration file must be set up before proceeding to the next step of creating individual collections in the XML database. Check the Aggregator box if this EADitor installation is being set up to publish multiple collections from a central user interface.</p>
+											<xforms:group ref="instance('config-template')">
+												<div>
+													<xforms:input ref="aggregator">
+														<xforms:label>Aggregation</xforms:label>
+													</xforms:input>
+												</div>
+												<div>
+													<xforms:input ref="title">
+														<xforms:label>Collection Title</xforms:label>
+														<xforms:alert>Required</xforms:alert>
+													</xforms:input>
+												</div>
+												<div>
+													<xforms:input ref="description">
+														<xforms:label>Description</xforms:label>
+														<xforms:alert>Required</xforms:alert>
+													</xforms:input>
+												</div>
+												<div>
+													<xforms:select1 ref="language">
+														<xforms:label>Default Language</xforms:label>
+														<xforms:itemset nodeset="instance('languages')//language">
+															<xforms:label ref="name"></xforms:label>
+															<xforms:value ref="code"></xforms:value>
+														</xforms:itemset>
+														<xforms:alert>Required</xforms:alert>
+													</xforms:select1>
+												</div>
+											</xforms:group>
 										</div>
 									</xforms:case>
 								</xforms:switch>
@@ -1214,7 +1250,7 @@
 										</table>
 									</xforms:group>
 									<xforms:group ref=".[count(//record)=0]">
-										<h1>No finding aids in collection.</h1>
+										<h2>No finding aids in collection.</h2>
 									</xforms:group>
 								</xforms:group>
 							</div>
