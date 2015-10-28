@@ -120,6 +120,7 @@
 				</levels>
 			</xforms:instance>
 
+			<!-- ************** BINDINGS ***************** -->
 			<xforms:bind node="instance('guide')">
 				<xforms:bind nodeset="//*/@id" type="xs:ID"></xforms:bind>
 				<xforms:bind nodeset="//ead:c">
@@ -169,6 +170,7 @@
 				<xforms:bind nodeset="//ead:head" required="true()"></xforms:bind>
 			</xforms:bind>
 
+			<!-- ************** SUBMISSIONS ***************** -->
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
 				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->

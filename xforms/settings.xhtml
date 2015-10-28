@@ -9,14 +9,14 @@
 	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<head>
 		<title>EADitor: Edit Settings</title>
-		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
-		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
-		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
-		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
-		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css" />
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
 		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
 		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -30,27 +30,27 @@
 
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-config">
-				<xi:include href="../exist-config.xml"/>
+				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
 
 			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
-				<config xmlns=""/>
+				<config xmlns=""></config>
 			</xforms:instance>
 
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
-					<id/>
-					<collection-name/>
-					<status/>
-					<api-key-accepted/>
-					<save-trigger/>
-					<connect-trigger/>
-					<xeac/>
+					<id></id>
+					<collection-name></collection-name>
+					<status></status>
+					<api-key-accepted></api-key-accepted>
+					<save-trigger></save-trigger>
+					<connect-trigger></connect-trigger>
+					<xeac></xeac>
 					<xeac-success>false</xeac-success>
 					<sparql>
-						<update/>
-						<query/>
-						<store/>
+						<update></update>
+						<query></query>
+						<store></store>
 					</sparql>
 					<sparql-success>false</sparql-success>
 					<sparql-connect>false</sparql-connect>
@@ -60,40 +60,40 @@
 
 			<!-- authentication -->
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
-				<collections xmlns=""/>
+				<collections xmlns=""></collections>
 			</xforms:instance>
 
 			<xforms:instance id="dump">
-				<dump xmlns=""/>
+				<dump xmlns=""></dump>
 			</xforms:instance>
 
 			<xforms:instance id="config-backup" xxforms:exclude-result-prefixes="#all">
-				<config/>
+				<config></config>
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
 				<config version="0.55">
-					<firstrun/>
+					<firstrun></firstrun>
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
-					<geonames_api_key/>
+					<geonames_api_key></geonames_api_key>
 					<title>EADitor</title>
-					<publisher/>
-					<publisher_code/>
-					<publisher_email/>
-					<description/>
+					<publisher></publisher>
+					<publisher_code></publisher_code>
+					<publisher_email></publisher_email>
+					<description></description>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
-					<xeac/>
+					<xeac></xeac>
 					<sparql>
-						<endpoint/>
-						<update/>
-						<query/>
-						<store/>
+						<endpoint></endpoint>
+						<update></update>
+						<query></query>
+						<store></store>
 					</sparql>
 					<ark enabled="false">
-						<naan/>
+						<naan></naan>
 					</ark>
 					<export>
 						<oai-pmh>true</oai-pmh>
@@ -125,7 +125,7 @@
 						</namespace>
 					</machine_tags>
 					<levels>
-						<archdesc enabled="true"/>
+						<archdesc enabled="true"></archdesc>
 						<level enabled="false">class</level>
 						<level enabled="false">collection</level>
 						<level enabled="false">file</level>
@@ -151,48 +151,48 @@
 						</containertypes>
 					</templates>
 					<google_analytics>
-						<script type="text/javascript"/>
+						<script type="text/javascript"></script>
 					</google_analytics>
 				</config>
 			</xforms:instance>
 
 			<!-- facets -->
 			<xforms:instance id="facet-template" xxforms:exclude-result-prefixes="#all">
-				<facet xmlns=""/>
+				<facet xmlns=""></facet>
 			</xforms:instance>
 
 			<!-- flickr -->
 			<xforms:instance id="flickr-response">
-				<rsp xmlns=""/>
+				<rsp xmlns=""></rsp>
 			</xforms:instance>
 
 			<xforms:instance id="secret-template" xxforms:exclude-result-prefixes="#all">
-				<flickr_api_secret xmlns=""/>
+				<flickr_api_secret xmlns=""></flickr_api_secret>
 			</xforms:instance>
 
 			<!-- connecting to xEAC -->
 			<xforms:instance id="xeac-response">
-				<feed xmlns="http://www.w3.org/2005/Atom"/>
+				<feed xmlns="http://www.w3.org/2005/Atom"></feed>
 			</xforms:instance>
 
 			<!-- connecting to a SPARQL endpoint -->
 			<xforms:instance id="sparql-response">
-				<sparql xmlns="http://www.w3.org/2005/sparql-results#"/>
+				<sparql xmlns="http://www.w3.org/2005/sparql-results#"></sparql>
 			</xforms:instance>
 
 			<!-- publish records to SPARQL endpoint -->
 			<xforms:instance id="solr-response" xxforms:exclude-result-prefixes="#all">
-				<response/>
+				<response></response>
 			</xforms:instance>
 
 			<xforms:instance id="rdf" xxforms:exclude-result-prefixes="#all">
-				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>
 			</xforms:instance>
 
 			<xforms:instance id="rdf-test" xxforms:exclude-result-prefixes="#all">
 				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 					<rdf:Description rdf:about="http://example.org/">
-						<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+						<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Organization"></rdf:type>
 					</rdf:Description>
 				</rdf:RDF>
 			</xforms:instance>
@@ -204,55 +204,59 @@
 			</xforms:instance>
 
 			<xforms:instance id="sparqlUpdate">
-				<query/>
+				<query></query>
 			</xforms:instance>
 
 			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config')">
-				<xforms:bind nodeset="title" required="true()"/>
-				<xforms:bind nodeset="description" required="../export/pelagios = true()" relevant="../export/pelagios = true()"/>
-				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"/>
-				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"/>
-				<xforms:bind nodeset="xeac" as="xs:anyURI"/>
+				<xforms:bind nodeset="title" required="true()"></xforms:bind>
+				<xforms:bind nodeset="description" required="../export/pelagios = true()" relevant="../export/pelagios = true()"></xforms:bind>
+				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"></xforms:bind>
+				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"></xforms:bind>
+				<xforms:bind nodeset="xeac" as="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="sparql">
-					<xforms:bind nodeset="endpoint" type="xs:boolean"/>
-					<xforms:bind nodeset="query" type="xs:anyURI"/>
-					<xforms:bind nodeset="store" type="xs:anyURI"/>
-					<xforms:bind nodeset="update" type="xs:anyURI"/>
+					<xforms:bind nodeset="endpoint" type="xs:boolean"></xforms:bind>
+					<xforms:bind nodeset="query" type="xs:anyURI"></xforms:bind>
+					<xforms:bind nodeset="store" type="xs:anyURI"></xforms:bind>
+					<xforms:bind nodeset="update" type="xs:anyURI"></xforms:bind>
 				</xforms:bind>
 				<xforms:bind nodeset="ark">
-					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" relevant="parent::node()/@enabled = true()" required="parent::node()/@enabled = true()"/>
-					<xforms:bind nodeset="@enabled" type="xs:boolean"/>
+					<xforms:bind nodeset="naan" constraint="string-length(.) = 5 and number(.)" relevant="parent::node()/@enabled = true()" required="parent::node()/@enabled = true()"></xforms:bind>
+					<xforms:bind nodeset="@enabled" type="xs:boolean"></xforms:bind>
 				</xforms:bind>
 				<xforms:bind nodeset="export">
-					<xforms:bind nodeset="oai-pmh" type="xs:boolean"/>
-					<xforms:bind nodeset="pelagios" type="xs:boolean"/>
+					<xforms:bind nodeset="oai-pmh" type="xs:boolean"></xforms:bind>
+					<xforms:bind nodeset="pelagios" type="xs:boolean"></xforms:bind>
 				</xforms:bind>
 				<xforms:bind nodeset="levels">
-					<xforms:bind nodeset="archdesc/@enabled" type="xs:boolean"/>
-					<xforms:bind nodeset="level/@enabled" type="xs:boolean"/>
+					<xforms:bind nodeset="archdesc/@enabled" type="xs:boolean"></xforms:bind>
+					<xforms:bind nodeset="level/@enabled" type="xs:boolean"></xforms:bind>
 				</xforms:bind>
-				<xforms:bind nodeset="publisher" required="../export/oai-pmh = true() or ../export/pelagios = true()"/>
-				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"/>
-				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"/>
+				<xforms:bind nodeset="publisher" required="../export/oai-pmh = true() or ../export/pelagios = true()"></xforms:bind>
+				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"></xforms:bind>
+				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"></xforms:bind>
+				<xforms:bind nodeset="containertypes">
+					<xforms:bind nodeset="container/@value" required="true()" type="xs:NMTOKEN"></xforms:bind>
+					<xforms:bind nodeset="container" required="true()"></xforms:bind>
+				</xforms:bind>
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('control-instance')">
-				<xforms:bind nodeset="save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>
-				<xforms:bind nodeset="xeac-success" type="xs:boolean"/>
-				<xforms:bind nodeset="sparql-success" type="xs:boolean"/>
-				<xforms:bind nodeset="sparql-connect" type="xs:boolean"/>
+				<xforms:bind nodeset="save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"></xforms:bind>
+				<xforms:bind nodeset="xeac-success" type="xs:boolean"></xforms:bind>
+				<xforms:bind nodeset="sparql-success" type="xs:boolean"></xforms:bind>
+				<xforms:bind nodeset="sparql-connect" type="xs:boolean"></xforms:bind>
 				<xforms:bind nodeset="sparql">
-					<xforms:bind nodeset="query" as="xs:anyURI"/>
-					<xforms:bind nodeset="store" as="xs:anyURI"/>
-					<xforms:bind nodeset="update" as="xs:anyURI"/>
+					<xforms:bind nodeset="query" as="xs:anyURI"></xforms:bind>
+					<xforms:bind nodeset="store" as="xs:anyURI"></xforms:bind>
+					<xforms:bind nodeset="update" as="xs:anyURI"></xforms:bind>
 				</xforms:bind>
 			</xforms:bind>
 
 			<xforms:bind id="sparql-connect" nodeset="instance('control-instance')/connect-trigger"
-				readonly="string-length(../sparql/query) = 0 or string-length(../sparql/update) = 0 or string-length(../sparql/store) = 0"/>
+				readonly="string-length(../sparql/query) = 0 or string-length(../sparql/update) = 0 or string-length(../sparql/store) = 0"></xforms:bind>
 
-			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"/>
+			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"></xforms:bind>
 
 			<!-- ************* SUBMISSIONS ************* -->
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
@@ -261,28 +265,26 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set default if security is false -->
 					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role='']/@name"/>
+						<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role='']/@name"></xforms:setvalue>
 					</xforms:action>
 					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
 					<xforms:action if="string(instance('control-instance')/request-security/role)">
 						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"></xforms:setvalue>
 					</xforms:action>
-					<xforms:send submission="load-config"/>
+					<xforms:send submission="load-config"></xforms:send>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-config" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-config" ref="instance('config')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" method="put"
+				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Config.</xforms:message>
 				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-done">EADitor configuration saved.</xforms:setvalue>
 			</xforms:submission>
@@ -293,12 +295,12 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set readonly for save button if the api key is a string and failed -->
-					<xforms:setvalue ref="instance('control-instance')/api-key-accepted"
-						if="not(instance('flickr-response')/@stat = 'ok') and string-length(instance('config')/flickr_api_key) &gt; 0" value="'false'"/>
+					<xforms:setvalue ref="instance('control-instance')/api-key-accepted" if="not(instance('flickr-response')/@stat = 'ok') and string-length(instance('config')/flickr_api_key) &gt; 0"
+						value="'false'"></xforms:setvalue>
 
 					<!-- activate button if the api key is okay or blank -->
-					<xforms:setvalue ref="instance('control-instance')/api-key-accepted"
-						if="instance('flickr-response')/@stat = 'ok' or string-length(instance('config')/flickr_api_key) = 0" value="'true'"/>
+					<xforms:setvalue ref="instance('control-instance')/api-key-accepted" if="instance('flickr-response')/@stat = 'ok' or string-length(instance('config')/flickr_api_key) = 0"
+						value="'true'"></xforms:setvalue>
 				</xforms:action>
 			</xforms:submission>
 
@@ -310,8 +312,7 @@
 
 			<!-- query SPARQL endpoint -->
 			<xforms:submission id="query-sparql" serialization="none" method="get"
-				action="{instance('control-instance')/sparql/query}?query={encode-for-uri(instance('control-instance')/sparql-query-test)}" replace="instance"
-				instance="sparql-response">
+				action="{instance('control-instance')/sparql/query}?query={encode-for-uri(instance('control-instance')/sparql-query-test)}" replace="instance" instance="sparql-response">
 				<xforms:header>
 					<xforms:name>Accept</xforms:name>
 					<xforms:value>application/sparql-results+xml</xforms:value>
@@ -320,14 +321,14 @@
 			</xforms:submission>
 
 			<!-- publish all documents which are present in Solr into the RDF triplestore -->
-			<xforms:submission id="publish-rdf" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=*:*&amp;rows=10000&amp;start=0&amp;fl=id"
-				replace="instance" instance="solr-response">
+			<xforms:submission id="publish-rdf" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=*:*&amp;rows=10000&amp;start=0&amp;fl=id" replace="instance"
+				instance="solr-response">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Solr is inaccessible. Please check Solr configuration.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:action xxforms:iterate="instance('solr-response')//doc">
-						<xforms:var name="id" select="str[@name='id']"/>
-						<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>
-						<xforms:send submission="get-rdf"/>
+						<xforms:var name="id" select="str[@name='id']"></xforms:var>
+						<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
+						<xforms:send submission="get-rdf"></xforms:send>
 					</xforms:action>
 				</xforms:action>
 			</xforms:submission>
@@ -338,25 +339,24 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- first remove existing graphs -->
 					<xforms:action xxforms:iterate="instance('rdf')//@rdf:about">
-						<xforms:var name="uri" select="."/>
-						<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"/>
-						<xforms:send submission="delete-graph"/>
+						<xforms:var name="uri" select="."></xforms:var>
+						<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"></xforms:setvalue>
+						<xforms:send submission="delete-graph"></xforms:send>
 					</xforms:action>
 					<!-- then post RDF -->
-					<xforms:send submission="post-rdf"/>
+					<xforms:send submission="post-rdf"></xforms:send>
 				</xforms:action>
 			</xforms:submission>
 
-			<xforms:submission id="post-rdf" action="{instance('control-instance')/sparql/store}?default" ref="instance('rdf')" replace="none" method="post"
-				mediatype="application/rdf+xml">
+			<xforms:submission id="post-rdf" action="{instance('control-instance')/sparql/store}?default" ref="instance('rdf')" replace="none" method="post" mediatype="application/rdf+xml">
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/sparql-success">false</xforms:setvalue>
 					<xforms:message level="modal">Post to endpoint failed.</xforms:message>
 				</xforms:action>
 			</xforms:submission>
 
-			<xforms:submission id="delete-graph" action="{instance('control-instance')/sparql/update}" ref="instance('sparqlUpdate')" serialization="text/plain" replace="none"
-				method="post" mediatype="application/sparql-update">
+			<xforms:submission id="delete-graph" action="{instance('control-instance')/sparql/update}" ref="instance('sparqlUpdate')" serialization="text/plain" replace="none" method="post"
+				mediatype="application/sparql-update">
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/sparql-success">false</xforms:setvalue>
 					<xforms:message level="modal">SPARQL update failed.</xforms:message>
@@ -366,22 +366,22 @@
 			<!-- ********** XFORMS-MODEL-CONSTRUCT-DONE ********** -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
-				<xforms:send submission="load-collections"/>
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+				<xforms:send submission="load-collections"></xforms:send>
 			</xforms:action>
 		</xforms:model>
 	</head>
 
 	<body>
 		<xforms:var name="display_path">../</xforms:var>
-		<xi:include href="header.xml"/>
+		<xi:include href="header.xml"></xi:include>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
 					<div id="form">
 						<xforms:group ref="instance('control-instance')/status/text()">
 							<div class="bg-success success">
-								<xforms:output ref="instance('control-instance')/status"/>
+								<xforms:output ref="instance('control-instance')/status"></xforms:output>
 							</div>
 						</xforms:group>
 						<p>
@@ -389,10 +389,10 @@
 						</p>
 						<div class="submission">
 							<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
-								<xforms:label><span class="glyphicon glyphicon-save"/>Save</xforms:label>
+								<xforms:label><span class="glyphicon glyphicon-save"></span>Save</xforms:label>
 								<xforms:action ev:event="DOMActivate">
 									<!-- then save the config to eXist -->
-									<xforms:send submission="save-config"/>
+									<xforms:send submission="save-config"></xforms:send>
 								</xforms:action>
 							</xforms:trigger>
 						</div>
@@ -435,8 +435,8 @@
 												<xforms:label>URL</xforms:label>
 												<xforms:alert>Required</xforms:alert>
 											</xforms:input>
-											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private
-												aspects of EADitor be contained on different servers.</p>
+											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor be
+												contained on different servers.</p>
 										</div>
 										<div>
 											<xforms:output ref="xeac">
@@ -445,22 +445,21 @@
 											<xforms:trigger>
 												<xforms:label>Connect</xforms:label>
 												<xforms:action ev:event="DOMActivate">
-													<xforms:setvalue ref="instance('control-instance')/xeac" value="instance('config')/xeac"/>
-													<xxforms:show dialog="xeac-dialog"/>
+													<xforms:setvalue ref="instance('control-instance')/xeac" value="instance('config')/xeac"></xforms:setvalue>
+													<xxforms:show dialog="xeac-dialog"></xxforms:show>
 												</xforms:action>
 											</xforms:trigger>
 											<xforms:group ref=".[string(xeac)]">
 												<xforms:trigger>
 													<xforms:label>Clear</xforms:label>
 													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="instance('control-instance')/xeac"/>
+														<xforms:setvalue ref="instance('control-instance')/xeac"></xforms:setvalue>
 														<xforms:setvalue ref="instance('control-instance')/xeac-success">false</xforms:setvalue>
-														<xforms:setvalue ref="instance('config')/xeac"/>
+														<xforms:setvalue ref="instance('config')/xeac"></xforms:setvalue>
 													</xforms:action>
 												</xforms:trigger>
 											</xforms:group>
-											<p>Home page for a xEAC installation for linking EADitor to CPF authority records. The Atom feed URL will be programmatically
-												ascertained.</p>
+											<p>Home page for a xEAC installation for linking EADitor to CPF authority records. The Atom feed URL will be programmatically ascertained.</p>
 										</div>
 									</div>
 									<xforms:group ref="sparql">
@@ -471,7 +470,7 @@
 													<xforms:trigger>
 														<xforms:label>Connect</xforms:label>
 														<xforms:action ev:event="DOMActivate">
-															<xxforms:show dialog="sparql-dialog"/>
+															<xxforms:show dialog="sparql-dialog"></xxforms:show>
 														</xforms:action>
 													</xforms:trigger>
 												</xforms:group>
@@ -479,13 +478,13 @@
 													<xforms:trigger>
 														<xforms:label>Clear</xforms:label>
 														<xforms:action ev:event="DOMActivate">
-															<xforms:setvalue ref="instance('control-instance')/sparql/query"/>
-															<xforms:setvalue ref="instance('control-instance')/sparql/update"/>
-															<xforms:setvalue ref="instance('control-instance')/sparql/store"/>
+															<xforms:setvalue ref="instance('control-instance')/sparql/query"></xforms:setvalue>
+															<xforms:setvalue ref="instance('control-instance')/sparql/update"></xforms:setvalue>
+															<xforms:setvalue ref="instance('control-instance')/sparql/store"></xforms:setvalue>
 															<xforms:setvalue ref="instance('control-instance')/sparql-success">false</xforms:setvalue>
-															<xforms:setvalue ref="update"/>
-															<xforms:setvalue ref="query"/>
-															<xforms:setvalue ref="store"/>
+															<xforms:setvalue ref="update"></xforms:setvalue>
+															<xforms:setvalue ref="query"></xforms:setvalue>
+															<xforms:setvalue ref="store"></xforms:setvalue>
 															<xforms:setvalue ref="endpoint">false</xforms:setvalue>
 														</xforms:action>
 													</xforms:trigger>
@@ -519,8 +518,8 @@
 									</xforms:group>
 									<div class="section">
 										<h3>ARK</h3>
-										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI:
-												<xforms:output value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"/></p>
+										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output
+												value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"></xforms:output></p>
 										<div>
 											<xforms:input ref="ark/@enabled">
 												<xforms:label>Enabled</xforms:label>
@@ -537,9 +536,9 @@
 										<h3>Export</h3>
 										<div class="subsection">
 											<h4>OAI-PMH</h4>
-											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important:
-												</b> Validation only passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the
-												:8080 Tomcat port. The OAI unique identifier is derived from the URL on this settings page.</p>
+											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only
+												passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier
+												is derived from the URL on this settings page.</p>
 											<div>
 												<xforms:input ref="export/oai-pmh">
 													<xforms:label>Enabled</xforms:label>
@@ -562,8 +561,8 @@
 										</div>
 										<div class="subsection">
 											<h4>Pelagios</h4>
-											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF
-												documents for objects which have been tied to Pleiades IDs.</p>
+											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF documents for objects
+												which have been tied to Pleiades IDs.</p>
 											<div>
 												<xforms:input ref="export/pelagios">
 													<xforms:label>Enabled</xforms:label>
@@ -589,10 +588,10 @@
 											</div>
 											<h4>Components</h4>
 											<xforms:repeat nodeset="level">
-												<xforms:var name="label" select="."/>
+												<xforms:var name="label" select="."></xforms:var>
 												<div>
 													<xforms:input ref="@enabled">
-														<xforms:label ref="concat('Level: ', $label)"/>
+														<xforms:label ref="concat('Level: ', $label)"></xforms:label>
 													</xforms:input>
 												</div>
 											</xforms:repeat>
@@ -604,9 +603,9 @@
 											<div class="ui-widget">
 												<div class="ui-state-error ui-corner-all">
 													<p>
-														<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"/>
+														<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span>
 														<strong>Alert:</strong>
-														<xforms:output ref="instance('flickr-response')/err/@msg"/>
+														<xforms:output ref="instance('flickr-response')/err/@msg"></xforms:output>
 													</p>
 												</div>
 											</div>
@@ -614,17 +613,15 @@
 										<div>
 											<xforms:input ref="flickr_api_key" incremental="true">
 												<xforms:label>flickr API Key</xforms:label>
-												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"/>
+												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"></xforms:send>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr
-												image linking.</p>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
 										</div>
 										<div>
 											<xforms:input ref="flickr_api_secret" incremental="true">
 												<xforms:label>flickr API Secret</xforms:label>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through
-												EADitor.</p>
+											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
 										</div>
 										<div>
 											<xforms:input ref="geonames_api_key" incremental="true">
@@ -642,52 +639,96 @@
 										</div>
 									</div>
 									<div class="section">
+										<xforms:group ref="containertypes">
+											<h3>Container Types</h3>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<span class="glyphicon glyphicon-plus"></span>New Container</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
+													origin="xforms:element('container', (xforms:attribute('value', '')))"></xforms:insert>
+											</xforms:trigger>
+											<table class="table">
+												<thead>
+													<tr>
+														<th>Container Label</th>
+														<th>Level</th>
+														<th>Delete</th>
+													</tr>
+												</thead>
+												<tbody>
+													<xforms:repeat nodeset="container">
+														<tr>
+															<td>
+																<xforms:input ref=".">
+																	<xforms:alert>Required</xforms:alert>
+																</xforms:input>
+															</td>
+															<td>
+																<xforms:input ref="@value">
+																	<xforms:alert>Required; must be xs:NMTOKEN type</xforms:alert>
+																</xforms:input>
+															</td>
+															<td>
+																<xforms:group ref=".[count(parent::node()/container) &gt; 1]">
+																	<xforms:trigger appearance="minimal">
+																		<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
+																		<xforms:label>
+																			<span class="glyphicon glyphicon-remove"></span>
+																		</xforms:label>
+																	</xforms:trigger>
+																</xforms:group>
+															</td>
+														</tr>
+													</xforms:repeat>
+												</tbody>
+											</table>
+										</xforms:group>
+									</div>
+									<div class="section">
 										<xforms:group ref="facets">
 											<h3>Facets</h3>
 											<span class="add">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Facet</xforms:label>
-													<xforms:insert context="." nodeset="./child::node()[last()]" origin="xforms:element('facet')" ev:event="DOMActivate"
-													/>
+														<span class="glyphicon glyphicon-plus"></span>Facet</xforms:label>
+													<xforms:insert context="." nodeset="./child::node()[last()]" origin="xforms:element('facet')" ev:event="DOMActivate"></xforms:insert>
 												</xforms:trigger>
 											</span>
-											<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will
-												cause the browse and map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and
-												maps pages.</p>
+											<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will cause the
+												browse and map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
 											<xforms:repeat nodeset="facet">
-												<xforms:var name="position" select="position()"/>
+												<xforms:var name="position" select="position()"></xforms:var>
 												<div>
 													<xforms:input ref=".">
 														<xforms:label>Facet</xforms:label>
 													</xforms:input>
 													<xforms:group ref=".[$position != 1]">
 														<xforms:trigger appearance="minimal">
-															<xforms:label><span class="glyphicon glyphicon-arrow-up"/></xforms:label>
+															<xforms:label><span class="glyphicon glyphicon-arrow-up"></span></xforms:label>
 															<xforms:action ev:event="DOMActivate">
-																<xforms:insert context="parent::node()" nodeset="facet[$position - 2]" origin="parent::node()/facet[$position]"/>
-																<xforms:delete nodeset="."/>
+																<xforms:insert context="parent::node()" nodeset="facet[$position - 2]" origin="parent::node()/facet[$position]"></xforms:insert>
+																<xforms:delete nodeset="."></xforms:delete>
 															</xforms:action>
 														</xforms:trigger>
 													</xforms:group>
 													<xforms:group ref=".[not($position=count(parent::node()/facet))]">
 														<xforms:trigger appearance="minimal">
-															<xforms:label><span class="glyphicon glyphicon-arrow-down"/></xforms:label>
+															<xforms:label><span class="glyphicon glyphicon-arrow-down"></span></xforms:label>
 															<xforms:action ev:event="DOMActivate">
-																<xforms:insert context="parent::node()" nodeset="facet[$position+1]" origin="parent::node()/facet[$position]"/>
-																<xforms:delete nodeset="."/>
+																<xforms:insert context="parent::node()" nodeset="facet[$position+1]" origin="parent::node()/facet[$position]"></xforms:insert>
+																<xforms:delete nodeset="."></xforms:delete>
 															</xforms:action>
 														</xforms:trigger>
 													</xforms:group>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" context="."/>
+														<xforms:delete ev:event="DOMActivate" context="."></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 												</div>
 											</xforms:repeat>
-										</xforms:group>										
+										</xforms:group>
 									</div>
 								</xforms:group>
 							</fr:tab>
@@ -729,14 +770,14 @@
 					</xforms:input>
 					<xforms:trigger>
 						<xforms:label>Connect</xforms:label>
-						<xforms:send submission="query-xeac" ev:event="DOMActivate"/>
+						<xforms:send submission="query-xeac" ev:event="DOMActivate"></xforms:send>
 					</xforms:trigger>
 					<xforms:group ref=".[string(instance('config')/xeac)]">
 						<xforms:trigger>
 							<xforms:label>Clear</xforms:label>
 							<xforms:action ev:event="DOMActivate">
-								<xforms:setvalue ref="instance('config')/xeac"/>
-								<xxforms:hide dialog="xeac-dialog"/>
+								<xforms:setvalue ref="instance('config')/xeac"></xforms:setvalue>
+								<xxforms:hide dialog="xeac-dialog"></xxforms:hide>
 							</xforms:action>
 						</xforms:trigger>
 					</xforms:group>
@@ -750,8 +791,8 @@
 						<xforms:trigger>
 							<xforms:label>Select</xforms:label>
 							<xforms:action ev:event="DOMActivate">
-								<xforms:setvalue ref="instance('config')/xeac" value="instance('control-instance')/xeac"/>
-								<xxforms:hide dialog="xeac-dialog"/>
+								<xforms:setvalue ref="instance('config')/xeac" value="instance('control-instance')/xeac"></xforms:setvalue>
+								<xxforms:hide dialog="xeac-dialog"></xxforms:hide>
 							</xforms:action>
 						</xforms:trigger>
 					</div>
@@ -792,16 +833,16 @@
 						<xforms:action ev:event="DOMActivate">
 							<xforms:setvalue ref="instance('control-instance')/sparql-connect">true</xforms:setvalue>
 							<!-- first query the sparql endpoint -->
-							<xforms:send submission="query-sparql"/>
+							<xforms:send submission="query-sparql"></xforms:send>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:setvalue ref="instance('control-instance')/sparql-success">true</xforms:setvalue>
 								<!-- then test posting and deleting from the update endpoint -->
-								<xforms:insert context="instance('rdf')" origin="instance('rdf-test')/rdf:Description"/>
-								<xforms:send submission="post-rdf"/>
+								<xforms:insert context="instance('rdf')" origin="instance('rdf-test')/rdf:Description"></xforms:insert>
+								<xforms:send submission="post-rdf"></xforms:send>
 								<xforms:action ev:event="xforms-submit-done">
 									<!-- if the RDF test successfully posts, then delete the graph through SPARQL/Update -->
-									<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', 'http://example.org/')"/>
-									<xforms:send submission="delete-graph"/>
+									<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', 'http://example.org/')"></xforms:setvalue>
+									<xforms:send submission="delete-graph"></xforms:send>
 								</xforms:action>
 							</xforms:action>
 						</xforms:action>
@@ -828,11 +869,11 @@
 						<xforms:trigger>
 							<xforms:label>Confirm</xforms:label>
 							<xforms:action ev:event="DOMActivate">
-								<xforms:setvalue ref="instance('config')/sparql/query" value="instance('control-instance')/sparql/query"/>
-								<xforms:setvalue ref="instance('config')/sparql/update" value="instance('control-instance')/sparql/update"/>
-								<xforms:setvalue ref="instance('config')/sparql/store" value="instance('control-instance')/sparql/store"/>								
-								<xxforms:hide dialog="sparql-dialog"/>
-								<xforms:dispatch target="publish-all" name="fr-show"/>
+								<xforms:setvalue ref="instance('config')/sparql/query" value="instance('control-instance')/sparql/query"></xforms:setvalue>
+								<xforms:setvalue ref="instance('config')/sparql/update" value="instance('control-instance')/sparql/update"></xforms:setvalue>
+								<xforms:setvalue ref="instance('config')/sparql/store" value="instance('control-instance')/sparql/store"></xforms:setvalue>
+								<xxforms:hide dialog="sparql-dialog"></xxforms:hide>
+								<xforms:dispatch target="publish-all" name="fr-show"></xforms:dispatch>
 							</xforms:action>
 						</xforms:trigger>
 					</div>
@@ -847,9 +888,9 @@
 		<fr:alert-dialog id="publish-all">
 			<fr:label>Publish RDF</fr:label>
 			<fr:message>Do you want to post all published records into the SPARQL endpoint? It may take several minutes.</fr:message>
-			<fr:negative-choice/>
+			<fr:negative-choice></fr:negative-choice>
 			<fr:positive-choice>
-				<xforms:send ev:event="DOMActivate" submission="publish-rdf"/>
+				<xforms:send ev:event="DOMActivate" submission="publish-rdf"></xforms:send>
 			</fr:positive-choice>
 		</fr:alert-dialog>
 	</body>

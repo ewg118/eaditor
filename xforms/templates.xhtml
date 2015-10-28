@@ -5,19 +5,20 @@
 	
 	Heavily modified from upload form developed by Orbeon	
 -->
-<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude">
-	<xhtml:head>
-		<xhtml:title>EADitor: Upload EAD Finding Aid</xhtml:title>
-		<xhtml:link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
-		<xhtml:link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
-		<xhtml:link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
-		<xhtml:link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
-		<xhtml:link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<xhtml:link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
+	<head>
+		<title>EADitor: Upload EAD Finding Aid</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>		
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 		<!-- EADitor styling -->
-		<xhtml:link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model>
 			<xforms:instance id="exist-config">
@@ -46,16 +47,8 @@
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
-					<!-- set default if security is false -->
-					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role='']/@name"/>
-					</xforms:action>
-					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
-					<xforms:action if="string(instance('control-instance')/request-security/role)">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
-					</xforms:action>
+					<xforms:setvalue ref="instance('control-instance')/collection-name"
+						value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 					<xforms:send submission="load-config"/>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
@@ -74,43 +67,39 @@
 				<xforms:send submission="load-collections"/>
 			</xforms:action>
 		</xforms:model>
-	</xhtml:head>
-	<xhtml:body>
-		<xhtml:div class="yui3-g">
-			<xhtml:div class="yui3-u-1">
-				<xhtml:div class="content">
-					<!-- header -->
-					<xforms:var name="display_path">../../</xforms:var>
-					<xi:include href="header.xml"/>
-
-					<xhtml:div id="form">
-						<xhtml:p>
-							<xhtml:a href="..">&lt; Return</xhtml:a>
-						</xhtml:p>
-						<xhtml:h2>Template Manager</xhtml:h2>
-						<xhtml:p> Use this feature to customize the default templates for the core of an EAD finding aid and its components. The prepackaged templates represent a bare-bones XML model
+	</head>
+	<body>
+		<!-- header -->
+		<xforms:var name="display_path">../</xforms:var>
+		<xi:include href="header.xml"/>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">	
+					<div id="form">
+						<p>
+							<a href="..">&lt; Return</a>
+						</p>
+						<h2>Template Manager</h2>
+						<p> Use this feature to customize the default templates for the core of an EAD finding aid and its components. The prepackaged templates represent a bare-bones XML model
 							with inputs required by the schema or for machine processing purposes (e. g., the id attribute in &lt;ead&gt;). The template editor enables a site administrator or
 							archivist to add more elements or textual values. For example, the default EAD template only requires did/unititle in the Archival Description. An institution's best
 							practices may require further detail in the archdesc, such as did/unitdate, did/container, access or use restriction statements, or an abstract. The template interface is
-							nearly identical in functionality as the forms for editing EAD documents themselves.</xhtml:p>
-						<xhtml:p>In addition to EAD templating, this section offers forms for setting very restrictive controlled vocabulary (drop down menus in the EAD editor as opposed to open-ended
+							nearly identical in functionality as the forms for editing EAD documents themselves.</p>
+						<p>In addition to EAD templating, this section offers forms for setting very restrictive controlled vocabulary (drop down menus in the EAD editor as opposed to open-ended
 							autocomplete for subject terms or personal names) that are more likely to vary from institution to institution. This includes institution names/codes and container
-							types.</xhtml:p>
-						<xhtml:h3> Options </xhtml:h3>
-						<xhtml:ul>
-							<xhtml:li>
-								<xhtml:a href="../edit/core-template/">EAD Core Template</xhtml:a>
-							</xhtml:li>
-							<xhtml:li>
-								<xhtml:a href="../edit/c-template/">EAD Component Template</xhtml:a>
-							</xhtml:li>
-							<xhtml:li>
-								<xhtml:a href="../edit/instance-templates/">Instance Templates (Agency Codes, Container Types)</xhtml:a>
-							</xhtml:li>
-						</xhtml:ul>
-					</xhtml:div>
-				</xhtml:div>
-			</xhtml:div>
-		</xhtml:div>
-	</xhtml:body>
-</xhtml:html>
+							types.</p>
+						<h3> Options </h3>
+						<ul>
+							<li>
+								<a href="../edit/core-template/">EAD Core Template</a>
+							</li>
+							<li>
+								<a href="../edit/c-template/">EAD Component Template</a>
+							</li>							
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

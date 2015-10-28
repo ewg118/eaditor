@@ -4,21 +4,19 @@
     EADitor: https://github.com/ewg118/eaditor
     Apache License 2.0: https://github.com/ewg118/eaditor    
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
 	<head>
 		<title>EADitor: Edit Core Template</title>
-		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
-		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
-		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
-		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
-		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-
-		<!-- EADitor styling -->
-		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css" />
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -26,141 +24,141 @@
 					<xs:restriction base="xs:string">
 						<xs:pattern
 							value="(\-?(0|1|2)([0-9]{3})(((01|02|03|04|05|06|07|08|09|10|11|12)((0[1-9])|((1|2)[0-9])|(3[0-1])))|\-((01|02|03|04|05|06|07|08|09|10|11|12)(\-((0[1-9])|((1|2)[0-9])|(3[0-1])))?))?)(/\-?(0|1|2)([0-9]{3})(((01|02|03|04|05|06|07|08|09|10|11|12)((0[1-9])|((1|2)[0-9])|(3[0-1])))|\-((01|02|03|04|05|06|07|08|09|10|11|12)(\-((0[1-9])|((1|2)[0-9])|(3[0-1])))?))?)?"
-						/>
+						></xs:pattern>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:schema>
 
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-config">
-				<xi:include href="../exist-config.xml"/>
+				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
-			
+
 			<xforms:instance id="config">
-				<config xmlns=""/>
+				<config xmlns=""></config>
 			</xforms:instance>
-			
+
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
-					<collection-name/>					
+					<collection-name></collection-name>
 				</controls>
 			</xforms:instance>
-			
+
 			<!-- authentication -->
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
-				<collections xmlns=""/>
+				<collections xmlns=""></collections>
 			</xforms:instance>
-			
+
 			<xforms:instance id="dump">
-				<dump xmlns=""/>
+				<dump xmlns=""></dump>
 			</xforms:instance>
 
 			<xforms:instance id="ead-template" xmlns:xlink="http://www.w3.org/1999/xlink">
-				<ead xmlns="urn:isbn:1-931666-22-9"/>
+				<ead xmlns="urn:isbn:1-931666-22-9"></ead>
 			</xforms:instance>
 
 			<!-- get from exist -->
 			<xforms:instance id="c-template" xmlns:xlink="http://www.w3.org/1999/xlink">
-				<c xmlns="urn:isbn:1-931666-22-9"/>
+				<c xmlns="urn:isbn:1-931666-22-9"></c>
 			</xforms:instance>
-			
+
 
 			<xforms:instance id="status">
-				<status/>
+				<status></status>
 			</xforms:instance>
 
 			<!-- EAD ELEMENTS -->
 			<!-- eadheader -->
 			<xforms:instance id="profiledesc-template" xxforms:exclude-result-prefixes="#all">
-				<profiledesc/>
+				<profiledesc></profiledesc>
 			</xforms:instance>
 			<xforms:instance id="revisiondesc-template" xxforms:exclude-result-prefixes="#all">
 				<revisiondesc>
 					<change>
-						<date normal=""/>
-						<item/>
+						<date normal=""></date>
+						<item></item>
 					</change>
 				</revisiondesc>
 			</xforms:instance>
 			<xforms:instance id="editionstmt-template" xxforms:exclude-result-prefixes="#all">
 				<editionstmt>
-					<edition/>
+					<edition></edition>
 				</editionstmt>
 			</xforms:instance>
 			<xforms:instance id="notestmt-template" xxforms:exclude-result-prefixes="#all">
 				<notestmt>
 					<note>
-						<p/>
+						<p></p>
 					</note>
 				</notestmt>
 			</xforms:instance>
 			<xforms:instance id="publicationstmt-template" xxforms:exclude-result-prefixes="#all">
-				<publicationstmt/>
+				<publicationstmt></publicationstmt>
 			</xforms:instance>
 			<xforms:instance id="seriesstmt-template" xxforms:exclude-result-prefixes="#all">
-				<seriesstmt/>
+				<seriesstmt></seriesstmt>
 			</xforms:instance>
 
 			<!-- shared/generic -->
 			<xforms:instance id="author-template" xxforms:exclude-result-prefixes="#all">
-				<author/>
+				<author></author>
 			</xforms:instance>
 			<xforms:instance id="creation-template" xxforms:exclude-result-prefixes="#all">
-				<creation/>
+				<creation></creation>
 			</xforms:instance>
 			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
 				<change>
-					<date normal=""/>
-					<item/>
+					<date normal=""></date>
+					<item></item>
 				</change>
 			</xforms:instance>
 			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
-				<date normal=""/>
+				<date normal=""></date>
 			</xforms:instance>
 			<xforms:instance id="descrules-template" xxforms:exclude-result-prefixes="#all">
-				<descrules/>
+				<descrules></descrules>
 			</xforms:instance>
 			<xforms:instance id="langusage-template" xxforms:exclude-result-prefixes="#all">
-				<langusage/>
+				<langusage></langusage>
 			</xforms:instance>
 			<xforms:instance id="num-template" xxforms:exclude-result-prefixes="#all">
-				<num type=""/>
+				<num type=""></num>
 			</xforms:instance>
 			<xforms:instance id="publisher-template" xxforms:exclude-result-prefixes="#all">
-				<publisher/>
+				<publisher></publisher>
 			</xforms:instance>
 			<xforms:instance id="sponsor-template" xxforms:exclude-result-prefixes="#all">
-				<sponsor/>
+				<sponsor></sponsor>
 			</xforms:instance>
 			<xforms:instance id="subtitle-template" xxforms:exclude-result-prefixes="#all">
-				<subtitle/>
+				<subtitle></subtitle>
 			</xforms:instance>
 			<xforms:instance id="titleproper-template" xxforms:exclude-result-prefixes="#all">
-				<titleproper/>
+				<titleproper></titleproper>
 			</xforms:instance>
 			<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
 				<address>
-					<addressline/>
+					<addressline></addressline>
 				</address>
 			</xforms:instance>
 			<xforms:instance id="blockquote-template" xxforms:exclude-result-prefixes="#all">
-				<blockquote/>
+				<blockquote></blockquote>
 			</xforms:instance>
 			<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
-				<head/>
+				<head></head>
 			</xforms:instance>
 			<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
 				<note>
-					<p/>
+					<p></p>
 				</note>
 			</xforms:instance>
 			<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
-				<p/>
+				<p></p>
 			</xforms:instance>
 
 			<!-- archdesc instances -->
 			<xforms:instance id="dsc-template" xxforms:exclude-result-prefixes="#all">
-				<dsc/>
+				<dsc></dsc>
 			</xforms:instance>
 
 			<xforms:instance id="level-template">
@@ -180,75 +178,31 @@
 				</levels>
 			</xforms:instance>
 
-			<xforms:bind node="instance('ead-template')">
-				<xforms:bind nodeset="ead:eadheader"> </xforms:bind>
-				<xforms:bind nodeset="ead:archdesc">
-					<xforms:bind nodeset="ead:did">
-						<xforms:bind nodeset="ead:langmaterial">
-							<xforms:bind ref="ead:language">
-								<xforms:bind constraint="string-length(@langcode) &gt; 0"/>
-							</xforms:bind>
-						</xforms:bind>
-					</xforms:bind>
-					<xforms:bind nodeset="ead:dsc">
-						<xforms:bind nodeset="ead:c">
-							<xforms:bind nodeset="@id" required="true()"/>
-							<xforms:bind nodeset="ead:did/ead:unittitle" required="true()"/>
-						</xforms:bind>
-					</xforms:bind>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:tgroup/@cols" required="true()" type="xs:integer"/>
-				<xforms:bind nodeset="//ead:listhead">
-					<xforms:bind nodeset="ead:head01" required="true()"/>
-					<xforms:bind nodeset="ead:head02" required="true()"/>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:ref" required="true()"/>
-				<xforms:bind nodeset="//ead:extref" required="true()">
-					<xforms:bind nodeset="@href" required="true()"/>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:dao/@href" required="true()"/>
-				<xforms:bind nodeset="//ead:daoloc/@href" required="true()"/>
-				<xforms:bind nodeset="//ead:defitem">
-					<xforms:bind nodeset="ead:label" required="true()"/>
-					<xforms:bind nodeset="ead:item" required="true()"/>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:unitdate/@normal" type="xs:date"/>
-				<xforms:bind nodeset="//ead:date/@normal" type="xs:date"/>
-			</xforms:bind>
-
 			<!-- bind tabs -->
-			<xforms:bind id="archdesc-tab" nodeset="instance('ead-template')/ead:archdesc"/>
-			
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:bind id="archdesc-tab" nodeset="instance('ead-template')/ead:archdesc"></xforms:bind>
+
+			<!-- ************** SUBMISSIONS ***************** -->
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
-					<!-- set default if security is false -->
-					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role='']/@name"/>
-					</xforms:action>
-					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
-					<xforms:action if="string(instance('control-instance')/request-security/role)">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
-					</xforms:action>
-					<xforms:send submission="load-config"/>
-					<xforms:send submission="load-core-template"/>
-					<xforms:send submission="load-c-template"/>
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"></xforms:setvalue>
+					<xforms:send submission="load-config"></xforms:send>
+					<xforms:send submission="load-core-template"></xforms:send>
+					<xforms:send submission="load-c-template"></xforms:send>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
-			
+
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" replace="instance"
-				instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
+				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading component template.</xforms:message>
 			</xforms:submission>
 
@@ -259,8 +213,8 @@
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml" method="put"
-				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
+				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Template saved.</xforms:setvalue>
 			</xforms:submission>
@@ -268,90 +222,89 @@
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
-				<xforms:send submission="load-collections"/>
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+				<xforms:send submission="load-collections"></xforms:send>
 			</xforms:action>
 		</xforms:model>
 
 		<!-- xbl components -->
-		<xi:include href="xbl/access-elements/access-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/accruals/accruals.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/address/address.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/altformavail/altformavail.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/blockquote/blockquote.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/c/c.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/chronlist/chronlist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/daodesc/daodesc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/daogrp/daogrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/date/date.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/function/function.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/genreform/genreform.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/geogname/geogname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/head/head.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/index/index.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/list/list.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/listhead/listhead.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/name/name.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/num/num.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/occupation/occupation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/odd/odd.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/p/p.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/persname/persname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/phystech/phystech.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/prefercite/prefercite.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/processinfo/processinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ref/ref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/subject/subject.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/titleproper/titleproper.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/access-elements/access-elements.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/accruals/accruals.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/address/address.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/altformavail/altformavail.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/appraisal/appraisal.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/arrangement/arrangement.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/attributes/attributes.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/bibliography/bibliography.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/bibref/bibref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/bioghist/bioghist.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/blockquote/blockquote.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/c/c.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/chronlist/chronlist.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/daodesc/daodesc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/daogrp/daogrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/daoloc/daoloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/date/date.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/function/function.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/genreform/genreform.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/geogname/geogname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/head/head.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/index/index.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/list/list.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/listhead/listhead.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/name/name.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/num/num.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/occupation/occupation.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/odd/odd.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/p/p.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/persname/persname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/phystech/phystech.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/prefercite/prefercite.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/processinfo/processinfo.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ptr/ptr.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ref/ref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/refloc/refloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/subject/subject.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/titleproper/titleproper.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"></xi:include>
 	</head>
 	<body>
-		<div class="yui3-g">
-			<div class="yui3-u-1">
-				<div class="content">
-					<!-- header -->
-					<xforms:var name="display_path">../../</xforms:var>
-					<xi:include href="header.xml"/>
+		<xforms:var name="display_path">../../</xforms:var>
+		<xi:include href="header.xml"></xi:include>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
 					<div id="form">
 						<xforms:group ref="instance('status')/text()">
 							<div class="success">
-								<xforms:output ref="instance('status')"/>
+								<xforms:output ref="instance('status')"></xforms:output>
 							</div>
 						</xforms:group>
 						<p>
@@ -360,7 +313,7 @@
 						<div class="submission">
 							<xforms:submit submission="save-core-template" appearance="minimal">
 								<xforms:label><span class="glyphicon glyphicon-floppy-disk"></span>Save</xforms:label>
-							</xforms:submit>							
+							</xforms:submit>
 						</div>
 						<div class="section">
 							<h1>Edit EAD Finding Aid Core Template</h1>
@@ -374,9 +327,9 @@
 									<span class="add">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<span class="glyphicon glyphicon-plus"/>
+												<span class="glyphicon glyphicon-plus"></span>
 											</xforms:label>
-											<xxforms:show ev:event="DOMActivate" dialog="eadheader-objects"/>
+											<xxforms:show ev:event="DOMActivate" dialog="eadheader-objects"></xxforms:show>
 										</xforms:trigger>
 									</span>
 									<xxforms:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
@@ -384,18 +337,16 @@
 										<xforms:group ref=".[count(ead:profiledesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<span class="glyphicon glyphicon-plus"/>Profile Description</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="." nodeset="ead:filedesc"
-													origin="instance('profiledesc-template')"/>
+													<span class="glyphicon glyphicon-plus"></span>Profile Description</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="." nodeset="ead:filedesc" origin="instance('profiledesc-template')"></xforms:insert>
 											</xforms:trigger>
 										</xforms:group>
 										<xforms:group ref=".[count(ead:revisiondesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<span class="glyphicon glyphicon-plus"/>Revision Description</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="."
-													nodeset="if (ead:profiledesc) then ead:profiledesc else ead:filedesc"
-													origin="instance('revisiondesc-template')"/>
+													<span class="glyphicon glyphicon-plus"></span>Revision Description</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:profiledesc) then ead:profiledesc else ead:filedesc"
+													origin="instance('revisiondesc-template')"></xforms:insert>
 											</xforms:trigger>
 										</xforms:group>
 									</xxforms:dialog>
@@ -409,8 +360,8 @@
 										<xforms:group ref=".[count(ead:eadid/@mainagencycode) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<span class="glyphicon glyphicon-plus"/>@mainagencycode</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="ead:eadid" origin="xforms:attribute('mainagencycode', '')"/>
+													<span class="glyphicon glyphicon-plus"></span>@mainagencycode</xforms:label>
+												<xforms:insert ev:event="DOMActivate" context="ead:eadid" origin="xforms:attribute('mainagencycode', '')"></xforms:insert>
 											</xforms:trigger>
 										</xforms:group>
 										<xforms:group ref=".[count(ead:eadid/@mainagencycode) &gt; 0]">
@@ -418,18 +369,18 @@
 												<xforms:label>Agency Code</xforms:label>
 												<xforms:item>
 													<xforms:label>Select Agency...</xforms:label>
-													<xforms:value/>
+													<xforms:value></xforms:value>
 												</xforms:item>
 												<xforms:itemset nodeset="instance('config')/templates/agencycodes/agencycode">
-													<xforms:label ref="."/>
-													<xforms:value ref="@value"/>
+													<xforms:label ref="."></xforms:label>
+													<xforms:value ref="@value"></xforms:value>
 												</xforms:itemset>
 												<xforms:alert>Agency Code required</xforms:alert>
 											</xforms:select1>
 											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" context="ead:eadid/@mainagencycode"/>
+												<xforms:delete ev:event="DOMActivate" context="ead:eadid/@mainagencycode"></xforms:delete>
 												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
+													<span class="glyphicon glyphicon-remove"></span>
 												</xforms:label>
 											</xforms:trigger>
 										</xforms:group>
@@ -439,9 +390,9 @@
 										<span class="add">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<span class="glyphicon glyphicon-plus"/>
+													<span class="glyphicon glyphicon-plus"></span>
 												</xforms:label>
-												<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"/>
+												<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"></xxforms:show>
 											</xforms:trigger>
 										</span>
 										<xxforms:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
@@ -449,35 +400,34 @@
 											<xforms:group ref=".[count(//ead:editionstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Edition Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after"
-														origin="instance('editionstmt-template')"/>
+														<span class="glyphicon glyphicon-plus"></span>Edition Statement</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after" origin="instance('editionstmt-template')"
+													></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:publicationstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Publication Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
-														nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
-														origin="instance('publicationstmt-template')"/>
+														<span class="glyphicon glyphicon-plus"></span>Publication Statement</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
+														origin="instance('publicationstmt-template')"></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:seriesstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Series Statement</xforms:label>
+														<span class="glyphicon glyphicon-plus"></span>Series Statement</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
 														nodeset="if (ead:publicationstmt) then ead:publicationstmt else if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
-														origin="instance('seriesstmt-template')"/>
+														origin="instance('seriesstmt-template')"></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:notestmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Note Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]"
-														origin="instance('notestmt-template')"/>
+														<span class="glyphicon glyphicon-plus"></span>Note Statement</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]" origin="instance('notestmt-template')"
+													></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
 										</xxforms:dialog>
@@ -488,35 +438,32 @@
 													<span class="add">
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>
+																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"/>
+															<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"></xxforms:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true"
-														visible="false">
+													<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Title Statement Elements</xforms:label>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Subtitle</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="."
-																nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
-																origin="instance('subtitle-template')"/>
+																<span class="glyphicon glyphicon-plus"></span>Subtitle</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
+																origin="instance('subtitle-template')"></xforms:insert>
 														</xforms:trigger>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Author</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="."
-																nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
-																origin="instance('author-template')"/>
+																<span class="glyphicon glyphicon-plus"></span>Author</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
+																origin="instance('author-template')"></xforms:insert>
 														</xforms:trigger>
 														<xforms:group ref=".[count(ead:sponsor) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Sponsor</xforms:label>
+																	<span class="glyphicon glyphicon-plus"></span>Sponsor</xforms:label>
 																<xforms:insert ev:event="DOMActivate" context="."
 																	nodeset="if (ead:author) then ead:author else if (ead:subtitle) then ead:subtitle else ead:titleproper"
-																	origin="instance('sponsor-template')"/>
+																	origin="instance('sponsor-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 													</xxforms:dialog>
@@ -533,9 +480,9 @@
 																<xforms:label>Subtitle</xforms:label>
 															</xforms:input>
 															<xforms:trigger appearance="minimal">
-																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 																<xforms:label>
-																	<span class="glyphicon glyphicon-remove"/>
+																	<span class="glyphicon glyphicon-remove"></span>
 																</xforms:label>
 															</xforms:trigger>
 														</div>
@@ -547,9 +494,9 @@
 																<xforms:label>Author</xforms:label>
 															</xforms:input>
 															<xforms:trigger appearance="minimal">
-																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 																<xforms:label>
-																	<span class="glyphicon glyphicon-remove"/>
+																	<span class="glyphicon glyphicon-remove"></span>
 																</xforms:label>
 															</xforms:trigger>
 														</div>
@@ -561,9 +508,9 @@
 																<xforms:label>Sponsor</xforms:label>
 															</xforms:input>
 															<xforms:trigger appearance="minimal">
-																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 																<xforms:label>
-																	<span class="glyphicon glyphicon-remove"/>
+																	<span class="glyphicon glyphicon-remove"></span>
 																</xforms:label>
 															</xforms:trigger>
 														</div>
@@ -575,16 +522,16 @@
 												<div class="subsection">
 													<h3>Edition Statement</h3>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate"/>
+														<xforms:delete ev:event="DOMActivate"></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 													<div>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
+																<span class="glyphicon glyphicon-plus"></span>Paragraph</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"></xforms:insert>
 														</xforms:trigger>
 													</div>
 													<xforms:group nodeset="ead:edition">
@@ -597,7 +544,7 @@
 													</xforms:group>
 													<!-- paragraph -->
 													<xforms:repeat nodeset="ead:p">
-														<eaditor:p/>
+														<eaditor:p></eaditor:p>
 													</xforms:repeat>
 												</div>
 											</xforms:group>
@@ -606,53 +553,52 @@
 												<div class="subsection">
 													<h3>Publication Statement</h3>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" nodeset="."/>
+														<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 													<span class="add">
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>
+																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"/>
+															<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"></xxforms:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true"
-														visible="false">
+													<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Publication Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:address) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Address</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." origin="instance('address-template')"/>
+																	<span class="glyphicon glyphicon-plus"></span>Address</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." origin="instance('address-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 														<xforms:group ref=".[count(ead:date) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Date</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." origin="instance('date-template')"/>
+																	<span class="glyphicon glyphicon-plus"></span>Date</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." origin="instance('date-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 														<xforms:group ref=".[count(ead:num) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Number</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"/>
+																	<span class="glyphicon glyphicon-plus"></span>Number</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
+																<span class="glyphicon glyphicon-plus"></span>Paragraph</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"></xforms:insert>
 														</xforms:trigger>
 														<xforms:group ref=".[count(ead:publisher) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Publisher</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"/>
+																	<span class="glyphicon glyphicon-plus"></span>Publisher</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 													</xxforms:dialog>
@@ -661,19 +607,19 @@
 													</xforms:group>
 													<!-- address -->
 													<xforms:group ref="ead:address">
-														<eaditor:address/>
+														<eaditor:address></eaditor:address>
 													</xforms:group>
 													<!-- date -->
 													<xforms:group ref="ead:date">
-														<eaditor:date/>
+														<eaditor:date></eaditor:date>
 													</xforms:group>
 													<!-- num -->
 													<xforms:group ref="ead:num">
-														<eaditor:num/>
+														<eaditor:num></eaditor:num>
 													</xforms:group>
 													<!-- paragraph -->
 													<xforms:repeat nodeset="ead:p">
-														<eaditor:p/>
+														<eaditor:p></eaditor:p>
 													</xforms:repeat>
 													<!-- publisher -->
 													<xforms:group ref="ead:publisher">
@@ -683,9 +629,9 @@
 																<xforms:alert>Required</xforms:alert>
 															</xforms:input>
 															<xforms:trigger appearance="minimal">
-																<xforms:delete ev:event="DOMActivate" nodeset="."/>
+																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 																<xforms:label>
-																	<span class="glyphicon glyphicon-remove"/>
+																	<span class="glyphicon glyphicon-remove"></span>
 																</xforms:label>
 															</xforms:trigger>
 														</div>
@@ -697,40 +643,38 @@
 												<div class="subsection">
 													<h3>Series Statement</h3>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" nodeset="."/>
+														<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 													<span class="add">
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>
+																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"/>
+															<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"></xxforms:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true"
-														visible="false">
+													<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Series Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:num) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Number</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"/>
+																	<span class="glyphicon glyphicon-plus"></span>Number</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
-																origin="instance('p-template')"/>
+																<span class="glyphicon glyphicon-plus"></span>Paragraph</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('p-template')"></xforms:insert>
 														</xforms:trigger>
 														<xforms:group ref=".[count(ead:titleproper) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Title</xforms:label>
-																<xforms:insert ev:event="DOMActivate" context="." origin="instance('titleproper-template')"/>
+																	<span class="glyphicon glyphicon-plus"></span>Title</xforms:label>
+																<xforms:insert ev:event="DOMActivate" context="." origin="instance('titleproper-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
 													</xxforms:dialog>
@@ -739,15 +683,15 @@
 													</xforms:group>
 													<!-- titleproper -->
 													<xforms:group ref="ead:titleproper">
-														<eaditor:titleproper/>
+														<eaditor:titleproper></eaditor:titleproper>
 													</xforms:group>
 													<!-- num -->
 													<xforms:group ref="ead:num">
-														<eaditor:num/>
+														<eaditor:num></eaditor:num>
 													</xforms:group>
 													<!-- p -->
 													<xforms:repeat nodeset="ead:p">
-														<eaditor:p/>
+														<eaditor:p></eaditor:p>
 													</xforms:repeat>
 												</div>
 											</xforms:group>
@@ -755,24 +699,23 @@
 												<div class="subsection">
 													<h3>Note Statement</h3>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" nodeset="."/>
+														<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 													<div>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
-															<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]"
-																origin="instance('note-template')"/>
+																<span class="glyphicon glyphicon-plus"></span>Note</xforms:label>
+															<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('note-template')"></xforms:insert>
 														</xforms:trigger>
 													</div>
 													<xforms:group ref=".[count(child::ead:note) &lt; 1]">
 														<div class="warning"><b>Warning:</b> Note Statement must contain at least one Note.</div>
 													</xforms:group>
 													<xforms:repeat nodeset="ead:note">
-														<eaditor:note/>
+														<eaditor:note></eaditor:note>
 													</xforms:repeat>
 												</div>
 											</xforms:group>
@@ -783,51 +726,49 @@
 										<div class="section">
 											<h2>Profile Description</h2>
 											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
+													<span class="glyphicon glyphicon-remove"></span>
 												</xforms:label>
 											</xforms:trigger>
 											<span class="add">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>
+														<span class="glyphicon glyphicon-plus"></span>
 													</xforms:label>
-													<xxforms:show ev:event="DOMActivate" dialog="profiledesc-objects"/>
+													<xxforms:show ev:event="DOMActivate" dialog="profiledesc-objects"></xxforms:show>
 												</xforms:trigger>
 											</span>
-											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true"
-												visible="false">
+											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 												<xforms:label>Profile Description Elements</xforms:label>
 												<xforms:group ref=".[count(ead:creation) &lt; 1]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
-															<span class="glyphicon glyphicon-plus"/>Creation</xforms:label>
-														<xforms:insert ev:event="DOMActivate" context="." at="1" position="before"
-															origin="instance('creation-template')"/>
+															<span class="glyphicon glyphicon-plus"></span>Creation</xforms:label>
+														<xforms:insert ev:event="DOMActivate" context="." at="1" position="before" origin="instance('creation-template')"></xforms:insert>
 													</xforms:trigger>
 												</xforms:group>
 												<xforms:group ref=".[count(ead:descrules) &lt; 1]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
-															<span class="glyphicon glyphicon-plus"/>Descriptive Rules</xforms:label>
+															<span class="glyphicon glyphicon-plus"></span>Descriptive Rules</xforms:label>
 														<xforms:insert ev:event="DOMActivate" context="."
 															nodeset="if (ead:creation) then ead:creation else if (ead:langusage) then ./child::node()[position() = 1] else node()"
-															origin="instance('descrules-template')"/>
+															origin="instance('descrules-template')"></xforms:insert>
 													</xforms:trigger>
 												</xforms:group>
 												<xforms:group ref=".[count(ead:langusage) &lt; 1]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
-															<span class="glyphicon glyphicon-plus"/>Language Usage</xforms:label>
+															<span class="glyphicon glyphicon-plus"></span>Language Usage</xforms:label>
 														<xforms:insert ev:event="DOMActivate" context="."
 															nodeset="if (ead:descrules) then ead:descrules else if (ead:creation) then ead:creation else if (ead:descrules) then ./child::node()[last()] else node()"
-															origin="instance('langusage-template')"/>
+															origin="instance('langusage-template')"></xforms:insert>
 													</xforms:trigger>
 												</xforms:group>
 											</xxforms:dialog>
 											<xforms:group ref="ead:creation">
-												<eaditor:creation/>
+												<eaditor:creation></eaditor:creation>
 											</xforms:group>
 											<xforms:repeat nodeset="ead:descrules">
 												<div>
@@ -835,9 +776,9 @@
 														<xforms:label>Descriptive Rules</xforms:label>
 													</xforms:input>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" nodeset="."/>
+														<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 												</div>
@@ -848,9 +789,9 @@
 														<xforms:label>Language Usage</xforms:label>
 													</xforms:input>
 													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" nodeset="."/>
+														<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
+															<span class="glyphicon glyphicon-remove"></span>
 														</xforms:label>
 													</xforms:trigger>
 												</div>
@@ -861,23 +802,23 @@
 										<div class="section">
 											<h2>Revision Description</h2>
 											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" nodeset="."/>
+												<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
+													<span class="glyphicon glyphicon-remove"></span>
 												</xforms:label>
 											</xforms:trigger>
 											<div>
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Change</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." origin="instance('change-template')"/>
+														<span class="glyphicon glyphicon-plus"></span>Change</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." origin="instance('change-template')"></xforms:insert>
 												</xforms:trigger>
 											</div>
 											<xforms:repeat nodeset="ead:change">
 												<div class="pair_div">
 													<!-- date -->
 													<xforms:group ref="ead:date">
-														<eaditor:date/>
+														<eaditor:date></eaditor:date>
 													</xforms:group>
 													<div>
 														<xforms:input ref="ead:item">
@@ -886,9 +827,9 @@
 													</div>
 													<xforms:group ref=".[count(parent::node()/ead:change) &gt; 1]">
 														<xforms:trigger appearance="minimal" style="float:right;">
-															<xforms:delete ev:event="DOMActivate" nodeset="."/>
+															<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
 															<xforms:label>
-																<span class="glyphicon glyphicon-remove"/>
+																<span class="glyphicon glyphicon-remove"></span>
 															</xforms:label>
 														</xforms:trigger>
 													</xforms:group>
@@ -902,16 +843,15 @@
 							<!--**************************************** ARCHDESC **********************************-->
 							<fr:tab bind="archdesc-tab">
 								<fr:label>Archival Description</fr:label>
-								<div class="yui3-g">
-									<div class="yui3-u-1">
+								<div class="row">
+									<div class="col-md-12">
 										<h1>Archival Description</h1>
 										<div>
 											<xforms:group ref=".[count(ead:dsc) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Description of Subordinate Components</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
-														origin="instance('dsc-template')"/>
+														<span class="glyphicon glyphicon-plus"></span>Description of Subordinate Components</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('dsc-template')"></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
 										</div>
@@ -919,45 +859,43 @@
 											<xforms:select1 ref="@level">
 												<xforms:label>Level</xforms:label>
 												<xforms:itemset nodeset="instance('level-template')/level">
-													<xforms:label ref="."/>
-													<xforms:value ref="@value"/>
+													<xforms:label ref="."></xforms:label>
+													<xforms:value ref="@value"></xforms:value>
 												</xforms:itemset>
 											</xforms:select1>
 										</div>
 									</div>
-									<div class="yui3-u-1-2">
+									<div class="col-md-6">
 										<xforms:group ref="ead:did">
-											<eaditor:did/>
+											<eaditor:did></eaditor:did>
 										</xforms:group>
 									</div>
-									<div class="yui3-u-1-2">
-										<eaditor:component-level/>
+									<div class="col-md-6">
+										<eaditor:component-level></eaditor:component-level>
 									</div>
-									<div class="yui3-u-1">
+									<div class="col-md-12">
 										<xforms:group ref="ead:dsc">
 											<h1>Description of Subordinate Components</h1>
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
+													<span class="glyphicon glyphicon-remove"></span>
 												</xforms:label>
 												<xforms:action ev:event="DOMActivate">
-													<xforms:delete nodeset="."/>
+													<xforms:delete nodeset="."></xforms:delete>
 												</xforms:action>
 											</xforms:trigger>
 											<div>
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Component</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
-														origin="instance('c-template')"/>
+														<span class="glyphicon glyphicon-plus"></span>Component</xforms:label>
+													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"></xforms:insert>
 													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="ead:c[last()]/@id"
-															value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
+														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"></xforms:setvalue>
 													</xforms:action>
 												</xforms:trigger>
 											</div>
 											<xforms:repeat nodeset="ead:c">
-												<eaditor:c/>
+												<eaditor:c></eaditor:c>
 											</xforms:repeat>
 										</xforms:group>
 									</div>

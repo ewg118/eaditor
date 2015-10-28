@@ -322,6 +322,7 @@
 			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"></xforms:bind>
 			<xforms:bind id="dsc-tab" nodeset="instance('guide')/ead:archdesc/ead:dsc"></xforms:bind>
 
+			<!-- ************** SUBMISSIONS ***************** -->
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">

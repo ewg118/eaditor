@@ -29,8 +29,7 @@
 	<!-- editor forms -->
 	<!-- EAD-related -->
 	<page path="/eaditor/admin/edit/core-template/" view="xforms/ead-template.xhtml"/>
-	<page path="/eaditor/admin/edit/c-template/" view="xforms/c-template.xhtml"/>
-	<page path="/eaditor/admin/edit/instance-templates/" view="xforms/instance-templates.xhtml"/>
+	<page path="/eaditor/admin/edit/c-template/" view="xforms/c-template.xhtml"/>	
 	<page path="/eaditor/admin/edit/core/" view="xforms/ead.xhtml"/>
 	<page path="/eaditor/admin/edit/component/" view="xforms/component.xhtml"/>
 	<!-- TEI -->

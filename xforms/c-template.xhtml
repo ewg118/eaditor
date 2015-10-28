@@ -9,15 +9,14 @@
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude">
 	<head>
 		<title>EADitor: Edit Component Template</title>
-		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css"/>
-		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
-		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
-		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
-		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-
-		<!-- EADitor styling -->
-		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css" />
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -25,35 +24,35 @@
 					<xs:restriction base="xs:string">
 						<xs:pattern
 							value="(\-?(0|1|2)([0-9]{3})(((01|02|03|04|05|06|07|08|09|10|11|12)((0[1-9])|((1|2)[0-9])|(3[0-1])))|\-((01|02|03|04|05|06|07|08|09|10|11|12)(\-((0[1-9])|((1|2)[0-9])|(3[0-1])))?))?)(/\-?(0|1|2)([0-9]{3})(((01|02|03|04|05|06|07|08|09|10|11|12)((0[1-9])|((1|2)[0-9])|(3[0-1])))|\-((01|02|03|04|05|06|07|08|09|10|11|12)(\-((0[1-9])|((1|2)[0-9])|(3[0-1])))?))?)?"
-						/>
+						></xs:pattern>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:schema>
 
 			<!-- exist URL is stored in an XML file -->
 			<xforms:instance id="exist-config">
-				<xi:include href="../exist-config.xml"/>
+				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
-			
+
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
-					<collection-name/>
-					<status/>				
+					<collection-name></collection-name>
+					<status></status>
 				</controls>
 			</xforms:instance>
-			
+
 			<!-- authentication -->
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
-				<collections xmlns=""/>
+				<collections xmlns=""></collections>
 			</xforms:instance>
-			
+
 			<xforms:instance id="dump">
-				<dump xmlns=""/>
+				<dump xmlns=""></dump>
 			</xforms:instance>
 
 			<!-- archdesc instances -->
 			<xforms:instance id="c-template">
-				<c xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" />
+				<c xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"></c>
 			</xforms:instance>
 
 			<!-- controlled instances -->
@@ -75,55 +74,26 @@
 				</levels>
 			</xforms:instance>
 
-			<xforms:bind node="instance('c-template')">
-				<xforms:bind nodeset="ead:archdesc">
-					<xforms:bind nodeset="//ead:defitem">
-						<xforms:bind nodeset="ead:label" required="true()"/>
-						<xforms:bind nodeset="ead:item" required="true()"/>
-					</xforms:bind>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:tgroup/@cols" required="true()" type="xs:integer"/>
-				<xforms:bind nodeset="//ead:listhead">
-					<xforms:bind nodeset="ead:head01" required="true()"/>
-					<xforms:bind nodeset="ead:head02" required="true()"/>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:ref" required="true()"/>
-				<xforms:bind nodeset="//ead:extref" required="true()">
-					<xforms:bind nodeset="@href" required="true()"/>
-				</xforms:bind>
-				<xforms:bind nodeset="//ead:dao/@href" required="true()"/>
-				<xforms:bind nodeset="//ead:daoloc/@href" required="true()"/>
-				<xforms:bind nodeset="//ead:unitdate/@normal" type="xs:date"/>
-				<xforms:bind nodeset="//ead:date/@normal" type="xs:date"/>
-			</xforms:bind>
-			
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<!-- ************** SUBMISSIONS ***************** -->
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
-					<!-- set default if security is false -->
-					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role='']/@name"/>
-					</xforms:action>
-					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
-					<xforms:action if="string(instance('control-instance')/request-security/role)">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
-					</xforms:action>
-					<xforms:send submission="load-template"/>
+					<xforms:setvalue ref="instance('control-instance')/collection-name"
+						value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"></xforms:setvalue>
+					<xforms:send submission="load-template"></xforms:send>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" replace="instance" instance="c-template"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"/>
+			<xforms:submission id="load-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
+				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"></xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" method="put" replace="none" xxforms:username="{instance('exist-config')/username}"
-				xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="save-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" method="put"
+				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred while saving.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Template saved.</xforms:setvalue>
 			</xforms:submission>
@@ -131,89 +101,88 @@
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
-				<xforms:send submission="load-collections"/>				
+					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+				<xforms:send submission="load-collections"></xforms:send>
 			</xforms:action>
 		</xforms:model>
 
 		<!-- xbl components -->
-		<xi:include href="xbl/access-elements/access-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/accruals/accruals.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/address/address.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/altformavail/altformavail.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/appraisal/appraisal.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/arrangement/arrangement.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/attributes/attributes.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/bibliography/bibliography.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/bibref/bibref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/bioghist/bioghist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/blockquote/blockquote.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/c/c.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/chronlist/chronlist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/daodesc/daodesc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/daogrp/daogrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/daoloc/daoloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/date/date.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/function/function.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/genreform/genreform.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/geogname/geogname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/head/head.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/index/index.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/list/list.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/listhead/listhead.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/name/name.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/num/num.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/occupation/occupation.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/odd/odd.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/p/p.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/persname/persname.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/phystech/phystech.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/prefercite/prefercite.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/processinfo/processinfo.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ptr/ptr.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/ref/ref.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/refloc/refloc.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/subject/subject.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"/>
-		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"/>
+		<xi:include href="xbl/access-elements/access-elements.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/accessrestrict/accessrestrict.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/accruals/accruals.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/acqinfo/acqinfo.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/address/address.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/altformavail/altformavail.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/appraisal/appraisal.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/arrangement/arrangement.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/attributes/attributes.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/bibliography/bibliography.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/bibref/bibref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/bioghist/bioghist.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/blockquote/blockquote.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/c/c.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/chronlist/chronlist.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/daodesc/daodesc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/daogrp/daogrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/daoloc/daoloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/date/date.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/function/function.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/generic-elements/generic-elements.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/genreform/genreform.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/geogname/geogname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/head/head.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/index/index.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/linkgrp/linkgrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/list/list.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/listhead/listhead.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/name/name.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/num/num.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/occupation/occupation.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/odd/odd.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/originalsloc/originalsloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/otherfindaid/otherfindaid.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/p/p.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/persname/persname.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/phystech/phystech.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/prefercite/prefercite.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/processinfo/processinfo.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ptr/ptr.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ptrgrp/ptrgrp.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ptrloc/ptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/ref/ref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/refloc/refloc.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/relatedmaterial/relatedmaterial.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/scopecontent/scopecontent.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/separatedmaterial/separatedmaterial.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/subject/subject.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/table/table.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/title/title.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/userestrict/userestrict.xbl" xxi:omit-xml-base="true"></xi:include>
 	</head>
 	<body>
-		<div class="yui3-g">
-			<div class="yui3-u-1">
-				<div class="content">
-					<!-- header -->
-					<xforms:var name="display_path">../../</xforms:var>
-					<xi:include href="header.xml"/>
+		<xforms:var name="display_path">../../</xforms:var>
+		<xi:include href="header.xml"></xi:include>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
 					<div id="form">
 						<xforms:group ref="instance('control-instance')/status/text()">
 							<div class="success">
-								<xforms:output ref="instance('control-instance')/status"/>
+								<xforms:output ref="instance('control-instance')/status"></xforms:output>
 							</div>
 						</xforms:group>
 						<p>
@@ -223,7 +192,7 @@
 						<div class="submission">
 							<xforms:submit submission="save-template" appearance="minimal">
 								<xforms:label><span class="glyphicon glyphicon-floppy-disk"></span>Save</xforms:label>
-							</xforms:submit>							
+							</xforms:submit>
 						</div>
 						<xforms:group ref="instance('c-template')">
 							<fr:tabview>
@@ -233,7 +202,7 @@
 									<!-- did-level instances -->
 									<div class="section">
 										<xforms:group ref="ead:did">
-											<eaditor:did/>
+											<eaditor:did></eaditor:did>
 										</xforms:group>
 									</div>
 								</fr:tab>
@@ -243,30 +212,10 @@
 									<fr:label>C-level Information</fr:label>
 									<!-- include component-level information.  this is broken into a separate XML file so that it can be used in the top-level ead form -->
 									<div class="section">
-										<eaditor:component-level/>
+										<eaditor:component-level></eaditor:component-level>
 									</div>
 								</fr:tab>
 								<!--**************************************** END COMPONENT-LEVEL INFORMATION **********************************-->
-								<!--**************************************** SUB COMPONENTS **********************************-->
-								<fr:tab id="subcomponents">
-									<fr:label>Subcomponents</fr:label>
-									<h1>Subcomponents</h1>
-									<div>
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<span class="glyphicon glyphicon-plus"/>Subcomponent</xforms:label>
-											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>
-											</xforms:action>
-										</xforms:trigger>
-									</div>
-									<div class="section">
-										<xforms:repeat nodeset="ead:c">
-											<eaditor:c/>
-										</xforms:repeat>
-									</div>
-								</fr:tab>
 								<!--<fr:tab id="preview">
 									<fr:label>XML Preview</fr:label>
 									<h1>XML Preview</h1>

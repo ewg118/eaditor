@@ -18,7 +18,7 @@
 				<li>
 					<a href="{$display_path}settings/">Modify Settings</a>
 				</li>
-				<xforms:group ref="not(xxforms:is-user-in-role('eaditor-admin'))">
+				<xforms:group ref=".[not(xxforms:is-user-in-role('eaditor-admin'))]">
 					<li>
 						<a href="{$display_path}templates/">Edit Templates</a>
 					</li>
