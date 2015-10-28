@@ -718,7 +718,7 @@
 
 	<xsl:template name="access-term">
 		<a
-			href="{$display_path}results/?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
+			href="{$display_path}results?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
 			<xsl:value-of select="normalize-space(.)"/>
 		</a>
 		<xsl:if test="@source">
