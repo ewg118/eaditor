@@ -73,9 +73,9 @@
 
 							<xhtml:span class="nodename">
 								<xforms:group ref=".[count(ead:c) &gt; 0]">
-									<xforms:trigger appearance="minimal">
+									<xforms:trigger appearance="minimal" class="expand-trigger">
 										<xforms:label>
-											<img alt="expand" src="/eaditor/xforms/xbl/tree-view/images/plus.gif" class="trigger-image"/>
+											<span class="glyphicon glyphicon-plus"/>											
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
@@ -89,10 +89,8 @@
 							</xhtml:span>
 							
 							<xforms:group ref=".[$position > 1]">
-								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<img alt="up" src="/eaditor/xforms/xbl/tree-view/images/up.gif"/>
-									</xforms:label>
+								<xforms:trigger appearance="minimal" class="expand-trigger">
+									<xforms:label><span class="glyphicon glyphicon-arrow-up"/></xforms:label>
 									<xforms:action ev:event="DOMActivate">
 										<xforms:insert origin="$data//ead:c[@id=$id]" context="instance('c-copy')"/>
 										<xforms:insert origin="instance('c-copy')//ead:c[@id=$id]" context="parent::node()" nodeset="ead:c" at="$position - 1" position="before"/>
@@ -104,9 +102,7 @@
 
 							<xforms:group ref=".[$position &lt; $count]">
 								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<img alt="down" src="/eaditor/xforms/xbl/tree-view/images/down.gif"/>
-									</xforms:label>
+									<xforms:label><span class="glyphicon glyphicon-arrow-down"/></xforms:label>
 									<xforms:action ev:event="DOMActivate">
 										<xforms:insert origin="$data//ead:c[@id=$id]" context="instance('c-copy')"/>
 										<xforms:insert origin="instance('c-copy')//ead:c[@id=$id]" context="parent::node()" nodeset="ead:c" at="$position + 1" position="after"/>

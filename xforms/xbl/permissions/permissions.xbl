@@ -5,7 +5,7 @@
 	Installation Location:
 	oxf:/xbl/eaditor/permissions/permissions.xbl
 -->
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:dlcn="http://www.delcyon.com/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors"
 	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor">
 
@@ -70,51 +70,52 @@
 				<xsl:template name="node">
 					<xsl:param name="depth" as="xs:integer"/>
 					<xsl:param name="current" as="xs:integer"/>
-					<xhtml:ul>
+					<ul>
 						<xsl:if test="$current > 1">
-							<xhtml:span class="nodename">
-								<xforms:select1 ref="instance('components')/c[@id=$id]/@audience">
-									<!--<xforms:label>Audience</xforms:label>-->
-									<xforms:item>
-										<xforms:label>Select below...</xforms:label>
-										<xforms:value/>
-									</xforms:item>
-									<xforms:item>
-										<xforms:label>External</xforms:label>
-										<xforms:value>external</xforms:value>
-									</xforms:item>
-									<xforms:item>
-										<xforms:label>Internal</xforms:label>
-										<xforms:value>internal</xforms:value>
-									</xforms:item>
-									<xforms:action ev:event="xforms-value-changed">
-										<xforms:insert if="not(normalize-space(context()) = '')" context="$data//ead:c[@id=$id]"
-											origin="xforms:attribute('audience', instance('components')/c[@id=$id]/@audience)"/>
-										<xforms:delete if="normalize-space(context()) = ''" context="$data//ead:c[@id=$id]/@audience"/>
-									</xforms:action>
-								</xforms:select1>
+							<h5>
 								<xforms:output value="concat(@level, ': ', ead:did/ead:unittitle)"/>
 								<xforms:group ref=".[string-length(ead:did/ead:unitdate) &gt; 0]">
 									<xforms:output value="concat(' (', ead:did/ead:unitdate, ')')"/>
 								</xforms:group>
-							</xhtml:span>
+							</h5>
+							<xforms:select1 ref="instance('components')/c[@id=$id]/@audience">
+								<!--<xforms:label>Audience</xforms:label>-->
+								<xforms:item>
+									<xforms:label>Select below...</xforms:label>
+									<xforms:value/>
+								</xforms:item>
+								<xforms:item>
+									<xforms:label>External</xforms:label>
+									<xforms:value>external</xforms:value>
+								</xforms:item>
+								<xforms:item>
+									<xforms:label>Internal</xforms:label>
+									<xforms:value>internal</xforms:value>
+								</xforms:item>
+								<xforms:action ev:event="xforms-value-changed">
+									<xforms:insert if="not(normalize-space(context()) = '')" context="$data//ead:c[@id=$id]"
+										origin="xforms:attribute('audience', instance('components')/c[@id=$id]/@audience)"/>
+									<xforms:delete if="normalize-space(context()) = ''" context="$data//ead:c[@id=$id]/@audience"/>
+								</xforms:action>
+							</xforms:select1>
 						</xsl:if>
 						<!-- Repeat over each child node of the root node -->
 						<xsl:if test="$depth > 1">
 							<xforms:repeat nodeset="ead:c">
 								<xforms:var name="id" select="@id"/>
-								<xforms:var name="audience" select="if (@audience='external') then '#77a677' else if (@audience='internal') then '#d7a074' else ''"/>
-								<xhtml:li style="background-color:{'{$audience}'}" class="component">
-									<!-- if this element has children recurse into it -->
-									<xsl:call-template name="node">
-										<xsl:with-param name="current" select="$current + 1"/>
-										<xsl:with-param name="depth" select="$depth - 1"/>
-									</xsl:call-template>
-								</xhtml:li>
+								<xforms:var name="audience" select="if (@audience='external') then 'bg-success' else if (@audience='internal') then 'bg-danger' else ''"/>
+								<li>
+									<div class="component {'{$audience}'}">
+										<!-- if this element has children recurse into it -->
+										<xsl:call-template name="node">
+											<xsl:with-param name="current" select="$current + 1"/>
+											<xsl:with-param name="depth" select="$depth - 1"/>
+										</xsl:call-template>
+									</div>									
+								</li>
 							</xforms:repeat>
 						</xsl:if>
-					</xhtml:ul>
-
+					</ul>
 				</xsl:template>
 			</xsl:transform>
 		</xbl:template>

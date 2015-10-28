@@ -19,9 +19,6 @@
  #form h1,#form h2, #form h3, #form h4,#form h5,#form h6 {
 	display:inline;
 }
-#form ul li {
-	list-style-type:none;
-}
 .submission {
 	text-align:center;
 	margin:10px 0;
@@ -41,13 +38,6 @@
 #expand_components:hover, #refresh:hover {
 	cursor:pointer;
 	color:#627eb7;
-}
-#nav_list ul {
-	margin-left:15px;
-	padding:0;
-}
-#nav_list ul li {
-	list-style-type:none;
 }
 .list-hidden {
 	display:none;
@@ -143,12 +133,6 @@
 }
 .xbl-component {
 	margin:5px 0;
-}
-.ui-state-error, .ui-state-highlight {
-	padding: 0pt 0.7em;
-	margin:20px auto;
-	width:400px;
-	font-size:12px;
 }
 .add {
 	display:inline;	

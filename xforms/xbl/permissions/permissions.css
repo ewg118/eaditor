@@ -4,11 +4,6 @@ ul li {
 .component {
 	border:1px solid silver;
 	margin:5px 0;
-}
-.expanded li {
-	display:normal;
-	background-color:#EBEBEB;
-	padding:5px;
-	margin:5px;
-	border:1px solid silver;
+	padding: 5px;
+	border-radius:15px;
 }

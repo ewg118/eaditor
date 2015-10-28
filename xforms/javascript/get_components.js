@@ -14,7 +14,7 @@ $(function () {
 			$(this) .text('collapse');
 			if ($('.' + container).html().indexOf('<li>') < 0){		
 				$.get('navigation/?collection=' + collection + '&guide=' + id, { },
-					function (data) {				
+					function (data) {	
 						$('#temp') .html(data);
 						$('#temp ul.list').clone().appendTo('.' + container);
 						$('.' + container) .fadeIn('slow');	
