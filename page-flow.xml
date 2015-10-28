@@ -17,6 +17,15 @@
 	<!-- ****************
 	* ADMIN INTERFACE *
 	***************** -->
+	<!-- admin functions -->
+	<page path="/eaditor/admin/" view="xforms/admin.xhtml" id="admin"/>
+	<page path="/eaditor/admin/upload/" view="xforms/upload.xhtml"/>
+	<page path="/eaditor/admin/templates/" view="xforms/templates.xhtml"/>
+	<page path="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
+	<page path="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
+	<page path="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
+	<!--<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>-->
+	
 	<!-- editor forms -->
 	<!-- EAD-related -->
 	<page path="/eaditor/admin/edit/core-template/" view="xforms/ead-template.xhtml"/>
@@ -26,15 +35,6 @@
 	<page path="/eaditor/admin/edit/component/" view="xforms/component.xhtml"/>
 	<!-- TEI -->
 	<page path="/eaditor/admin/edit/tei/" view="xforms/tei.xhtml"/>
-
-	<!-- admin functions -->
-	<page path="/eaditor/admin/upload/" view="xforms/upload.xhtml"/>
-	<page path="/eaditor/admin/templates/" view="xforms/templates.xhtml"/>
-	<page path="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
-	<page path="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
-	<page path="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
-	<!--<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>-->
-	<page path="/eaditor/admin/" id="admin" view="xforms/admin.xhtml"/>
 
 	<!-- test page -->
 	<page path="/eaditor/admin/test/" view="xforms/test.xhtml"/>

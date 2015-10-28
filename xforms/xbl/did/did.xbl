@@ -14,7 +14,7 @@
 					<span class="add">
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>
+								<span class="glyphicon glyphicon-plus"/>
 							</xforms:label>
 							<xxforms:show ev:event="DOMActivate" dialog="did-objects"/>
 						</xforms:trigger>
@@ -23,85 +23,85 @@
 						<xforms:label>Descriptive Identification Elements</xforms:label>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Abstract</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Abstract</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('abstract-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Container</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Container</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('container-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Digital Archival Object</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('dao-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object Group</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Digital Archival Object Group</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('daogrp-template')"/>
 						</xforms:trigger>
 						<xforms:group ref="$binding[count(ead:head) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Header</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Header</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('head-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:langmaterial) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Language Material</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Language Material</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('langmaterial-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Material Specific Details</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Material Specific Details</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('materialspec-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('note-template')"/>
 						</xforms:trigger>
 						<xforms:group ref="$binding[count(ead:origination) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Origination</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Origination</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('origination-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:physdesc) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Physical Description</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Physical Description</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('physdesc-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:physloc) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Physical Location</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Physical Location</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('physloc-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:repository) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Repository</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Repository</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('repository-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<img src="/apps/eaditor/xforms/images/add.gif"/>Unit Date</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Unit Date</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('unitdate-template')"/>
 						</xforms:trigger>
 						<xforms:group ref="$binding[count(ead:unitid) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Unit ID</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Unit ID</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('unitid-template')"/>
 							</xforms:trigger>
 						</xforms:group>
@@ -123,14 +123,14 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<xforms:group ref=".[not(child::*)]">
 								<div>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Corporate Name</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Corporate Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
 											<xforms:setvalue ref="."/>
 											<xforms:insert context="." ev:event="DOMActivate" origin="instance('corpname-template')"/>
@@ -138,7 +138,7 @@
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Family Name</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Family Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
 											<xforms:setvalue ref="."/>
 											<xforms:insert context="." ev:event="DOMActivate" origin="instance('famname-template')"/>
@@ -146,7 +146,7 @@
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Personal Name</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Personal Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
 											<xforms:setvalue ref="."/>
 											<xforms:insert context="." ev:event="DOMActivate" origin="instance('persname-template')"/>
@@ -198,7 +198,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 						</div>
@@ -219,7 +219,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 						</div>
@@ -241,13 +241,13 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<div>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Language</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Language</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('language-template')"/>
 								</xforms:trigger>
 							</div>
@@ -271,7 +271,7 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 									</xforms:group>
@@ -287,7 +287,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 						</div>
@@ -304,13 +304,13 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<span class="add">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>
+										<span class="glyphicon glyphicon-plus"/>
 									</xforms:label>
 									<xxforms:show ev:event="DOMActivate" dialog="physdesc-objects"/>
 								</xforms:trigger>
@@ -319,22 +319,22 @@
 								<xforms:label>Physical Description Elements</xforms:label>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Dimensions</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Dimensions</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('dimensions-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Extent</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Extent</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extent-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Genreform</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Genreform</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('genreform-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Physical Facet</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Physical Facet</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('physfacet-template')"/>
 								</xforms:trigger>
 							</xxforms:dialog>
@@ -348,7 +348,7 @@
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											<span class="glyphicon glyphicon-remove"/>
 										</xforms:label>
 									</xforms:trigger>
 								</div>
@@ -362,7 +362,7 @@
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/remove.gif"/>
+											<span class="glyphicon glyphicon-remove"/>
 										</xforms:label>
 									</xforms:trigger>
 								</div>
@@ -389,7 +389,7 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 									</div>
@@ -405,7 +405,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<eaditor:attributes ref="."/>
@@ -419,7 +419,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding/ead:repository"/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 						</xforms:group>
@@ -432,7 +432,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding/ead:unitid"/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 						</xforms:group>

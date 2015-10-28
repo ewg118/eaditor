@@ -168,11 +168,11 @@
 							<h2>Agency Codes</h2>
 							<!--<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>New Agency</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>New Agency</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
-								<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Agencies</xforms:label>
+								<xforms:label><span class="glyphicon glyphicon-plus"/>Import Local Agencies</xforms:label>
 								<xforms:action ev:event="DOMActivate">
 									<xforms:send submission="agencycodes-submission"/>
 								</xforms:action>
@@ -195,7 +195,7 @@
 										<xforms:trigger appearance="minimal" style="float:right">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 									</xforms:group>
@@ -207,11 +207,11 @@
 							<h2>Container Types</h2>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>New Container</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>New Container</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('container-template')"/>
 							</xforms:trigger>
 							<!--<xforms:trigger appearance="minimal">
-								<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Import Local Container Types</xforms:label>
+								<xforms:label><span class="glyphicon glyphicon-plus"/>Import Local Container Types</xforms:label>
 								<xforms:action ev:event="DOMActivate">
 									<xforms:send submission="containertypes-submission"/>
 								</xforms:action>
@@ -234,7 +234,7 @@
 										<xforms:trigger appearance="minimal" style="float:right">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>container
 										</xforms:trigger>
 									</xforms:group>

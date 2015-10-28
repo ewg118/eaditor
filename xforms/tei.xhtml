@@ -368,8 +368,8 @@
 															<td>
 																<xforms:group ref=".[not(tei:graphic/@n)]">
 																	<xforms:trigger appearance="minimal">
-																		<xforms:label><img src="/apps/eaditor/xforms/images/add.gif"/>Page Number</xforms:label>
-																		<xforms:insert ev:event="DOMActivate" context="tei:graphic" origin="xxforms:attribute('n', '')"/>
+																		<xforms:label><span class="glyphicon glyphicon-plus"/>Page Number</xforms:label>
+																		<xforms:insert ev:event="DOMActivate" context="tei:graphic" origin="xforms:attribute('n', '')"/>
 																	</xforms:trigger>																	
 																</xforms:group>
 																<div>
@@ -385,7 +385,7 @@
 																		<xforms:trigger appearance="minimal">
 																			<xforms:delete ev:event="DOMActivate" context="."/>
 																			<xforms:label>
-																				<img src="/apps/eaditor/xforms/images/remove.gif"/>
+																				<span class="glyphicon glyphicon-remove"/>
 																			</xforms:label>
 																		</xforms:trigger>
 																	</div>

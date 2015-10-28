@@ -13,7 +13,7 @@
 					<xhtml:span class="add">
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>
+								<span class="glyphicon glyphicon-plus"/>
 							</xforms:label>
 							<xxforms:show ev:event="DOMActivate" dialog="clevel-objects"/>
 						</xforms:trigger>
@@ -23,169 +23,169 @@
 						<xforms:group ref="$binding[count(ead:accessrestrict) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Access Restriction</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Access Restriction</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('accessrestrict-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:accruals) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Accruals</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Accruals</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('accruals-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:acqinfo) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Acquisition Information</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Acquisition Information</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('acqinfo-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:altformavail) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Alt. Form Available</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Alt. Form Available</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('altformavail-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:appraisal) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Appraisal</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Appraisal</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('appraisal-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:arrangement) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Arrangement</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Arrangement</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('arrangement-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:bibliography) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Bibliography</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Bibliography</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('bibliography-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Biography/History</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Biography/History</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('bioghist-template')"/>
 						</xforms:trigger>
 						<xforms:group ref="$binding[count(ead:controlaccess) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Controlled Access Headings</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Controlled Access Headings</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('controlaccess-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:custodhist) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Custodial History</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Custodial History</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('custodhist-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Digital Archival Object</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('dao-template')"/>
 						</xforms:trigger>
 
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object Group</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Digital Archival Object Group</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('daogrp-template')"/>
 						</xforms:trigger>
 
 						<xforms:group ref="$binding[count(ead:fileplan) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>File Plan</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>File Plan</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('fileplan-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:index) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Index</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Index</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('index-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:originalsloc) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Location of Originals</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Location of Originals</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('originalsloc-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('note-template')"/>
 						</xforms:trigger>
 						<xforms:group ref="$binding[count(ead:odd) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Other Descriptive Data</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Other Descriptive Data</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('odd-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:otherfindaid) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Other Finding Aid</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Other Finding Aid</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('otherfindaid-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:phystech) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Phys./Tech.</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Phys./Tech.</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('phystech-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:prefercite) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Preferred Citation</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Preferred Citation</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('prefercite-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:processinfo) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Processing Information</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Processing Information</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('processinfo-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:relatedmaterial) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Related Material</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Related Material</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('relatedmaterial-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:scopecontent) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Scope and Content</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Scope and Content</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('scopecontent-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:separatedmaterial) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Separated Material</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Separated Material</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('separatedmaterial-template')"/>
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:group ref="$binding[count(ead:userestrict) &lt; 1]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Use Restriction</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Use Restriction</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('userestrict-template')"/>
 							</xforms:trigger>
 						</xforms:group>

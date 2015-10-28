@@ -15,7 +15,7 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:div>
@@ -27,7 +27,7 @@
 								</xforms:itemset>
 								<xforms:alert>Required</xforms:alert>
 								<xforms:action ev:event="xforms-value-changed">
-									<xforms:insert context="$binding" origin="xxforms:attribute('otherlevel', '')" if="$binding/@level='otherlevel'"/>
+									<xforms:insert context="$binding" origin="xforms:attribute('otherlevel', '')" if="$binding/@level='otherlevel'"/>
 									<xforms:delete if="$binding/@level != 'otherlevel'" context="$binding" nodeset="@otherlevel"/>
 								</xforms:action>
 							</xforms:select1>

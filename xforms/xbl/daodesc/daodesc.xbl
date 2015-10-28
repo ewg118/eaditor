@@ -12,20 +12,20 @@
 					<xforms:trigger appearance="minimal">
 						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 						<xforms:label>
-							<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+							<span class="glyphicon glyphicon-remove"/>
 						</xforms:label>
 					</xforms:trigger>
 					<xhtml:div class="trigger_container">
 						<xforms:group ref="$binding[count(ead:head) = 0]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Header</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Header</xforms:label>
 								<xforms:insert ev:event="DOMActivate" origin="instance('head-template')" context="$binding"/>								
 							</xforms:trigger>
 						</xforms:group>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
 							<xforms:insert ev:event="DOMActivate" origin="instance('p-template')" context="$binding" nodeset="./child::node()[last()]"/>								
 						</xforms:trigger>
 					</xhtml:div>

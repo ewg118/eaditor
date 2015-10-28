@@ -14,21 +14,21 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:div>
 							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Header</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Header</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="$binding"
 										origin="instance('head-template')"/>
 								</xforms:trigger>
 							</xforms:group>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Table Group</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Table Group</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding"
 									nodeset="child::node()[last()]" origin="instance('tgroup-template')"/>
 							</xforms:trigger>
@@ -45,14 +45,14 @@
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
-										<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
 								<xhtml:div>
 									<xforms:group ref=".[count(ead:thead/ead:row) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Table
+												<span class="glyphicon glyphicon-plus"/>Table
 												Header</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="ead:thead"
 												origin="instance('row-template')"/>
@@ -63,7 +63,7 @@
 									</xforms:group>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Row</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Row</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="ead:tbody"
 											nodeset="child::node()[last()]" origin="instance('row-template')"/>
 									</xforms:trigger>
@@ -79,7 +79,7 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 										<xforms:repeat nodeset="ead:entry">

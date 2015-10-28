@@ -34,7 +34,7 @@
 									<xforms:delete nodeset="$binding"/>
 								</xforms:action>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<eaditor:attributes ref="$binding"/>
@@ -47,7 +47,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<p class="bg-warning">Content is required.</p>
@@ -68,7 +68,7 @@
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:setvalue ref="$binding" if="not($binding/@authfilenumber)"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
 												
 												<!-- pre-populate the select list -->
 												<xforms:delete context="$binding/@role" if="$binding/@role='xeac:entity'"/>
@@ -82,10 +82,10 @@
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:setvalue ref="$binding" if="not($binding/@authfilenumber)"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
 												
 												<!-- insert @role if it doesn't exist, set to xeac:entity, otherwise reset @role to xeac:entity -->
-												<xforms:insert if="not($binding/@role)" context="$binding" origin="xxforms:attribute('role', 'xeac:entity')"/>
+												<xforms:insert if="not($binding/@role)" context="$binding" origin="xforms:attribute('role', 'xeac:entity')"/>
 												<xforms:setvalue ref="$binding/@role" if="not($binding/@role='xeac:entity')">xeac:entity</xforms:setvalue>
 												
 												<!-- pre-populate the select list -->

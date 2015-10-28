@@ -14,10 +14,8 @@
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
-		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
-
-		<!-- EADitor styling -->
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
@@ -159,11 +157,7 @@
 			</xforms:instance>
 
 			<!-- facets -->
-			<xforms:instance id="facets" xxforms:exclude-result-prefixes="#all">
-				<facets xmlns=""/>
-			</xforms:instance>
-
-			<xforms:instance id="facet-template">
+			<xforms:instance id="facet-template" xxforms:exclude-result-prefixes="#all">
 				<facet xmlns=""/>
 			</xforms:instance>
 
@@ -213,6 +207,7 @@
 				<query/>
 			</xforms:instance>
 
+			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"/>
 				<xforms:bind nodeset="description" required="../export/pelagios = true()" relevant="../export/pelagios = true()"/>
@@ -243,7 +238,8 @@
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('control-instance')">
-				<xforms:bind nodeset="save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>. <xforms:bind nodeset="xeac-success" type="xs:boolean"/>
+				<xforms:bind nodeset="save-trigger" readonly="instance('control-instance')/api-key-accepted = 'false'"/>
+				<xforms:bind nodeset="xeac-success" type="xs:boolean"/>
 				<xforms:bind nodeset="sparql-success" type="xs:boolean"/>
 				<xforms:bind nodeset="sparql-connect" type="xs:boolean"/>
 				<xforms:bind nodeset="sparql">
@@ -258,7 +254,7 @@
 
 			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"/>
 
-			<!-- ********** SUBMISSIONS ********** -->
+			<!-- ************* SUBMISSIONS ************* -->
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
 				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
@@ -274,12 +270,6 @@
 							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 					</xforms:action>
 					<xforms:send submission="load-config"/>
-
-					<!-- set facets instance -->
-					<xforms:action xxforms:iterate="tokenize(instance('config')/theme/facets, ',')">
-						<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')"/>
-						<xforms:setvalue ref="instance('facets')/facet[last()]" value="context()"/>
-					</xforms:action>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
@@ -383,12 +373,11 @@
 	</head>
 
 	<body>
+		<xforms:var name="display_path">../</xforms:var>
+		<xi:include href="header.xml"/>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
-					<!-- header -->
-					<xforms:var name="display_path">../</xforms:var>
-					<xi:include href="header.xml"/>
 					<div id="form">
 						<xforms:group ref="instance('control-instance')/status/text()">
 							<div class="bg-success success">
@@ -402,8 +391,6 @@
 							<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
 								<xforms:label><span class="glyphicon glyphicon-save"/>Save</xforms:label>
 								<xforms:action ev:event="DOMActivate">
-									<!-- first re-assemble the facets template into comma separated values into the config -->
-									<xforms:setvalue ref="instance('config')/theme/facets" value="string-join(instance('facets')/facet, ',')"/>
 									<!-- then save the config to eXist -->
 									<xforms:send submission="save-config"/>
 								</xforms:action>
@@ -594,7 +581,8 @@
 									<div class="section">
 										<h3>Publication Options</h3>
 										<p>Individual components may be published as atomized Solr documents for more relevant query results and component-level RDF export.</p>
-										<xforms:group ref="levels"> xxforms:exclude-result-prefixes="#all" <div>
+										<xforms:group ref="levels">
+											<div>
 												<xforms:input ref="archdesc/@enabled">
 													<xforms:label>Finding Aid</xforms:label>
 												</xforms:input>
@@ -648,62 +636,60 @@
 										<h3>Google Analytics</h3>
 										<p>Copy and paste Javascript code provided by Google Analytics here.</p>
 										<div>
-											<xforms:textarea ref="google_analytics/script">
+											<xforms:textarea ref="google_analytics">
 												<xforms:label>Code</xforms:label>
 											</xforms:textarea>
 										</div>
 									</div>
+									<div class="section">
+										<xforms:group ref="facets">
+											<h3>Facets</h3>
+											<span class="add">
+												<xforms:trigger appearance="minimal">
+													<xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Facet</xforms:label>
+													<xforms:insert context="." nodeset="./child::node()[last()]" origin="xforms:element('facet')" ev:event="DOMActivate"
+													/>
+												</xforms:trigger>
+											</span>
+											<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will
+												cause the browse and map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and
+												maps pages.</p>
+											<xforms:repeat nodeset="facet">
+												<xforms:var name="position" select="position()"/>
+												<div>
+													<xforms:input ref=".">
+														<xforms:label>Facet</xforms:label>
+													</xforms:input>
+													<xforms:group ref=".[$position != 1]">
+														<xforms:trigger appearance="minimal">
+															<xforms:label><span class="glyphicon glyphicon-arrow-up"/></xforms:label>
+															<xforms:action ev:event="DOMActivate">
+																<xforms:insert context="parent::node()" nodeset="facet[$position - 2]" origin="parent::node()/facet[$position]"/>
+																<xforms:delete nodeset="."/>
+															</xforms:action>
+														</xforms:trigger>
+													</xforms:group>
+													<xforms:group ref=".[not($position=count(parent::node()/facet))]">
+														<xforms:trigger appearance="minimal">
+															<xforms:label><span class="glyphicon glyphicon-arrow-down"/></xforms:label>
+															<xforms:action ev:event="DOMActivate">
+																<xforms:insert context="parent::node()" nodeset="facet[$position+1]" origin="parent::node()/facet[$position]"/>
+																<xforms:delete nodeset="."/>
+															</xforms:action>
+														</xforms:trigger>
+													</xforms:group>
+													<xforms:trigger appearance="minimal">
+														<xforms:delete ev:event="DOMActivate" context="."/>
+														<xforms:label>
+															<span class="glyphicon glyphicon-remove"/>
+														</xforms:label>
+													</xforms:trigger>
+												</div>
+											</xforms:repeat>
+										</xforms:group>										
+									</div>
 								</xforms:group>
-							</fr:tab>
-							<!--**************************************** THEMES AND LAYOUT **********************************-->
-							<fr:tab bind="visual-tab">
-								<fr:label>Themes and Layout</fr:label>
-								<div class="section">
-									<h2>Facets</h2>
-									<span class="add">
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<span class="glyphicon glyphicon-plus"/>Facet</xforms:label>
-											<xforms:insert context="instance('facets')" nodeset="./child::node()[last()]" origin="instance('facet-template')" ev:event="DOMActivate"
-											/>
-										</xforms:trigger>
-									</span>
-									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will
-										cause the browse and map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and
-										maps pages.</p>
-									<xforms:repeat nodeset="instance('facets')/facet">
-										<xforms:var name="position" select="position()"/>
-										<div>
-											<xforms:input ref=".">
-												<xforms:label>Facet</xforms:label>
-											</xforms:input>
-											<xforms:group ref=".[$position != 1]">
-												<xforms:trigger appearance="minimal">
-													<xforms:label><span class="glyphicon glyphicon-arrow-up"/></xforms:label>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:insert context="instance('facets')" nodeset="facet[$position - 2]" origin="instance('facets')/facet[$position]"/>
-														<xforms:delete nodeset="."/>
-													</xforms:action>
-												</xforms:trigger>
-											</xforms:group>
-											<xforms:group ref=".[not($position=count(instance('facets')/facet))]">
-												<xforms:trigger appearance="minimal">
-													<xforms:label><span class="glyphicon glyphicon-arrow-down"/></xforms:label>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:insert context="instance('facets')" nodeset="facet[$position+1]" origin="instance('facets')/facet[$position]"/>
-														<xforms:delete nodeset="."/>
-													</xforms:action>
-												</xforms:trigger>
-											</xforms:group>
-											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" context="."/>
-												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
-												</xforms:label>
-											</xforms:trigger>
-										</div>
-									</xforms:repeat>
-								</div>
 							</fr:tab>
 							<!--**************************************** ADVANCED SETTINGS **********************************-->
 							<fr:tab id="advanced">

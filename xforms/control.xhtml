@@ -357,7 +357,7 @@
 						<div class="trigger_container">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Other Record ID</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Other Record ID</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:otherrecordid) then ead:otherrecordid else ead:recordid"
 									position="after" origin="instance('otherrecordid-template')"/>
 							</xforms:trigger>
@@ -377,7 +377,7 @@
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/remove.gif"/>
+										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
 							</div>
@@ -402,7 +402,7 @@
 							<span class="add">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>
+										<span class="glyphicon glyphicon-plus"/>
 									</xforms:label>
 									<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"/>
 								</xforms:trigger>
@@ -412,7 +412,7 @@
 								<xforms:group ref=".[count(//ead:editionstmt) &lt; 1]">
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Edition Statement</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Edition Statement</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after"
 											origin="instance('editionstmt-template')"/>
 									</xforms:trigger>
@@ -420,7 +420,7 @@
 								<xforms:group ref=".[count(//ead:publicationstmt) &lt; 1]">
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Publication Statement</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Publication Statement</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
 											nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt" origin="instance('publicationstmt-template')"
 										/>
@@ -429,7 +429,7 @@
 								<xforms:group ref=".[count(//ead:seriesstmt) &lt; 1]">
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Series Statement</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Series Statement</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="ead:filedesc"
 											nodeset="if (ead:publicationstmt) then ead:publicationstmt else if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
 											origin="instance('seriesstmt-template')"/>
@@ -438,7 +438,7 @@
 								<xforms:group ref=".[count(//ead:notestmt) &lt; 1]">
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Note Statement</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Note Statement</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="./child::node()[last()]"
 											origin="instance('notestmt-template')"/>
 									</xforms:trigger>
@@ -451,7 +451,7 @@
 										<span class="add">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>
+													<span class="glyphicon glyphicon-plus"/>
 												</xforms:label>
 												<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"/>
 											</xforms:trigger>
@@ -461,7 +461,7 @@
 											<xforms:group ref=".[count(ead:subtitle) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Subtitle</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Subtitle</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="."
 														nodeset="if (ead:subtitle) then ead:subtitle[last()] else ead:titleproper"
 														origin="instance('subtitle-template')"/>
@@ -469,14 +469,14 @@
 											</xforms:group>
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>Author</xforms:label>
+													<span class="glyphicon glyphicon-plus"/>Author</xforms:label>
 												<xforms:insert ev:event="DOMActivate" context="."
 													nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper" origin="instance('author-template')"/>
 											</xforms:trigger>
 											<xforms:group ref=".[count(ead:sponsor) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Sponsor</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Sponsor</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="."
 														nodeset="if (ead:author) then ead:author else if (ead:subtitle) then ead:subtitle else ead:titleproper"
 														origin="instance('sponsor-template')"/>
@@ -498,7 +498,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:delete ev:event="DOMActivate" nodeset="."/>
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+														<span class="glyphicon glyphicon-remove"/>
 													</xforms:label>
 												</xforms:trigger>
 											</div>
@@ -512,7 +512,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:delete ev:event="DOMActivate" nodeset="."/>
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+														<span class="glyphicon glyphicon-remove"/>
 													</xforms:label>
 												</xforms:trigger>
 											</div>
@@ -526,7 +526,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:delete ev:event="DOMActivate" nodeset="."/>
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+														<span class="glyphicon glyphicon-remove"/>
 													</xforms:label>
 												</xforms:trigger>
 											</div>
@@ -540,13 +540,13 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 										<div>
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+													<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
 												<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
 											</xforms:trigger>
 										</div>
@@ -571,13 +571,13 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 										<span class="add">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>
+													<span class="glyphicon glyphicon-plus"/>
 												</xforms:label>
 												<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"/>
 											</xforms:trigger>
@@ -588,33 +588,33 @@
 											<xforms:group ref=".[count(ead:address) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Address</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Address</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('address-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(ead:date) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Date</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Date</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('date-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(ead:num) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Number</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Number</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+													<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
 												<xforms:insert ev:event="DOMActivate" context="." origin="instance('p-template')"/>
 											</xforms:trigger>
 											<xforms:group ref=".[count(ead:publisher) &lt; 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Publisher</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Publisher</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"/>
 												</xforms:trigger>
 											</xforms:group>
@@ -648,7 +648,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:delete ev:event="DOMActivate" nodeset="."/>
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+														<span class="glyphicon glyphicon-remove"/>
 													</xforms:label>
 												</xforms:trigger>
 											</div>
@@ -662,13 +662,13 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 										<span class="add">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>
+													<span class="glyphicon glyphicon-plus"/>
 												</xforms:label>
 												<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"/>
 											</xforms:trigger>
@@ -679,21 +679,21 @@
 											<xforms:group ref=".[count(ead:titleproper) = 0 and count(ead:p) = 0]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Title</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Title</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('titleproper-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(ead:num) = 0  and count(ead:p) = 0]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Number</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Number</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('num-template')"/>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(ead:num) = 0 and count(ead:titleproper) = 0]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 														origin="instance('p-template')"/>
 												</xforms:trigger>
@@ -727,13 +727,13 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 										<div>
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
+													<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
 												<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]"
 													origin="instance('controlnote-template')"/>
 											</xforms:trigger>
@@ -767,7 +767,7 @@
 									<xforms:group ref=".[count(ead:agencycode) = 0]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Agency Code</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Agency Code</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:var name="agencyname" select="ead:agencyname"/>
 												<xforms:insert context="." nodeset="./child::node()[last()]" origin="instance('agencycode-template')"/>
@@ -779,14 +779,14 @@
 									</xforms:group>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/apps/eaditor/xforms/images/add.gif"/>Other Agency Code</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Other Agency Code</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 											origin="instance('otheragencycode-template')"/>
 									</xforms:trigger>
 									<xforms:group ref=".[count(ead:descriptivenote) = 0]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Descriptive Note</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 												origin="instance('descriptivenote-template')"/>
 										</xforms:trigger>
@@ -820,7 +820,7 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 									</div>
@@ -834,7 +834,7 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/remove.gif"/>
+												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
 									</div>
@@ -848,7 +848,7 @@
 								<!--<div class="trigger_container">
 									<xforms:trigger appearance="minimal">
 									<xforms:label>
-									<img src="/apps/eaditor/xforms/images/add.gif"/>Maintenance Event</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Maintenance Event</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 									origin="instance('maintenanceevent-template')"/>
 									</xforms:trigger>
@@ -860,7 +860,7 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													<span class="glyphicon glyphicon-remove"/>
 												</xforms:label>
 											</xforms:trigger>
 										</xforms:group>
@@ -868,7 +868,7 @@
 											<xforms:group ref=".[count(ead:eventdescription) = 0]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/add.gif"/>Event Description</xforms:label>
+														<span class="glyphicon glyphicon-plus"/>Event Description</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 														origin="instance('eventdescription-template')"/>
 												</xforms:trigger>
@@ -913,7 +913,7 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													<span class="glyphicon glyphicon-remove"/>
 												</xforms:label>
 											</xforms:trigger>
 										</xforms:group>
@@ -928,25 +928,25 @@
 							<div class="trigger_container">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Convention Declaration</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Convention Declaration</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 										origin="instance('conventiondeclaration-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Language Declaration</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Language Declaration</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 										origin="instance('languagedeclaration-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>LocalType Declaration</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>LocalType Declaration</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 										origin="instance('localtypedeclaration-template')"/>
 								</xforms:trigger>
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Local Control</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Local Control</xforms:label>
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 										origin="instance('localcontrol-template')"/>
 								</xforms:trigger>
@@ -968,14 +968,14 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													<span class="glyphicon glyphicon-remove"/>
 												</xforms:label>
 											</xforms:trigger>
 											<div class="trigger_container">
 												<xforms:group ref=".[count(ead:descriptivenote) = 0]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
-															<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+															<span class="glyphicon glyphicon-plus"/>Descriptive Note</xforms:label>
 														<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 															origin="instance('descriptivenote-template')"/>
 													</xforms:trigger>
@@ -1041,14 +1041,14 @@
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
 												<xforms:label>
-													<img src="/apps/eaditor/xforms/images/remove.gif"/>
+													<span class="glyphicon glyphicon-remove"/>
 												</xforms:label>
 											</xforms:trigger>
 											<div class="trigger_container">
 												<xforms:group ref=".[count(ead:datesingle) = 0 and count(ead:daterange) = 0]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
-															<img src="/apps/eaditor/xforms/images/add.gif"/>Date</xforms:label>
+															<span class="glyphicon glyphicon-plus"/>Date</xforms:label>
 														<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 															origin="instance('datesingle-template')"/>
 													</xforms:trigger>
@@ -1056,7 +1056,7 @@
 												<xforms:group ref=".[count(ead:datesingle) = 0 and count(ead:daterange) = 0]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
-															<img src="/apps/eaditor/xforms/images/add.gif"/>Date Range</xforms:label>
+															<span class="glyphicon glyphicon-plus"/>Date Range</xforms:label>
 														<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 															origin="instance('daterange-template')"/>
 													</xforms:trigger>
@@ -1076,7 +1076,7 @@
 													<xforms:trigger appearance="minimal">
 														<xforms:delete ev:event="DOMActivate" nodeset="."/>
 														<xforms:label>
-															<img src="/apps/eaditor/xforms/images/remove.gif"/>
+															<span class="glyphicon glyphicon-remove"/>
 														</xforms:label>
 													</xforms:trigger>
 												</div>
@@ -1086,7 +1086,7 @@
 												<xforms:trigger appearance="minimal">
 													<xforms:delete ev:event="DOMActivate" nodeset="."/>
 													<xforms:label>
-														<img src="/apps/eaditor/xforms/images/remove.gif"/>
+														<span class="glyphicon glyphicon-remove"/>
 													</xforms:label>
 												</xforms:trigger>
 												<div>
@@ -1110,7 +1110,7 @@
 							<div class="trigger_container">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/add.gif"/>Source</xforms:label>
+										<span class="glyphicon glyphicon-plus"/>Source</xforms:label>
 									<xforms:action ev:event="DOMActivate">
 										<xforms:action if="ead:sources">
 											<xforms:insert context="ead:sources" nodeset="./child::node()[last()]" origin="instance('source-template')"/>
@@ -1126,14 +1126,14 @@
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/remove.gif"/>
+										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
 								<div class="trigger_container">
 									<xforms:group ref=".[count(ead:descriptivenote) = 0]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Descriptive Note</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Descriptive Note</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
 												origin="instance('descriptivenote-template')"/>
 										</xforms:trigger>

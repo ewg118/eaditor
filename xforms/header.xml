@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div class="navbar navbar-default navbar-static-top" role="navigation" xmlns="http://www.w3.org/1999/xhtml">
+<div class="navbar navbar-default navbar-static-top" role="navigation" xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" >
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -13,12 +13,23 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li>
+					<a href="{$display_path}.">Admin Home</a>
+				</li>
+				<li>
 					<a href="{$display_path}settings/">Modify Settings</a>
-				</li>								
+				</li>
+				<xforms:group ref="not(xxforms:is-user-in-role('eaditor-admin'))">
+					<li>
+						<a href="{$display_path}templates/">Edit Templates</a>
+					</li>
+				</xforms:group>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a href="{instance('config')/url}" target="_blank">View Public Site</a>
+				</li>
+				<li>
+					<a href="{$display_path}logout">Logout</a>
 				</li>
 			</ul>
 		</div>

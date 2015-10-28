@@ -15,10 +15,9 @@
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
-
-		<!-- EADitor styling -->
-		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
@@ -397,11 +396,8 @@
 					</p>
 					<div class="submission">
 						<xforms:submit submission="save-submission" appearance="minimal">
-							<xforms:label><img src="/apps/eaditor/xforms/images/save.gif" alt="Save"/> Save</xforms:label>
-						</xforms:submit>
-						<xforms:submit submission="load-submission" appearance="minimal">
-							<xforms:label><img src="/apps/eaditor/xforms/images/recycle-green.png" alt="Revert"/>Load</xforms:label>
-						</xforms:submit>
+							<xforms:label><span class="glyphicon glyphicon-floppy-disk"></span>Save</xforms:label>
+						</xforms:submit>						
 					</div>
 				</div>
 			</div>
@@ -435,7 +431,7 @@
 										<!-- create otherlevel attribute or delete it, depending on @level value -->
 										<xforms:action ev:event="xforms-value-changed">
 											<xforms:insert if="$level='otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('control-instance')/id]"
-												origin="xxforms:attribute('otherlevel', '')"/>
+												origin="xforms:attribute('otherlevel', '')"/>
 											<xforms:delete if="$level != 'otherlevel'" context="instance('guide')/descendant::ead:c[@id=instance('control-instance')/id]"
 												nodeset="@otherlevel"/>
 										</xforms:action>
@@ -485,7 +481,7 @@
 									<div>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/apps/eaditor/xforms/images/add.gif"/>Subcomponent</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Subcomponent</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"/>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"/>

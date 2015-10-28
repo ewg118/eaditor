@@ -89,7 +89,7 @@
 									</xforms:item>
 									<xforms:action ev:event="xforms-value-changed">
 										<xforms:insert if="not(normalize-space(context()) = '')" context="$data//ead:c[@id=$id]"
-											origin="xxforms:attribute('audience', instance('components')/c[@id=$id]/@audience)"/>
+											origin="xforms:attribute('audience', instance('components')/c[@id=$id]/@audience)"/>
 										<xforms:delete if="normalize-space(context()) = ''" context="$data//ead:c[@id=$id]/@audience"/>
 									</xforms:action>
 								</xforms:select1>

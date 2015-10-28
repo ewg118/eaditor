@@ -112,7 +112,7 @@
 								<xforms:action xxforms:iterate="instance('attributes')/attribute">
 									<xforms:var name="attribute-name" select="context()/@name"/>
 									<xforms:var name="value" select="context()/text()"/>
-									<xforms:insert context="$binding" origin="xxforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>								
+									<xforms:insert context="$binding" origin="xforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>								
 									<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
 								</xforms:action>							
 								<xxforms:hide dialog="element-attributes"/>

@@ -14,13 +14,13 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
 						<xhtml:span class="add">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>
+									<span class="glyphicon glyphicon-plus"/>
 								</xforms:label>
 								<xxforms:show ev:event="DOMActivate" dialog="blockquote-objects"/>
 							</xforms:trigger>
@@ -29,32 +29,32 @@
 							<xforms:label>Block Quote Elements</xforms:label>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Address</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Address</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('address-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Chronology List</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Chronology List</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronlist-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>List</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>List</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('list-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Note</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('note-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Paragraph</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('p-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Table</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Table</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('table-template')"/>
 							</xforms:trigger>
 						</xxforms:dialog>

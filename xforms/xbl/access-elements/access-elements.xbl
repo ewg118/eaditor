@@ -12,7 +12,7 @@
 					<xhtml:span class="add">
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>
+								<span class="glyphicon glyphicon-plus"/>
 							</xforms:label>
 							<xxforms:show ev:event="DOMActivate" dialog="access-objects"/>
 						</xforms:trigger>
@@ -21,52 +21,52 @@
 						<xforms:label>Access Elements</xforms:label>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Corporate Name</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Corporate Name</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('corpname-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Family Name</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Family Name</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('famname-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Function</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Function</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('function-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Genreform</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Genreform</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('genreform-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Geographical Name</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Geographical Name</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('geogname-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Name</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Name</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('name-template')"/>
 						</xforms:trigger>						
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Occupation</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Occupation</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('occupation-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Personal Name</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Personal Name</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('persname-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Subject</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Subject</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('subject-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Title</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Title</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('title-template')"/>
 						</xforms:trigger>
 					</xxforms:dialog>

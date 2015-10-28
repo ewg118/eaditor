@@ -13,19 +13,19 @@
 					<xforms:trigger appearance="minimal">
 						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 						<xforms:label>
-							<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+							<span class="glyphicon glyphicon-remove"/>
 						</xforms:label>
 					</xforms:trigger>
 					<xhtml:div>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Pointer</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Pointer</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding"
 								origin="instance('ptr-template')"/>
 						</xforms:trigger>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Reference</xforms:label>
+								<span class="glyphicon glyphicon-plus"/>Reference</xforms:label>
 							<xforms:insert ev:event="DOMActivate" context="$binding"
 								origin="instance('ref-template')"/>
 						</xforms:trigger>

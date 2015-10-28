@@ -35,7 +35,7 @@
 										<xforms:delete nodeset="."/>
 									</xforms:action>
 									<xforms:label>
-										<img src="/apps/eaditor/xforms/images/remove.gif"/>
+										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
 								<eaditor:attributes ref="$binding"/>
@@ -49,7 +49,7 @@
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								</xforms:action>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							
@@ -85,8 +85,8 @@
 												<xforms:setvalue ref="instance('search-query')"/>
 
 												<!-- create attributes, clear $binding text when applicable -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'geonames')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'geonames')"/>
 												
 												<!-- set source if the attributes already exist -->												
 												<xforms:setvalue if="$binding/@source" ref="$binding/@source">geonames</xforms:setvalue>												
@@ -102,8 +102,8 @@
 												<xforms:setvalue ref="instance('search-query')"/>
 												
 												<!-- create attributes, clear $binding text when applicable -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'tgn')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'tgn')"/>
 												
 												<!-- clear authfilenumber and set source if the attributes already exist -->												
 												<xforms:setvalue if="$binding/@source" ref="$binding/@source">tgn</xforms:setvalue>
@@ -119,8 +119,8 @@
 												<xforms:setvalue ref="instance('search-query')"/>
 
 												<!-- create attributes, clear $binding text when applicable -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'pleiades')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'pleiades')"/>
 												
 												<!-- clear authfilenumber and set source if the attributes already exist -->												
 												<xforms:setvalue if="$binding/@source" ref="$binding/@source">pleiades</xforms:setvalue>

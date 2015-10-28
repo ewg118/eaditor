@@ -21,21 +21,21 @@
 										<xforms:delete nodeset="."/>
 									</xforms:action>
 									<xforms:label>
-										<img src="/eaditor/xforms/images/remove.gif"/>
+										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
 								<div>
 									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Description</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
 										</xforms:trigger>
 									</xforms:group>
 									<!-- machine tags -->
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/eaditor/xforms/images/add.gif"/>Tags</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Tags</xforms:label>
 										<xforms:action ev:event="DOMActivate">
 											<!-- load config only if has not already been loaded -->											
 											<xforms:action if="not(string(instance('config')/url))">
@@ -98,7 +98,7 @@
 									<xforms:label>Flickr Machine Tags</xforms:label>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<img src="/eaditor/xforms/images/add.gif"/>Custom Tags</xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Custom Tags</xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="instance('terms')" nodeset="./child::node()[last()]" origin="instance('custom-template')"/>
 									</xforms:trigger>
 									<xforms:group ref=".[count(instance('terms')/term) &gt; 0]">
@@ -174,7 +174,7 @@
 														<xforms:trigger appearance="minimal">
 															<xforms:delete nodeset="." ev:event="DOMActivate"/>
 															<xforms:label>
-																<img src="/eaditor/xforms/images/remove.gif"/>
+																<span class="glyphicon glyphicon-remove"/>
 															</xforms:label>
 														</xforms:trigger>
 													</td>
@@ -232,7 +232,7 @@
 										<xforms:delete nodeset="."/>
 									</xforms:action>
 									<xforms:label>
-										<img src="/eaditor/xforms/images/remove.gif"/>
+										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
 
@@ -240,14 +240,14 @@
 									<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/eaditor/xforms/images/add.gif"/>Description</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Description</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
 										</xforms:trigger>
 									</xforms:group>
 									<xforms:group ref=".[instance('interface-type')='manual']">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
-												<img src="/eaditor/xforms/images/add.gif"/>Digital Archival Object</xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Digital Archival Object</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('daoloc-template')"/>
 										</xforms:trigger>
 									</xforms:group>

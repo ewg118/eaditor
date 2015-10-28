@@ -15,7 +15,7 @@
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
-								<xhtml:img src="/apps/eaditor/xforms/images/remove.gif"/>
+								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
 
@@ -25,12 +25,12 @@
 							<xhtml:span>Specific Elements: </xhtml:span>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Digital Archival Object</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('dao-template')"/>
 							</xforms:trigger>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<xhtml:img src="/apps/eaditor/xforms/images/add.gif"/>Digital Archival Object Group</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Digital Archival Object Group</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('daogrp-template')"/>
 							</xforms:trigger>
 						</xhtml:div>

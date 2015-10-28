@@ -38,7 +38,7 @@
 									<xforms:delete nodeset="$binding"/>
 								</xforms:action>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 						</div>
@@ -51,7 +51,7 @@
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
-									<img src="/apps/eaditor/xforms/images/remove.gif"/>
+									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
 							<p class="bg-warning">Content is required.</p>
@@ -74,8 +74,8 @@
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<!-- add attributes -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xxforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xxforms:attribute('source', 'lcsh')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'lcsh')"/>
 												<xforms:toggle case="lcsh-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">
