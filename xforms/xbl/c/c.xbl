@@ -46,6 +46,9 @@
 								<xforms:alert>Required</xforms:alert>
 							</xforms:input>
 						</xhtml:div>
+						<xforms:group ref="$binding/ead:did/ead:unitdate">
+							<eaditor:date/>
+						</xforms:group>						
 						<xhtml:div>
 							<xforms:input ref="$binding/@id">
 								<xforms:label>ID</xforms:label>

@@ -320,6 +320,7 @@
 
 			<!-- bind tabs -->
 			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"></xforms:bind>
+			<xforms:bind id="dsc-tab" nodeset="instance('guide')/ead:archdesc/ead:dsc"></xforms:bind>
 
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
@@ -1168,7 +1169,7 @@
 								</div>
 							</fr:tab>
 							<!--**************************************** DSC **********************************-->
-							<fr:tab bind="dsc-tab">
+							<!--<fr:tab bind="dsc-tab">
 								<fr:label>Description of Subordinate Components</fr:label>
 								<h2>Description of Subordinate Components</h2>
 								<xforms:trigger appearance="minimal">
@@ -1193,7 +1194,7 @@
 								<xforms:repeat nodeset="ead:c">
 									<eaditor:c></eaditor:c>
 								</xforms:repeat>
-							</fr:tab>
+							</fr:tab>-->
 							<!--<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
