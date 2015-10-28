@@ -99,6 +99,9 @@
 				<field name="publisher_display">
 					<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
 				</field>
+				<field name="agency_facet">
+					<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
+				</field>
 			</xsl:if>
 
 			<!-- gather display terms from did -->
