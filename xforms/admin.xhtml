@@ -887,7 +887,8 @@
 															</tr>
 														</thead>
 														<tbody>
-															<xforms:repeat nodeset="collection">
+															<xforms:repeat nodeset="xxforms:sort(collection, @name, 'text', 'ascending')">
+																
 																<xforms:var name="name" select="@name"></xforms:var>
 																<tr>
 																	<td>
