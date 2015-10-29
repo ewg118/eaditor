@@ -32,7 +32,7 @@
 							</li>
 						</xsl:if>
 					</ul>
-					<!--<xsl:if test="$pipeline='display'">
+					<xsl:if test="$pipeline='display'">
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
 							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
@@ -40,7 +40,7 @@
 								<li><a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a></li>
 							</xsl:if>
 						</ul>
-					</xsl:if>-->
+					</xsl:if>
 					<form class="navbar-form navbar-right" role="search" action="{$display_path}results" method="GET">
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="Search" name="q" id="srch-term"/>

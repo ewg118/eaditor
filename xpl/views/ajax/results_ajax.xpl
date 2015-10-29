@@ -11,6 +11,11 @@
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
 	
+	<p:processor name="oxf:pipeline">
+		<p:input name="config" href="../../models/config.xpl"/>		
+		<p:output name="data" id="config"/>
+	</p:processor>
+	
 	<p:processor name="oxf:request">
 		<p:input name="config">
 			<config>
@@ -21,7 +26,7 @@
 	</p:processor>
 	
 	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="data" href="#data"/>
+		<p:input name="data" href="aggregate('content', #config, #data)"/>
 		<p:input name="params" href="#params"/>		
 		<p:input name="config" href="../../../ui/xslt/ajax/results_ajax.xsl"/>
 		<p:output name="data" ref="data"/>
