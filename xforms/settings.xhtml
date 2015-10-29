@@ -195,7 +195,7 @@
 
 			<!-- test for flickr echo -->
 			<xforms:submission id="test-for-echo" serialization="none" method="get"
-				action="http://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance" instance="flickr-response">
+				action="https://api.flickr.com/services/rest/?method=flickr.test.echo&amp;api_key={instance('config')/flickr_api_key}" replace="instance" instance="flickr-response">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error querying flickr. Please check internet connection.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- set readonly for save button if the api key is a string and failed -->
