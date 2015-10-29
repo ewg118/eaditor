@@ -37,7 +37,7 @@
 				<config xmlns=""></config>
 			</xforms:instance>
 
-			<xforms:instance id="control-instance">
+			<xforms:instance id="control-instance" xxforms:exclude-result-prefixes="#all">
 				<controls xmlns="">
 					<id></id>
 					<collection-name></collection-name>
@@ -65,100 +65,6 @@
 
 			<xforms:instance id="dump">
 				<dump xmlns=""></dump>
-			</xforms:instance>
-
-			<xforms:instance id="config-backup" xxforms:exclude-result-prefixes="#all">
-				<config></config>
-			</xforms:instance>
-
-			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config version="0.55">
-					<firstrun></firstrun>
-					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
-					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
-					<geonames_api_key></geonames_api_key>
-					<title>EADitor</title>
-					<publisher></publisher>
-					<publisher_code></publisher_code>
-					<publisher_email></publisher_email>
-					<description></description>
-					<license>http://opendatacommons.org/licenses/odbl/</license>
-					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
-					<url>http://localhost:8080/orbeon/eaditor/</url>
-					<xeac></xeac>
-					<sparql>
-						<endpoint></endpoint>
-						<update></update>
-						<query></query>
-						<store></store>
-					</sparql>
-					<ark enabled="false">
-						<naan></naan>
-					</ark>
-					<export>
-						<oai-pmh>true</oai-pmh>
-						<pelagios>false</pelagios>
-					</export>
-					<theme>
-						<facets>agency_facet,century_num,corpname_facet,famname_facet,genreform_facet,geogname_facet,language_facet,persname_facet,subject_facet</facets>
-						<jquery_ui_theme>smoothness</jquery_ui_theme>
-					</theme>
-					<machine_tags>
-						<namespace id="geonames">
-							<predicate>locality</predicate>
-						</namespace>
-						<namespace id="lcgft">
-							<predicate>genreform</predicate>
-						</namespace>
-						<namespace id="lcsh">
-							<predicate>subject</predicate>
-						</namespace>
-						<namespace id="pleiades">
-							<predicate>atteststo</predicate>
-							<predicate>depicts</predicate>
-							<predicate>findspot</predicate>
-							<predicate>origin</predicate>
-							<predicate>place</predicate>
-						</namespace>
-						<namespace id="viaf">
-							<predicate>depicts</predicate>
-						</namespace>
-					</machine_tags>
-					<levels>
-						<archdesc enabled="true"></archdesc>
-						<level enabled="false">class</level>
-						<level enabled="false">collection</level>
-						<level enabled="false">file</level>
-						<level enabled="false">fonds</level>
-						<level enabled="false">item</level>
-						<level enabled="false">otherlevel</level>
-						<level enabled="false">recordgrp</level>
-						<level enabled="false">series</level>
-						<level enabled="false">subfonds</level>
-						<level enabled="false">subgrp</level>
-						<level enabled="false">subseries</level>
-					</levels>
-					<templates>
-						<agencycodes>
-							<agencycode value="US-default">Default Agency</agencycode>
-						</agencycodes>
-						<containertypes>
-							<container value="box">Box</container>
-							<container value="box-folder">Box-Folder</container>
-							<container value="folder">Folder</container>
-							<container value="reel">Reel</container>
-							<container value="tape">Tape</container>
-						</containertypes>
-					</templates>
-					<google_analytics>
-						<script type="text/javascript"></script>
-					</google_analytics>
-				</config>
-			</xforms:instance>
-
-			<!-- facets -->
-			<xforms:instance id="facet-template" xxforms:exclude-result-prefixes="#all">
-				<facet xmlns=""></facet>
 			</xforms:instance>
 
 			<!-- flickr -->
@@ -210,7 +116,7 @@
 			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="title" required="true()"></xforms:bind>
-				<xforms:bind nodeset="description" required="../export/pelagios = true()" relevant="../export/pelagios = true()"></xforms:bind>
+				<xforms:bind nodeset="description" required="true()"></xforms:bind>
 				<xforms:bind nodeset="solr_published" required="true()" as="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="url" required="true()" as="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="xeac" as="xs:anyURI"></xforms:bind>
@@ -232,7 +138,7 @@
 					<xforms:bind nodeset="archdesc/@enabled" type="xs:boolean"></xforms:bind>
 					<xforms:bind nodeset="level/@enabled" type="xs:boolean"></xforms:bind>
 				</xforms:bind>
-				<xforms:bind nodeset="publisher" required="../export/oai-pmh = true() or ../export/pelagios = true()"></xforms:bind>
+				<xforms:bind nodeset="publisher" required="true()"></xforms:bind>
 				<xforms:bind nodeset="publisher_code" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"></xforms:bind>
 				<xforms:bind nodeset="publisher_email" type="emailAddress" required="../export/oai-pmh = true()" relevant="../export/oai-pmh = true()"></xforms:bind>
 				<xforms:bind nodeset="containertypes">
@@ -255,8 +161,6 @@
 
 			<xforms:bind id="sparql-connect" nodeset="instance('control-instance')/connect-trigger"
 				readonly="string-length(../sparql/query) = 0 or string-length(../sparql/update) = 0 or string-length(../sparql/store) = 0"></xforms:bind>
-
-			<xforms:bind id="visual-tab" nodeset="instance('config')/theme"></xforms:bind>
 
 			<!-- ************* SUBMISSIONS ************* -->
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
@@ -380,7 +284,9 @@
 				<div class="col-md-12">
 					<div id="form">
 						<xforms:group ref="instance('control-instance')/status/text()">
-							<div class="bg-success success">
+							<div class="bg-success alert-box">
+								<span class="glyphicon glyphicon-info-sign"></span>
+								<strong>Status:</strong>
 								<xforms:output ref="instance('control-instance')/status"></xforms:output>
 							</div>
 						</xforms:group>
@@ -402,361 +308,370 @@
 								<xforms:label>Version</xforms:label>
 							</xforms:output>
 						</div>
-						<fr:tabview>
-							<!--**************************************** CONFIGURATION **********************************-->
-							<fr:tab id="configure-tab">
-								<fr:label>Configuration</fr:label>
-								<h2>Configuration</h2>
-								<xforms:group ref="instance('config')">
-									<div class="section">
-										<h3>Titles and URLs</h3>
-										<div>
-											<xforms:input ref="title">
-												<xforms:label>Title</xforms:label>
-												<xforms:alert>Required</xforms:alert>
-											</xforms:input>
-											<p>The title of the site to be displayed in all web page titles and citations in PDF files.</p>
-										</div>
-										<div>
-											<xforms:input ref="publisher">
-												<xforms:label>Publisher</xforms:label>
-												<xforms:alert>Required if Pelagios or OAI-PMH export are enabled.</xforms:alert>
-											</xforms:input>
-											<p>Publisher (individual institution or consortium) responsible for publishing content.</p>
-										</div>
-										<div>
-											<xforms:input ref="banner_text">
-												<xforms:label>Banner Text</xforms:label>
-											</xforms:input>
-											<p>Appears in the header banner. For more sophisticated control, edit header.xsl.</p>
-										</div>
-										<div>
-											<xforms:input ref="url">
-												<xforms:label>URL</xforms:label>
-												<xforms:alert>Required</xforms:alert>
-											</xforms:input>
-											<p>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor be
-												contained on different servers.</p>
-										</div>
-										<div>
-											<xforms:output ref="xeac">
-												<xforms:label>xEAC URL</xforms:label>
-											</xforms:output>
-											<xforms:trigger>
-												<xforms:label>Connect</xforms:label>
-												<xforms:action ev:event="DOMActivate">
-													<xforms:setvalue ref="instance('control-instance')/xeac" value="instance('config')/xeac"></xforms:setvalue>
-													<xxforms:show dialog="xeac-dialog"></xxforms:show>
-												</xforms:action>
-											</xforms:trigger>
-											<xforms:group ref=".[string(xeac)]">
+						<xforms:group ref="instance('config')">
+							<div class="section">
+								<h3>Titles and URLs</h3>
+								<table class="table">
+									<tbody>
+										<tr>
+											<td>
+												<xforms:input ref="title">
+													<xforms:label>Title</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</td>
+											<td>The title of the site to be displayed in all web page titles and citations in PDF files.</td>
+										</tr>
+										<tr>
+											<td>
+												<xforms:textarea ref="description">
+													<xforms:label>Description</xforms:label>
+													<xforms:alert>Required.</xforms:alert>
+												</xforms:textarea>
+											</td>
+											<td>This is the description of the archive or consortium. It is required for data exports.</td>
+										</tr>
+										<tr>
+											<td>
+												<xforms:input ref="publisher">
+													<xforms:label>Publisher</xforms:label>
+													<xforms:alert>Required if Pelagios or OAI-PMH export are enabled.</xforms:alert>
+												</xforms:input>
+											</td>
+											<td>Publisher (individual institution or consortium) responsible for publishing content.</td>
+										</tr>
+										<tr>
+											<td>
+												<xforms:input ref="url">
+													<xforms:label>URL</xforms:label>
+													<xforms:alert>Required</xforms:alert>
+												</xforms:input>
+											</td>
+											<td>Public URL of the site. This is used for forming links to the XML and HTML versions of finding aids, should the public and private aspects of EADitor be
+												contained on different servers.</td>
+										</tr>
+										<tr>
+											<td>
+												<xforms:output ref="xeac">
+													<xforms:label>xEAC URL</xforms:label>
+												</xforms:output>
 												<xforms:trigger>
-													<xforms:label>Clear</xforms:label>
+													<xforms:label>Connect</xforms:label>
 													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="instance('control-instance')/xeac"></xforms:setvalue>
-														<xforms:setvalue ref="instance('control-instance')/xeac-success">false</xforms:setvalue>
-														<xforms:setvalue ref="instance('config')/xeac"></xforms:setvalue>
+														<xforms:setvalue ref="instance('control-instance')/xeac" value="instance('config')/xeac"></xforms:setvalue>
+														<xxforms:show dialog="xeac-dialog"></xxforms:show>
 													</xforms:action>
 												</xforms:trigger>
-											</xforms:group>
-											<p>Home page for a xEAC installation for linking EADitor to CPF authority records. The Atom feed URL will be programmatically ascertained.</p>
-										</div>
-									</div>
-									<xforms:group ref="sparql">
-										<div class="section">
-											<h3>SPARQL</h3>
-											<div>
-												<xforms:group ref=".[not(string(query) and string(store) and string(update))]">
-													<xforms:trigger>
-														<xforms:label>Connect</xforms:label>
-														<xforms:action ev:event="DOMActivate">
-															<xxforms:show dialog="sparql-dialog"></xxforms:show>
-														</xforms:action>
-													</xforms:trigger>
-												</xforms:group>
-												<xforms:group ref=".[string(query) and string(store) and string(update)]">
+												<xforms:group ref=".[string(xeac)]">
 													<xforms:trigger>
 														<xforms:label>Clear</xforms:label>
 														<xforms:action ev:event="DOMActivate">
-															<xforms:setvalue ref="instance('control-instance')/sparql/query"></xforms:setvalue>
-															<xforms:setvalue ref="instance('control-instance')/sparql/update"></xforms:setvalue>
-															<xforms:setvalue ref="instance('control-instance')/sparql/store"></xforms:setvalue>
-															<xforms:setvalue ref="instance('control-instance')/sparql-success">false</xforms:setvalue>
-															<xforms:setvalue ref="update"></xforms:setvalue>
-															<xforms:setvalue ref="query"></xforms:setvalue>
-															<xforms:setvalue ref="store"></xforms:setvalue>
-															<xforms:setvalue ref="endpoint">false</xforms:setvalue>
+															<xforms:setvalue ref="instance('control-instance')/xeac"></xforms:setvalue>
+															<xforms:setvalue ref="instance('control-instance')/xeac-success">false</xforms:setvalue>
+															<xforms:setvalue ref="instance('config')/xeac"></xforms:setvalue>
 														</xforms:action>
 													</xforms:trigger>
 												</xforms:group>
-											</div>
-											<p>Connect EADitor to a SPARQL endpoint for more widespread dissemination and querying.</p>
-											<xforms:group ref=".[string(query) and string(update) and string(store)]">
-												<div>
-													<xforms:input ref="endpoint">
-														<xforms:label>Expose Endpoint</xforms:label>
-														<xforms:alert>Invalid</xforms:alert>
-													</xforms:input>
-												</div>
-												<div>
-													<xforms:output ref="query">
-														<xforms:label>Query Service</xforms:label>
-													</xforms:output>
-												</div>
-												<div>
-													<xforms:output ref="store">
-														<xforms:label>Graph Store</xforms:label>
-													</xforms:output>
-												</div>
-												<div>
-													<xforms:output ref="update">
-														<xforms:label>Update Service</xforms:label>
-													</xforms:output>
-												</div>
-											</xforms:group>
+											</td>
+											<td>Home page for a xEAC installation for linking EADitor to CPF authority records. The Atom feed URL will be programmatically ascertained.</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<xforms:group ref="sparql">
+								<div class="section">
+									<h3>SPARQL</h3>
+									<div>
+										<xforms:group ref=".[not(string(query) and string(store) and string(update))]">
+											<xforms:trigger>
+												<xforms:label>Connect</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xxforms:show dialog="sparql-dialog"></xxforms:show>
+												</xforms:action>
+											</xforms:trigger>
+										</xforms:group>
+										<xforms:group ref=".[string(query) and string(store) and string(update)]">
+											<xforms:trigger>
+												<xforms:label>Clear</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:setvalue ref="instance('control-instance')/sparql/query"></xforms:setvalue>
+													<xforms:setvalue ref="instance('control-instance')/sparql/update"></xforms:setvalue>
+													<xforms:setvalue ref="instance('control-instance')/sparql/store"></xforms:setvalue>
+													<xforms:setvalue ref="instance('control-instance')/sparql-success">false</xforms:setvalue>
+													<xforms:setvalue ref="update"></xforms:setvalue>
+													<xforms:setvalue ref="query"></xforms:setvalue>
+													<xforms:setvalue ref="store"></xforms:setvalue>
+													<xforms:setvalue ref="endpoint">false</xforms:setvalue>
+												</xforms:action>
+											</xforms:trigger>
+										</xforms:group>
+									</div>
+									<p>Connect EADitor to a SPARQL endpoint for more widespread dissemination and querying.</p>
+									<xforms:group ref=".[string(query) and string(update) and string(store)]">
+										<div>
+											<xforms:input ref="endpoint">
+												<xforms:label>Expose Endpoint</xforms:label>
+												<xforms:alert>Invalid</xforms:alert>
+											</xforms:input>
+										</div>
+										<div>
+											<xforms:output ref="query">
+												<xforms:label>Query Service</xforms:label>
+											</xforms:output>
+										</div>
+										<div>
+											<xforms:output ref="store">
+												<xforms:label>Graph Store</xforms:label>
+											</xforms:output>
+										</div>
+										<div>
+											<xforms:output ref="update">
+												<xforms:label>Update Service</xforms:label>
+											</xforms:output>
 										</div>
 									</xforms:group>
-									<div class="section">
-										<h3>ARK</h3>
-										<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output
-												value="concat(url, 'ark:/', if(string(ark/naan)) then ark/naan else '{NAAN}', '/{recordid}')"></xforms:output></p>
+								</div>
+							</xforms:group>
+							<div class="section">
+								<h3>ARK</h3>
+								<p>The Name Assigning Authority Number (NAAN) may be inputted here and enabled to activate the Archival Resource Key (ARK)-compliant URI: <xforms:output
+										value="concat(url, 'ark:/', if(string-length(ark/naan) &gt; 0) then ark/naan else '{NAAN}', '/{recordid}')"></xforms:output></p>
+								<div>
+									<xforms:input ref="ark/@enabled">
+										<xforms:label>Enabled</xforms:label>
+										<xforms:action ev:event="xforms-value-changed" if=". = true()">
+											<xforms:insert context="parent::node()" origin="xforms:element('naan')" if="not(child::naan)"/>
+										</xforms:action>
+									</xforms:input>
+								</div>
+								<div>
+									<xforms:input ref="ark/naan">
+										<xforms:label>NAAN</xforms:label>
+										<xforms:alert>Must be a 5-digit ARK number.</xforms:alert>
+									</xforms:input>
+								</div>
+							</div>
+							<div class="section">
+								<h3>Export</h3>
+								<div class="subsection">
+									<h4>OAI-PMH</h4>
+									<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only passes
+										if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier is derived
+										from the URL on this settings page.</p>
+									<div>
+										<xforms:input ref="export/oai-pmh">
+											<xforms:label>Enabled</xforms:label>
+											<xforms:action ev:event="xforms-value-changed" if=". = true()">
+												<xforms:insert context="ancestor::config" origin="xforms:element('publisher_code')" if="not(child::publisher_code)"/>
+												<xforms:insert context="ancestor::config" origin="xforms:element('publisher_email')" if="not(child::publisher_email)"/>
+											</xforms:action>
+										</xforms:input>
+									</div>
+									<div>
+										<xforms:input ref="publisher_code">
+											<xforms:label>Publisher Code</xforms:label>
+											<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
+											<xforms:hint>Publisher code used for OAI-PMH export.</xforms:hint>
+										</xforms:input>
+									</div>
+									<div>
+										<xforms:input ref="publisher_email">
+											<xforms:label>Publisher Email</xforms:label>
+											<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
+											<xforms:hint>Publisher email used for OAI-PMH export.</xforms:hint>
+										</xforms:input>
+									</div>
+								</div>
+								<div class="subsection">
+									<h4>Pelagios</h4>
+									<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF documents for objects which
+										have been tied to Pleiades IDs.</p>
+									<div>
+										<xforms:input ref="export/pelagios">
+											<xforms:label>Enabled</xforms:label>
+										</xforms:input>
+									</div>
+									<div>
+										<xforms:input ref="description">
+											<xforms:label>Description</xforms:label>
+											<xforms:alert>Required of Pelagios export is enabled.</xforms:alert>
+										</xforms:input>
+										<p>This is the description of the VOiD dataset exported for Pelagios.</p>
+									</div>
+								</div>
+							</div>
+							<div class="section">
+								<h3>Publication Options</h3>
+								<p>Individual components may be published as atomized Solr documents for more relevant query results and component-level RDF export.</p>
+								<xforms:group ref="levels">
+									<div>
+										<xforms:input ref="archdesc/@enabled">
+											<xforms:label>Finding Aid</xforms:label>
+										</xforms:input>
+									</div>
+									<h4>Components</h4>
+									<xforms:repeat nodeset="level">
+										<xforms:var name="label" select="."></xforms:var>
 										<div>
-											<xforms:input ref="ark/@enabled">
-												<xforms:label>Enabled</xforms:label>
+											<xforms:input ref="@enabled">
+												<xforms:label ref="concat('Level: ', $label)"></xforms:label>
 											</xforms:input>
 										</div>
-										<div>
-											<xforms:input ref="ark/naan">
-												<xforms:label>NAAN</xforms:label>
-												<xforms:alert>Must be a 5-digit ARK number.</xforms:alert>
-											</xforms:input>
+									</xforms:repeat>
+								</xforms:group>
+							</div>
+							<div class="section">
+								<h3>API Keys</h3>
+								<xforms:group ref=".[instance('flickr-response')/@stat='fail' and string-length(flickr_api_key) &gt; 0]">
+									<div class="ui-widget">
+										<div class="ui-state-error ui-corner-all">
+											<p>
+												<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span>
+												<strong>Alert:</strong>
+												<xforms:output ref="instance('flickr-response')/err/@msg"></xforms:output>
+											</p>
 										</div>
 									</div>
-									<div class="section">
-										<h3>Export</h3>
-										<div class="subsection">
-											<h4>OAI-PMH</h4>
-											<p>Activate OAI-PMH to enable a link on the index page. The feed validates to OAI protocal at the YYYY-MM-DD granularity. <b>Important: </b> Validation only
-												passes if EADitor is run on an external server (i.e., not localhost) which uses Apache proxying to make the :8080 Tomcat port. The OAI unique identifier
-												is derived from the URL on this settings page.</p>
-											<div>
-												<xforms:input ref="export/oai-pmh">
-													<xforms:label>Enabled</xforms:label>
-												</xforms:input>
-											</div>
-											<div>
-												<xforms:input ref="publisher_code">
-													<xforms:label>Publisher Code</xforms:label>
-													<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
-													<xforms:hint>Publisher code used for OAI-PMH export.</xforms:hint>
-												</xforms:input>
-											</div>
-											<div>
-												<xforms:input ref="publisher_email">
-													<xforms:label>Publisher Email</xforms:label>
-													<xforms:alert>Required if OAI-PMH export is enabled.</xforms:alert>
-													<xforms:hint>Publisher email used for OAI-PMH export.</xforms:hint>
-												</xforms:input>
-											</div>
-										</div>
-										<div class="subsection">
-											<h4>Pelagios</h4>
-											<p>This activates the link to the Pelagios VOiD dataset on the EADitor front page. The content of the data dump will only contain RDF documents for objects
-												which have been tied to Pleiades IDs.</p>
-											<div>
-												<xforms:input ref="export/pelagios">
-													<xforms:label>Enabled</xforms:label>
-												</xforms:input>
-											</div>
-											<div>
-												<xforms:input ref="description">
-													<xforms:label>Description</xforms:label>
-													<xforms:alert>Required of Pelagios export is enabled.</xforms:alert>
-												</xforms:input>
-												<p>This is the description of the VOiD dataset exported for Pelagios.</p>
-											</div>
-										</div>
-									</div>
-									<div class="section">
-										<h3>Publication Options</h3>
-										<p>Individual components may be published as atomized Solr documents for more relevant query results and component-level RDF export.</p>
-										<xforms:group ref="levels">
-											<div>
-												<xforms:input ref="archdesc/@enabled">
-													<xforms:label>Finding Aid</xforms:label>
-												</xforms:input>
-											</div>
-											<h4>Components</h4>
-											<xforms:repeat nodeset="level">
-												<xforms:var name="label" select="."></xforms:var>
-												<div>
-													<xforms:input ref="@enabled">
-														<xforms:label ref="concat('Level: ', $label)"></xforms:label>
-													</xforms:input>
-												</div>
+								</xforms:group>
+								<div>
+									<xforms:input ref="flickr_api_key" incremental="true">
+										<xforms:label>flickr API Key</xforms:label>
+										<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"></xforms:send>
+									</xforms:input>
+									<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
+								</div>
+								<div>
+									<xforms:input ref="flickr_api_secret" incremental="true">
+										<xforms:label>flickr API Secret</xforms:label>
+									</xforms:input>
+									<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
+								</div>
+								<div>
+									<xforms:input ref="geonames_api_key" incremental="true">
+										<xforms:label>Geonames API Key</xforms:label>
+									</xforms:input>
+								</div>
+							</div>
+							<div class="section">
+								<h3>Google Analytics</h3>
+								<p>Copy and paste Javascript code provided by Google Analytics here.</p>
+								<div>
+									<xforms:textarea ref="google_analytics">
+										<xforms:label>Code</xforms:label>
+									</xforms:textarea>
+								</div>
+							</div>
+							<div class="section">
+								<xforms:group ref="containertypes">
+									<h3>Container Types</h3>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"></span>New Container</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="xforms:element('container', (xforms:attribute('value', '')))"
+										></xforms:insert>
+									</xforms:trigger>
+									<table class="table">
+										<thead>
+											<tr>
+												<th>Container Label</th>
+												<th>Level</th>
+												<th>Delete</th>
+											</tr>
+										</thead>
+										<tbody>
+											<xforms:repeat nodeset="container">
+												<tr>
+													<td>
+														<xforms:input ref=".">
+															<xforms:alert>Required</xforms:alert>
+														</xforms:input>
+													</td>
+													<td>
+														<xforms:input ref="@value">
+															<xforms:alert>Required; must be xs:NMTOKEN type</xforms:alert>
+														</xforms:input>
+													</td>
+													<td>
+														<xforms:group ref=".[count(parent::node()/container) &gt; 1]">
+															<xforms:trigger appearance="minimal">
+																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
+																<xforms:label>
+																	<span class="glyphicon glyphicon-remove"></span>
+																</xforms:label>
+															</xforms:trigger>
+														</xforms:group>
+													</td>
+												</tr>
 											</xforms:repeat>
-										</xforms:group>
-									</div>
-									<div class="section">
-										<h3>API Keys</h3>
-										<xforms:group ref=".[instance('flickr-response')/@stat='fail' and string-length(flickr_api_key) &gt; 0]">
-											<div class="ui-widget">
-												<div class="ui-state-error ui-corner-all">
-													<p>
-														<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span>
-														<strong>Alert:</strong>
-														<xforms:output ref="instance('flickr-response')/err/@msg"></xforms:output>
-													</p>
-												</div>
-											</div>
-										</xforms:group>
+										</tbody>
+									</table>
+								</xforms:group>
+							</div>
+							<div class="section">
+								<xforms:group ref="facets">
+									<h3>Facets</h3>
+									<span class="add">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"></span>Facet</xforms:label>
+											<xforms:insert context="." nodeset="./child::node()[last()]" origin="xforms:element('facet')" ev:event="DOMActivate"></xforms:insert>
+										</xforms:trigger>
+									</span>
+									<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will cause the browse and
+										map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
+									<xforms:repeat nodeset="facet">
+										<xforms:var name="position" select="position()"></xforms:var>
 										<div>
-											<xforms:input ref="flickr_api_key" incremental="true">
-												<xforms:label>flickr API Key</xforms:label>
-												<xforms:send submission="test-for-echo" ev:event="xforms-value-changed"></xforms:send>
+											<xforms:input ref=".">
+												<xforms:label>Facet</xforms:label>
 											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API key</a> is required in order to take advantage of flickr image linking.</p>
-										</div>
-										<div>
-											<xforms:input ref="flickr_api_secret" incremental="true">
-												<xforms:label>flickr API Secret</xforms:label>
-											</xforms:input>
-											<p>A <a href="http://www.flickr.com/services/api/misc.api_keys.html">flickr API secret</a> is required to insert tags through EADitor.</p>
-										</div>
-										<div>
-											<xforms:input ref="geonames_api_key" incremental="true">
-												<xforms:label>Geonames API Key</xforms:label>
-											</xforms:input>
-										</div>
-									</div>
-									<div class="section">
-										<h3>Google Analytics</h3>
-										<p>Copy and paste Javascript code provided by Google Analytics here.</p>
-										<div>
-											<xforms:textarea ref="google_analytics">
-												<xforms:label>Code</xforms:label>
-											</xforms:textarea>
-										</div>
-									</div>
-									<div class="section">
-										<xforms:group ref="containertypes">
-											<h3>Container Types</h3>
-											<xforms:trigger appearance="minimal">
-												<xforms:label>
-													<span class="glyphicon glyphicon-plus"></span>New Container</xforms:label>
-												<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]"
-													origin="xforms:element('container', (xforms:attribute('value', '')))"></xforms:insert>
-											</xforms:trigger>
-											<table class="table">
-												<thead>
-													<tr>
-														<th>Container Label</th>
-														<th>Level</th>
-														<th>Delete</th>
-													</tr>
-												</thead>
-												<tbody>
-													<xforms:repeat nodeset="container">
-														<tr>
-															<td>
-																<xforms:input ref=".">
-																	<xforms:alert>Required</xforms:alert>
-																</xforms:input>
-															</td>
-															<td>
-																<xforms:input ref="@value">
-																	<xforms:alert>Required; must be xs:NMTOKEN type</xforms:alert>
-																</xforms:input>
-															</td>
-															<td>
-																<xforms:group ref=".[count(parent::node()/container) &gt; 1]">
-																	<xforms:trigger appearance="minimal">
-																		<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
-																		<xforms:label>
-																			<span class="glyphicon glyphicon-remove"></span>
-																		</xforms:label>
-																	</xforms:trigger>
-																</xforms:group>
-															</td>
-														</tr>
-													</xforms:repeat>
-												</tbody>
-											</table>
-										</xforms:group>
-									</div>
-									<div class="section">
-										<xforms:group ref="facets">
-											<h3>Facets</h3>
-											<span class="add">
+											<xforms:group ref=".[$position != 1]">
 												<xforms:trigger appearance="minimal">
-													<xforms:label>
-														<span class="glyphicon glyphicon-plus"></span>Facet</xforms:label>
-													<xforms:insert context="." nodeset="./child::node()[last()]" origin="xforms:element('facet')" ev:event="DOMActivate"></xforms:insert>
+													<xforms:label><span class="glyphicon glyphicon-arrow-up"></span></xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:insert context="parent::node()" nodeset="facet[$position - 2]" origin="parent::node()/facet[$position]"></xforms:insert>
+														<xforms:delete nodeset="."></xforms:delete>
+													</xforms:action>
 												</xforms:trigger>
-											</span>
-											<p>The facet must be a valid Solr string-based field (preferably defined by the *_facet dynamicField type in the schema). An invalid field will cause the
-												browse and map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
-											<xforms:repeat nodeset="facet">
-												<xforms:var name="position" select="position()"></xforms:var>
-												<div>
-													<xforms:input ref=".">
-														<xforms:label>Facet</xforms:label>
-													</xforms:input>
-													<xforms:group ref=".[$position != 1]">
-														<xforms:trigger appearance="minimal">
-															<xforms:label><span class="glyphicon glyphicon-arrow-up"></span></xforms:label>
-															<xforms:action ev:event="DOMActivate">
-																<xforms:insert context="parent::node()" nodeset="facet[$position - 2]" origin="parent::node()/facet[$position]"></xforms:insert>
-																<xforms:delete nodeset="."></xforms:delete>
-															</xforms:action>
-														</xforms:trigger>
-													</xforms:group>
-													<xforms:group ref=".[not($position=count(parent::node()/facet))]">
-														<xforms:trigger appearance="minimal">
-															<xforms:label><span class="glyphicon glyphicon-arrow-down"></span></xforms:label>
-															<xforms:action ev:event="DOMActivate">
-																<xforms:insert context="parent::node()" nodeset="facet[$position+1]" origin="parent::node()/facet[$position]"></xforms:insert>
-																<xforms:delete nodeset="."></xforms:delete>
-															</xforms:action>
-														</xforms:trigger>
-													</xforms:group>
-													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" context="."></xforms:delete>
-														<xforms:label>
-															<span class="glyphicon glyphicon-remove"></span>
-														</xforms:label>
-													</xforms:trigger>
-												</div>
-											</xforms:repeat>
-										</xforms:group>
-									</div>
-								</xforms:group>
-							</fr:tab>
-							<!--**************************************** ADVANCED SETTINGS **********************************-->
-							<fr:tab id="advanced">
-								<fr:label>Advanced</fr:label>
-								<xforms:group ref="instance('config')">
-									<h3>Advanced Settings</h3>
-									<div class="section">
-										<p>
-											<b>Only change these options if Orbeon is run on a separate server.</b>
-										</p>
-										<p>Changing these options to an inactive URL could break public display and web form functionality.</p>
-										<div class="subsection">
-											<h4>Solr URLs</h4>
-											<div>
-												<xforms:input ref="solr_published">
-													<xforms:label>Published</xforms:label>
-													<xforms:alert>Required</xforms:alert>
-												</xforms:input>
-											</div>
+											</xforms:group>
+											<xforms:group ref=".[not($position=count(parent::node()/facet))]">
+												<xforms:trigger appearance="minimal">
+													<xforms:label><span class="glyphicon glyphicon-arrow-down"></span></xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:insert context="parent::node()" nodeset="facet[$position+1]" origin="parent::node()/facet[$position]"></xforms:insert>
+														<xforms:delete nodeset="."></xforms:delete>
+													</xforms:action>
+												</xforms:trigger>
+											</xforms:group>
+											<xforms:trigger appearance="minimal">
+												<xforms:delete ev:event="DOMActivate" context="."></xforms:delete>
+												<xforms:label>
+													<span class="glyphicon glyphicon-remove"></span>
+												</xforms:label>
+											</xforms:trigger>
 										</div>
-									</div>
+									</xforms:repeat>
 								</xforms:group>
-							</fr:tab>
-						</fr:tabview>
+							</div>
+							<div class="section">
+								<h3>Advanced Settings</h3>
+								<p>
+									<b>Only change these options if Orbeon is run on a separate server.</b>
+								</p>
+								<p>Changing these options to an inactive URL could break public display and web form functionality.</p>
+								<div class="subsection">
+									<h4>Solr URLs</h4>
+									<div>
+										<xforms:input ref="solr_published">
+											<xforms:label>Published</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+										</xforms:input>
+									</div>
+								</div>
+							</div>
+						</xforms:group>
 					</div>
-					<!--<fr:xforms-inspector/>-->
+					<fr:xforms-inspector></fr:xforms-inspector>
 				</div>
 			</div>
 		</div>

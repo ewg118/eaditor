@@ -454,7 +454,7 @@
 							<abstract/>
 						</xforms:instance>
 						<xforms:instance id="container-template" xxforms:exclude-result-prefixes="#all">
-							<container/>
+							<container type=""/>
 						</xforms:instance>
 						<xforms:instance id="langmaterial-template" xxforms:exclude-result-prefixes="#all">
 							<langmaterial>

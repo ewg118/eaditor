@@ -33,13 +33,13 @@
 					<id></id>
 					<status></status>
 					<error></error>
-					<numFound></numFound>
+					<numFound>0</numFound>
 					<page>1</page>
 					<query_input></query_input>
 					<query_sent></query_sent>
 					<interface></interface>
 					<create-collection-trigger>false</create-collection-trigger>
-					<version>0.55</version>
+					<version>0.60</version>
 				</controls>
 			</xforms:instance>
 
@@ -353,7 +353,7 @@
 			</xforms:instance>
 			<xforms:instance id="deleteAll">
 				<delete xmlns="">
-					<query/>
+					<query></query>
 				</delete>
 			</xforms:instance>
 
@@ -415,6 +415,8 @@
 			<xforms:bind nodeset="instance('control-instance')">
 				<xforms:bind id="create-collection-trigger" nodeset="create-collection-trigger" type="xs:boolean" readonly=". != true()"></xforms:bind>
 				<xforms:bind nodeset="firstrun" type="xs:boolean"></xforms:bind>
+				<xforms:bind nodeset="numFound" type="xs:integer"/>
+				<xforms:bind nodeset="page" type="xs:integer"/>
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('collections-list')" constraint="count(//@name) = count(distinct-values(//@name)) and count(//@role) = count(distinct-values(//@role))">
@@ -569,29 +571,31 @@
 					<!-- get the number of docs in the eXist collection() -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
 					<xforms:send submission="xquery-collection"></xforms:send>
-					<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
-					<!-- set value in control instance -->
-
-					<xforms:var name="end" select="if(instance('control-instance')/numFound &gt; 20) then 20 else instance('control-instance')/numFound"></xforms:var>
-					<!-- get list of files for page 1, replacing START and END -->
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
-					<xforms:send submission="xquery-pagination"></xforms:send>
+					<!-- only execute XQuery for pagination if there are more than 0 results -->
+					<xforms:action ev:event="xforms-submit-done">
+						<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
+						<!-- get list of files for page 1, replacing START and END -->
+						<xforms:action if="instance('control-instance')/numFound &gt; 0">
+							<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
+							<xforms:send submission="xquery-pagination"></xforms:send>
+						</xforms:action>						
+					</xforms:action>
 
 					<!-- get request if there are flickr API key and secret values -->
-					<!--<xforms:action if="string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)">
+					<xforms:action if="string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)">
 						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
 					</xforms:action>
 
-					<!-\- handle flickr authentication -\->
+					<!-- handle flickr authentication -->
 					<xforms:action if="string(xxforms:get-request-parameter('oauth_token')) and string(xxforms:get-request-parameter('oauth_verifier'))">
 						<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-request-parameter('oauth_token')"></xforms:setvalue>
 						<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxforms:get-request-parameter('oauth_verifier')"></xforms:setvalue>
 
-						<!-\- get access token -\->
+						<!-- get access token -->
 						<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
 						<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
 						<xforms:setvalue ref="instance('flickr-control')/service">http://www.flickr.com/services/oauth/access_token</xforms:setvalue>
-						<!-\- generating signature -\->
+						<!-- generating signature -->
 						<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"></xforms:var>
 						<xforms:var name="base"
 							select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_version=', instance('flickr-control')/version)))"></xforms:var>
@@ -599,12 +603,12 @@
 						<xforms:setvalue ref="instance('flickr-control')/request"
 							value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_token=', instance('flickr-control')/token)"></xforms:setvalue>
 
-						<!-\- get response -\->
+						<!-- get response -->
 						<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"></xforms:setvalue>
 						<xforms:insert nodeset="instance('flickr-auth-response')"
 							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"></xforms:insert>
 
-						<!-\- set session attributes after flickr authentication -\->
+						<!-- set session attributes after flickr authentication -->
 						<xforms:var name="pieces" select="tokenize(instance('flickr-auth-response'), '&amp;')"></xforms:var>
 						<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"></xforms:insert>
 						<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"></xforms:insert>
@@ -612,9 +616,9 @@
 						<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"></xforms:insert>
 						<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"></xforms:insert>
 
-						<!-\- reload page after setting oauth session attributions -\->
+						<!-- reload page after setting oauth session attributions -->
 						<xforms:load resource="{instance('request')/request-url}"></xforms:load>
-					</xforms:action>-->
+					</xforms:action>
 				</xforms:action>
 
 				<!-- if the master config successfully loads, then load the collections-list-->
@@ -684,7 +688,7 @@
 				</xforms:action>
 			</xforms:submission>
 
-			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor{instance('control-instance')/collection-name}/guides" method="post"
+			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides" method="post"
 				replace="instance" instance="xquery-result" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
@@ -741,7 +745,7 @@
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guides removed from search index.</xforms:setvalue>
 					<xforms:send submission="commit"></xforms:send>
-				</xforms:action>				
+				</xforms:action>
 			</xforms:submission>
 
 			<!-- send commit -->
@@ -888,7 +892,7 @@
 														</thead>
 														<tbody>
 															<xforms:repeat nodeset="xxforms:sort(collection, @name, 'text', 'ascending')">
-																
+
 																<xforms:var name="name" select="@name"></xforms:var>
 																<tr>
 																	<td>
@@ -1201,7 +1205,9 @@
 						<xforms:case id="eaditor-editor">
 							<div id="form">
 								<xforms:group ref="instance('control-instance')/status/text()">
-									<div class="success">
+									<div class="bg-success alert-box">
+										<span class="glyphicon glyphicon-info-sign"></span>
+										<strong>Status:</strong>
 										<xforms:output ref="instance('control-instance')/status"></xforms:output>
 									</div>
 								</xforms:group>
@@ -1210,64 +1216,69 @@
 										<xforms:output ref="instance('control-instance')/error"></xforms:output>
 									</div>
 								</xforms:group>
-								<!-- flickr authentication successful -->
-								<!--<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
-									<!-\- show username if there are already session parameters -\->
-									<div style="float:right">
-										<b>
-											<xforms:output value="xxforms:get-session-attribute('flickr_username')">
-												<xforms:label>Flickr User</xforms:label>
-											</xforms:output>
-										</b>
+								<!-- only display flickr login for collections -->
+								<xforms:group ref=".[not(xxforms:is-user-in-role('eaditor-admin'))]">
+									<div class="pull-right col-md-3">
+										<!-- flickr authentication successful -->
+										<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
+											<!-- show username if there are already session parameters -->
+											<div style="float:right"><b>
+													<xforms:output value="xxforms:get-session-attribute('flickr_username')">
+														<xforms:label>Flickr User</xforms:label>
+													</xforms:output>
+												</b>
+											</div>
+										</xforms:group>
+										<!-- show flickr login button -->
+										<xforms:group
+											ref=".[not(string(xxforms:get-session-attribute('flickr_username'))) and string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)]">
+											<xforms:group ref="instance('flickr-control')">
+												<div style="float:right">
+													<xforms:trigger appearance="minimal">
+														<xforms:label>Flickr Login</xforms:label>
+														<xforms:action ev:event="DOMActivate">
+															<!-- STEP 1: Request Token -->
+															<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
+															<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
+															<xforms:setvalue ref="callback" value="encode-for-uri(instance('request')/request-url)"></xforms:setvalue>
+															<xforms:setvalue ref="service">http://www.flickr.com/services/oauth/request_token</xforms:setvalue>
+															<!-- generating signature -->
+															<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;')"></xforms:var>
+															<xforms:var name="base"
+																select="concat('GET&amp;', encode-for-uri(service), '&amp;', encode-for-uri(concat('oauth_callback=', callback, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', nonce, '&amp;oauth_signature_method=', method, '&amp;oauth_timestamp=', timestamp, '&amp;oauth_version=', version)))"></xforms:var>
+															<xforms:setvalue ref="signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"></xforms:setvalue>
+															<xforms:setvalue ref="request"
+																value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_callback=', instance('flickr-control')/callback)"></xforms:setvalue>
+															<!-- get response -->
+															<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"></xforms:setvalue>
+															<xforms:insert nodeset="instance('flickr-auth-response')"
+																origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"></xforms:insert>
+															<!-- STEP 2: Redirect to Authorization URL -->
+															<!-- set session attributes -->
+															<xforms:insert context="."
+																origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"></xforms:insert>
+															<xforms:insert context="."
+																origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"></xforms:insert>
+															<!-- load authorization page -->
+															<xforms:load
+																resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}&amp;perms=write"
+															></xforms:load>
+														</xforms:action>
+													</xforms:trigger>
+												</div>
+											</xforms:group>
+										</xforms:group>
 									</div>
-								</xforms:group>-->
-								<!-- show flickr login button -->
-								<!--<xforms:group
-									ref=".[not(string(xxforms:get-session-attribute('flickr_username'))) and string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)]">
-									<xforms:group ref="instance('flickr-control')">
-										<div style="float:right">
-											<xforms:trigger appearance="minimal">
-												<xforms:label>Flickr Login</xforms:label>
-												<xforms:action ev:event="DOMActivate">
-													<!-\- STEP 1: Request Token -\->
-													<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
-													<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
-													<xforms:setvalue ref="callback" value="encode-for-uri(instance('request')/request-url)"></xforms:setvalue>
-													<xforms:setvalue ref="service">http://www.flickr.com/services/oauth/request_token</xforms:setvalue>
-													<!-\- generating signature -\->
-													<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;')"></xforms:var>
-													<xforms:var name="base"
-														select="concat('GET&amp;', encode-for-uri(service), '&amp;', encode-for-uri(concat('oauth_callback=', callback, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', nonce, '&amp;oauth_signature_method=', method, '&amp;oauth_timestamp=', timestamp, '&amp;oauth_version=', version)))"></xforms:var>
-													<xforms:setvalue ref="signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"></xforms:setvalue>
-													<xforms:setvalue ref="request"
-														value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_callback=', instance('flickr-control')/callback)"></xforms:setvalue>
-													<!-\- get response -\->
-													<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"></xforms:setvalue>
-													<xforms:insert nodeset="instance('flickr-auth-response')"
-														origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"></xforms:insert>
-													<!-\- STEP 2: Redirect to Authorization URL -\->
-													<!-\- set session attributes -\->
-													<xforms:insert context="."
-														origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"></xforms:insert>
-													<xforms:insert context="."
-														origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"></xforms:insert>
-													<!-\- load authorization page -\->
-													<xforms:load resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}&amp;perms=write"
-													></xforms:load>
-												</xforms:action>
-											</xforms:trigger>
-										</div>
-									</xforms:group>
-								</xforms:group>-->
+								</xforms:group>
 								<h2>File Manager</h2>
 								<div>
 									<ul>
 										<li>
 											<a href="edit/core/">Create New Finding Aid</a>
 										</li>
-										<li>
+										<!--<li>
 											<a href="upload/">Upload Finding Aid</a>
-										</li>
+										</li>-->
 									</ul>
 								</div>
 								<xforms:group ref=".[count(instance('pagination-result')//record) &gt; 0]">
@@ -1293,7 +1304,7 @@
 												</xforms:trigger>
 											</li>
 										</ul>
-									</div>									
+									</div>
 								</xforms:group>
 								<!-- search -->
 								<xforms:group ref="instance('control-instance')[number(numFound) &gt; 0]">
@@ -1493,7 +1504,7 @@
 																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
 																		<xforms:dispatch target="unpublish" name="fr-show"></xforms:dispatch>
 																	</xforms:action>
-																</xforms:trigger>	
+																</xforms:trigger>
 															</xforms:group>
 															<xforms:group ref=".[published != true()]">
 																<xforms:trigger appearance="minimal">
@@ -1532,7 +1543,6 @@
 				<!-- instance inspector -->
 				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
 			</div>
-			
 			<!-- variables for js usage -->
 			<div style="display:none">
 				<div id="temp"></div>

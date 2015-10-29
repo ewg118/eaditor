@@ -22,6 +22,7 @@
 .submission {
 	text-align:center;
 	margin:10px 0;
+	font-size:larger;
 }
 .xforms-submit {
 	margin-left:10px;
@@ -63,26 +64,14 @@
 	width:100%;
 }
 .subsection {
-	padding:10px 0 10px 25px;
-	width:95%;
+	padding:10px 0 10px 15px;
 }
-.success {
+.alert-box {
 	width:50%;
-	padding:10px;
-	border:1px solid silver;
-	border-radius:5px;
-	margin:10px auto;
-}
-.warning {
+	margin:20px auto;
 	padding:5px;
-	color:#ef8700;
-	font-weight:bold;
-}
-.error {
-	padding:25px;
-	margin:10px;
-	background-color:red;
-	border:2px solid #8d0000;
+	border-radius: 4px;
+	border: 1px solid gray;
 }
 /*
   ****************************************

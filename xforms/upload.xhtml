@@ -13,8 +13,9 @@
 		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css"/>
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all"/>
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico"/>
-		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.8.0/build/cssgrids/grids-min.css"/>
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png"/>		
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 		<!-- EADitor styling -->
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
@@ -23,27 +24,24 @@
 				<xi:include href="../exist-config.xml"/>
 			</xforms:instance>
 
+			<xforms:instance id="control-instance">
+				<controls xmlns="">
+					<collection-name/>
+					<id/>
+					<status/>
+					<simple-upload-trigger/>
+					<add-upload-trigger/>
+					<remove-upload-trigger/>					
+				</controls>
+			</xforms:instance>
+
 			<xforms:instance id="files">
 				<!-- Start with placeholders for three files -->
 				<files xmlns="">
 					<file xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
 				</files>
-			</xforms:instance>
-			<xforms:instance id="status">
-				<selected/>
-			</xforms:instance>
-			<xforms:instance id="file-template">
-				<!-- Using xs:anyURI will cause the XForms engine to store a reference to
-                     a URI instead of inlining the content of the file -->
-				<file xmlns="" xsi:type="xs:anyURI" filename="" mediatype="" size=""/>
-			</xforms:instance>
-			<xforms:instance id="control-instance">
-				<control xmlns="">
-					<simple-upload-trigger/>
-					<add-upload-trigger/>
-					<remove-upload-trigger/>
-				</control>
-			</xforms:instance>
+			</xforms:instance>			
+			
 			<xforms:bind nodeset="instance('control-instance')">
 				<xforms:bind nodeset="add-upload-trigger" readonly="false()"/>
 				<xforms:bind nodeset="remove-upload-trigger" readonly="count(instance('files')/file) le 1"/>
@@ -61,15 +59,7 @@
 				<ead xmlns="" id=""/>
 			</xforms:instance>
 
-			<!-- send to Solr -->
-			<xforms:instance id="addIndex">
-				<add xmlns=""/>
-			</xforms:instance>
-			<!-- Instance for Solr commit-->
-			<xforms:instance id="sendCommit">
-				<commit/>
-			</xforms:instance>
-
+			<!-- ************************SUBMISSIONS ****************************** -->		
 			<xforms:submission id="background-submission" method="post" replace="none" resource="test:" ref="instance('control-instance')/simple-upload-trigger">
 				<!--get the temp file written to disk-->
 				<xforms:send ev:event="xforms-submit-done" submission="get-temp"/>
@@ -95,16 +85,8 @@
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
-					<!-- set default if security is false -->
-					<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role='']/@name"/>
-					</xforms:action>
-					<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
-					<xforms:action if="string(instance('control-instance')/request-security/role)">
-						<xforms:setvalue ref="instance('control-instance')/collection-name"
-							value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
-					</xforms:action>
+					<xforms:setvalue ref="instance('control-instance')/collection-name"
+						value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 					<xforms:send submission="load-config"/>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
@@ -115,7 +97,8 @@
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
-			<!-- ************************ xforms-model-construct-done ****************************** -->
+			
+			<!-- ************************ XFORMS-MODEL-CONSTRUCT-DONE ****************************** -->			
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
 					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
@@ -130,9 +113,11 @@
 				<div class="content">
 					<xi:include href="header.xml"/>
 					<div id="form">
-						<xforms:group ref="instance('status')/text()">
-							<div class="success">
-								<xforms:output ref="instance('status')"/>
+						<xforms:group ref="instance('control-instance')/status/text()">
+							<div class="bg-success alert-box">
+								<span class="glyphicon glyphicon-info-sign"></span>
+								<strong>Status:</strong>
+								<xforms:output ref="instance('control-instance')/status"></xforms:output>
 							</div>
 						</xforms:group>
 						<p>

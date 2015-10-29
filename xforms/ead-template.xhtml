@@ -41,6 +41,7 @@
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
 					<collection-name></collection-name>
+					<status/>
 				</controls>
 			</xforms:instance>
 
@@ -60,11 +61,6 @@
 			<!-- get from exist -->
 			<xforms:instance id="c-template" xmlns:xlink="http://www.w3.org/1999/xlink">
 				<c xmlns="urn:isbn:1-931666-22-9"></c>
-			</xforms:instance>
-
-
-			<xforms:instance id="status">
-				<status></status>
 			</xforms:instance>
 
 			<!-- EAD ELEMENTS -->
@@ -302,9 +298,11 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div id="form">
-						<xforms:group ref="instance('status')/text()">
-							<div class="success">
-								<xforms:output ref="instance('status')"></xforms:output>
+						<xforms:group ref="instance('control-instance')/status/text()">
+							<div class="bg-success alert-box">
+								<span class="glyphicon glyphicon-info-sign"></span>
+								<strong>Status:</strong>
+								<xforms:output ref="instance('control-instance')/status"></xforms:output>
 							</div>
 						</xforms:group>
 						<p>
