@@ -37,7 +37,7 @@
 							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
 							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
 							<xsl:if test="$collection-name != 'admin'">
-								<li><a href="../{$display_path}admin/{$collection-name}/id/{$path}">Staff View</a></li>
+								<li><a href="{substring-before(doc('input:request')/request/request-url, 'eaditor')}eaditor/admin/{$collection-name}/id/{$path}">Staff View</a></li>
 							</xsl:if>
 						</ul>
 					</xsl:if>

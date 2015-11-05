@@ -829,7 +829,9 @@
 
 	<body>
 		<xforms:var name="display_path"></xforms:var>
-		<xi:include href="header.xml"></xi:include>
+		<xforms:group ref=".[not(instance('control-instance')/interface = 'unauthorized-user')]">
+			<xi:include href="header.xml"></xi:include>
+		</xforms:group>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
