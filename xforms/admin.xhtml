@@ -594,7 +594,7 @@
 						<!-- get access token -->
 						<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
 						<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
-						<xforms:setvalue ref="instance('flickr-control')/service">http://www.flickr.com/services/oauth/access_token</xforms:setvalue>
+						<xforms:setvalue ref="instance('flickr-control')/service">https://www.flickr.com/services/oauth/access_token</xforms:setvalue>
 						<!-- generating signature -->
 						<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"></xforms:var>
 						<xforms:var name="base"
