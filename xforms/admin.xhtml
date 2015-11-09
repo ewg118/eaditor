@@ -460,7 +460,7 @@
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('pagination-result')">
-				<xforms:bind nodeset="record">
+				<xforms:bind nodeset="//record">
 					<xforms:bind nodeset="published" type="xs:boolean"></xforms:bind>
 					<xforms:bind nodeset="components" type="xs:boolean"></xforms:bind>
 				</xforms:bind>
@@ -527,7 +527,7 @@
 				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:action ev:event="xforms-submit-done">
 					<!-- proceed with setting the interface for collection editing -->
-					<xforms:action if="not(instance('control-instance')/request-security/role = 'eaditor-admin')">
+					<xforms:action if="not(xxforms:is-user-in-role('eaditor-admin'))">
 						<!-- if there is an eXist-db collection name that matches the associated Tomcat role -->
 						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
 							<xforms:setvalue ref="instance('control-instance')/collection-name"
@@ -543,11 +543,19 @@
 							<xforms:setvalue ref="instance('control-instance')/interface">unauthorized-user</xforms:setvalue>
 						</xforms:action>
 					</xforms:action>
-					<xforms:action if="instance('control-instance')/request-security/role = 'eaditor-admin'">
+					<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
 						<!-- get collection metadata -->
 						<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
 							value="replace(replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ',')), '%AGG%', instance('config')/aggregator)"></xforms:setvalue>
 						<xforms:send submission="xquery-db"></xforms:send>
+						
+						<!-- set interface: if there is a session attribute for collection-name, then load the editor interface. otherwise load numishare-admin interface -->
+						<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
+							<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>																					
+						</xforms:action>
+						<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+							<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
+						</xforms:action>
 					</xforms:action>
 				</xforms:action>
 			</xforms:submission>
@@ -563,68 +571,91 @@
 
 			<!-- loading, saving config -->
 			<xforms:submission id="load-config" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{if (xxforms:is-user-in-role('eaditor-admin')) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml"
+				action="{instance('exist-config')/url}eaditor/{if (xxforms:is-user-in-role('eaditor-admin') and not(string(xxforms:get-session-attribute('collection-name')))) then '' else concat(instance('control-instance')/collection-name, '/')}config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 
-				<!-- perform normal tasks if loading the config as an eaditor-user -->
-				<xforms:action ev:event="xforms-submit-done" if="not(xxforms:is-user-in-role('eaditor-admin'))">
-					<!-- get the number of docs in the eXist collection() -->
-					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
-					<xforms:send submission="xquery-collection"></xforms:send>
-					<!-- only execute XQuery for pagination if there are more than 0 results -->
-					<xforms:action ev:event="xforms-submit-done">
-						<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
-						<!-- get list of files for page 1, replacing START and END -->
-						<xforms:action if="instance('control-instance')/numFound &gt; 0">
-							<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
-							<xforms:send submission="xquery-pagination"></xforms:send>
-						</xforms:action>						
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- perform normal tasks if loading the config as an eaditor-user -->
+					<xforms:action if="not(xxforms:is-user-in-role('eaditor-admin'))">
+						<!-- get the number of docs in the eXist collection() -->
+						<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
+						<xforms:send submission="xquery-collection"></xforms:send>
+						<!-- only execute XQuery for pagination if there are more than 0 results -->
+						<xforms:action ev:event="xforms-submit-done">
+							<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
+							<!-- get list of files for page 1, replacing START and END -->
+							<xforms:action if="instance('control-instance')/numFound &gt; 0">
+								<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
+								<xforms:send submission="xquery-pagination"></xforms:send>
+							</xforms:action>						
+						</xforms:action>
+						
+						<!-- get request if there are flickr API key and secret values -->
+						<xforms:action if="string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)">
+							<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+						</xforms:action>
+						
+						<!-- handle flickr authentication -->
+						<xforms:action if="string(xxforms:get-request-parameter('oauth_token')) and string(xxforms:get-request-parameter('oauth_verifier'))">
+							<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-request-parameter('oauth_token')"></xforms:setvalue>
+							<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxforms:get-request-parameter('oauth_verifier')"></xforms:setvalue>
+							
+							<!-- get access token -->
+							<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
+							<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
+							<xforms:setvalue ref="instance('flickr-control')/service">https://www.flickr.com/services/oauth/access_token</xforms:setvalue>
+							<!-- generating signature -->
+							<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"></xforms:var>
+							<xforms:var name="base"
+								select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_version=', instance('flickr-control')/version)))"></xforms:var>
+							<xforms:setvalue ref="instance('flickr-control')/signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"></xforms:setvalue>
+							<xforms:setvalue ref="instance('flickr-control')/request"
+								value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_token=', instance('flickr-control')/token)"></xforms:setvalue>
+							
+							<!-- get response -->
+							<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"></xforms:setvalue>
+							<xforms:insert nodeset="instance('flickr-auth-response')"
+								origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"></xforms:insert>
+							
+							<!-- set session attributes after flickr authentication -->
+							<xforms:var name="pieces" select="tokenize(instance('flickr-auth-response'), '&amp;')"></xforms:var>
+							<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"></xforms:insert>
+							<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"></xforms:insert>
+							<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"></xforms:insert>
+							<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"></xforms:insert>
+							<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"></xforms:insert>
+							
+							<!-- reload page after setting oauth session attributions -->
+							<xforms:load resource="{instance('request')/request-url}"></xforms:load>
+						</xforms:action>
 					</xforms:action>
-
-					<!-- get request if there are flickr API key and secret values -->
-					<xforms:action if="string(instance('config')/flickr_api_key) and string(instance('config')/flickr_api_secret)">
-						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+					
+					<!-- if there is a collection name and the user is eaditor-admin, then execute the XQuery for pagination -->					
+					<xforms:action if="xxforms:is-user-in-role('eaditor-admin') and string(xxforms:get-session-attribute('collection-name'))">
+						<!-- load collections first -->
+						<xforms:send submission="load-collections"></xforms:send>
+						<xforms:action ev:event="xforms-submit-done">
+							<!-- get the number of docs in the eXist collection() -->
+							<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
+							<xforms:send submission="xquery-collection"></xforms:send>
+							<!-- only execute XQuery for pagination if there are more than 0 results -->
+							<xforms:action ev:event="xforms-submit-done">
+								<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
+								<!-- get list of files for page 1, replacing START and END -->
+								<xforms:action if="instance('control-instance')/numFound &gt; 0">
+									<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
+									<xforms:send submission="xquery-pagination"></xforms:send>
+								</xforms:action>	
+								<xforms:setvalue ref="instance('control-instance')/interface">eaditor-editor</xforms:setvalue>
+							</xforms:action>
+						</xforms:action>
 					</xforms:action>
-
-					<!-- handle flickr authentication -->
-					<xforms:action if="string(xxforms:get-request-parameter('oauth_token')) and string(xxforms:get-request-parameter('oauth_verifier'))">
-						<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-request-parameter('oauth_token')"></xforms:setvalue>
-						<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxforms:get-request-parameter('oauth_verifier')"></xforms:setvalue>
-
-						<!-- get access token -->
-						<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
-						<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
-						<xforms:setvalue ref="instance('flickr-control')/service">https://www.flickr.com/services/oauth/access_token</xforms:setvalue>
-						<!-- generating signature -->
-						<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"></xforms:var>
-						<xforms:var name="base"
-							select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_version=', instance('flickr-control')/version)))"></xforms:var>
-						<xforms:setvalue ref="instance('flickr-control')/signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"></xforms:setvalue>
-						<xforms:setvalue ref="instance('flickr-control')/request"
-							value="concat(instance('flickr-control')/service, '?oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_signature=', instance('flickr-control')/signature, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_token=', instance('flickr-control')/token)"></xforms:setvalue>
-
-						<!-- get response -->
-						<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"></xforms:setvalue>
-						<xforms:insert nodeset="instance('flickr-auth-response')"
-							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"></xforms:insert>
-
-						<!-- set session attributes after flickr authentication -->
-						<xforms:var name="pieces" select="tokenize(instance('flickr-auth-response'), '&amp;')"></xforms:var>
-						<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"></xforms:insert>
-						<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"></xforms:insert>
-						<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"></xforms:insert>
-						<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"></xforms:insert>
-						<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"></xforms:insert>
-
-						<!-- reload page after setting oauth session attributions -->
-						<xforms:load resource="{instance('request')/request-url}"></xforms:load>
+					
+					<!-- if the master config successfully loads, then load the collections-list, as long as there isn't a collection-name session parameter -->
+					<xforms:action if="xxforms:is-user-in-role('eaditor-admin') and not(string(xxforms:get-session-attribute('collection-name')))">
+						<xforms:send submission="load-collections"></xforms:send>
 					</xforms:action>
-				</xforms:action>
-
-				<!-- if the master config successfully loads, then load the collections-list-->
-				<xforms:action ev:event="xforms-submit-done" if="xxforms:is-user-in-role('eaditor-admin')">
-					<xforms:send submission="load-collections"></xforms:send>
-				</xforms:action>
+				</xforms:action>				
 
 				<!-- if config.xml doesn't exist, display the associated interface -->
 				<xforms:action ev:event="xforms-submit-error">
@@ -733,11 +764,15 @@
 			<!-- post instance to Solr -->
 			<xforms:submission id="post-to-solr" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Successfully published to Solr.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- delete from Solr -->
 			<xforms:submission id="delete-solr-doc" action="{instance('config')/solr_published}update" ref="instance('deleteId')" instance="deleteId" replace="none" method="post">
-				<xforms:send ev:event="xforms-submit-done" submission="commit"></xforms:send>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/status">Successfully deleted document from Solr.</xforms:setvalue>
+					<xforms:send submission="commit"></xforms:send>
+				</xforms:action>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr.</xforms:message>
 			</xforms:submission>
 
@@ -808,8 +843,14 @@
 				<xforms:action if="string(instance('control-instance')/request-security/role)">
 					<!-- if it is the eaditor-admin role, then load the master config first -->
 					<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
-						<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
-						<xforms:send submission="load-config"></xforms:send>
+						<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
+							<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+							<xforms:send submission="load-config"></xforms:send>
+						</xforms:action>
+						<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+							<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
+							<xforms:send submission="load-config"></xforms:send>
+						</xforms:action>						
 					</xforms:action>
 					<!-- otherwise, load the collections-list -->
 					<xforms:action if="not(xxforms:is-user-in-role('eaditor-admin'))">
@@ -921,7 +962,22 @@
 																	<td>
 																		<xforms:output ref="instance('xquery-result')//collection[@id=$name]/description"></xforms:output>
 																	</td>
-																	<td></td>
+																	<td>
+																		<xforms:trigger appearance="minimal">
+																			<xforms:label><span class="glyphicon glyphicon-pencil"></span></xforms:label>
+																			<xforms:hint>Edit Collection</xforms:hint>
+																			<xforms:action ev:event="DOMActivate">
+																				<!-- set session attribute of the selected collection name -->
+																				<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"></xforms:setvalue>
+																				<xforms:insert context="."
+																					origin="xxforms:set-session-attribute('collection-name', instance('control-instance')/collection-name)"
+																					></xforms:insert>
+																				<!-- load the associated config and display the Numishare editor interface -->
+																				<xforms:send submission="load-config"></xforms:send>
+																				<xforms:toggle case="eaditor-editor"></xforms:toggle>
+																			</xforms:action>
+																		</xforms:trigger>
+																	</td>
 																</tr>
 															</xforms:repeat>
 														</tbody>
@@ -1206,6 +1262,27 @@
 						</xforms:case>
 						<xforms:case id="eaditor-editor">
 							<div id="form">
+								<xforms:group ref=".[xxforms:is-user-in-role('eaditor-admin')]">
+									<div>
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-arrow-left"></span> Return to Collections List</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<!-- clear session attributes -->
+												<xforms:setvalue ref="instance('control-instance')/collection-name"></xforms:setvalue>
+												<xforms:insert context="." origin="xxforms:set-session-attribute('collection-name', '')"></xforms:insert>
+												<!-- get collection metadata -->
+												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+													value="replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ','))"></xforms:setvalue>
+												<xforms:send submission="xquery-db"></xforms:send>
+												<xforms:action ev:event="xforms-submit-done">
+													<xforms:send submission="load-config"/>
+													<xforms:toggle case="eaditor-admin"></xforms:toggle>
+												</xforms:action>
+											</xforms:action>
+										</xforms:trigger>
+									</div>									
+								</xforms:group>
+								
 								<xforms:group ref="instance('control-instance')/status/text()">
 									<div class="bg-success alert-box">
 										<span class="glyphicon glyphicon-info-sign"></span>
@@ -1213,11 +1290,7 @@
 										<xforms:output ref="instance('control-instance')/status"></xforms:output>
 									</div>
 								</xforms:group>
-								<xforms:group ref="instance('control-instance')/error/text()">
-									<div class="error">
-										<xforms:output ref="instance('control-instance')/error"></xforms:output>
-									</div>
-								</xforms:group>
+								
 								<!-- only display flickr login for collections -->
 								<xforms:group ref=".[not(xxforms:is-user-in-role('eaditor-admin'))]">
 									<div class="pull-right col-md-3">
@@ -1499,24 +1572,29 @@
 															</xforms:group>
 														</td>
 														<td class="text-center">
-															<xforms:group ref=".[published = true()]">
-																<xforms:trigger appearance="minimal">
-																	<xforms:label>unpublish</xforms:label>
-																	<xforms:action ev:event="DOMActivate">
-																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
-																		<xforms:dispatch target="unpublish" name="fr-show"></xforms:dispatch>
+															<xforms:input ref="published">
+																<xforms:action ev:event="xforms-value-changed">
+																	<xforms:var name="val" select="." as="xs:boolean"/>
+																	<!-- publish the record if the box is checked -->
+																	<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
+																	<xforms:action if="$val = true()">
+																		<!-- post to solr -->
+																		<xforms:send submission="doc-to-solr"></xforms:send>
+																		<xforms:send submission="commit"></xforms:send>
+																		<!-- post to SPARQL endpoint, if it exists -->
+																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
+																		<xforms:send submission="post-rdf" if="string(instance('config')/sparql/store)" ev:event="xforms-submit-done"></xforms:send>
 																	</xforms:action>
-																</xforms:trigger>
-															</xforms:group>
-															<xforms:group ref=".[published != true()]">
-																<xforms:trigger appearance="minimal">
-																	<xforms:label>publish</xforms:label>
-																	<xforms:action ev:event="DOMActivate">
-																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
-																		<xforms:dispatch target="publish" name="fr-show"></xforms:dispatch>
+																	<!-- unpublish the record if the box is unchecked -->
+																	<xforms:action if="$val = false()">
+																		<!-- delete from solr -->
+																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
+																		<xforms:send submission="delete-solr-doc"></xforms:send>
+																		<!-- delete from triplestore -->
+																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
 																	</xforms:action>
-																</xforms:trigger>
-															</xforms:group>
+																</xforms:action>
+															</xforms:input>
 														</td>
 														<td class="text-center">
 															<xforms:trigger appearance="minimal">
@@ -1626,39 +1704,7 @@
 				</xforms:action>
 			</fr:positive-choice>
 		</fr:alert-dialog>
-		<!-- *************** INDIVIDUAL PUBLISH/DELETE OPERATIONS ***************-->
-		<fr:alert-dialog id="publish">
-			<fr:label>Publish</fr:label>
-			<fr:message>Do you want to publish this finding aid to the search index?</fr:message>
-			<fr:negative-choice></fr:negative-choice>
-			<fr:positive-choice>
-				<xforms:action ev:event="DOMActivate">
-					<!-- post to solr -->
-					<xforms:send submission="doc-to-solr"></xforms:send>
-					<xforms:send submission="commit"></xforms:send>
-					<!-- post to SPARQL endpoint, if it exists -->
-					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
-					<xforms:send submission="post-rdf" if="string(instance('config')/sparql/store)" ev:event="xforms-submit-done"></xforms:send>
-
-					<xforms:setvalue ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="true()"></xforms:setvalue>
-				</xforms:action>
-			</fr:positive-choice>
-		</fr:alert-dialog>
-		<fr:alert-dialog id="unpublish">
-			<fr:label>Unpublish</fr:label>
-			<fr:message>Do you want to remove this finding aid from the search index?</fr:message>
-			<fr:negative-choice></fr:negative-choice>
-			<fr:positive-choice>
-				<xforms:action ev:event="DOMActivate">
-					<!-- delete from solr -->
-					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
-					<xforms:send submission="delete-solr-doc"></xforms:send>
-					<!-- delete from triplestore -->
-					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
-					<xforms:setvalue ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="false()"></xforms:setvalue>
-				</xforms:action>
-			</fr:positive-choice>
-		</fr:alert-dialog>
+		<!-- *************** INDIVIDUAL DELETE  ***************-->
 		<fr:alert-dialog id="delete">
 			<fr:label>Delete</fr:label>
 			<fr:message>Are you sure you want to delete this finding aid?</fr:message>

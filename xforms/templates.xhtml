@@ -62,9 +62,15 @@
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
-				<xforms:send submission="load-collections"/>
+				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+					<xforms:send submission="load-config"></xforms:send>
+				</xforms:action>
+				<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+					<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+					<xforms:send submission="load-collections"></xforms:send>
+				</xforms:action>
 			</xforms:action>
 		</xforms:model>
 	</head>

@@ -134,9 +134,17 @@
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
-				<xforms:send submission="load-collections"></xforms:send>
+				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+					<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('guide')"></xforms:setvalue>
+					<xforms:send submission="load-config"></xforms:send>
+					<xforms:send submission="load-guide"></xforms:send>					
+				</xforms:action>
+				<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+					<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+					<xforms:send submission="load-collections"></xforms:send>
+				</xforms:action>
 			</xforms:action>
 		</xforms:model>
 
