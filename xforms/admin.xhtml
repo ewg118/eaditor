@@ -544,16 +544,15 @@
 						</xforms:action>
 					</xforms:action>
 					<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
-						<!-- get collection metadata -->
-						<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
-							value="replace(replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ',')), '%AGG%', instance('config')/aggregator)"></xforms:setvalue>
-						<xforms:send submission="xquery-db"></xforms:send>
-						
 						<!-- set interface: if there is a session attribute for collection-name, then load the editor interface. otherwise load numishare-admin interface -->
 						<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
 							<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>																					
 						</xforms:action>
 						<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+							<!-- get collection metadata -->
+							<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+								value="replace(replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ',')), '%AGG%', instance('config')/aggregator)"></xforms:setvalue>
+							<xforms:send submission="xquery-db"></xforms:send>
 							<xforms:setvalue ref="instance('control-instance')/interface">eaditor-admin</xforms:setvalue>
 						</xforms:action>
 					</xforms:action>
