@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="#all" version="2.0">
-	<xsl:include href="../ead/html.xsl"/>
-	<xsl:include href="../ead/html-templates.xsl"/>
+	<xsl:include href="../ead/html.xsl"/>	
 	<xsl:include href="../mods/html.xsl"/>
 	<xsl:include href="../tei/html.xsl"/>
 	<xsl:include href="../../templates.xsl"/>
@@ -261,9 +260,7 @@
 						</xsl:when>
 					</xsl:choose>
 				</div>
-				<div id="path" style="display:none">
-					<xsl:value-of select="$display_path"/>
-				</div>
+				<div id="path" style="display:none">../</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>

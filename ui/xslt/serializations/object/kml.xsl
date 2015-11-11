@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:mods="http://www.loc.gov/mods/v3"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gx="http://www.google.com/kml/ext/2.2"
 	exclude-result-prefixes="xs ead mods rdf geo xlink" version="2.0">
-	
+
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
-	</xsl:variable>	
+	</xsl:variable>
 
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
@@ -33,7 +33,7 @@
 	<!-- **************** EAD TO KML ******************* -->
 	<xsl:template name="ead-content">
 		<xsl:variable name="id" select="ead:eadheader/ead:eadid"/>
-		
+
 		<xsl:apply-templates select="descendant::ead:geogname[string(@source) and string(@authfilenumber)]">
 			<xsl:with-param name="id" select="$id"/>
 		</xsl:apply-templates>
@@ -41,7 +41,7 @@
 
 	<xsl:template match="ead:geogname">
 		<xsl:param name="id"/>
-		
+
 		<xsl:variable name="coordinates">
 			<xsl:choose>
 				<xsl:when test="@source='geonames'">
@@ -64,11 +64,11 @@
 		</xsl:variable>
 
 		<xsl:if test="string($coordinates)">
-			<Placemark xmlns="http://earth.google.com/kml/2.0">
+			<Placemark xmlns="http://earth.google.com/kml/2.0" xmlns:gx="http://www.google.com/kml/ext/2.2">
 				<name>
 					<xsl:value-of select="."/>
 				</name>
-				
+
 				<xsl:if test="ancestor::ead:c">
 					<xsl:variable name="objectUri">
 						<xsl:choose>
@@ -80,7 +80,7 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
-					
+
 					<description>
 						<![CDATA[<a href="]]><xsl:value-of select="$objectUri"/><![CDATA[">]]>
 						<xsl:value-of select="ancestor::ead:c[1]/ead:did/ead:unittitle"/>
@@ -105,7 +105,7 @@
 								<xsl:with-param name="normal" select="ancestor::ead:c[1]/ead:did/ead:unitdate/@normal"/>
 							</xsl:call-template>
 						</xsl:if>
-												
+
 					</xsl:when>
 					<xsl:otherwise>
 						<!-- otherwise, get the unitdate of the archdesc/did -->
@@ -117,28 +117,28 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</Placemark>
-		</xsl:if>		
+		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template name="get-timestamp">
-		<xsl:param name="normal"/>		
+		<xsl:param name="normal"/>
 		<xsl:choose>
 			<xsl:when test="contains($normal, '/')">
-				<TimeSpan>
-					<begin>
+				<gx:TimeSpan xmlns:gx="http://www.google.com/kml/ext/2.2">
+					<gx:begin>
 						<xsl:value-of select="tokenize($normal, '/')[1]"/>
-					</begin>
-					<end>
+					</gx:begin>
+					<gx:end>
 						<xsl:value-of select="tokenize($normal, '/')[2]"/>
-					</end>
-				</TimeSpan>
+					</gx:end>
+				</gx:TimeSpan>
 			</xsl:when>
 			<xsl:otherwise>
-				<TimeStamp>
-					<when>
+				<gx:TimeStamp xmlns:gx="http://www.google.com/kml/ext/2.2">
+					<gx:when>
 						<xsl:value-of select="$normal"/>
-					</when>
-				</TimeStamp>
+					</gx:when>
+				</gx:TimeStamp>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -146,6 +146,6 @@
 	<!-- **************** MODS TO KML ******************* -->
 	<xsl:template name="mods-content">
 		<xsl:variable name="id" select="mods:recordInfo/mods:recordIdentifier"/>
-		
+
 	</xsl:template>
 </xsl:stylesheet>
