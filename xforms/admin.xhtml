@@ -338,13 +338,12 @@
 			<xforms:instance id="addIndex">
 				<add xmlns=""></add>
 			</xforms:instance>
-			<xforms:instance id="addDoc">
-				<add xmlns=""></add>
-			</xforms:instance>
+			
 			<!-- Instance for Solr commit-->
 			<xforms:instance id="sendCommit">
 				<commit></commit>
 			</xforms:instance>
+			
 			<!-- delete from Solr -->
 			<xforms:instance id="deleteId">
 				<delete xmlns="">
@@ -630,23 +629,19 @@
 					</xforms:action>
 					
 					<!-- if there is a collection name and the user is eaditor-admin, then execute the XQuery for pagination -->					
-					<xforms:action if="xxforms:is-user-in-role('eaditor-admin') and string(xxforms:get-session-attribute('collection-name'))">
-						<!-- load collections first -->
-						<xforms:send submission="load-collections"></xforms:send>
+					<xforms:action if="xxforms:is-user-in-role('eaditor-admin') and string(xxforms:get-session-attribute('collection-name'))">						
+						<!-- get the number of docs in the eXist collection() -->
+						<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
+						<xforms:send submission="xquery-collection"></xforms:send>
+						<!-- only execute XQuery for pagination if there are more than 0 results -->
 						<xforms:action ev:event="xforms-submit-done">
-							<!-- get the number of docs in the eXist collection() -->
-							<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
-							<xforms:send submission="xquery-collection"></xforms:send>
-							<!-- only execute XQuery for pagination if there are more than 0 results -->
-							<xforms:action ev:event="xforms-submit-done">
-								<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
-								<!-- get list of files for page 1, replacing START and END -->
-								<xforms:action if="instance('control-instance')/numFound &gt; 0">
-									<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
-									<xforms:send submission="xquery-pagination"></xforms:send>
-								</xforms:action>	
-								<xforms:setvalue ref="instance('control-instance')/interface">eaditor-editor</xforms:setvalue>
-							</xforms:action>
+							<xforms:setvalue ref="instance('control-instance')/numFound" value="number(instance('xquery-result'))"></xforms:setvalue>
+							<!-- get list of files for page 1, replacing START and END -->
+							<xforms:action if="instance('control-instance')/numFound &gt; 0">
+								<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
+								<xforms:send submission="xquery-pagination"></xforms:send>
+							</xforms:action>	
+							<xforms:setvalue ref="instance('control-instance')/interface">eaditor-editor</xforms:setvalue>
 						</xforms:action>
 					</xforms:action>
 					
@@ -794,7 +789,7 @@
 			</xforms:submission>
 
 			<!-- submission to query solr to see if the document is published -->
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:{instance('control-instance')/id}"
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:{instance('control-instance')/id}&amp;rows=0&amp;facet=false"
 				replace="instance" instance="published-response">
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:setvalue ev:event="xforms-submit-done" if="instance('published-response')/result[@name='response']/@numFound = '1'"
@@ -1266,9 +1261,17 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:label><span class="glyphicon glyphicon-arrow-left"></span> Return to Collections List</xforms:label>
 											<xforms:action ev:event="DOMActivate">
+												<!-- load the collections-list if it has not been loaded yet -->
+												<xforms:send submission="load-collections" if="count(instance('collections-list')/collection) = 0"/>
+												
 												<!-- clear session attributes -->
 												<xforms:setvalue ref="instance('control-instance')/collection-name"></xforms:setvalue>
 												<xforms:insert context="." origin="xxforms:set-session-attribute('collection-name', '')"></xforms:insert>
+												
+												<!-- clear status, pagination, etc. -->
+												<xforms:setvalue ref="instance('control-instance')/status"/>
+												<xforms:delete context="instance('pagination-result')" nodeset="report"/>
+												
 												<!-- get collection metadata -->
 												<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
 													value="replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ','))"></xforms:setvalue>
@@ -1620,7 +1623,7 @@
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<fr:xforms-inspector></fr:xforms-inspector>
+				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
 			</div>
 			<!-- variables for js usage -->
 			<div style="display:none">
