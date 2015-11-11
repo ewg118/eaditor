@@ -1,4 +1,5 @@
 function initialize_timemap(id, path) {
+	var path = $('#path').text();
 	var url = path + "api/get?id=" + id + "&format=json&model=timemap";
 	var datasets = new Array();
 	

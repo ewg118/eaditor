@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:eaditor="https://github.com/ewg118/eaditor">
+	
 	<xsl:template match="ead:dsc">
 		<a name="{generate-id(.)}"/>
 		<h1>
@@ -19,12 +20,6 @@
 		<ul id="dsc-list">
 			<xsl:apply-templates select="ead:c"/>
 		</ul>
-	</xsl:template>
-
-	<xsl:template match="ead:dsc/ead:p | ead:dsc/ead:note/ead:p">
-		<p>
-			<xsl:apply-templates/>
-		</p>
 	</xsl:template>
 
 	<xsl:template match="ead:c">

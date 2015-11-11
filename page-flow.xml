@@ -82,7 +82,7 @@
 	<page path="/eaditor/feed/" model="xpl/models/solr/feed.xpl" view="xpl/views/serializations/solr/atom.xpl"/>
 	<page path="/eaditor/oai/" model="xpl/models/solr/oai-pmh.xpl" view="xpl/views/serializations/solr/oai-pmh.xpl"/>	
 	<page path="/eaditor/query" view="xpl/views/serializations/sparql/query.xpl"/>
-	<page path="/eaditor/api/get" model="xpl/models/object/public.xpl" view="xpl/api-get.xpl"/>
+	<page path="/eaditor/api/get" model="xpl/models/object/public.xpl" view="xpl/views/api/get.xpl"/>
 	<page path="/eaditor/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/views/serializations/config/void.xpl"/>
 	<page path="/eaditor/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/views/serializations/solr/rdf-pelagios.xpl"/>
 	<page path="/eaditor/query.kml" model="xpl/models/solr/kml.xpl" view="xpl/views/serializations/solr/kml.xpl"/>
@@ -106,7 +106,7 @@
 	<!-- SPARQL -->	
 	<page path="/eaditor/[^\/]+/query" view="xpl/views/serializations/sparql/query.xpl"/>
 	<!-- APIs -->
-	<page path-info="/eaditor/[^\/]+/api/get" model="xpl/models/object/public.xpl" view="xpl/api-get.xpl"/>
+	<page path-info="/eaditor/[^\/]+/api/get" model="xpl/models/object/public.xpl" view="xpl/views/api/get.xpl"/>
 	<!-- Pelagios -->
 	<page path="/eaditor/[^\/]+/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/views/serializations/config/void.xpl"/>
 	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/views/serializations/solr/rdf-pelagios.xpl"/>
