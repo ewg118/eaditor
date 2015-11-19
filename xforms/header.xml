@@ -26,10 +26,10 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
-					<a href="{instance('config')/url}" target="_blank">View Public Site</a>
+					<a href="{instance('config')/url}" target="_blank"><span class="glyphicon glyphicon-new-window"/> View Public Site</a>
 				</li>
 				<li>
-					<a href="{$display_path}logout">Logout</a>
+					<a href="{$display_path}logout"><span class="glyphicon glyphicon-log-out"/> Logout</a>
 				</li>
 			</ul>
 		</div>

@@ -220,7 +220,7 @@
 				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
 				<xsl:if test="namespace-uri()='http://www.tei-c.org/ns/1.0'">
 					<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
-					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+					<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"/>
 					<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>
 				</xsl:if>
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
@@ -232,7 +232,7 @@
 				<xsl:if test="$hasPoints = true()">
 					<!-- mapping -->
 					<!--<link type="text/css" href="{$include_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>-->
-					<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"/>
+					<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/mxn.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/timeline-2.3.0.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/timemap_full.pack.js"/>

@@ -24,6 +24,8 @@
 	<page path="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
 	<page path="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
 	<page path="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
+	<page path="/eaditor/admin/users/" view="xforms/users.xhtml"/>
+	<page path="/eaditor/admin/query" view="xpl/xforms/sql.xpl"/>
 	<!--<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>-->
 	
 	<!-- editor forms -->
