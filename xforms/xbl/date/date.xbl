@@ -30,7 +30,7 @@
 								<xforms:output ref="if (local-name()='unitdate') then 'Dates' else 'Date'"/>
 							</h4>
 							<eaditor:attributes ref="."/>
-							<xforms:group ref=".[count(parent::node()[local-name()='chronitem']) &lt; 1 and count(parent::node()[local-name()='change']) &lt; 1 and not(parent::ead:publicationstmt)]">
+							<xforms:group ref=".[count(parent::node()[local-name()='chronitem']) &lt; 1 and count(parent::node()[local-name()='change']) &lt; 1 and not(parent::ead:publicationstmt) and not(parent::ead:did/parent::ead:archdesc)]">
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
