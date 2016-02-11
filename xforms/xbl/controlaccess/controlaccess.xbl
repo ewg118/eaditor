@@ -8,82 +8,83 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:div class="subsection">
-						<xhtml:h2>Controlled Access Headings</xhtml:h2>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
-						
-						<!-- call access triggers -->
-						<eaditor:access-elements ref="$binding"/>
-						
-						<xforms:group
-							ref="$binding[count(child::node()) &lt; 1]">
-							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
-						</xforms:group>
-						
-						<!-- ACCESS ELEMENTS -->
-						<!-- corpname -->
-						<xforms:repeat nodeset="$binding/ead:corpname">
-							<eaditor:corpname/>
-						</xforms:repeat>
-						
-						<!-- famname -->
-						<xforms:repeat nodeset="$binding/ead:famname">
-							<eaditor:famname/>
-						</xforms:repeat>
-						
-						<!-- function -->
-						<xforms:repeat nodeset="$binding/ead:function">
-							<eaditor:function/>
-						</xforms:repeat>
-						
-						<!-- genreform -->
-						<xforms:repeat nodeset="$binding/ead:genreform">
-							<eaditor:genreform/>
-						</xforms:repeat>
-						
-						<!-- geogname -->
-						<xforms:repeat nodeset="$binding/ead:geogname">
-							<eaditor:geogname/>
-						</xforms:repeat>
-						
-						<!-- name -->
-						<xforms:repeat nodeset="$binding/ead:name">
-							<eaditor:name/>
-						</xforms:repeat>
-						
-						<!-- namegrp -->
-						<xforms:repeat nodeset="$binding/ead:namegrp">
-							<eaditor:namegrp/>
-						</xforms:repeat>
-						
-						<!-- occupation -->
-						<xforms:repeat nodeset="$binding/ead:occupation">
-							<eaditor:occupation/>
-						</xforms:repeat>
-						
-						<!-- persname -->
-						<xforms:repeat nodeset="$binding/ead:persname">
-							<eaditor:persname/>
-						</xforms:repeat>
-						
-						<!-- subject -->
-						<xforms:repeat nodeset="$binding/ead:subject">
-							<eaditor:subject/>
-						</xforms:repeat>
-						
-						<!-- title -->
-						<xforms:repeat nodeset="$binding/ead:title">
-							<eaditor:title/>
-						</xforms:repeat>
-						
-						
-					</xhtml:div>
+					
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Controlled Access Headings</h3>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<span class="glyphicon glyphicon-remove"/>
+								</xforms:label>
+							</xforms:trigger>
+							
+							<!-- call access triggers -->
+							<eaditor:access-elements ref="."/>
+							
+							<xforms:group
+								ref="$binding[count(child::node()) &lt; 1]">
+								<div class="warning"><b>Warning:</b> Element must contain content.</div>
+							</xforms:group>
+							
+							<!-- ACCESS ELEMENTS -->
+							<!-- corpname -->
+							<xforms:repeat nodeset="ead:corpname">
+								<eaditor:corpname/>
+							</xforms:repeat>
+							
+							<!-- famname -->
+							<xforms:repeat nodeset="ead:famname">
+								<eaditor:famname/>
+							</xforms:repeat>
+							
+							<!-- function -->
+							<xforms:repeat nodeset="ead:function">
+								<eaditor:function/>
+							</xforms:repeat>
+							
+							<!-- genreform -->
+							<xforms:repeat nodeset="ead:genreform">
+								<eaditor:genreform/>
+							</xforms:repeat>
+							
+							<!-- geogname -->
+							<xforms:repeat nodeset="ead:geogname">
+								<eaditor:geogname/>
+							</xforms:repeat>
+							
+							<!-- name -->
+							<xforms:repeat nodeset="ead:name">
+								<eaditor:name/>
+							</xforms:repeat>
+							
+							<!-- namegrp -->
+							<xforms:repeat nodeset="ead:namegrp">
+								<eaditor:namegrp/>
+							</xforms:repeat>
+							
+							<!-- occupation -->
+							<xforms:repeat nodeset="ead:occupation">
+								<eaditor:occupation/>
+							</xforms:repeat>
+							
+							<!-- persname -->
+							<xforms:repeat nodeset="ead:persname">
+								<eaditor:persname/>
+							</xforms:repeat>
+							
+							<!-- subject -->
+							<xforms:repeat nodeset="ead:subject">
+								<eaditor:subject/>
+							</xforms:repeat>
+							
+							<!-- title -->
+							<xforms:repeat nodeset="ead:title">
+								<eaditor:title/>
+							</xforms:repeat>
+						</div>
+					</xforms:group>
+					
 					<!-- ********************************************************************** -->
 				</xforms:group>
 			</xforms:group>

@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-bioghist" element="eaditor|bioghist">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -10,57 +10,57 @@
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
-					<xhtml:div class="subsection">
-						<xhtml:h2>Biography/History</xhtml:h2>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
-
-						<!-- include generic triggers -->
-						<eaditor:generic-elements ref="$binding"/>
-						
-						<xforms:group
-							ref="$binding[count(child::node()) &lt; 1]">
-							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
-						</xforms:group>
-
-						<xforms:group ref="$binding/ead:head">
-							<eaditor:head/>
-						</xforms:group>
-						
-						<xforms:repeat nodeset="$binding/ead:address">
-							<eaditor:address/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:blockquote">
-							<eaditor:blockquote/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:chronlist">
-							<eaditor:chronlist/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:list">
-							<eaditor:list/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:note">
-							<eaditor:note/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:p">
-							<eaditor:p/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:table">
-							<eaditor:table/>
-						</xforms:repeat>
-					</xhtml:div>
-						
-					<!-- ********************************************************************** -->					
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Biography/History</h3>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<span class="glyphicon glyphicon-remove"/>
+								</xforms:label>
+							</xforms:trigger>
+							
+							<!-- include generic triggers -->
+							<eaditor:generic-elements ref="."/>
+							
+							<xforms:group
+								ref="$binding[count(child::node()) &lt; 1]">
+								<div class="warning"><b>Warning:</b> Element must contain content.</div>
+							</xforms:group>
+							
+							<xforms:group ref="ead:head">
+								<eaditor:head/>
+							</xforms:group>
+							
+							<xforms:repeat nodeset="ead:address">
+								<eaditor:address/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:blockquote">
+								<eaditor:blockquote/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:chronlist">
+								<eaditor:chronlist/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:list">
+								<eaditor:list/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:note">
+								<eaditor:note/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:p">
+								<eaditor:p/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:table">
+								<eaditor:table/>
+							</xforms:repeat>
+						</div>
+					</xforms:group>			
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>
