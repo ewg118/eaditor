@@ -373,6 +373,11 @@
 					
 					<!-- only need to set @normal; date XBL will handle human readability -->
 					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:publicationstmt/ead:date/@normal" value="substring(string(current-date()), 1, 10)"></xforms:setvalue>
+					
+					<!-- set other values for new finding aids -->
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:titlestmt/ead:author" value="xxforms:get-remote-user()"></xforms:setvalue>
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:profiledesc/ead:creation">Finding aid created with EADitor.</xforms:setvalue>
+					<xforms:insert context="instance('guide')/ead:archdesc/ead:did/ead:unitdate" origin="xforms:attribute('type', 'inclusive')"/>
 				</xforms:action>
 			</xforms:submission>
 
@@ -516,7 +521,6 @@
 		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"></xi:include>
-		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/daogrp/daogrp.xbl" xxi:omit-xml-base="true"></xi:include>
@@ -631,6 +635,7 @@
 											<xxforms:show ev:event="DOMActivate" dialog="eadheader-objects"></xxforms:show>
 										</xforms:trigger>
 									</span>
+									<p>Information about the creation, revision, and publication of the finding aid.</p>
 									<xxforms:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 										<xforms:label>EAD Header Elements</xforms:label>
 										<xforms:group ref=".[count(ead:profiledesc) &lt; 1]">
@@ -657,18 +662,9 @@
 												<xforms:insert ev:event="DOMActivate" context="ead:eadid" origin="xforms:attribute('mainagencycode', '')"></xforms:insert>
 											</xforms:trigger>
 										</xforms:group>
-										<xforms:group ref=".[count(ead:eadid/@mainagencycode) &gt; 0]">
-											<xforms:input ref="ead:eadid/@mainagencycode">
-												<xforms:label>Agency Code</xforms:label>												
-												<xforms:alert>Agency Code required</xforms:alert>
-											</xforms:input>
-											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" context="ead:eadid/@mainagencycode"></xforms:delete>
-												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
-												</xforms:label>
-											</xforms:trigger>
-										</xforms:group>
+										<xforms:output ref="ead:eadid/@mainagencycode">
+											<xforms:label>Agency Code</xforms:label>
+										</xforms:output>
 									</div>
 									<div class="section">
 										<h2>File Description</h2>
@@ -688,14 +684,6 @@
 														<span class="glyphicon glyphicon-plus"/>Edition Statement</xforms:label>
 													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="ead:titlestmt" position="after" origin="instance('editionstmt-template')"
 													></xforms:insert>
-												</xforms:trigger>
-											</xforms:group>
-											<xforms:group ref=".[count(//ead:publicationstmt) &lt; 1]">
-												<xforms:trigger appearance="minimal">
-													<xforms:label>
-														<span class="glyphicon glyphicon-plus"/>Publication Statement</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="ead:filedesc" nodeset="if (ead:editionstmt) then ead:editionstmt else ead:titlestmt"
-														origin="instance('publicationstmt-template')"></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
 											<xforms:group ref=".[count(//ead:seriesstmt) &lt; 1]">
@@ -738,7 +726,7 @@
 														</xforms:trigger>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
-																<span class="glyphicon glyphicon-plus"/>Author</xforms:label>
+																<span class="glyphicon glyphicon-plus"/>Finding Aid Author</xforms:label>
 															<xforms:insert ev:event="DOMActivate" context="." nodeset="if (ead:subtitle) then ead:subtitle else ead:titleproper"
 																origin="instance('author-template')"></xforms:insert>
 														</xforms:trigger>
@@ -754,7 +742,7 @@
 													</xxforms:dialog>
 													<div>
 														<xforms:input ref="ead:titleproper">
-															<xforms:label>Proper Title</xforms:label>
+															<xforms:label>Finding Aid Title</xforms:label>
 															<xforms:alert>Required</xforms:alert>
 														</xforms:input>
 													</div>
@@ -776,15 +764,17 @@
 													<xforms:repeat nodeset="ead:author">
 														<div>
 															<xforms:input ref=".">
-																<xforms:label>Author</xforms:label>
+																<xforms:label>Finding Aid Author</xforms:label>
 																<xforms:alert>Required</xforms:alert>
 															</xforms:input>
-															<xforms:trigger appearance="minimal">
-																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
-																<xforms:label>
-																	<span class="glyphicon glyphicon-remove"/>
-																</xforms:label>
-															</xforms:trigger>
+															<xforms:group ref=".[count(../ead:author) &gt; 1]">
+																<xforms:trigger appearance="minimal">
+																	<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
+																	<xforms:label>
+																		<span class="glyphicon glyphicon-remove"/>
+																	</xforms:label>
+																</xforms:trigger>
+															</xforms:group>
 														</div>
 													</xforms:repeat>
 													<!-- sponsor -->
@@ -838,12 +828,6 @@
 											<xforms:group ref="ead:publicationstmt">
 												<div class="subsection">
 													<h3>Publication Statement</h3>
-													<xforms:trigger appearance="minimal">
-														<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
-														<xforms:label>
-															<span class="glyphicon glyphicon-remove"/>
-														</xforms:label>
-													</xforms:trigger>
 													<span class="add">
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
@@ -857,7 +841,7 @@
 														<xforms:group ref=".[count(ead:address) &lt; 1]">
 															<xforms:trigger appearance="minimal">
 																<xforms:label>
-																	<span class="glyphicon glyphicon-plus"/>Address</xforms:label>
+																	<span class="glyphicon glyphicon-plus"/>Institutional Address</xforms:label>
 																<xforms:insert ev:event="DOMActivate" context="." origin="instance('address-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
@@ -891,6 +875,15 @@
 													<xforms:group ref=".[count(child::node()) &lt; 1]">
 														<div class="warning"><b>Warning:</b> Element must contain content.</div>
 													</xforms:group>
+													<!-- publisher -->
+													<xforms:group ref="ead:publisher">
+														<div>
+															<xforms:input ref=".">
+																<xforms:label>Publisher</xforms:label>
+																<xforms:alert>Required</xforms:alert>
+															</xforms:input>															
+														</div>
+													</xforms:group>
 													<!-- address -->
 													<xforms:group ref="ead:address">
 														<eaditor:address></eaditor:address>
@@ -907,21 +900,6 @@
 													<xforms:repeat nodeset="ead:p">
 														<eaditor:p></eaditor:p>
 													</xforms:repeat>
-													<!-- publisher -->
-													<xforms:group ref="ead:publisher">
-														<div>
-															<xforms:input ref=".">
-																<xforms:label>Publisher</xforms:label>
-																<xforms:alert>Required</xforms:alert>
-															</xforms:input>
-															<xforms:trigger appearance="minimal">
-																<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
-																<xforms:label>
-																	<span class="glyphicon glyphicon-remove"/>
-																</xforms:label>
-															</xforms:trigger>
-														</div>
-													</xforms:group>
 												</div>
 											</xforms:group>
 											<!-- series statement -->
@@ -1011,12 +989,6 @@
 									<xforms:group ref="ead:profiledesc">
 										<div class="section">
 											<h2>Profile Description</h2>
-											<xforms:trigger appearance="minimal">
-												<xforms:delete ev:event="DOMActivate" nodeset="."></xforms:delete>
-												<xforms:label>
-													<span class="glyphicon glyphicon-remove"/>
-												</xforms:label>
-											</xforms:trigger>
 											<span class="add">
 												<xforms:trigger appearance="minimal">
 													<xforms:label>
@@ -1026,14 +998,7 @@
 												</xforms:trigger>
 											</span>
 											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
-												<xforms:label>Profile Description Elements</xforms:label>
-												<xforms:group ref=".[count(ead:creation) &lt; 1]">
-													<xforms:trigger appearance="minimal">
-														<xforms:label>
-															<span class="glyphicon glyphicon-plus"/>Creation</xforms:label>
-														<xforms:insert ev:event="DOMActivate" context="." at="1" position="before" origin="instance('creation-template')"></xforms:insert>
-													</xforms:trigger>
-												</xforms:group>
+												<xforms:label>Profile Description Elements</xforms:label>												
 												<xforms:group ref=".[count(ead:descrules) &lt; 1]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
@@ -1054,7 +1019,12 @@
 												</xforms:group>
 											</xxforms:dialog>
 											<xforms:group ref="ead:creation">
-												<eaditor:creation></eaditor:creation>
+												<div>
+													<xforms:input ref=".">
+														<xforms:label>Creation</xforms:label>
+														<xforms:alert>Required</xforms:alert>
+													</xforms:input>
+												</div>
 											</xforms:group>
 											<xforms:repeat nodeset="ead:descrules">
 												<div>

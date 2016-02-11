@@ -24,6 +24,8 @@
 	<page path="/eaditor/admin/reorder/" view="xforms/reorder.xhtml"/>
 	<page path="/eaditor/admin/permissions/" view="xforms/permissions.xhtml"/>
 	<page path="/eaditor/admin/settings/" view="xforms/settings.xhtml"/>
+	<page path="/eaditor/admin/users/" view="xforms/users.xhtml"/>
+	<page path="/eaditor/admin/query" view="xpl/xforms/sql.xpl"/>
 	<!--<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>-->
 	
 	<!-- editor forms -->
@@ -45,7 +47,7 @@
 	<page path="/eaditor/admin/toc/" model="xpl/models/object/private.xpl" view="xpl/xforms/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
-	<page path="/eaditor/admin/get_attributes/" model="xml/empty.xml" view="xpl/xforms/xsd-get-attributes.xpl"/>
+	<page path="/eaditor/admin/get_attributes/" model="xforms/schema/ead.xsd" view="xpl/xforms/xsd-get-attributes.xpl"/>
 
 	<!-- private xml (all elements shown) -->
 	<page path="/eaditor/admin/[^\/]+/id/(.*)\.xml" view="xpl/models/object/private.xpl"/>
