@@ -375,8 +375,7 @@
 					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:publicationstmt/ead:date/@normal" value="substring(string(current-date()), 1, 10)"></xforms:setvalue>
 					
 					<!-- set other values for new finding aids -->
-					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:titlestmt/ead:author" value="xxforms:get-remote-user()"></xforms:setvalue>
-					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:profiledesc/ead:creation">Finding aid created with EADitor.</xforms:setvalue>
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:profiledesc/ead:creation" value="concat('Finding aid created with EADitor by user ', xxforms:get-remote-user(), '.')"></xforms:setvalue>
 					<xforms:insert context="instance('guide')/ead:archdesc/ead:did/ead:unitdate" origin="xforms:attribute('type', 'inclusive')"/>
 				</xforms:action>
 			</xforms:submission>
