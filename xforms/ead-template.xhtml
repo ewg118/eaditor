@@ -250,7 +250,6 @@
 		<xi:include href="xbl/component-level/component-level.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/controlaccess/controlaccess.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/corpname/corpname.xbl" xxi:omit-xml-base="true"></xi:include>
-		<xi:include href="xbl/creation/creation.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/custodhist/custodhist.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/dao/dao.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/daodesc/daodesc.xbl" xxi:omit-xml-base="true"></xi:include>
@@ -747,13 +746,6 @@
 											</span>
 											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 												<xforms:label>Profile Description Elements</xforms:label>
-												<xforms:group ref=".[count(ead:creation) &lt; 1]">
-													<xforms:trigger appearance="minimal">
-														<xforms:label>
-															<span class="glyphicon glyphicon-plus"></span>Creation</xforms:label>
-														<xforms:insert ev:event="DOMActivate" context="." at="1" position="before" origin="instance('creation-template')"></xforms:insert>
-													</xforms:trigger>
-												</xforms:group>
 												<xforms:group ref=".[count(ead:descrules) &lt; 1]">
 													<xforms:trigger appearance="minimal">
 														<xforms:label>
@@ -774,7 +766,12 @@
 												</xforms:group>
 											</xxforms:dialog>
 											<xforms:group ref="ead:creation">
-												<eaditor:creation></eaditor:creation>
+												<div>
+													<xforms:input ref=".">
+														<xforms:label>Creation</xforms:label>
+														<xforms:alert>Required</xforms:alert>
+													</xforms:input>
+												</div>
 											</xforms:group>
 											<xforms:repeat nodeset="ead:descrules">
 												<div>
