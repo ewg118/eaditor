@@ -543,7 +543,7 @@
 						</xforms:action>
 					</xforms:action>
 					<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
-						<!-- set interface: if there is a session attribute for collection-name, then load the editor interface. otherwise load numishare-admin interface -->
+						<!-- set interface: if there is a session attribute for collection-name, then load the editor interface. otherwise load eaditor-admin interface -->
 						<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
 							<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>																					
 						</xforms:action>
@@ -966,7 +966,7 @@
 																				<xforms:insert context="."
 																					origin="xxforms:set-session-attribute('collection-name', instance('control-instance')/collection-name)"
 																					></xforms:insert>
-																				<!-- load the associated config and display the Numishare editor interface -->
+																				<!-- load the associated config and display the EADitor editor interface -->
 																				<xforms:send submission="load-config"></xforms:send>
 																				<xforms:toggle case="eaditor-editor"></xforms:toggle>
 																			</xforms:action>
@@ -1623,7 +1623,7 @@
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
+				<fr:xforms-inspector></fr:xforms-inspector>
 			</div>
 			<!-- variables for js usage -->
 			<div style="display:none">
