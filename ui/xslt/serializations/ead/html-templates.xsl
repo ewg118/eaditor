@@ -38,7 +38,7 @@
 		<xsl:apply-templates select="ead:did"/>
 
 		<xsl:apply-templates
-			select="ead:bioghist | ead:scopecontent | ead:arrangement | ead:accessrestrict | ead:userestrict | ead:prefercite | ead:acqinfo | ead:altformavail | ead:accruals | ead:appraisal | ead:custodhist | ead:processinfo | ead:originalsloc | ead:phystech | ead:odd | ead:note | ead:descgrp | ead:bibliography | ead:otherfindaid | ead:relatedmaterial | ead:separatedmaterial | ead:fileplan"
+			select="ead:bioghist | ead:scopecontent | ead:arrangement | ead:accessrestrict | ead:userestrict | ead:prefercite | ead:acqinfo | ead:altformavail | ead:accruals | ead:appraisal | ead:custodhist | ead:processinfo | ead:originalsloc | ead:phystech | ead:odd | ead:note | ead:bibliography | ead:otherfindaid | ead:relatedmaterial | ead:separatedmaterial | ead:fileplan"
 			mode="did_level"/>
 
 		<xsl:if test="ead:dao or ead:daogrp">
@@ -89,7 +89,7 @@
 	</xsl:template>
 
 	<xsl:template
-		match="ead:bioghist | ead:scopecontent | ead:arrangement | ead:accessrestrict | ead:userestrict | ead:prefercite | ead:acqinfo | ead:altformavail | ead:accruals | ead:appraisal | ead:custodhist | ead:processinfo | ead:originalsloc | ead:phystech | ead:odd | ead:note | ead:descgrp | ead:bibliography | ead:otherfindaid | ead:relatedmaterial | ead:separatedmaterial | ead:fileplan"
+		match="ead:bioghist | ead:scopecontent | ead:arrangement | ead:accessrestrict | ead:userestrict | ead:prefercite | ead:acqinfo | ead:altformavail | ead:accruals | ead:appraisal | ead:custodhist | ead:processinfo | ead:originalsloc | ead:phystech | ead:odd | ead:note | ead:bibliography | ead:otherfindaid | ead:relatedmaterial | ead:separatedmaterial | ead:fileplan"
 		mode="did_level">
 		<xsl:variable name="default_label">
 			<xsl:choose>

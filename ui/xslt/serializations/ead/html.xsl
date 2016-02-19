@@ -120,6 +120,7 @@
 						<div class="col-md-9">
 							<div id="archdesc-info">
 								<xsl:call-template name="archdesc-admininfo"/>
+								
 								<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
 								<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
 								<xsl:if test="count(ead:archdesc/ead:daogrp[count(ead:daoloc) &gt; 0]) &gt; 0">
@@ -130,8 +131,8 @@
 								<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
 								<xsl:apply-templates select="ead:archdesc/ead:odd"/>
 								<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
-								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>
-								<xsl:apply-templates select="ead:archdesc/ead:descgrp[not(@type='admininfo')]"/>
+								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>	
+								<xsl:apply-templates select="ead:archdesc/ead:note"/>
 								<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
 								<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
 								<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
@@ -173,8 +174,21 @@
 					<xsl:otherwise>Descriptive Identification</xsl:otherwise>
 				</xsl:choose>
 			</h2>
-			<xsl:call-template name="archdesc-did-elements"/>
-
+			<dl class="dl-horizontal">
+				<xsl:apply-templates select="ead:unitid"/>
+				<xsl:apply-templates select="ead:container"/>
+				<xsl:apply-templates select="ead:repository"/>
+				<xsl:apply-templates select="ead:physdesc/ead:extent"/>
+				<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
+				<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
+				<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
+				<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
+				<xsl:apply-templates select="ead:physloc"/>
+				<xsl:apply-templates select="ead:langmaterial"/>
+				<xsl:apply-templates select="ead:materialspec"/>
+				<xsl:apply-templates select="ead:abstract"/>
+				<xsl:apply-templates select="ead:note"/>
+			</dl>
 		</div>
 	</xsl:template>
 	
@@ -186,25 +200,8 @@
 			</div>
 		</div>
 	</xsl:template>
-
-	<xsl:template name="archdesc-did-elements">
-		<dl class="dl-horizontal">
-			<xsl:apply-templates select="ead:unitid"/>
-			<xsl:apply-templates select="ead:container"/>
-			<xsl:apply-templates select="ead:repository"/>
-			<xsl:apply-templates select="ead:physdesc/ead:extent"/>
-			<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
-			<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
-			<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
-			<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
-			<xsl:apply-templates select="ead:physloc"/>
-			<xsl:apply-templates select="ead:langmaterial"/>
-			<xsl:apply-templates select="ead:materialspec"/>
-			<xsl:apply-templates select="ead:abstract"/>
-			<xsl:apply-templates select="ead:note"/>
-		</dl>
-	</xsl:template>
 	
+	<!-- suppress odd elements that are injected into the EAD XML model -->
 	<xsl:template match="ead:odd[@type='eaditor:parent']"/>
 
 	<!--This template formats the repostory, origination, physdesc, abstract,
@@ -302,13 +299,13 @@
 	<!--This template formats various head elements and makes them targets for
       links from the Table of Contents.-->
 	<xsl:template
-		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:descgrp[not(@type='admininfo')] | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note">
+		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note">
 		<div class="{name()}">
 			<a id="{generate-id(.)}"/>
 			<h2>
 				<xsl:value-of select="if (ead:head) then ead:head else eaditor:normalize_fields(local-name(), $lang)"/>
 			</h2>
-			<xsl:apply-templates select="*[not(name()='ead:head')]"/>
+			<xsl:apply-templates select="*[not(self::ead:head)]"/>
 		</div>
 	</xsl:template>
 
@@ -317,14 +314,6 @@
 			<xsl:apply-templates/>
 		</p>
 	</xsl:template>
-
-	<xsl:template match="ead:archdesc/ead:bioghist/ead:bioghist/ead:head | ead:archdesc/ead:scopecontent/ead:scopecontent/ead:head">
-		<h2>
-			<a name="{generate-id(parent::node())}"/>
-			<xsl:apply-templates/>
-		</h2>
-	</xsl:template>
-
 
 	<!--This template rule formats the top-level related material
       elements by combining any related or separated materials
@@ -340,33 +329,26 @@
 					<xsl:text>Related Material</xsl:text>
 				</h2>
 
-				<xsl:apply-templates select="ead:archdesc/ead:relatedmaterial | ead:archdesc/ead:descgrp/ead:relatedmaterial"/>
-				<xsl:apply-templates select="ead:archdesc/ead:separatedmaterial | ead:archdesc/ead:descgrp/ead:separatedmaterial"/>
+				<xsl:apply-templates select="ead:archdesc/ead:relatedmaterial"/>
+				<xsl:apply-templates select="ead:archdesc/ead:separatedmaterial"/>
 			</div>
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template name="archdesc-admininfo">
-		<xsl:if test="ead:archdesc/ead:descgrp[@type='admininfo']">
-			<div class="dd">
-				<xsl:apply-templates select="ead:archdesc/ead:descgrp[@type='admininfo']"/>
-			</div>
-		</xsl:if>
+	<xsl:template name="archdesc-admininfo">		
 		<xsl:if
 			test="ead:archdesc/ead:accessrestrict | ead:archdesc/ead:userestrict | ead:archdesc/ead:prefercite | ead:archdesc/ead:altformavail | ead:archdesc/ead:accruals | ead:archdesc/ead:acqinfo | ead:archdesc/ead:appraisal | ead:archdesc/ead:custodhist | ead:archdesc/ead:processinfo">
-			<xsl:if test="not(ead:archdesc/ead:descgrp[@type='admininfo'])">
-				<h2>
-					<a name="admininfo"/>
-					<xsl:choose>
-						<xsl:when test="ead:head">
-							<xsl:value-of select="ead:head"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text>Administrative Information</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose>
-				</h2>
-			</xsl:if>
+			<h2>
+				<a name="admininfo"/>
+				<xsl:choose>
+					<xsl:when test="ead:head">
+						<xsl:value-of select="ead:head"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>Administrative Information</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</h2>
 			<div class="dd">
 				<xsl:apply-templates
 					select="ead:archdesc/ead:accessrestrict | ead:archdesc/ead:userestrict | ead:archdesc/ead:prefercite | ead:archdesc/ead:altformavail | ead:archdesc/ead:accruals | ead:archdesc/ead:acqinfo | ead:archdesc/ead:appraisal | ead:archdesc/ead:custodhist | ead:archdesc/ead:processinfo"
@@ -375,36 +357,11 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="descgrp[@type='admininfo']">
-		<h2>
-			<a name="admininfo"/>
-			<xsl:choose>
-				<xsl:when test="ead:head">
-					<xsl:value-of select="ead:head"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:text>Administrative Information</xsl:text>
-				</xsl:otherwise>
-			</xsl:choose>
-		</h2>
-		<xsl:apply-templates
-			select="ead:accessrestrict | ead:userestrict | ead:prefercite | ead:altformavail | ead:accruals | ead:acqinfo | ead:appraisal | ead:custodhist | ead:processinfo"/>
-	</xsl:template>
-
 	<xsl:template match="ead:accessrestrict | ead:userestrict | ead:prefercite | ead:altformavail | ead:accruals | ead:acqinfo | ead:appraisal | ead:custodhist | ead:processinfo">
-		<xsl:apply-templates select="ead:head | ead:p" mode="admininfo"/>
-	</xsl:template>
-
-	<xsl:template match="ead:head" mode="admininfo">
 		<h3>
-			<xsl:apply-templates/>
+			<xsl:value-of select="if (ead:head) then ead:head else eaditor:normalize_fields(local-name(), $lang)"/>
 		</h3>
-	</xsl:template>
-
-	<xsl:template match="ead:p" mode="admininfo">
-		<p>
-			<xsl:apply-templates/>
-		</p>
+		<xsl:apply-templates select="ead:p"/>
 	</xsl:template>
 
 	<xsl:template
