@@ -1,6 +1,6 @@
 <xbl:xbl xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-daogrp" element="eaditor|daogrp">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,7 +9,7 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					
+
 					<xforms:group ref="$binding">
 						<!-- just show thumbnail if it is a flickr thumbnail -->
 						<xforms:group ref=".[contains(ead:daoloc[1]/@xlink:href, 'flickr.com')]">
@@ -37,7 +37,7 @@
 										<xforms:label>
 											<span class="glyphicon glyphicon-plus"/>Tags</xforms:label>
 										<xforms:action ev:event="DOMActivate">
-											<!-- load config only if has not already been loaded -->											
+											<!-- load config only if has not already been loaded -->
 											<xforms:action if="not(string(instance('config')/url))">
 												<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
 													origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
@@ -49,8 +49,8 @@
 
 											<!-- get photo id and flickr photo info if it hasn't already been loaded -->
 											<xforms:action if="not(instance('flickr-info')/@stat = 'ok')">
-												<xforms:setvalue ref="instance('photo_id')"
-													value="substring-before(tokenize(substring-after($binding/ead:daoloc[1]/@xlink:href, 'http://'), '/')[3], '_')"/>
+												<xforms:setvalue ref="instance('photo_id')" value="substring-before(tokenize(substring-after($binding/ead:daoloc[1]/@xlink:href, 'http://'), '/')[3],
+													'_')"/>
 												<xforms:send submission="query-flickr-getInfo"/>
 											</xforms:action>
 
@@ -59,8 +59,8 @@
 											<xforms:action xxforms:iterate="ancestor::ead:c[1]/descendant::*[string(@source) and string(@authfilenumber)]">
 												<xforms:var name="source" select="context()/@source"/>
 												<xforms:var name="authfilenumber" select="context()/@authfilenumber"/>
-												<xforms:var name="predicate"
-													select="substring-before(substring-after(instance('flickr-info')//tag[contains(., $source) and contains(.,$authfilenumber)][1], ':'), '=')"/>
+												<xforms:var name="predicate" select="substring-before(substring-after(instance('flickr-info')//tag[contains(., $source) and
+													contains(.,$authfilenumber)][1], ':'), '=')"/>
 
 												<xforms:insert context="instance('terms')" nodeset="./child::node()[last()]" origin="instance('term-template')"/>
 												<xforms:setvalue ref="instance('terms')/term[last()]/@namespace" value="$source"/>
@@ -194,13 +194,20 @@
 												<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-session-attribute('oauth_token')"/>
 												<!-- generating signature -->
 												<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
-												<xforms:var name="base"
-													select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('method=flickr.photos.setTags&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;photo_id=', instance('photo_id'), '&amp;tags=', encode-for-uri(instance('tags')))))"/>
+												<xforms:var name="base" select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;',
+													encode-for-uri(concat('method=flickr.photos.setTags&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=',
+													instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=',
+													instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_version=',
+													instance('flickr-control')/version, '&amp;photo_id=', instance('photo_id'), '&amp;tags=', encode-for-uri(instance('tags')))))"/>
 												<xforms:setvalue ref="instance('flickr-control')/auth/base" value="$base"/>
 												<xforms:setvalue ref="instance('flickr-control')/auth/key" value="$key"/>
 												<xforms:setvalue ref="instance('flickr-control')/signature" value="encode-for-uri(hmac($key, $base, 'SHA-1', 'base64' ))"/>
-												<xforms:setvalue ref="instance('flickr-control')/request"
-													value="concat(instance('flickr-control')/service, '?method=flickr.photos.setTags&amp;photo_id=', instance('photo_id'), '&amp;tags=', encode-for-uri(instance('tags')), '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=', instance('flickr-control')/version, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_signature=', instance('flickr-control')/signature)"/>
+												<xforms:setvalue ref="instance('flickr-control')/request" value="concat(instance('flickr-control')/service,
+													'?method=flickr.photos.setTags&amp;photo_id=', instance('photo_id'), '&amp;tags=', encode-for-uri(instance('tags')), '&amp;oauth_nonce=',
+													instance('flickr-control')/nonce, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_consumer_key=',
+													instance('config')/flickr_api_key, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_version=',
+													instance('flickr-control')/version, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_signature=',
+													instance('flickr-control')/signature)"/>
 												<xforms:send submission="flickr-setTags"/>
 												<xxforms:hide dialog="tags-dialog"/>
 											</xforms:action>
@@ -273,7 +280,7 @@
 													<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
 														origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
 													<xforms:send submission="load-collections"/>
-												</xforms:action>												
+												</xforms:action>
 												<xforms:toggle case="flickr"/>
 											</xforms:action>
 										</xforms:action>
@@ -319,8 +326,8 @@
 																<xforms:send submission="query-flickr-getInfo"/>
 																<xforms:action ev:event="xforms-submit-done" ev:observer="query-flickr-getInfo">
 																	<!-- add a daodesc if there is a title or description in flickr -->
-																	<xforms:action
-																		if="string(normalize-space(instance('flickr-info')/photo/title)) or string(normalize-space(instance('flickr-info')/photo/description))">
+																	<xforms:action if="string(normalize-space(instance('flickr-info')/photo/title)) or
+																		string(normalize-space(instance('flickr-info')/photo/description))">
 																		<xforms:insert origin="instance('daodesc-template')" context="$binding"/>
 																		<xforms:action if="string(normalize-space(instance('flickr-info')/photo/title))">
 																			<xforms:insert origin="instance('head-template')" context="$binding/ead:daodesc"/>
@@ -373,19 +380,19 @@
 						<xforms:instance id="config">
 							<config xmlns=""/>
 						</xforms:instance>
-						
+
 						<!-- authentication -->
 						<xforms:instance id="collections-list">
 							<collections xmlns=""/>
 						</xforms:instance>
-						
+
 						<xforms:instance id="dump">
 							<dump xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="control-instance">
 							<controls xmlns="">
-								<collection-name/>				
+								<collection-name/>
 								<flickr_uri/>
 								<photo_id/>
 								<tags/>
@@ -497,28 +504,27 @@
 						</xforms:bind>
 
 						<!-- submissions -->
-						<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+						<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+							instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<!-- if the config loads successfully, set the collection names based on authentication -->
 							<xforms:action ev:event="xforms-submit-done">
 								<!-- set default if security is false -->
 								<xforms:action if="not(string(instance('control-instance')/request-security/role))">
-									<xforms:setvalue ref="instance('control-instance')/collection-name"
-										value="instance('collections-list')/collection[@role='']/@name"/>
+									<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role='']/@name"/>
 								</xforms:action>
 								<!-- if there is a security role, set the collection-name value if it is in the list, otherwise set new collection name -->
 								<xforms:action if="string(instance('control-instance')/request-security/role)">
 									<xforms:setvalue ref="instance('control-instance')/collection-name"
 										value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
 								</xforms:action>
-								<xforms:send submission="load-config"/>								
+								<xforms:send submission="load-config"/>
 							</xforms:action>
 							<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 						</xforms:submission>
-						
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
-							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+							replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
