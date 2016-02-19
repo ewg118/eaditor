@@ -201,7 +201,7 @@
 
 	<xsl:template name="quick_search">
 		<div class="quick_search">
-			<form role="form" action="." method="GET" id="qs_form">
+			<form role="form" action="{$display_path}results" method="GET" id="qs_form">
 				<input type="hidden" name="q" id="qs_query" value="{$q}"/>
 				<xsl:if test="string($lang)">
 					<input type="hidden" name="lang" value="{$lang}"/>
