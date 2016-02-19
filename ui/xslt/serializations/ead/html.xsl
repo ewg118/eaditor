@@ -128,11 +128,11 @@
 								</xsl:if>
 								<xsl:apply-templates select="ead:archdesc/ead:arrangement"/>
 								<xsl:call-template name="archdesc-relatedmaterial"/>
+								<xsl:apply-templates select="ead:archdesc/ead:note"/>
 								<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
 								<xsl:apply-templates select="ead:archdesc/ead:odd"/>
 								<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
-								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>	
-								<xsl:apply-templates select="ead:archdesc/ead:note"/>
+								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>									
 								<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
 								<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
 								<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
@@ -299,7 +299,7 @@
 	<!--This template formats various head elements and makes them targets for
       links from the Table of Contents.-->
 	<xsl:template
-		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note">
+		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:note | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note">
 		<div class="{name()}">
 			<a id="{generate-id(.)}"/>
 			<h2>
