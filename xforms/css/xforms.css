@@ -89,7 +89,7 @@
 .orbeon .xforms-select1-appearance-full .xforms-label {
 	 vertical-align: top 
 }
-.orbeon .xforms-input input, .orbeon .xforms-textarea textarea, .orbeon .xforms-select1 select {
+.orbeon .xforms-input input[type=text], .orbeon .xforms-textarea textarea, .orbeon .xforms-select1 select {
 	width: 20em;
 	margin-bottom: 2px;
 }
