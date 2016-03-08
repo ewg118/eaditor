@@ -77,7 +77,9 @@
 	
 	<!-- ajax -->
 	<page path="/eaditor/get_facets/" model="xpl/models/solr/get_facets.xpl" view="xpl/views/ajax/get_facets.xpl"/>
-	<page path="/eaditor/get_decades/" model="xpl/models/solr/get_decades.xpl" view="xpl/views/ajax/get_decades.xpl"/>
+	<page path="/eaditor/get_centuries" model="xpl/models/solr/get_centuries.xpl" view="xpl/views/ajax/get_centuries.xpl"/>
+	<page path="/eaditor/get_decades" model="xpl/models/solr/get_decades.xpl" view="xpl/views/ajax/get_decades.xpl"/>
+	<page path="/eaditor/get_hier" model="xpl/models/solr/get_hier.xpl" view="xpl/views/ajax/get_hier.xpl"/>
 	<page path="/eaditor/results_ajax/" model="xpl/models/solr/results_ajax.xpl" view="xpl/views/ajax/results_ajax.xpl"/>
 	
 	<!-- Services -->
@@ -118,7 +120,9 @@
 	<!-- ajax -->
 	<!-- facet results -->
 	<page path="/eaditor/[^\/]+/get_facets/" model="xpl/models/solr/get_facets.xpl" view="xpl/views/ajax/get_facets.xpl"/>
-	<page path="/eaditor/[^\/]+/get_decades/" model="xpl/models/solr/get_decades.xpl" view="xpl/views/ajax/get_decades.xpl"/>
+	<page path="/eaditor/[^\/]+/get_centuries" model="xpl/models/solr/get_centuries.xpl" view="xpl/views/ajax/get_centuries.xpl"/>
+	<page path="/eaditor/[^\/]+/get_decades" model="xpl/models/solr/get_decades.xpl" view="xpl/views/ajax/get_decades.xpl"/>
+	<page path="/eaditor/[^\/]+/get_hier" model="xpl/models/solr/get_hier.xpl" view="xpl/views/ajax/get_hier.xpl"/>
 	<page path="/eaditor/[^\/]+/results_ajax/" model="xpl/models/solr/results_ajax.xpl" view="xpl/views/ajax/results_ajax.xpl"/>
 	<!-- generate Annotorious annotations from TEI, using doc and facsimile ids -->
 	<page path="/eaditor/[^\/]+/get_annotations/" view="xpl/views/ajax/get_annotations.xpl"/>

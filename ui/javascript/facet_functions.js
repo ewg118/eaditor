@@ -134,7 +134,7 @@ function getDate() {
 };
 
 function dateLabel() {	
-	var title = $('#century_num_link').attr('title');
+	var title = $('#century_num-btn').attr('title');
 	if (title.indexOf(':') > 0){
 		title = title.split(':')[0];
 	}
@@ -174,8 +174,8 @@ function dateLabel() {
 		var date_string = title;
 	}
 	//set labels
-	$('#century_num_link').attr('title', date_string);
-	$('#century_num_link').children('span:nth-child(2)').text(date_string);
+	$('#century_num-btn').attr('title', date_string);
+	$('#century_num-btn').children('span:nth-child(2)').text(date_string);
 }
 
 function hierarchyLabel(field, title) {

@@ -5,7 +5,7 @@
 	Installation Location:
 	oxf:/eaditor/xforms/xbl/tree-view/tree-view.xbl
 -->
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:dlcn="http://www.delcyon.com/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors"
 	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
@@ -25,7 +25,7 @@
 					</xsl:copy>
 				</xsl:template>
 				<xsl:template match="eaditor:tree-view">
-					<xhtml:div>
+					<div>
 						<xforms:group xbl:attr="ref" xxbl:scope="outer">
 							<!-- Start copying the variables over that we need -->
 
@@ -61,17 +61,17 @@
 							</xforms:group>
 							<!-- END MAIN GROUP -->
 						</xforms:group>
-					</xhtml:div>
+					</div>
 				</xsl:template>
 
 				<xsl:template name="node">
 					<xsl:param name="depth" as="xs:integer"/>
 					<xsl:param name="current" as="xs:integer"/>
-					<xhtml:ul class="{if ($current = 1) then 'expanded' else 'collapsed'}">
+					<ul class="{if ($current = 1) then 'expanded' else 'collapsed'}">
 						<xsl:if test="$current > 1">
 							<!--<xforms:output value="if (string-length(child::ead:c[1]/ead:did/ead:unittitle) &gt; 0) then 'true' else 'false'"/>-->
 
-							<xhtml:span class="nodename">
+							<span class="nodename">
 								<xforms:group ref=".[count(ead:c) &gt; 0]">
 									<xforms:trigger appearance="minimal" class="expand-trigger">
 										<xforms:label>
@@ -86,7 +86,7 @@
 								<xforms:group ref=".[string-length(ead:did/ead:unitdate) &gt; 0]">
 									<xforms:output value="concat('(', ead:did/ead:unitdate, ')')"/>
 								</xforms:group>
-							</xhtml:span>
+							</span>
 							
 							<xforms:group ref=".[$position > 1]">
 								<xforms:trigger appearance="minimal" class="expand-trigger">
@@ -118,16 +118,16 @@
 								<xforms:var name="id" select="@id"/>
 								<xforms:var name="position" select="position()"/>
 								<xforms:var name="count" select="count(parent::node()/ead:c)"/>
-								<xhtml:li>
+								<li>
 									<!-- if this element has children recurse into it -->
 									<xsl:call-template name="node">
 										<xsl:with-param name="current" select="$current + 1"/>
 										<xsl:with-param name="depth" select="$depth - 1"/>
 									</xsl:call-template>
-								</xhtml:li>
+								</li>
 							</xforms:repeat>
 						</xsl:if>
-					</xhtml:ul>
+					</ul>
 
 				</xsl:template>
 			</xsl:transform>

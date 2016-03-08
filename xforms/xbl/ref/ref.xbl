@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-ref" element="eaditor|ref">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,14 +9,14 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
-					<xhtml:div class="pair_div">
-						<xhtml:div>
+					<div class="pair_div">
+						<div>
 							<xforms:input ref="$binding">
 								<xforms:label>Reference Text</xforms:label>
 								<xforms:alert>Required</xforms:alert>
 							</xforms:input>
-						</xhtml:div>
-						<xhtml:div>
+						</div>
+						<div>
 							<xforms:select1 ref="$binding/@target">
 								<xforms:label>Reference Target</xforms:label>
 								<xforms:itemset nodeset="instance('guide')//@id">
@@ -24,16 +24,16 @@
 									<xforms:value ref="."/>
 								</xforms:itemset>
 							</xforms:select1>
-						</xhtml:div>
-						<xhtml:div style="float:right;">
+						</div>
+						<div style="float:right;">
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 								<xforms:label>
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-						</xhtml:div>
-					</xhtml:div>
+						</div>
+					</div>
 					<!-- ********************************************************************** -->
 				</xforms:group>
 			</xforms:group>

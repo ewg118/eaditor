@@ -1,6 +1,7 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+	
 	<xbl:binding id="eaditor-did" element="eaditor|did">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -10,7 +11,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					
+
 					<xforms:group ref="$binding">
 						<h2>
 							<xforms:output value="if (parent::ead:archdesc) then 'Collection Description' else 'Component Description'"/>
@@ -112,20 +113,22 @@
 								</xforms:trigger>
 							</xforms:group>
 						</xxforms:dialog>
-	
+
 						<xforms:group ref="ead:unittitle">
 							<div>
 								<xforms:input ref=".">
-									<xforms:label value="if (parent::ead:did/parent::ead:archdesc) then 'Collection Title' else 'Title'"></xforms:label>
+									<xforms:label value="if (parent::ead:did/parent::ead:archdesc) then 'Collection Title' else 'Title'"/>
 									<xforms:alert>Required</xforms:alert>
 								</xforms:input>
 								<eaditor:attributes ref="."/>
 							</div>
 						</xforms:group>
-	
+
 						<xforms:group ref="ead:origination">
 							<div class="subsection">
-								<h3><xforms:output value="if (ancestor::ead:c) then 'Component Creator' else 'Collection Creator'"/></h3>
+								<h3>
+									<xforms:output value="if (ancestor::ead:c) then 'Component Creator' else 'Collection Creator'"/>
+								</h3>
 								<!-- suppress delete from archdesc/did -->
 								<xforms:group ref=".[parent::ead:did/parent::ead:c]">
 									<xforms:trigger appearance="minimal">
@@ -163,7 +166,7 @@
 										</xforms:trigger>
 									</div>
 								</xforms:group>
-	
+
 								<xforms:group ref=".[not(child::*) and string-length(.) &gt; 0]">
 									<div>
 										<xforms:output ref=".">
@@ -171,33 +174,33 @@
 										</xforms:output>
 									</div>
 								</xforms:group>
-	
+
 								<xforms:group ref="ead:corpname">
 									<eaditor:corpname/>
 								</xforms:group>
-	
+
 								<!-- famname -->
 								<xforms:group ref="ead:famname">
 									<eaditor:famname/>
 								</xforms:group>
-	
+
 								<xforms:group ref="ead:persname">
 									<eaditor:persname/>
 								</xforms:group>
 							</div>
 						</xforms:group>
-	
+
 						<!-- header -->
 						<xforms:group ref="ead:head">
 							<eaditor:head/>
 						</xforms:group>
-	
-	
+
+
 						<!-- unitdate -->
 						<xforms:group ref="ead:unitdate">
 							<eaditor:date/>
 						</xforms:group>
-	
+
 						<xforms:repeat nodeset="ead:abstract">
 							<div>
 								<xforms:textarea ref=".">
@@ -213,7 +216,7 @@
 							</div>
 						</xforms:repeat>
 						<xforms:repeat nodeset="ead:container">
-	
+
 							<div>
 								<xforms:input ref=".">
 									<xforms:label>Container</xforms:label>
@@ -233,17 +236,17 @@
 								</xforms:trigger>
 							</div>
 						</xforms:repeat>
-	
+
 						<!-- dao -->
 						<xforms:repeat nodeset="ead:dao">
 							<eaditor:dao/>
 						</xforms:repeat>
-	
+
 						<!-- daogrp -->
 						<xforms:repeat nodeset="ead:daogrp">
 							<eaditor:daogrp/>
 						</xforms:repeat>
-	
+
 						<xforms:repeat nodeset="ead:langmaterial">
 							<div class="subsection">
 								<h3>Language of Material</h3>
@@ -256,7 +259,7 @@
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
-								
+
 								<div>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
@@ -277,13 +280,13 @@
 												<xforms:value ref="name"/>
 											</xforms:itemset>
 											<xforms:alert>Required</xforms:alert>
-											
+
 											<xforms:action ev:event="xforms-value-changed">
 												<xforms:var name="language" select="."/>
 												<xforms:setvalue ref="@langcode" value="instance('languageselect-template')//language[name = $language]/code"/>
 											</xforms:action>
 										</xforms:select1>
-										
+
 										<xforms:group ref=".[count(//ead:langmaterial/ead:language) &gt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -309,12 +312,12 @@
 								</xforms:trigger>
 							</div>
 						</xforms:repeat>
-	
+
 						<!-- note -->
 						<xforms:group ref="ead:note">
 							<eaditor:note/>
 						</xforms:group>
-	
+
 						<xforms:repeat nodeset="ead:physdesc">
 							<div class="subsection">
 								<h3>Physical Description</h3>
@@ -357,13 +360,13 @@
 										<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('physfacet-template')"/>
 									</xforms:trigger>
 								</xxforms:dialog>
-	
+
 								<xforms:repeat nodeset="ead:dimensions">
 									<div>
 										<xforms:input ref=".">
 											<xforms:label>Dimensions</xforms:label>
 										</xforms:input>
-	
+
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
@@ -375,7 +378,7 @@
 								<xforms:repeat nodeset="ead:extent">
 									<div>
 										<xforms:input ref=".">
-											<xforms:label value="if (ancestor::ead:c) then 'Extent' else 'Size of Collection'"></xforms:label>
+											<xforms:label value="if (ancestor::ead:c) then 'Extent' else 'Size of Collection'"/>
 											<xforms:alert>Required</xforms:alert>
 										</xforms:input>
 										<xforms:group ref=".[ancestor::ead:c]">
@@ -386,15 +389,15 @@
 												</xforms:label>
 											</xforms:trigger>
 										</xforms:group>
-										
+
 									</div>
 								</xforms:repeat>
-	
+
 								<!-- genreform -->
 								<xforms:repeat nodeset="ead:genreform">
 									<eaditor:genreform/>
 								</xforms:repeat>
-	
+
 								<xforms:repeat nodeset="ead:physfacet">
 									<div class="pair_div">
 										<div>
@@ -433,7 +436,7 @@
 								<eaditor:attributes ref="."/>
 							</div>
 						</xforms:group>
-						
+
 						<xforms:group ref="ead:repository">
 							<div>
 								<xforms:input ref=".">
@@ -446,8 +449,8 @@
 									</xforms:label>
 								</xforms:trigger>
 							</div>
-						</xforms:group>						
-						
+						</xforms:group>
+
 						<xforms:group ref="ead:unitid">
 							<div>
 								<xforms:input ref="ead:unitid">
@@ -460,13 +463,13 @@
 									</xforms:label>
 								</xforms:trigger>
 							</div>
-						</xforms:group>					
+						</xforms:group>
 					</xforms:group>
-					
+
 
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="did-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="did-model" xmlns:ead="urn:isbn:1-931666-22-9">
 						<!-- digital object elements -->
 						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>
@@ -531,7 +534,7 @@
 						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
 							<note/>
 						</xforms:instance>
-						
+
 						<!-- origination templates -->
 						<xforms:instance id="corpname-template" xxforms:exclude-result-prefixes="#all">
 							<corpname/>

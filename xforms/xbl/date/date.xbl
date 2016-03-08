@@ -163,7 +163,7 @@
 					<!--<fr:xforms-inspector xmlns:fr="http://orbeon.org/oxf/xml/form-runner"/>-->
 					
 					<!-- *****************************MODEL ***************************************** -->
-					<xforms:model xmlns="urn:isbn:1-931666-22-9" id="date-model">
+					<xforms:model xmlns:ead="urn:isbn:1-931666-22-9" id="date-model">
 						<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
 							<xs:simpleType name="m.data.standardDate">
 								<xs:union>

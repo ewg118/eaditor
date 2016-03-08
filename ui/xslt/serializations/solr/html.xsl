@@ -44,7 +44,7 @@
 	</xsl:param>
 	<xsl:variable name="numFound" select="//result[@name='response']/@numFound" as="xs:integer"/>
 	
-	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 
 	<xsl:template match="/">
 		<html>
@@ -127,7 +127,7 @@
 						<span id="pipeline">
 							<xsl:value-of select="$pipeline"/>
 						</span>
-						<select id="ajax-temp"/>
+						<div id="ajax-temp"/>
 						<ul id="decades-temp"/>
 						<span id="path">
 							<xsl:value-of select="$display_path"/>
@@ -240,50 +240,44 @@
 			</xsl:variable>
 
 			<xsl:choose>
-				<xsl:when test="@name='century_num'">
-					<!--<button class="ui-multiselect ui-widget ui-state-default ui-corner-all" type="button" title="Date" aria-haspopup="true"
-						style="width: 180px;" id="{@name}_link" label="{$q}">
-						<span class="ui-icon ui-icon-triangle-2-n-s"/>
-						<span>Date</span>
-					</button>
-					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all date-div" style="width: 175px;">
-						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter">
-							<ul class="ui-helper-reset">
-								<li class="ui-multiselect-close">
-									<a class="ui-multiselect-close century-close" href="#">
-										<span class="ui-icon ui-icon-circle-close"/>
-									</a>
-								</li>
-							</ul>
-						</div>
-						<ul class="century-multiselect-checkboxes ui-helper-reset" id="{@name}-list" style="height: 175px;">
-							<xsl:for-each select="int">
-								<li>
-									<span class="expand_century" century="{@name}" q="{$q}">
-										<img src="{$include_path}ui/images/{if (contains($q, concat(':', @name))) then 'minus' else 'plus'}.gif" alt="expand"/>
-									</span>
-									<xsl:choose>
-										<xsl:when test="contains($q, concat(':',@name))">
-											<input type="checkbox" value="{@name}" checked="checked" class="century_checkbox"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<input type="checkbox" value="{@name}" class="century_checkbox"/>
-										</xsl:otherwise>
-									</xsl:choose>
-									<!-\- output for 1800s, 1900s, etc. -\->
-									<xsl:value-of select="eaditor:normalize_century(@name)"/>
-									<ul id="century_{@name}_list" class="decades-list" style="{if(contains($q, concat(':',@name))) then '' else 'display:none'}">
-										<!-\-<xsl:if test="contains($q, concat(':',@name))">
-											<xsl:copy-of
-												select="document(concat($request-uri, 'get_decades/?q=', encode-for-uri($q), '&amp;century=', @name, '&amp;pipeline=', $pipeline))//li"
-											/>
-										</xsl:if>-\->
-									</ul>
-								</li>
-							</xsl:for-each>
+				<xsl:when test="contains(@name, '_hier')">
+					<div class="btn-group">
+						<button class="dropdown-toggle btn btn-default hierarchical-facet" type="button" title="{$title}" id="{@name}-btn" label="{$q}">
+							<span>
+								<xsl:value-of select="$title"/>
+							</span>
+							<xsl:text> </xsl:text>
+							<b class="caret"/>
+						</button>
+						<ul class="dropdown-menu hier-list" id="{@name}-list">
+							<div class="text-right">
+								<a href="#" class="hier-close">close <span class="glyphicon glyphicon-remove"/></a>
+							</div>
+							<xsl:if test="contains($q, @name)">
+								<xsl:copy-of select="document(concat($request-uri, 'get_hier?q=', encode-for-uri($q), '&amp;fq=*&amp;prefix=L1&amp;link=&amp;field=', substring-before(@name,
+									'_hier')))//ul[@id='root']/li"/>
+							</xsl:if>
 						</ul>
-					</div>-->
+					</div>
 				</xsl:when>
+				<xsl:when test="@name='century_num'">
+					<div class="btn-group">
+						<button class="dropdown-toggle btn btn-default date-facet" type="button" title="{$title}" id="{@name}-btn"
+							label="{$q}">
+							<xsl:value-of select="$title"/>
+							<xsl:text> </xsl:text>
+							<b class="caret"/>
+						</button>
+						<ul class="dropdown-menu" id="{@name}-list">
+							<div class="text-right">
+								<a href="#" class="century-close">close <span class="glyphicon glyphicon-remove"/></a>
+							</div>
+							<xsl:if test="contains($q, @name)">
+								<xsl:copy-of select="document(concat($request-uri, 'get_centuries?q=', encode-for-uri($q)))//ul[@id='root']/li"/>
+							</xsl:if>
+						</ul>
+					</div>
+				</xsl:when>				
 				<xsl:otherwise>
 					<select id="{@name}-select" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}" class="multiselect" multiple="multiple">
 						<xsl:if test="contains($q, @name)">
@@ -365,7 +359,7 @@
 									<b><xsl:value-of select="$name"/>: </b>
 									<xsl:choose>
 										<xsl:when test="$field='century_num'">
-											<!--<xsl:value-of select="numishare:normalize_century($term)"/>-->
+											<xsl:value-of select="eaditor:normalize_century($term)"/>
 										</xsl:when>
 										<xsl:when test="contains($field, '_hier')">
 											<xsl:variable name="tokens" select="tokenize(substring($term, 2, string-length($term)-2), '\+')"/>

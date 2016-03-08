@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-listhead" element="eaditor|listhead">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -10,27 +10,27 @@
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
 					<xforms:group ref="$binding">
-						<xhtml:div class="pair_div">
-							<xhtml:h4>List Header</xhtml:h4>
+						<div class="pair_div">
+							<h4>List Header</h4>
 							<xforms:trigger appearance="minimal">
 								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-							<xhtml:div>
+							<div>
 								<xforms:input ref="ead:head01">
 									<xforms:label>Heading 1</xforms:label>
 									<xforms:alert>Required</xforms:alert>
 								</xforms:input>
-							</xhtml:div>
-							<xhtml:div>
+							</div>
+							<div>
 								<xforms:input ref="ead:head02">
 									<xforms:label>Heading 2</xforms:label>
 									<xforms:alert>Required</xforms:alert>
 								</xforms:input>
-							</xhtml:div>
-						</xhtml:div>
+							</div>
+						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->
 				</xforms:group>

@@ -16,21 +16,23 @@ $(document).ready(function() {
 		var lang = langStr;
 	}
 	
-	//set date label if there is a date facet
-	/*if ($('#century_num_link').length != 0){
-		dateLabel();
-	}
 	
 	//set hierarchical labels on load
-	$('.hierarchical-facet').each(function(){
+	$('.hierarchical-facet').each(function () {
 		var field = $(this).attr('id').split('_hier')[0];
 		var title = $(this).attr('title');
 		hierarchyLabel(field, title);
 	});
 	
-	$("#backgroundPopup").click(function() {
+	/*if ($('#century_num').length > 0){
+		if ($('#century_num-list').html().indexOf('<li') > 0) {
+			dateLabel();
+		}
+	}*/
+	
+	$("#backgroundPopup").on('click', function (event) {
 		disablePopup();
-	});*/
+	});
 	
 	/***** SEARCH *****/
 	$('#search_button') .click(function () {
@@ -100,66 +102,74 @@ $(document).ready(function() {
 	});
 	
 	/***************** DRILLDOWN HIERARCHICAL FACETS ********************/
-	/*$('.hierarchical-facet').hover(function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
-	},
-	function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all');
-	});	
-	
-	$('.hier-close') .click(function () {
+	$('.hier-close').click(function () {
 		disablePopup();
 		return false;
-	});	
+	});
 	
 	$('.hierarchical-facet').click(function () {
 		if (popupStatus == 0) {
 			$("#backgroundPopup").fadeIn("fast");
 			popupStatus = 1;
 		}
-		var list_id = $(this) .attr('id').split('_link')[0] + '-list';
-		var field = $(this) .attr('id').split('_hier')[0];
-		var q = getQuery();
+		
+		var q = getQuery();	
+		var field = $(this).attr('id').split('_hier')[0];
+		var list_id = $(this).attr('id').split('-btn')[0] + '-list';
 		if ($('#' + list_id).html().indexOf('<li') < 0) {
 			$.get('get_hier', {
-				q: q, field: field, prefix: 'L1', fq: '*', section: 'collection', link: '', lang: lang
+				q: q, field: field, prefix: 'L1', fq: '*', link: '', lang: lang
 			},
 			function (data) {
-				$('#' + list_id) .html(data);
+				alert(data);
+				$('#ajax-temp').html(data);
+				$('#ajax-temp li').each(function () {
+					$(this).clone().appendTo('#' + list_id);
+				});
 			});
 		}
-		$('#' + list_id).parent('div').attr('style', 'width: 192px;display:block;');
-		return false;
+		
+		$('#' + list_id).parent('div').addClass('open');
+		$('#' + list_id).show();
 	});
 	
 	//expand category when expand/compact image pressed
-	$('.expand_category') .livequery('click', function (event) {
+	$('.hier-list').on('click', 'li .expand_category', function () {
 		var fq = $(this).next('input').val();
-		var list = $(this) .attr('id').split('__')[0].split('|')[1] + '__list';
+		var list = $(this).attr('id').split('__')[0].split('/')[1] + '__list';
 		var field = $(this).attr('field');
 		var prefix = $(this).attr('next-prefix');
 		var q = getQuery();
-		var section = $(this) .attr('section');
-		var link = $(this) .attr('link');
-		if ($(this) .children('img') .attr('src') .indexOf('plus') >= 0) {
-			$.get('get_hier', {
-				q: q, field:field, prefix: prefix, fq: '"' +fq + '"', link: link, section: section, lang: lang
-			},
-			function (data) {
-				$('#' + list) .html(data);
-			});
-			$(this) .parent('li') .children('.' + field + '_level') .show();
-			$(this) .children('img') .attr('src', $(this) .children('img').attr('src').replace('plus', 'minus'));
+		var section = $(this).attr('section');
+		var link = $(this).attr('link');
+		
+		if ($(this).attr('class').indexOf('minus') > 0) {
+			$(this).removeClass('glyphicon-minus');
+			$(this).addClass('glyphicon-plus');
+			$('#' + list).hide();
 		} else {
-			$(this) .parent('li') .children('.' + field + '_level') .hide();
-			$(this) .children('img') .attr('src', $(this) .children('img').attr('src').replace('minus', 'plus'));
+			$(this).removeClass('glyphicon-plus');
+			$(this).addClass('glyphicon-minus');
+			//perform ajax load on first click of expand button
+			if ($(this).parent('li').children('ul').html().indexOf('<li') < 0) {
+				$.get('get_hier', {
+					q: q, field: field, prefix: prefix, fq: '"' + fq + '"', link: link, section: section, lang: lang
+				},
+				function (data) {
+					$('#ajax-temp').html(data);
+					$('#ajax-temp li').each(function () {
+						$(this).clone().appendTo('#' + list);
+					});
+				});
+			}
+			$('#' + list).show();
 		}
 	});
 	
 	//remove all ancestor or descendent checks on uncheck
-	$('.h_item input') .livequery('click', function (event) {
-		var field = $(this).closest('.ui-multiselect-menu').attr('id').split('-')[0];
-		var title = $('.' + field + '-multiselect-checkboxes').attr('title');
+	$('.hier-list').on('click', 'li input', function () {
+		var field = $(this).attr('field');
+		var title = $(this).closest('#' + field + '_hier-list').prev('button').attr('title');
 		
 		var count_checked = 0;
 		$('#' + field + '_hier-list input:checked').each(function () {
@@ -169,81 +179,84 @@ $(document).ready(function() {
 		if (count_checked > 0) {
 			hierarchyLabel(field, title);
 		} else {
-			$('#' + field + '_hier_link').attr('title', title);
-			$('#' + field + '_hier_link').children('span:nth-child(2)').html(title);
+			$('#' + field + '_hier-btn').children('span').text(title);
 		}
-		
-	});*/
+	});	
 	
 	/***************** DRILLDOWN FOR DATES ********************/
-	/*$('#century_num_link').hover(function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all ui-state-focus');
-	},
-	function () {
-		$(this) .attr('class', 'ui-multiselect ui-widget ui-state-default ui-corner-all');
-	});
 	
-	$('.century-close').livequery('click', function (event) {
+	$('.century-close').on('click', function (event) {
 		disablePopup();
+		return false;
 	});
 	
-	$('#century_num_link').livequery('click', function (event) {
+	$('#century_num-btn').on('click', function (event) {
 		if (popupStatus == 0) {
 			$("#backgroundPopup").fadeIn("fast");
 			popupStatus = 1;
 		}
-		var list_id = $(this) .attr('id').split('_link')[0] + '-list';
-		$('#' + list_id).parent('div').attr('style', 'width: 192px;display:block;');
+		
+		q = getQuery();
+		var list_id = $(this).attr('id').split('-btn')[0] + '-list';
+		if ($('#' + list_id).html().indexOf('<li') < 0) {
+			$.get('get_centuries', {
+				q: q
+			},
+			function (data) {
+				$('#ajax-temp').html(data);
+				$('#ajax-temp li').each(function () {
+					$(this).clone().appendTo('#' + list_id);
+				});
+			});
+		}
+		
+		$('#' + list_id).parent('div').addClass('open');
+		$('#' + list_id).show();
 	});
 	
-	$('.expand_century').livequery('click', function (event) {
+	$('#century_num-list').on('click', 'li .expand_century', function () {
 		var century = $(this).attr('century');
-		if (century < 0) {
-			century = "\\" + century;
-		}
-		//var q = $(this).attr('q');
 		var q = getQuery();
-		var expand_image = $(this).children('img').attr('src');
 		//hide list if it is expanded
-		if (expand_image.indexOf('minus') > 0) {
-			$(this).children('img').attr('src', expand_image.replace('minus', 'plus'));
-			$('#century_' + century + '_list') .hide();
+		if ($(this).attr('class').indexOf('minus') > 0) {
+			$(this).removeClass('glyphicon-minus');
+			$(this).addClass('glyphicon-plus');
+			$('#century_' + century + '_list').hide();
 		} else {
-			$(this).children('img').attr('src', expand_image.replace('plus', 'minus'));
+			$(this).removeClass('glyphicon-plus');
+			$(this).addClass('glyphicon-minus');
 			//perform ajax load on first click of expand button
 			if ($(this).parent('li').children('ul').html().indexOf('<li') < 0) {
-				$.get('../get_decades/', {
-					q: q, century: century, pipeline: pipeline
+				$.get('get_decades', {
+					q: q, century: century
 				},
 				function (data) {
-					$('#decades-temp').html(data);
-					$('#decades-temp li').each(function(){
+					$('#ajax-temp').html(data);
+					$('#ajax-temp li').each(function () {
 						$(this).clone().appendTo('#century_' + century + '_list');
 					});
 				});
 			}
-			$('#century_' + century + '_list') .show();
+			$('#century_' + century + '_list').show();
 		}
 	});
 	
 	//check parent century box when a decade box is checked
-	$('.decade_checkbox').livequery('click', function (event) {
-		if ($(this) .is(':checked')) {
-			$(this) .parent('li').parent('ul').parent('li') .children('input') .attr('checked', true);
+	$('#century_num-list').on('click', 'li ul li .decade_checkbox', function () {
+		if ($(this).is(':checked')) {
+			$(this).parent('li').parent('ul').parent('li').children('input').attr('checked', true);
 		}
 		//set label
 		dateLabel();
 	});
 	//uncheck child decades when century is unchecked
-	$('.century_checkbox').livequery('click', function (event) {
+	$('#century_num-list').on('click', 'li .century_checkbox', function () {
 		if ($(this).not(':checked')) {
 			$(this).parent('li').children('ul').children('li').children('.decade_checkbox').attr('checked', false);
 		}
 		//set label
 		dateLabel();
-	});	
-	*/
-	
+	});
 
 	/***************************/
 	//@Author: Adrian "yEnS" Mato Gondelle
@@ -257,7 +270,7 @@ $(document).ready(function() {
 		//disables popup only if it is enabled
 		if (popupStatus == 1) {	
 			$("#backgroundPopup").fadeOut("fast");
-			$('#century_num-list') .parent('div').attr('style', 'width: 192px;');
+			$('#century_num-list').parent('div').removeClass('open');
 			popupStatus = 0;		
 		}
 	}
@@ -267,5 +280,4 @@ $(document).ready(function() {
 	        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
 	    );
 	}
-
 });

@@ -26,7 +26,7 @@
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<xsl:include href="../../../ui/xslt/ajax/get_annotations.xsl"/>
 				<xsl:template match="/">					
-					<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+					<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 					<xsl:variable name="doc" select="doc('input:request')/request/parameters/parameter[name='doc']/value"/>
 					<xsl:variable name="facsimile" select="doc('input:request')/request/parameters/parameter[name='facsimile']/value"/>
 					

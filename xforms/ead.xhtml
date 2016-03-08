@@ -432,12 +432,16 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming EAD guide to Solr document.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"></xforms:send>
 			</xforms:submission>
+			
 			<!-- post instance to Solr -->
 			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
-				<xforms:send ev:event="xforms-submit-done" submission="submit-commit"></xforms:send>
-				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">EAD guide saved and updated to search index.</xforms:setvalue>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:send submission="submit-commit"></xforms:send>
+					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved and updated to search index.</xforms:setvalue>
+				</xforms:action>				
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
+			
 			<!-- send commit -->
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"></xforms:submission>
 
@@ -542,8 +546,7 @@
 		<xi:include href="xbl/list/list.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/listhead/listhead.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/name/name.xbl" xxi:omit-xml-base="true"></xi:include>
-		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"></xi:include>
-		<xi:include href="xbl/navigation/navigation.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/namegrp/namegrp.xbl" xxi:omit-xml-base="true"></xi:include>		
 		<xi:include href="xbl/note/note.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/num/num.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/occupation/occupation.xbl" xxi:omit-xml-base="true"></xi:include>
@@ -1183,11 +1186,11 @@
 									<eaditor:c></eaditor:c>
 								</xforms:repeat>
 							</fr:tab>-->
-							<!--<fr:tab id="preview">
+							<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>-->
+							</fr:tab>
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>

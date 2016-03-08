@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-linkgrp" element="eaditor|linkgrp">
 		<xbl:template>
@@ -10,15 +10,15 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:div class="subsection">
-						<xhtml:h3>Linking Group</xhtml:h3>
+					<div class="subsection">
+						<h3>Linking Group</h3>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
 								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
-						<xhtml:div>
+						<div>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>Extended Pointer Location</xforms:label>
@@ -39,7 +39,7 @@
 									<span class="glyphicon glyphicon-plus"/>Referece Location</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('refloc-template')"/>
 							</xforms:trigger>
-						</xhtml:div>
+						</div>
 
 						<!-- extptrloc -->
 						<xforms:repeat nodeset="$binding/ead:extptrloc">
@@ -60,7 +60,7 @@
 						<xforms:repeat nodeset="$binding/ead:refloc">
 							<eaditor:refloc/>
 						</xforms:repeat>
-					</xhtml:div>
+					</div>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="linkgrp-model" xmlns:xforms="http://www.w3.org/2002/xforms">

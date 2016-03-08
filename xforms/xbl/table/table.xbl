@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-table" element="eaditor|table">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,15 +9,15 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
-					<xhtml:div class="subsection">
-						<xhtml:h3>Table</xhtml:h3>
+					<div class="subsection">
+						<h3>Table</h3>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
 								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
-						<xhtml:div>
+						<div>
 							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
@@ -32,7 +32,7 @@
 								<xforms:insert ev:event="DOMActivate" context="$binding"
 									nodeset="child::node()[last()]" origin="instance('tgroup-template')"/>
 							</xforms:trigger>
-						</xhtml:div>
+						</div>
 						
 						<!-- header -->
 						<xforms:group ref="$binding/ead:head">
@@ -40,15 +40,15 @@
 						</xforms:group>
 						
 						<xforms:repeat nodeset="$binding/ead:tgroup">
-							<xhtml:div class="subsection">
-								<xhtml:h4>Table Group</xhtml:h4>
+							<div class="subsection">
+								<h4>Table Group</h4>
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
 										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
 								</xforms:trigger>
-								<xhtml:div>
+								<div>
 									<xforms:group ref=".[count(ead:thead/ead:row) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
@@ -67,15 +67,15 @@
 										<xforms:insert ev:event="DOMActivate" context="ead:tbody"
 											nodeset="child::node()[last()]" origin="instance('row-template')"/>
 									</xforms:trigger>
-								</xhtml:div>
+								</div>
 								<xforms:input ref="@cols">
 									<xforms:label>Columns</xforms:label>
 									<xforms:alert>Required</xforms:alert>
 									<xforms:hint>This must be an integer</xforms:hint>
 								</xforms:input>
 								<xforms:group ref="ead:thead/ead:row">
-									<xhtml:div class="subsection">
-										<xhtml:h4>Table Header</xhtml:h4>
+									<div class="subsection">
+										<h4>Table Header</h4>
 										<xforms:trigger appearance="minimal">
 											<xforms:delete ev:event="DOMActivate" nodeset="."/>
 											<xforms:label>
@@ -83,17 +83,17 @@
 											</xforms:label>
 										</xforms:trigger>
 										<xforms:repeat nodeset="ead:entry">
-											<xhtml:div>
+											<div>
 												<xforms:input ref=".">
 													<xforms:label>Cell</xforms:label>
 												</xforms:input>
-											</xhtml:div>
+											</div>
 										</xforms:repeat>
-									</xhtml:div>
+									</div>
 								</xforms:group>
-							</xhtml:div>
+							</div>
 						</xforms:repeat>
-					</xhtml:div>
+					</div>
 					<!-- ********************************************************************** -->
 					<xforms:model id="table-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">

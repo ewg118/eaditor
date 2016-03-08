@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-index" element="eaditor|index">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -10,8 +10,8 @@
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
-					<xhtml:div class="subsection">
-						<xhtml:h2>Index</xhtml:h2>
+					<div class="subsection">
+						<h2>Index</h2>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
@@ -22,19 +22,19 @@
 						<!-- include generic triggers -->
 						<eaditor:generic-elements ref="$binding"/>
 						
-						<xhtml:div>
-							<xhtml:span>Specific Elements: </xhtml:span>
+						<div>
+							<span>Specific Elements: </span>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>Index Entry</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding"
 									nodeset="child::node()[last()]" origin="instance('indexentry-template')"/>
 							</xforms:trigger>
-						</xhtml:div>
+						</div>
 
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
-							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+							<div class="warning"><b>Warning:</b> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:head">
@@ -44,8 +44,8 @@
 						<!-- indexentry -->
 						
 						<xforms:repeat nodeset="$binding/ead:indexentry">
-							<xhtml:div class="subsection">
-								<xhtml:h4>Index Entry</xhtml:h4>
+							<div class="subsection">
+								<h4>Index Entry</h4>
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
@@ -59,18 +59,18 @@
 								</xforms:group>
 								<xforms:group
 									ref=".[count(ead:corpname) &lt; 1 and count(ead:famname) &lt; 1 and count(ead:function) &lt; 1 and count(ead:genreform) &lt; 1 and count(ead:geogname) &lt; 1 and count(ead:name) &lt; 1 and count(ead:namegrp) &lt; 1 and count(ead:occupation) &lt; 1 and count(ead:persname) &lt; 1 and count(ead:subject) &lt; 1 and count(ead:title) &lt; 1]">
-									<xhtml:div>
-										<xhtml:span>Specific Elements: </xhtml:span>
+									<div>
+										<span>Specific Elements: </span>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<span class="glyphicon glyphicon-plus"/>Name Group</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." origin="instance('namegrp-template')"/>
 										</xforms:trigger>
-									</xhtml:div>
+									</div>
 								</xforms:group>
 								
 								<xforms:group ref=".[count(ead:ptr) &lt; 1 and count(ead:ptrgrp) &lt; 1 and count(ead:ref) &lt; 1] ">
-									<xhtml:div>
+									<div>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<span class="glyphicon glyphicon-plus"/>Pointer</xforms:label>
@@ -89,7 +89,7 @@
 											<xforms:insert ev:event="DOMActivate" context="."
 												origin="instance('ref-template')"/>
 										</xforms:trigger>
-									</xhtml:div>
+									</div>
 								</xforms:group>
 								
 								
@@ -148,7 +148,7 @@
 								<xforms:repeat nodeset="ead:title">
 									<eaditor:title/>
 								</xforms:repeat>
-							</xhtml:div>
+							</div>
 						</xforms:repeat>
 						
 						<xforms:repeat nodeset="$binding/ead:address">
@@ -178,7 +178,7 @@
 						<xforms:repeat nodeset="$binding/ead:table">
 							<eaditor:table/>
 						</xforms:repeat>
-					</xhtml:div>
+					</div>
 						
 					<!-- ********************************************************************** -->		
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->

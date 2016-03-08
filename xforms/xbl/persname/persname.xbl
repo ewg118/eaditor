@@ -2,7 +2,7 @@
 	last modified: June, 2014
 	function: EAD persname component; user taps into VIAF APIs, xEAC, or local vocabulary for personal names
 -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
+<xbl:xbl  xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:eaditor="https://github.com/ewg118/eaditor">

@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-ptrgrp" element="eaditor|ptrgrp">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,14 +9,14 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
-					<xhtml:h5>Pointer Group</xhtml:h5>
+					<h5>Pointer Group</h5>
 					<xforms:trigger appearance="minimal">
 						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 						<xforms:label>
 							<span class="glyphicon glyphicon-remove"/>
 						</xforms:label>
 					</xforms:trigger>
-					<xhtml:div>
+					<div>
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
 								<span class="glyphicon glyphicon-plus"/>Pointer</xforms:label>
@@ -29,7 +29,7 @@
 							<xforms:insert ev:event="DOMActivate" context="$binding"
 								origin="instance('ref-template')"/>
 						</xforms:trigger>
-					</xhtml:div>
+					</div>
 					<!-- ptr -->
 					<xforms:repeat nodeset="$binding/ead:ptr">
 						<eaditor:ptr/>								

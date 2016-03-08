@@ -29,7 +29,7 @@
 		<p:input name="data" href="#config"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 				<!-- url params -->
 				<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
 				<xsl:param name="century" select="doc('input:request')/request/parameters/parameter[name='century']/value"/>
@@ -40,17 +40,38 @@
 
 				<xsl:variable name="service">
 					<xsl:choose>
-						<xsl:when test="$pipeline='results'">
-							<xsl:value-of
-								select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
-							/>
+						<!-- when there is a collection name, apply collection name in Solr query -->
+						<xsl:when test="/config/aggregator = 'true'">
+							<xsl:choose>
+								<xsl:when test="$pipeline='maps'">
+									<xsl:value-of
+										select="concat($solr-url, '?q=', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
+									/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of
+										select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
+									/>
+								</xsl:otherwise>
+								
+							</xsl:choose>
 						</xsl:when>
-						<xsl:when test="$pipeline='maps'">
-							<xsl:value-of
-								select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
-							/>
-						</xsl:when>
-					</xsl:choose>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="$pipeline='maps'">
+									<xsl:value-of
+										select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri(concat($q, ' AND georef:*')), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
+									/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of
+										select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=0&amp;rows=0&amp;facet.field=decade_num&amp;facet.sort=index&amp;facet=true&amp;fq=century_num:', $century)"
+									/>
+								</xsl:otherwise>
+								
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>					
 				</xsl:variable>
 
 				<xsl:template match="/">

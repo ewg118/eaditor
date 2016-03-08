@@ -8,7 +8,7 @@
 	<xsl:include href="../../functions.xsl"/>
 
 	<!-- path and document params -->
-	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
 	<xsl:param name="path">

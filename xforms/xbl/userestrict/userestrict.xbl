@@ -9,7 +9,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-						
+
 					<div class="subsection">
 						<h3>Use Restriction</h3>
 						<xforms:trigger appearance="minimal">
@@ -20,37 +20,36 @@
 						</xforms:trigger>
 
 						<!-- include generic triggers -->
-						<eaditor:generic-elements ref="$binding"/>	
-						
-						<xforms:group
-							ref="$binding[count(child::node()) &lt; 1]">
+						<eaditor:generic-elements ref="$binding"/>
+
+						<xforms:group ref="$binding[count(child::node()) &lt; 1]">
 							<div class="warning"><b>Warning:</b> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:head">
 							<eaditor:head/>
 						</xforms:group>
-						
+
 						<xforms:repeat nodeset="$binding/ead:address">
 							<eaditor:address/>
 						</xforms:repeat>
-						
+
 						<xforms:repeat nodeset="$binding/ead:blockquote">
 							<eaditor:blockquote/>
 						</xforms:repeat>
-						
+
 						<xforms:repeat nodeset="$binding/ead:chronlist">
 							<eaditor:chronlist/>
 						</xforms:repeat>
-						
+
 						<xforms:repeat nodeset="$binding/ead:list">
 							<eaditor:list/>
 						</xforms:repeat>
-						
+
 						<xforms:repeat nodeset="$binding/ead:note">
 							<eaditor:note/>
 						</xforms:repeat>
-						
+
 						<xforms:repeat nodeset="$binding/ead:p">
 							<eaditor:p/>
 						</xforms:repeat>
@@ -59,8 +58,6 @@
 							<eaditor:table/>
 						</xforms:repeat>
 					</div>
-						
-					<!-- ********************************************************************** -->					
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

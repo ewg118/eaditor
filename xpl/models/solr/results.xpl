@@ -83,7 +83,7 @@
 							</xsl:choose>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 							<xsl:choose>
 								<!-- handle the value of the q parameter or pass *:* as a default when q is not specified -->
 								<xsl:when test="string($q)">

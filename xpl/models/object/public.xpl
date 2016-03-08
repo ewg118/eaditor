@@ -34,7 +34,7 @@
 						<xsl:include href="../../../ui/xslt/controllers/xml-public.xsl"/>
 						<xsl:output indent="yes"/>
 						<xsl:template match="/">
-							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 							<xsl:variable name="path">
 								<xsl:value-of select="substring-after(substring-after(doc('input:request')/request/request-url, 'ark:/'), '/')"/>
 							</xsl:variable>
@@ -127,7 +127,7 @@
 						<xsl:include href="../../../ui/xslt/controllers/xml-public.xsl"/>
 						<xsl:output indent="yes"/>
 						<xsl:template match="/">
-							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 							<xsl:variable name="path" select="substring-after(doc('input:request')/request/request-url, 'id/')"/>
 							<xsl:variable name="doc">
 								<xsl:choose>

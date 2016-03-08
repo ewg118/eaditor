@@ -1,8 +1,8 @@
 <!-- Ethan Gruber, American Numismatic Society
 	Modification Date: September, 2011
 	Function: query all attributes for a given element in the EAD schema (or any schema) and populate them in an xxforms:dialog -->
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-attributes" element="eaditor|attributes">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -12,7 +12,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 
-					<xhtml:span class="add">
+					<span class="add">
 						<xforms:trigger appearance="minimal">
 							<xforms:label>@</xforms:label>
 							<xforms:action ev:event="DOMActivate">
@@ -40,13 +40,13 @@
 						<xforms:repeat nodeset="$binding/@*[string(.)]">
 							<xforms:output value="concat(name(), ':', .)" class="attr-output"/>							
 						</xforms:repeat>
-					</xhtml:span>
+					</span>
 
 					<xxforms:dialog id="element-attributes" appearance="full" level="modal" close="false" draggable="true" visible="false">
 						<xforms:label ref="concat('&lt;', $binding/local-name(), '&gt; attributes')"/>
 						<xforms:repeat nodeset="instance('attributes')/attribute">						
 							<xforms:group ref=".[@name='type' and $binding/local-name() = 'container']">
-								<xhtml:div style="margin-bottom:5px;">
+								<div style="margin-bottom:5px;">
 									<xforms:select1 ref=".">
 										<xforms:label ref="@name"/>
 										<xforms:item>
@@ -58,10 +58,10 @@
 											<xforms:value ref="@value"/>
 										</xforms:itemset>
 									</xforms:select1>
-								</xhtml:div>
+								</div>
 							</xforms:group>
 							<xforms:group ref=".[@name = 'render']">
-								<xhtml:div style="margin-bottom:5px;">
+								<div style="margin-bottom:5px;">
 									<xforms:select1 ref=".">
 										<xforms:label ref="@name"/>
 										<xforms:item>
@@ -73,10 +73,10 @@
 											<xforms:value ref="@value"/>
 										</xforms:itemset>										
 									</xforms:select1>
-								</xhtml:div>
+								</div>
 							</xforms:group>
 							<xforms:group ref=".[@name = 'audience']">
-								<xhtml:div style="margin-bottom:5px;">
+								<div style="margin-bottom:5px;">
 									<xforms:select1 ref=".">
 										<xforms:label ref="@name"/>
 										<xforms:item>
@@ -92,17 +92,17 @@
 											<xforms:value>internal</xforms:value>
 										</xforms:item>										
 									</xforms:select1>
-								</xhtml:div>
+								</div>
 							</xforms:group>
 							<!-- ignore other attributes listed above, in addition to @normal (handled in form) -->
 							<xforms:group
 								ref=".[not(@name = 'render') and not(@name = 'audience') and not(@name='type' and $binding/local-name() = 'container') and not(@name='level') and not(@name='otherlevel') and not(@name='normal')]">
-								<xhtml:div style="margin-bottom:5px;">
+								<div style="margin-bottom:5px;">
 									<xforms:input ref=".">
 										<xforms:label ref="@name"/>
 										<xforms:alert>Error: content type may be disallowed. Refer to EAD 2002 schema.</xforms:alert>										
 									</xforms:input>
-								</xhtml:div>
+								</div>
 							</xforms:group>
 						</xforms:repeat>
 						<xforms:trigger>

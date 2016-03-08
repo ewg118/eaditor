@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-blockquote" element="eaditor|blockquote">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,22 +9,22 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:div class="subsection">
-						<xhtml:h3>Block Quote</xhtml:h3>
+					<div class="subsection">
+						<h3>Block Quote</h3>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
 								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
-						<xhtml:span class="add">
+						<span class="add">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>
 								</xforms:label>
 								<xxforms:show ev:event="DOMActivate" dialog="blockquote-objects"/>
 							</xforms:trigger>
-						</xhtml:span>
+						</span>
 						<xxforms:dialog id="blockquote-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 							<xforms:label>Block Quote Elements</xforms:label>
 							<xforms:trigger appearance="minimal">
@@ -61,7 +61,7 @@
 
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
-							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+							<div class="warning"><b>Warning:</b> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:address">
@@ -87,7 +87,7 @@
 						<xforms:group ref="$binding/ead:table">
 							<eaditor:table/>
 						</xforms:group>
-					</xhtml:div>
+					</div>
 					<!-- ********************************************************************** -->
 					<xforms:model id="blockquote-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<!-- generic instances -->

@@ -29,7 +29,7 @@
 					<xsl:choose>
 						<!-- handle id/ pipeline in the public interface -->
 						<xsl:when test="contains(doc('input:request')/request/request-url, 'id/')">
-							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/admin/'), '/')"/>
+							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/admin/'), '/')"/>
 							<xsl:variable name="path" select="substring-after(doc('input:request')/request/request-url, 'id/')"/>
 							<xsl:variable name="doc">
 								<xsl:choose>

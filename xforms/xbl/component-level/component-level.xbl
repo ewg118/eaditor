@@ -1,5 +1,6 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-component-level" element="eaditor|component-level">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,15 +10,15 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:h2>Component-level Information</xhtml:h2>
-					<xhtml:span class="add">
+					<h2>Component-level Information</h2>
+					<span class="add">
 						<xforms:trigger appearance="minimal">
 							<xforms:label>
 								<span class="glyphicon glyphicon-plus"/>
 							</xforms:label>
 							<xxforms:show ev:event="DOMActivate" dialog="clevel-objects"/>
 						</xforms:trigger>
-					</xhtml:span>
+					</span>
 					<xxforms:dialog id="clevel-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 						<xforms:label>Component-Level Elements</xforms:label>
 						<xforms:group ref="$binding[count(ead:accessrestrict) &lt; 1]">
@@ -269,7 +270,7 @@
 
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="component-level-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="component-level-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="accessrestrict-template" xxforms:exclude-result-prefixes="#all">
 							<accessrestrict/>
 						</xforms:instance>

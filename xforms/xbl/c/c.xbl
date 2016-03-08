@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-c" element="eaditor|c">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,8 +9,8 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:div class="subsection">
-						<xhtml:h3>Component</xhtml:h3>
+					<div class="subsection">
+						<h3>Component</h3>
 						<eaditor:attributes ref="$binding"/>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
@@ -18,7 +18,7 @@
 								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
-						<xhtml:div>
+						<div>
 							<xforms:select1 ref="$binding/@level">
 								<xforms:label>Level</xforms:label>
 								<xforms:itemset nodeset="instance('level-template')/level">
@@ -31,38 +31,38 @@
 									<xforms:delete if="$binding/@level != 'otherlevel'" context="$binding" nodeset="@otherlevel"/>
 								</xforms:action>
 							</xforms:select1>
-						</xhtml:div>	
+						</div>	
 						<xforms:group ref="$binding[@level='otherlevel']">
-							<xhtml:div>
+							<div>
 								<xforms:input ref="$binding/@otherlevel">
 									<xforms:label>Other Level</xforms:label>
 									<xforms:alert>Must be a valid nametoken</xforms:alert>
 								</xforms:input>
-							</xhtml:div>
+							</div>
 						</xforms:group>						
-						<xhtml:div>
+						<div>
 							<xforms:input ref="$binding/ead:did/ead:unittitle">
 								<xforms:label>Unit Title</xforms:label>
 								<xforms:alert>Required</xforms:alert>
 							</xforms:input>
-						</xhtml:div>
+						</div>
 						<xforms:group ref="$binding/ead:did/ead:unitdate">
 							<eaditor:date/>
 						</xforms:group>						
-						<xhtml:div>
+						<div>
 							<xforms:input ref="$binding/@id">
 								<xforms:label>ID</xforms:label>
 								<xforms:alert>Required</xforms:alert>
 							</xforms:input>
-						</xhtml:div>	
+						</div>	
 						<xforms:group ref="$binding[string(@audience)]">
-							<xhtml:div>
+							<div>
 								<xforms:output ref="$binding/@audience">
 									<xforms:label>Audience</xforms:label>												
 								</xforms:output>
-							</xhtml:div>
+							</div>
 						</xforms:group>						
-					</xhtml:div>
+					</div>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="c-model" xmlns:xforms="http://www.w3.org/2002/xforms">

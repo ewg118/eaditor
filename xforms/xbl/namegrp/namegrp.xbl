@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-namegrp" element="eaditor|namegrp">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,8 +9,8 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:div class="subsection">
-						<xhtml:h5>Name Group</xhtml:h5>
+					<div class="subsection">
+						<h5>Name Group</h5>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
@@ -19,14 +19,14 @@
 						</xforms:trigger>
 						
 						<!-- call access triggers -->
-						<xhtml:span class="add">
+						<span class="add">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>
 								</xforms:label>
 								<xxforms:show ev:event="DOMActivate" dialog="namegrp-objects"/>
 							</xforms:trigger>
-						</xhtml:span>
+						</span>
 						<xxforms:dialog id="namegrp-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 							<xforms:label>Access Elements</xforms:label>
 							<xforms:trigger appearance="minimal">
@@ -133,7 +133,7 @@
 						</xforms:repeat>
 						
 						
-					</xhtml:div>
+					</div>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="namegrp-model" xmlns:xforms="http://www.w3.org/2002/xforms">

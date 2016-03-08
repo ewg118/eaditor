@@ -89,8 +89,12 @@
 .orbeon .xforms-select1-appearance-full .xforms-label {
 	 vertical-align: top 
 }
-.orbeon .xforms-input input[type=text], .orbeon .xforms-textarea textarea, .orbeon .xforms-select1 select {
+.orbeon .xforms-input input, .orbeon .xforms-textarea textarea, .orbeon .xforms-select1 select {
 	width: 20em;
+	margin-bottom: 2px;
+}
+.orbeon .checkbox input {
+	width: 5em;
 	margin-bottom: 2px;
 }
 .orbeon .xforms-repeat-selected-item-1 .form-td {
@@ -107,6 +111,13 @@
 }
 .xforms-output {
 	margin:0;
+}
+.xforms-output-output {
+	padding:0;
+	line-height:inherit;
+	display:inline;
+	font-size:inherit;
+	color:black
 }
 .xforms-trigger {
 	text-decoration:none;

@@ -1,5 +1,5 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xbl:binding id="eaditor-accessrestrict" element="eaditor|accessrestrict">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -13,7 +13,7 @@
 
 					<xforms:group ref="$binding">
 						<div class="subsection">
-							<h3>Access Restrictions</h3>	
+							<h3>Access Restrictions</h3>
 							<xforms:group ref=".[ancestor::ead:c]">
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -22,13 +22,13 @@
 									</xforms:label>
 								</xforms:trigger>
 							</xforms:group>
-							
+
 							<!-- include attributes menu -->
 							<eaditor:attributes ref="."/>
-							
+
 							<!-- include generic triggers -->
 							<eaditor:generic-elements ref="$binding"/>
-							
+
 							<div>
 								<span>Specific Elements: </span>
 								<xforms:group ref=".[count(ead:legalstatus) &lt; 1]">
@@ -39,28 +39,27 @@
 									</xforms:trigger>
 								</xforms:group>
 							</div>
-							
-							<xforms:group
-								ref="$binding[count(child::node()) &lt; 1]">
+
+							<xforms:group ref="$binding[count(child::node()) &lt; 1]">
 								<div class="warning"><b>Warning:</b> Element must contain content.</div>
 							</xforms:group>
-							
+
 							<xforms:group ref="ead:head">
 								<eaditor:head/>
 							</xforms:group>
-							
+
 							<xforms:repeat nodeset="ead:address">
 								<eaditor:address/>
 							</xforms:repeat>
-							
+
 							<xforms:repeat nodeset="ead:blockquote">
 								<eaditor:blockquote/>
 							</xforms:repeat>
-							
+
 							<xforms:repeat nodeset="ead:chronlist">
 								<eaditor:chronlist/>
 							</xforms:repeat>
-							
+
 							<xforms:group ref="ead:legalstatus">
 								<div>
 									<xforms:input ref=".">
@@ -74,26 +73,26 @@
 									</xforms:trigger>
 								</div>
 							</xforms:group>
-							
+
 							<xforms:repeat nodeset="ead:list">
 								<eaditor:list/>
 							</xforms:repeat>
-							
+
 							<xforms:repeat nodeset="ead:note">
 								<eaditor:note/>
 							</xforms:repeat>
-							
+
 							<xforms:repeat nodeset="ead:p">
 								<eaditor:p/>
 							</xforms:repeat>
-							
+
 							<xforms:repeat nodeset="ead:table">
 								<eaditor:table/>
 							</xforms:repeat>
 						</div>
 					</xforms:group>
-					
-					<xforms:model id="accessrestrict-model" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns="urn:isbn:1-931666-22-9">
+
+					<xforms:model id="accessrestrict-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="legalstatus-template" xxforms:exclude-result-prefixes="#all">
 							<legalstatus/>
 						</xforms:instance>

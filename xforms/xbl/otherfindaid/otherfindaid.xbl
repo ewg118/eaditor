@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-otherfindaid" element="eaditor|otherfindaid">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -10,8 +10,8 @@
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
-					<xhtml:div class="subsection">
-						<xhtml:h2>Other Finding Aid</xhtml:h2>
+					<div class="subsection">
+						<h2>Other Finding Aid</h2>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
@@ -22,8 +22,8 @@
 						<!-- include generic triggers -->
 						<eaditor:generic-elements ref="$binding"/>
 						
-						<xhtml:div>
-							<xhtml:span>Specific Elements: </xhtml:span>
+						<div>
+							<span>Specific Elements: </span>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>Bibliographic Reference</xforms:label>
@@ -55,11 +55,11 @@
 										nodeset="child::node()[last()]" origin="instance('ref-template')"/>
 								</xforms:trigger>
 							</xforms:group>
-						</xhtml:div>
+						</div>
 						
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
-							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+							<div class="warning"><b>Warning:</b> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:head">
@@ -109,7 +109,7 @@
 						<xforms:repeat nodeset="$binding/ead:table">
 							<eaditor:table/>
 						</xforms:repeat>
-					</xhtml:div>
+					</div>
 						
 					<!-- ********************************************************************** -->		
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->

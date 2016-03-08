@@ -7,7 +7,7 @@
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<!-- pipeline variables -->
 	<xsl:variable name="path"/>
-	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="display_path">../</xsl:variable>
 	<xsl:variable name="include_path">
 		<xsl:choose>

@@ -17,7 +17,7 @@
 	</xsl:variable>
 	
 	<xsl:variable name="pipeline">maps</xsl:variable>
-	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 
 	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
 	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>

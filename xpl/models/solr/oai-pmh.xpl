@@ -29,7 +29,7 @@
 		<p:input name="data" href="#config"/>
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+				<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 				<!-- request params -->
 				<xsl:param name="verb" select="doc('input:request')/request/parameters/parameter[name='verb']/value"/>
 				<xsl:param name="metadataPrefix" select="doc('input:request')/request/parameters/parameter[name='metadataPrefix']/value"/>

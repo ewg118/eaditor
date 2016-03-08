@@ -6,7 +6,28 @@
 	<!-- data normalization -->
 	<xsl:function name="eaditor:normalize_century">
 		<xsl:param name="name"/>
-		<xsl:value-of select="concat($name, '00s')"/>
+		<xsl:variable name="cleaned" select="number(translate($name, '\', ''))"/>
+		<xsl:variable name="century" select="abs($cleaned)"/>
+		<xsl:variable name="suffix">
+			<xsl:choose>
+				<xsl:when test="$century mod 10 = 1 and $century != 11">
+					<xsl:text>st</xsl:text>
+				</xsl:when>
+				<xsl:when test="$century mod 10 = 2 and $century != 12">
+					<xsl:text>nd</xsl:text>
+				</xsl:when>
+				<xsl:when test="$century mod 10 = 3 and $century != 13">
+					<xsl:text>rd</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>th</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:value-of select="concat($century, $suffix)"/>
+		<xsl:if test="$cleaned &lt; 0">
+			<xsl:text> B.C.</xsl:text>
+		</xsl:if>
 	</xsl:function>	
 
 	<xsl:function name="eaditor:normalize_fields">
@@ -88,9 +109,9 @@
 	<!-- flickr API -->
 	<xsl:function name="eaditor:get_flickr_uri">
 		<xsl:param name="photo_id"/>
-		<xsl:value-of
-			select="document(concat('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', $flickr-api-key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
-		/>
+		<!--<xsl:value-of
+			select="document(concat('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', //config/flickr_api_key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
+		/>-->
 	</xsl:function>
 	<!-- ********************************** TEMPLATES ************************************ -->
 	<xsl:template name="multifields">

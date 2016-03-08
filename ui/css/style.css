@@ -3,23 +3,24 @@
   GLOBAL
   ****************************************
  */
-html {
-	background-color: #F8F8F8;
+html{
+	background-color:#F8F8F8;
 }
-.navbar {
+.navbar{
 	margin-bottom:0;
 }
-a > img {
+a > img{
 	border:none;
 }
-.highlight {
-	background-color: #F8F8F8;
-	border: 1px solid #E7E7E7;
-	border-radius: 4px;
-	margin: 10px 0;
-	padding: 10px 15px;
+.highlight{
+	background-color:#F8F8F8;
+	border:1px solid #E7E7E7;
+	border-radius:4px;
+	margin:10px 0;
+	padding:10px 15px;
 }
-ul li, ol li {
+ul li,
+ol li{
 	list-style-type:none;
 }
 /*
@@ -39,113 +40,119 @@ ul li, ol li {
   EAD DISPLAY STYLING
   ****************************************
  */
-#titlepage {
+#titlepage{
 	text-align:center;
 	margin-bottom:25px;
 	padding-bottom:25px;
 	border-bottom:1px solid silver;
 }
-#archdesc-did {
+#archdesc-did{
 	margin-bottom:25px;
 }
-#archdesc-info {
+#archdesc-info{
 	margin-bottom:25px;
 	padding-bottom:25px;
 	border-bottom:1px solid silver;
 }
-.toc_ul {
+.toc_ul{
 	padding:0;
 	margin:0;
 }
-.toc_ul ul {
+.toc_ul ul{
 	margin-left:2em;
 	padding:0;
 }
-.toc_ul li {
+.toc_ul li{
 	list-style-type:none;
 }
-#dsc-toc li {
+#dsc-toc li{
 	list-style-type:circle;
 }
-#dsc-list li {
+#dsc-list li{
 	list-style-type:none;
 }
-div.ctop {
+div.ctop{
 	margin-bottom:25px;
 	padding-bottom:25px;
 	border-bottom:1px solid silver;
 	display:table;
 	width:100%;
 }
-div.cchild {
+div.cchild{
 	margin-left:25px;
 	margin-bottom:10px;
 	display:table;
 	width:95%;
 }
-.con1 {
+.con1{
 	width:80%;
 	float:left;
 }
-.clevel {
+.clevel{
 	margin-left:10px;
 }
-.cchild p {
+.cchild p{
 	margin:0 0 5px 0;
 	padding:0px;
 }
-.external_link {
+.external_link{
 	margin-left:10px;
 }
-.display-thumb {
-	height:160px;	
+.display-thumb{
+	height:160px;
 }
 /*
   ****************************************
   SEARCH PAGE
   ****************************************
  */
-.option_container {
+.option_container{
 	width:200px;
 	vertical-align:bottom;
 }
-.option_container select, .option_container input {
+.option_container select,
+.option_container input{
 	display:inline;
 }
-.category_list, select[name="interval"], #stacking, #image {
+.category_list,
+select[name = "interval"],
+#stacking,
+#image{
 	width:175px;
 	display:inline;
 }
-.sortForm_categories, .sortForm_order {
+.sortForm_categories,
+.sortForm_order{
 	width:175px;
 	margin-left:0px;
 	margin-right:10px;
 	display:inline;
 }
-.search_text {
+.search_text{
 	width:200px;
 	margin-left:15px;
 	margin-right:5px;
 	display:inline;
 }
-#searchItemTemplate, #sparqlItemTemplate {
+#searchItemTemplate,
+#sparqlItemTemplate{
 	display:none;
 }
-.searchItemTemplate {
+.searchItemTemplate{
 	padding-top:5px;
 	padding-bottom:5px;
 }
-.year_int {
+.year_int{
 	width:30px;
 	margin-left:0px;
 	margin-right:5px;
 }
-.year_era {
+.year_era{
 	width:55px;
 	margin-right:5px;
 	margin-left:0px;
 }
-.year_range {
+.year_range{
 	margin-left:15px;
 	margin-right:5px;
 	width:101px;
@@ -155,82 +162,88 @@ div.cchild {
   BROWSE RESULTS PAGE
   ****************************************
  */
-.flickr-link {
+.flickr-link{
 	cursor:pointer;
 }
-#search_options {
+#search_options{
 	display:block;
 	width:100%;
 }
-button.multiselect {
+button.multiselect{
 	margin:5px 0;
 }
-#qs_text {
+#qs_text{
 	width:50%;
 	display:inline;
 	margin-right:20px;
 }
-.flickr-link {
+.flickr-link{
 	cursor:pointer;
 }
-.submit_div {
+.submit_div{
 	text-align:center;
 }
-.stacked_term {
+.stacked_term{
 	margin:5px 0;
 }
-.right {
+.right{
 	text-align:right;
 }
-.remove_filter {
+.remove_filter{
 	float:right;
 }
-/* Date (century/decade) facet styling */
-.date-div {
-	margin-top:-10px;
-}
-.century-multiselect-checkboxes {
-	display:table;
-	width:100%;
-}
-.decades-list {
-	margin:0 0 0 25px;
-}
-.sort_div {
+.sort_div{
 	margin:10px 0;
 }
-#backgroundPopup {
+#backgroundPopup{
 	display:none;
 	position:fixed;
 	_position:absolute;
-/* hack for internet explorer 6 */
+	/* hack for internet explorer 6 */
 	height:100%;
 	width:100%;
 	top:0;
 	left:0;
 	z-index:2001;
-/*
-  background-color:black;
-  opacity:0.6;
- */
+}
+.multiselect,
+.hierarchical-facet,
+.date-facet{
+	width:250px;
+	margin:5px 0;
+}
+#century_num-list,
+.hier-list{
+	max-height:250px;
+	width:250px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	width:100%;
+	z-index:3000;
+}
+.expand_century,
+.expand_category{
+	cursor:pointer;
+	margin:1px;
 }
 /*
   ****************************************
   PAGINATION
   ****************************************
  */
-.paging_div {
+.paging_div{
 	padding:10px 0;
 	vertical-align:baseline;
 }
-.page-nos {
+.page-nos{
 	text-align:right;
 }
-.pagination {
+.pagination{
 	margin:0;
 	padding:0;
 }
-.pagination a, .pagination button {
+.pagination a,
+.pagination button{
 	height:32px;
 }
 /*
@@ -238,19 +251,19 @@ button.multiselect {
   MAPS
   ***************************************
  */
-#resultMap {
+#resultMap{
 	width:600px;
 	height:400px;
 }
-#clear_all {
+#clear_all{
 	font-size:80%;
 	margin-left:25px;
 }
-.ui-tabs .ui-tabs-hide {
-	position: absolute;
-	left: -10000px;
+.ui-tabs .ui-tabs-hide{
+	position:absolute;
+	left:-10000px;
 }
-.olLayerGooglePoweredBy {
+.olLayerGooglePoweredBy{
 	display:none;
 }
 /*
@@ -258,37 +271,37 @@ button.multiselect {
   top:-1000px;
   }
  */
-#add_filter {
+#add_filter{
 	font-weight:bold;
 	font-size:120%;
 	text-transform:capitalize;
 }
-#add_filter:first-letter {
+#add_filter:first-letter{
 	font-size:140%;
 }
-.g_doc {
+.g_doc{
 	width:30%;
 	float:left;
 	height:325px;
 }
 /* gallery image container */
-.gi_c {
+.gi_c{
 	margin:5px 0;
 	text-align:center;
 }
 /* gallery image */
-.gi {
+.gi{
 	padding:0px 5px;
 	max-width:120px;
 }
-#filter_list {
+#filter_list{
 	margin:0;
 	padding:0;
 }
-#filter_list li {
+#filter_list li{
 	list-style-type:none;
 }
-.fl {
+.fl{
 	float:left;
 	width:20%;
 }
@@ -310,28 +323,29 @@ button.multiselect {
   text-decoration:none;
   }
  */
-#annot-parent {
+#annot-parent{
 	position:relative;
 	width:50%;
 	height:600px;
 }
-#annot {
+#annot{
 	background-color:white;
 	width:100%;
 	height:600px;
 }
-#slider {
+#slider{
 	border:1px solid silver;
 	width:100%;
 	margin:20px 0;
 	table-layout:fixed;
 }
-#slider-thumbs {
+#slider-thumbs{
 	overflow-x:scroll;
 	white-space:nowrap;
 	height:250px;
 }
-#left-scroll, #right-scroll {
+#left-scroll,
+#right-scroll{
 	width:5%;
 	height:250px;
 	background-color:#ebebeb;
@@ -340,30 +354,32 @@ button.multiselect {
 	vertical-align:middle;
 	cursor:pointer;
 }
-.page-image img {
+.page-image img{
 	margin:5px;
 	border:2px solid black;
 	opacity:0.5;
 	margin-top:20px;
 }
-img.selected {
+img.selected{
 	border:2px solid orange;
 	opacity:1.0;
 }
-.page-image:hover img {
+.page-image:hover img{
 	border:2px solid orange;
 	opacity:1.0;
 }
-#prev-page, #goto-container, #next-page {
-	border-right: 1px solid silver;
+#prev-page,
+#goto-container,
+#next-page{
+	border-right:1px solid silver;
 	padding:0 5px;
 }
-.disabled:link {
+.disabled:link{
 	color:black;
 	font-style:italic;
 	pointer-events:none;
 }
-#goto-page {
+#goto-page{
 	max-width:250px;
 	display:inline;
 }
@@ -372,53 +388,53 @@ img.selected {
   Timemap CSS
   ***************************************
  */
-div#timelinecontainer {
+div#timelinecontainer{
 	width:100%;
-	height: 150px;
+	height:150px;
 }
-div#mapcontainer {
+div#mapcontainer{
 	width:100%;
-	height: 600px;
+	height:600px;
 }
-div#display-mapcontainer {
+div#display-mapcontainer{
 	width:100%;
-	height: 400px;
+	height:400px;
 }
-div.olFramedCloudPopupContent {
-	width: 300px;
+div.olFramedCloudPopupContent{
+	width:300px;
 }
-div#help {
-	font-size: 12px;
-	width: 45em;
-	padding: 1em;
+div#help{
+	font-size:12px;
+	width:45em;
+	padding:1em;
 }
 /*
   div#timemap {
   padding: 1em;
   }
  */
-div#timeline {
-	width: 100%;
-	height: 100%;
-	font-size: 12px;
-	background: #CCCCCC;
+div#timeline{
+	width:100%;
+	height:100%;
+	font-size:12px;
+	background:#CCCCCC;
 }
-div#map {
-	width: 100%;
-	height: 100%;
-	background: #EEEEEE;
+div#map{
+	width:100%;
+	height:100%;
+	background:#EEEEEE;
 }
-div.infotitle {
-	font-size: 14px;
-	font-weight: bold;
+div.infotitle{
+	font-size:14px;
+	font-weight:bold;
 }
-div.infodescription {
-	font-size: 14px;
-	font-style: italic;
+div.infodescription{
+	font-size:14px;
+	font-style:italic;
 }
-div.custominfostyle {
-	font-family: Georgia, Garamond, serif;
-	font-size: 1.5em;
-	font-style: italic;
-	width: 20em;
+div.custominfostyle{
+	font-family:Georgia, Garamond, serif;
+	font-size:1.5em;
+	font-style:italic;
+	width:20em;
 }

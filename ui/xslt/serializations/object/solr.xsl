@@ -12,7 +12,7 @@
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
-	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/servlet-path, 'eaditor/'), '/')"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
@@ -40,21 +40,23 @@
 		<xsl:param name="date"/>
 		
 		<xsl:if test="$date castable as xs:gYear">
-			<xsl:variable name="year_string" select="$date"/>
-			<xsl:variable name="year" select="number($year_string)"/>
-			<xsl:variable name="century" select="floor($year div 100)"/>
-			<xsl:variable name="decade_digit" select="floor(number(substring($year_string, string-length($year_string) - 1, string-length($year_string))) div 10) * 10"/>
-			<xsl:variable name="decade" select="concat($century, if($decade_digit = 0) then '00' else $decade_digit)"/>
+			<xsl:variable name="year_string" select="string(abs(number(.)))"/>
+			<xsl:variable name="century" select="if(number(.) &gt; 0) then ceiling(number(.) div 100) else floor(number(.) div 100)"/>
+			<xsl:variable name="decade" select="floor(abs(number(.)) div 10) * 10"/>			
 			
-			<field name="century_num">
-				<xsl:value-of select="$century"/>
-			</field>
+			<xsl:if test="number($century)">
+				<field name="century_num">
+					<xsl:value-of select="$century"/>
+				</field>
+			</xsl:if>
 			<field name="decade_num">
 				<xsl:value-of select="$decade"/>
 			</field>
-			<field name="year_num">
-				<xsl:value-of select="$year"/>
-			</field>
+			<xsl:if test="number(.)">
+				<field name="year_num">
+					<xsl:value-of select="number(.)"/>
+				</field>
+			</xsl:if>
 		</xsl:if>		
 	</xsl:template>
 </xsl:stylesheet>

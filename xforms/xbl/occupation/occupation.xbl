@@ -2,7 +2,7 @@
 	last modified: March, 2014
 	function: query Getty AAT SPARQL endpoint or use local vocabulary
 -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl  xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	xmlns:res="http://www.w3.org/2005/sparql-results#">

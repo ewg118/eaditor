@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-chronlist" element="eaditor|chronlist">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,15 +9,15 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<xhtml:div class="subsection">
-						<xhtml:h3>Chronology List</xhtml:h3>
+					<div class="subsection">
+						<h3>Chronology List</h3>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
 								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
 						</xforms:trigger>
-						<xhtml:div>
+						<div>
 							<xforms:group ref="$binding[count(ead:head) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
@@ -37,7 +37,7 @@
 									<span class="glyphicon glyphicon-plus"/>Chronology Item</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronitem-template')"/>
 							</xforms:trigger>
-						</xhtml:div>
+						</div>
 
 						<!-- head -->
 						<xforms:group ref="$binding/ead:head">
@@ -50,8 +50,8 @@
 						</xforms:group>
 
 						<xforms:repeat nodeset="$binding/ead:chronitem">
-							<xhtml:div class="pair_div">
-								<xhtml:h4>Chronology Item</xhtml:h4>
+							<div class="pair_div">
+								<h4>Chronology Item</h4>
 								<xforms:group ref=".[count(parent::ead:chronlist/ead:chronitem) &gt; 1]">
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -62,7 +62,7 @@
 								</xforms:group>
 								<!-- include attributes menu -->
 								<eaditor:attributes ref="$binding"/>
-								<xhtml:div>
+								<div>
 									<xforms:group ref=".[count(ead:eventgrp) &lt; 1 and count(ead:event) &lt; 1]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
@@ -75,7 +75,7 @@
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('eventgrp-template')"/>
 										</xforms:trigger>
 									</xforms:group>
-								</xhtml:div>
+								</div>
 
 								<!-- date -->
 								<xforms:group ref="ead:date">
@@ -84,12 +84,12 @@
 								
 								<xforms:group
 									ref=".[count(child::ead:event) &lt; 1 and count(child::ead:eventgrp) &lt; 1]">
-									<xhtml:div class="warning"><b>Warning:</b> Chronology Item must contain either an Event or Event Group.</xhtml:div>
+									<div class="warning"><b>Warning:</b> Chronology Item must contain either an Event or Event Group.</div>
 								</xforms:group>
 
 
 								<xforms:group ref="ead:event">
-									<xhtml:div>
+									<div>
 										<xforms:input ref=".">
 											<xforms:label>Event</xforms:label>
 										</xforms:input>
@@ -99,24 +99,24 @@
 												<span class="glyphicon glyphicon-remove"/>
 											</xforms:label>
 										</xforms:trigger>
-									</xhtml:div>
+									</div>
 								</xforms:group>
 
 								<xforms:group ref="ead:eventgrp">
-									<xhtml:h4>Event Group</xhtml:h4>
+									<h4>Event Group</h4>
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
 										<xforms:label>
 											<span class="glyphicon glyphicon-remove"/>
 										</xforms:label>
 									</xforms:trigger>
-									<xhtml:div>
+									<div>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<span class="glyphicon glyphicon-plus"/>Event</xforms:label>
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('event-template')"/>
 										</xforms:trigger>
-									</xhtml:div>
+									</div>
 									<xforms:repeat nodeset="ead:event">
 										<xforms:input ref=".">
 											<xforms:label>Event</xforms:label>
@@ -131,9 +131,9 @@
 										</xforms:group>
 									</xforms:repeat>
 								</xforms:group>
-							</xhtml:div>
+							</div>
 						</xforms:repeat>
-					</xhtml:div>
+					</div>
 					<!-- ********************************************************************** -->
 					<xforms:model id="chronlist-model" xmlns:xforms="http://www.w3.org/2002/xforms">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">

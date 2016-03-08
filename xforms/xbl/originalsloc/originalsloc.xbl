@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-originalsloc" element="eaditor|originalsloc">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -10,8 +10,8 @@
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
-					<xhtml:div class="subsection">
-						<xhtml:h2>Location of Originals</xhtml:h2>
+					<div class="subsection">
+						<h2>Location of Originals</h2>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
@@ -24,7 +24,7 @@
 
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
-							<xhtml:div class="warning"><b>Warning:</b> Element must contain content.</xhtml:div>
+							<div class="warning"><b>Warning:</b> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:head">
@@ -58,7 +58,7 @@
 						<xforms:repeat nodeset="$binding/ead:table">
 							<eaditor:table/>
 						</xforms:repeat>
-					</xhtml:div>
+					</div>
 						
 					<!-- ********************************************************************** -->						
 				</xforms:group>

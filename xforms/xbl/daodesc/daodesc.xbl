@@ -1,5 +1,5 @@
-<xbl:xbl xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-daodesc" element="eaditor|daodesc">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -8,14 +8,14 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					<xhtml:h4>Digital Archival Object Description</xhtml:h4>
+					<h4>Digital Archival Object Description</h4>
 					<xforms:trigger appearance="minimal">
 						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 						<xforms:label>
 							<span class="glyphicon glyphicon-remove"/>
 						</xforms:label>
 					</xforms:trigger>
-					<xhtml:div class="trigger_container">
+					<div class="trigger_container">
 						<xforms:group ref="$binding[count(ead:head) = 0]">
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
@@ -28,7 +28,7 @@
 								<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
 							<xforms:insert ev:event="DOMActivate" origin="instance('p-template')" context="$binding" nodeset="./child::node()[last()]"/>								
 						</xforms:trigger>
-					</xhtml:div>
+					</div>
 					
 					<xforms:group ref="$binding/ead:head">
 						<eaditor:head/>
