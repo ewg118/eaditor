@@ -2,7 +2,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:foaf="http://xmlns.com/foaf/0.1/"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
-	xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" exclude-result-prefixes="#all" version="2.0">
+	xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:schema="https://schema.org/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:oa="http://www.w3.org/ns/oa#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" exclude-result-prefixes="#all" version="2.0">
 
 	<!-- ***************** TEI-TO-RDF ******************-->
 	<xsl:template name="tei-content">
@@ -14,14 +15,13 @@
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<rdf:Description rdf:about="{$objectUri}">
+				<schema:Book rdf:about="{$objectUri}">
 					<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
-					<!-- depiction -->
 					<xsl:apply-templates select="descendant::tei:facsimile[@style='depiction']" mode="depiction"/>
-				</rdf:Description>
-				<xsl:apply-templates select="descendant::tei:facsimile" mode="page">
-					<xsl:with-param name="mode">page</xsl:with-param>
-				</xsl:apply-templates>
+				</schema:Book>				
+				
+				<xsl:apply-templates select="descendant::tei:facsimile" mode="structure"/>					
+				<xsl:apply-templates select="descendant::tei:keywords"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -89,36 +89,10 @@
 		<foaf:depiction rdf:resource="{concat($url, 'ui/media/reference/', tei:graphic/@url, '.jpg')}"/>
 	</xsl:template>
 
-	<xsl:template match="tei:facsimile" mode="page">
-		<xsl:param name="mode"/>
-		<xsl:variable name="itemUri">
-			<xsl:choose>
-				<xsl:when test="$mode='root'">
-					<xsl:value-of select="$objectUri"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="concat($objectUri, '/', @xml:id)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="parentUri">
-			<xsl:choose>
-				<xsl:when test="$mode='root'">
-					<xsl:variable name="pieces" select="tokenize($objectUri, '/')"/>
-					<xsl:for-each select="$pieces[not(position()=last())]">
-						<xsl:value-of select="."/>
-						<xsl:if test="not(position()=last())">
-							<xsl:text>/</xsl:text>
-						</xsl:if>
-					</xsl:for-each>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$objectUri"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<rdf:Description rdf:about="{$itemUri}">
+	<xsl:template match="tei:facsimile" mode="structure">		
+		<xsl:variable name="itemUri" select="concat($objectUri, '#', @xml:id)"/>		
+
+		<dcmitype:Text rdf:about="{$itemUri}">
 			<dcterms:title>
 				<xsl:choose>
 					<xsl:when test="string(tei:graphic/@n)">
@@ -129,10 +103,23 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</dcterms:title>
-			<dcterms:isPartOf rdf:resource="{$parentUri}"/>
-			<xsl:for-each select="distinct-values(descendant::tei:ref/@target)">
-				<dcterms:subject rdf:resource="{.}"/>
-			</xsl:for-each>
-		</rdf:Description>
+			<dcterms:type rdf:resource="http://vocab.getty.edu/aat/300194222"/>
+			<dcterms:isPartOf rdf:resource="{$objectUri}"/>		
+			<dcterms:source rdf:resource="{$objectUri}"/>
+		</dcmitype:Text>
+	</xsl:template>
+	
+	<xsl:template match="tei:keywords">
+		<xsl:variable name="itemUri" select="concat($objectUri, '#', @corresp)"/>
+		
+		<xsl:for-each select="tei:term[@target]">
+			<xsl:element name="oa:Annotation" namespace="http://www.w3.org/ns/oa#">
+				<xsl:attribute name="rdf:about" select="concat($objectUri, '.rdf#', parent::node()/@corresp, '/annotations/', format-number(position(), '0000'))"/>
+				
+				<oa:hasBody rdf:resource="{@target}"/>
+				<oa:hasTarget rdf:resource="{$itemUri}"/>
+			</xsl:element>
+		</xsl:for-each>
+		
 	</xsl:template>
 </xsl:stylesheet>
