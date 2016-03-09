@@ -310,10 +310,10 @@
 								<xsl:otherwise>
 									<xsl:choose>
 										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($url, 'id/', str[@name='collection-name'], '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+											<xsl:value-of select="concat($url, str[@name='collection-name'], '/id/', str[@name='recordId'], '/', str[@name='cid'])"/>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($url, 'id/', str[@name='collection-name'], '/', str[@name='recordId'])"/>
+											<xsl:value-of select="concat($url, str[@name='collection-name'], '/id/', str[@name='recordId'])"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:otherwise>
