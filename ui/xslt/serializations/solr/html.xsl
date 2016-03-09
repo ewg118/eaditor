@@ -146,7 +146,7 @@
 		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
 
 		<div class="sort_div">
-			<form role="form" class="sortForm" action="." method="GET">
+			<form role="form" class="sortForm" action="results" method="GET">
 				<select class="sortForm_categories form-control">
 					<option>Select from list...</option>
 					<xsl:for-each select="$sort_categories">
@@ -201,7 +201,7 @@
 
 	<xsl:template name="quick_search">
 		<div class="quick_search">
-			<form role="form" action="{$display_path}results" method="GET" id="qs_form">
+			<form role="form" action="results" method="GET" id="qs_form">
 				<input type="hidden" name="q" id="qs_query" value="{$q}"/>
 				<xsl:if test="string($lang)">
 					<input type="hidden" name="lang" value="{$lang}"/>

@@ -30,12 +30,11 @@
 		<p:input name="config">
 			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">				
 				<!-- url params -->
-				<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>
-				<xsl:param name="start" select="doc('input:request')/request/parameters/parameter[name='start']/value"/>
-				<xsl:variable name="start_var" as="xs:integer">
+				<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>				
+				<xsl:variable name="start">
 					<xsl:choose>
-						<xsl:when test="number($start)">
-							<xsl:value-of select="$start"/>
+						<xsl:when test="number(doc('input:request')/request/parameters/parameter[name='start']/value)">
+							<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='start']/value"/>
 						</xsl:when>
 						<xsl:otherwise>0</xsl:otherwise>
 					</xsl:choose>
