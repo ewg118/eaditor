@@ -6,7 +6,14 @@
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="path"/>
 	<xsl:variable name="display_path"/>
-	<xsl:variable name="include_path">../</xsl:variable>
+	<xsl:variable name="include_path">
+		<xsl:choose>
+			<xsl:when test="/content/config/aggregator='true'">./</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="if (contains(/content/config/url, 'localhost')) then '../' else /content/config/url"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	
 	<xsl:template match="/">
 		<html>
