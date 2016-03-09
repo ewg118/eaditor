@@ -262,10 +262,9 @@
 				</xsl:when>
 				<xsl:when test="@name='century_num'">
 					<div class="btn-group">
-						<button class="dropdown-toggle btn btn-default date-facet" type="button" title="{$title}" id="{@name}-btn"
-							label="{$q}">
-							<xsl:value-of select="$title"/>
-							<xsl:text> </xsl:text>
+						<button class="dropdown-toggle btn btn-default date-facet" type="button" title="Date" id="{@name}-btn"
+							label="{$q}">							
+							<xsl:text>Date </xsl:text>
 							<b class="caret"/>
 						</button>
 						<ul class="dropdown-menu" id="{@name}-list">

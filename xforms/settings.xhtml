@@ -620,6 +620,7 @@
 										map pages to fail. Note that the order of the facets below dictates the order in which they appear on the browse and maps pages.</p>
 									<xforms:repeat nodeset="facet">
 										<xforms:var name="position" select="position()"></xforms:var>
+										<xforms:var name="val" select="."/>
 										<div>
 											<xforms:input ref=".">
 												<xforms:label>Facet</xforms:label>
@@ -627,8 +628,8 @@
 											<xforms:group ref=".[$position != 1]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label><span class="glyphicon glyphicon-arrow-up"></span></xforms:label>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:insert context="parent::node()" nodeset="facet[$position - 2]" origin="parent::node()/facet[$position]"></xforms:insert>
+													<xforms:action ev:event="DOMActivate">														
+														<xforms:insert context="instance('config')/facets" nodeset="facet" at="$position - 2" origin="xforms:element('facet', $val)"></xforms:insert>
 														<xforms:delete nodeset="."></xforms:delete>
 													</xforms:action>
 												</xforms:trigger>
@@ -636,8 +637,8 @@
 											<xforms:group ref=".[not($position=count(parent::node()/facet))]">
 												<xforms:trigger appearance="minimal">
 													<xforms:label><span class="glyphicon glyphicon-arrow-down"></span></xforms:label>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:insert context="parent::node()" nodeset="facet[$position+1]" origin="parent::node()/facet[$position]"></xforms:insert>
+													<xforms:action ev:event="DOMActivate">														
+														<xforms:insert context="instance('config')/facets" nodeset="facet" at="$position+1" origin="xforms:element('facet', $val)"></xforms:insert>
 														<xforms:delete nodeset="."></xforms:delete>
 													</xforms:action>
 												</xforms:trigger>
