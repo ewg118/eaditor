@@ -1,49 +1,62 @@
 $(document).ready(function () {
-	var image = $('#image-path').text();
-	var id = $('#image-id').text();
+	
+	
+	//automatically load image from hash
+	if (window.location.hash) {
+		var id = window.location.hash.substring(1);
+		var image = $('#' + id).attr('href');
+		
+		//change selection class
+		$('#' + id).children('img').attr('class', 'selected');
+		$('#' + $('#image-id').text()).children('img').removeAttr('class');
+	} else {
+		var image = $('#image-path').text();
+		var id = $('#image-id').text();
+	}
+	
 	//call load_image function, which will wait until the image loads in the DOM before getting its height and width to initiate openlayers
 	load_image(id, image);
 	
 	//activate slider image clicks to load large image in openlayers
 	$('.page-image').click(function () {
 		//get id, either from the page link or the thumbnail link
-		if ($(this).attr('id')){
+		if ($(this).attr('id')) {
 			var id = $(this).attr('id');
-		} else if ($(this).attr('facs')){
+		} else if ($(this).attr('facs')) {
 			var id = $(this).attr('facs');
 		}
-	
+		
 		//first clear container div and annot div
 		$('#image-container').html('');
 		$('#annot').html('');
 		
 		//reset selected class
 		$('img.selected').removeAttr('class');
-		$('#' + id).children('img').attr('class','selected');
+		$('#' + id).children('img').attr('class', 'selected');
 		
 		//then destroy annotations before reloading
 		anno.destroy();
 		
 		//reload
-		var image = $(this).attr('href');		
+		var image = $(this).attr('href');
 		load_image(id, image);
 		
 		//enable/disable prev/next page links
 		if (id == $('#first-page').text()) {
-			$('#prev-page').attr('class','disabled');
+			$('#prev-page').attr('class', 'disabled');
 			$('#next-page').removeAttr('class');
 		} else if (id == $('#last-page').text()) {
-			$('#next-page').attr('class','disabled');
+			$('#next-page').attr('class', 'disabled');
 			$('#prev-page').removeAttr('class');
 		} else {
 			$('#next-page').removeAttr('class');
 			$('#prev-page').removeAttr('class');
 		}
 		//alter goto page dropdown
-		$('#goto-page').val(id);	
+		$('#goto-page').val(id);
 		
 		//scroll to top
-		window.scrollTo(0,0);		
+		window.scrollTo(0, 0);
 		return false;
 	});
 	
@@ -51,14 +64,14 @@ $(document).ready(function () {
 	$('#prev-page').click(function () {
 		var current_id = $('img.selected').parent('.page-image').attr('id');
 		var prev_id = $('#' + current_id).prev('.page-image').attr('id');
-		if (prev_id != null){
+		if (prev_id != null) {
 			//first clear container div and annot div
 			$('#image-container').html('');
 			$('#annot').html('');
 			
 			//reset selected class
 			$('img.selected').removeAttr('class');
-			$('#' + prev_id).children('img').attr('class','selected');
+			$('#' + prev_id).children('img').attr('class', 'selected');
 			
 			//then destroy annotations before reloading
 			anno.destroy();
@@ -67,14 +80,14 @@ $(document).ready(function () {
 			var image = $('#' + prev_id).attr('href');
 			var id = $('#' + prev_id).attr('id');
 			load_image(id, image);
-		}	
+		}
 		//enable/disable prev/next page links
 		if (prev_id == $('#first-page').text()) {
-			$('#prev-page').attr('class','disabled');
-			$('#next-page').removeAttr('class');			
+			$('#prev-page').attr('class', 'disabled');
+			$('#next-page').removeAttr('class');
 		} else {
 			$('#next-page').removeAttr('class');
-		}		
+		}
 		//alter goto page dropdown
 		$('#goto-page').val(prev_id);
 		return false;
@@ -82,14 +95,14 @@ $(document).ready(function () {
 	$('#next-page').click(function () {
 		var current_id = $('img.selected').parent('.page-image').attr('id');
 		var next_id = $('#' + current_id).next('.page-image').attr('id');
-		if (next_id != null){
+		if (next_id != null) {
 			//first clear container div and annot div
 			$('#image-container').html('');
 			$('#annot').html('');
 			
 			//reset selected class
 			$('img.selected').removeAttr('class');
-			$('#' + next_id).children('img').attr('class','selected');
+			$('#' + next_id).children('img').attr('class', 'selected');
 			
 			//then destroy annotations before reloading
 			anno.destroy();
@@ -99,20 +112,20 @@ $(document).ready(function () {
 			var id = $('#' + next_id).attr('id');
 			load_image(id, image);
 		}
-		//enable/disable link		
+		//enable/disable link
 		if (next_id == $('#last-page').text()) {
-			$('#next-page').attr('class','disabled');
-			$('#prev-page').removeAttr('class');			
+			$('#next-page').attr('class', 'disabled');
+			$('#prev-page').removeAttr('class');
 		} else {
 			$('#prev-page').removeAttr('class');
-		}	
+		}
 		//alter goto page dropdown
-		$('#goto-page').val(next_id);		
+		$('#goto-page').val(next_id);
 		return false;
 	});
 	
 	/* go to page dropdown */
-	$('#goto-page').change(function(){
+	$('#goto-page').change(function () {
 		var id = $(this).val();
 		
 		//first clear container div and annot div
@@ -121,7 +134,7 @@ $(document).ready(function () {
 		
 		//reset selected class
 		$('img.selected').removeAttr('class');
-		$('#' + id).children('img').attr('class','selected');
+		$('#' + id).children('img').attr('class', 'selected');
 		
 		//then destroy annotations before reloading
 		anno.destroy();
@@ -129,13 +142,13 @@ $(document).ready(function () {
 		//reload
 		var image = $('#' + id).attr('href');
 		load_image(id, image);
-			
+		
 		//enable/disable link
 		if (id == $('#first-page').text()) {
-			$('#prev-page').attr('class','disabled');
+			$('#prev-page').attr('class', 'disabled');
 			$('#next-page').removeAttr('class');
 		} else if (id == $('#last-page').text()) {
-			$('#next-page').attr('class','disabled');
+			$('#next-page').attr('class', 'disabled');
 			$('#prev-page').removeAttr('class');
 		} else {
 			$('#next-page').removeAttr('class');

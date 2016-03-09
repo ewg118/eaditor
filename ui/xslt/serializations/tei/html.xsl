@@ -102,7 +102,7 @@
 							<xsl:when test="contains($uri, 'nomisma.org')">
 								<xsl:variable name="type" select="$nomisma-rdf//*[@rdf:about=$uri]/name()"/>
 								<xsl:choose>
-									<xsl:when test="$type='nm:head_1911_region' or $type='nm:region' or $type = 'nm:nomisma_region' or $type='nm:mint'">geogname</xsl:when>
+									<xsl:when test="$type='nmo:Region' or $type='nmo:Mint'">geogname</xsl:when>
 									<xsl:otherwise>subject</xsl:otherwise>
 								</xsl:choose>
 							</xsl:when>
@@ -125,7 +125,7 @@
 						<xsl:choose>
 							<xsl:when test="string-length($facet) &gt; 0">
 								<strong>
-									<a href="{$display_path}results/?q={$facet}_facet:&#x022;{$label}&#x022;">
+									<a href="{$display_path}results?q={$facet}_facet:&#x022;{$label}&#x022;">
 										<xsl:value-of select="$label"/>
 									</a>
 									<a href="{$uri}" target="_blank">
