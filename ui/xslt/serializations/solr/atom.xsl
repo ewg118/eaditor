@@ -6,8 +6,8 @@
 	<xsl:variable name="url" select="/content/config/url"/>
 	
 	<!-- request params -->
-	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>	
-	<xsl:param name="start" select="doc('input:params')/request/parameters/parameter[name='start']/value"/>	
+	<xsl:param name="q" select="doc('input:request')/request/parameters/parameter[name='q']/value"/>	
+	<xsl:param name="start" select="doc('input:request')/request/parameters/parameter[name='start']/value"/>	
 	<xsl:variable name="start_var" as="xs:integer">
 		<xsl:choose>
 			<xsl:when test="number($start)">
@@ -80,7 +80,7 @@
 				<xsl:value-of select="str[@name='unittitle_display']"/>
 			</title>
 			<link href="{$objectUri}"/>
-			<link rel="alternate xml" type="text/xml" href="{$objectUri}.xml"/>
+			<link rel="alternate xml" type="application/xml" href="{$objectUri}.xml"/>
 			<link rel="alternate rdf" type="application/rdf+xml" href="{$objectUri}.rdf"/>
 			<id>
 				<xsl:value-of select="$objectUri"/>
