@@ -415,7 +415,7 @@
 				<xforms:bind id="create-collection-trigger" nodeset="create-collection-trigger" type="xs:boolean" readonly=". != true()"></xforms:bind>
 				<xforms:bind nodeset="firstrun" type="xs:boolean"></xforms:bind>
 				<xforms:bind nodeset="numFound" type="xs:integer"/>
-				<xforms:bind nodeset="page" type="xs:integer"/>
+				<xforms:bind nodeset="page" type="xs:integer"/>				
 			</xforms:bind>
 
 			<xforms:bind nodeset="instance('collections-list')" constraint="count(//@name) = count(distinct-values(//@name)) and count(//@role) = count(distinct-values(//@role))">
@@ -703,13 +703,17 @@
 			<!-- xquery for getting and processing query results into pages of items -->
 			<xforms:submission id="xquery-pagination" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides" method="post"
 				replace="instance" instance="pagination-result">
+				<xforms:action ev:event="xforms-submit">					
+					<xforms:setvalue ref="instance('control-instance')/status"/>
+				</xforms:action>								
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
-				<xforms:action ev:event="xforms-submit-done">
+				<xforms:action ev:event="xforms-submit-done">					
 					<!--iterate through docs, check for publication -->
-					<xforms:action xxforms:iterate="instance('pagination-result')//record">
+					<xforms:action xxforms:iterate="instance('pagination-result')//record">							
+						<xforms:var name="position" select="position()"/>
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()/id"></xforms:setvalue>
-						<xforms:send submission="query-solr-for-publication"></xforms:send>
-					</xforms:action>
+						<xforms:send submission="query-solr-for-publication"></xforms:send>	
+					</xforms:action>										
 				</xforms:action>
 			</xforms:submission>
 
@@ -792,8 +796,10 @@
 			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:{instance('control-instance')/id}&amp;rows=0&amp;facet=false"
 				replace="instance" instance="published-response">
 				<!-- if the document is found in solr, get the updated solr doc -->
-				<xforms:setvalue ev:event="xforms-submit-done" if="instance('published-response')/result[@name='response']/@numFound = '1'"
-					ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="true()"></xforms:setvalue>
+				<xforms:action ev:event="xforms-submit-done">					
+					<xforms:setvalue if="instance('published-response')/result[@name='response']/@numFound = '1'"
+						ref="instance('pagination-result')//record[id=instance('control-instance')/id]/published" value="true()"></xforms:setvalue>
+				</xforms:action>				
 			</xforms:submission>
 
 			<!-- *********** ADD/DELETE TRIPLES FROM ENDPOINT ***************** -->
@@ -1574,29 +1580,40 @@
 															</xforms:group>
 														</td>
 														<td class="text-center">
-															<xforms:input ref="published">
-																<xforms:action ev:event="xforms-value-changed">
-																	<xforms:var name="val" select="." as="xs:boolean"/>
-																	<!-- publish the record if the box is checked -->
-																	<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
-																	<xforms:action if="$val = true()">
+															<xforms:group ref="published[. = true()]">																
+																<xforms:trigger appearance="minimal">
+																	<xforms:label><span class="glyphicon glyphicon-{if (.=true()) then 'ok' else 'unchecked'}"></span></xforms:label>
+																	<xforms:action ev:event="DOMActivate">
+																		<xforms:var name="val" select="." as="xs:boolean"/>	
+																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
+																		
+																		<!-- delete from solr -->
+																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
+																		<xforms:send submission="delete-solr-doc"></xforms:send>
+																		<!-- delete from triplestore -->
+																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
+																		<xforms:setvalue ref="." value="false()"></xforms:setvalue>																	
+																	</xforms:action>
+																</xforms:trigger>
+															</xforms:group>
+															<xforms:group ref="published[. = false()]">
+																<xforms:trigger appearance="minimal">
+																	<xforms:label><span class="glyphicon glyphicon-{if (.=true()) then 'ok' else 'unchecked'}"></span></xforms:label>
+																	<xforms:action ev:event="DOMActivate">
+																		<xforms:var name="val" select="." as="xs:boolean"/>																		
+																		<!-- publish the record if the box is checked -->
+																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
+																		
 																		<!-- post to solr -->
 																		<xforms:send submission="doc-to-solr"></xforms:send>
 																		<xforms:send submission="commit"></xforms:send>
 																		<!-- post to SPARQL endpoint, if it exists -->
 																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
 																		<xforms:send submission="post-rdf" if="string(instance('config')/sparql/store)" ev:event="xforms-submit-done"></xforms:send>
+																		<xforms:setvalue ref="." value="true()"></xforms:setvalue>	
 																	</xforms:action>
-																	<!-- unpublish the record if the box is unchecked -->
-																	<xforms:action if="$val = false()">
-																		<!-- delete from solr -->
-																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
-																		<xforms:send submission="delete-solr-doc"></xforms:send>
-																		<!-- delete from triplestore -->
-																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
-																	</xforms:action>
-																</xforms:action>
-															</xforms:input>
+																</xforms:trigger>
+															</xforms:group>															
 														</td>
 														<td class="text-center">
 															<xforms:trigger appearance="minimal">
@@ -1623,7 +1640,7 @@
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
+				<fr:xforms-inspector></fr:xforms-inspector>
 			</div>
 			<!-- variables for js usage -->
 			<div style="display:none">
