@@ -40,6 +40,7 @@
 					<interface></interface>
 					<create-collection-trigger>false</create-collection-trigger>
 					<version>0.60</version>
+					<object_uri/>
 				</controls>
 			</xforms:instance>
 
@@ -365,14 +366,26 @@
 				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>
 			</xforms:instance>
 
-			<xforms:instance id="sparqlUpdate-template">
-				<query>
-					<![CDATA[DELETE {?s ?p ?o} WHERE { <URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>) }]]>
-				</query>
+			<xforms:instance id="sparqlUpdate-template" xxforms:exclude-result-prefixes="#all">
+				<queries xmlns="">
+					<query id="ead"><![CDATA[PREFIX dcterms:	<http://purl.org/dc/terms/>
+DELETE {?s ?p ?o} WHERE {
+{?s dcterms:isPartOf+ <URI> . ?s ?p ?o}
+UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
+					<query id="tei"><![CDATA[PREFIX oa:	<http://www.w3.org/ns/oa#>
+PREFIX dcterms:	<http://purl.org/dc/terms/>
+DELETE {?s ?p ?o} WHERE {
+{?parts dcterms:isPartOf+ <URI> . ?s oa:hasTarget ?parts . ?s ?p ?o}
+UNION {?s dcterms:isPartOf+ <URI> . ?s ?p ?o}
+UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
+					<query id="mods">
+						<![CDATA[DELETE {?s ?p ?o} WHERE { <URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>) }]]>
+					</query>
+				</queries>				
 			</xforms:instance>
 
-			<xforms:instance id="sparqlUpdate">
-				<query></query>
+			<xforms:instance id="sparqlUpdate" xxforms:exclude-result-prefixes="#all">
+				<query xmlns=""></query>
 			</xforms:instance>
 
 			<!-- flickr -->
@@ -806,20 +819,16 @@
 			<xforms:submission id="get-rdf" method="get" replace="instance" instance="rdf" serialization="none"
 				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id}.rdf">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to get RDF/XML serialization.</xforms:message>
-				<xforms:action ev:event="xforms-submit-done">
-					<!-- first remove existing graphs -->
-					<xforms:action xxforms:iterate="instance('rdf')//@rdf:about">
-						<xforms:var name="uri" select="."></xforms:var>
-						<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"></xforms:setvalue>
-						<xforms:send submission="delete-graph"></xforms:send>
-					</xforms:action>
-				</xforms:action>
+				
+				<!-- post RDF into SPARQL endpoint -->
+				<xforms:send submission="post-rdf" ev:event="xforms-submit-done"/>
 			</xforms:submission>
 
 			<xforms:submission id="post-rdf" action="{instance('config')/sparql/store}?default" ref="instance('rdf')" replace="none" method="post" mediatype="application/rdf+xml">
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:message level="modal">Post to endpoint failed.</xforms:message>
 				</xforms:action>
+				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-done">RDF successfully published to triplestore.</xforms:setvalue>
 			</xforms:submission>
 
 			<xforms:submission id="delete-graph" action="{instance('config')/sparql/update}" ref="instance('sparqlUpdate')" serialization="text/plain" replace="none" method="post"
@@ -827,6 +836,7 @@
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:message level="modal">SPARQL update failed.</xforms:message>
 				</xforms:action>
+				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-done">Object purged from triplestore.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- ************************* XFORMS-MODEL-CONSTRUCT-DONE ************************** -->
@@ -1526,6 +1536,7 @@
 											<tbody>
 												<xforms:repeat nodeset="instance('pagination-result')//record">
 													<xforms:var name="id" select="id"></xforms:var>
+													<xforms:var name="type" select="type"/>
 													<tr>
 														<td class="text-center">
 															<xforms:output ref="type"></xforms:output>
@@ -1587,11 +1598,15 @@
 																		<xforms:var name="val" select="." as="xs:boolean"/>	
 																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
 																		
+																		<!-- set URI for object, execute SPARQL/Update query to purge triples -->																		
+																		<xforms:var name="uri" select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', $id) else concat(instance('config')/url, 'id/', $id)"/>
+																		<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template')/query[@id=$type], 'URI', $uri)"></xforms:setvalue>
+																		<xforms:send submission="delete-graph"></xforms:send>
+																		
 																		<!-- delete from solr -->
 																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
 																		<xforms:send submission="delete-solr-doc"></xforms:send>
 																		<!-- delete from triplestore -->
-																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
 																		<xforms:setvalue ref="." value="false()"></xforms:setvalue>																	
 																	</xforms:action>
 																</xforms:trigger>
@@ -1609,7 +1624,6 @@
 																		<xforms:send submission="commit"></xforms:send>
 																		<!-- post to SPARQL endpoint, if it exists -->
 																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
-																		<xforms:send submission="post-rdf" if="string(instance('config')/sparql/store)" ev:event="xforms-submit-done"></xforms:send>
 																		<xforms:setvalue ref="." value="true()"></xforms:setvalue>	
 																	</xforms:action>
 																</xforms:trigger>
@@ -1640,7 +1654,7 @@
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<fr:xforms-inspector></fr:xforms-inspector>
+				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
 			</div>
 			<!-- variables for js usage -->
 			<div style="display:none">
@@ -1734,8 +1748,12 @@
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
 					<xforms:send submission="delete-doc"></xforms:send>
 					<xforms:send submission="delete-solr-doc"></xforms:send>
+					
 					<!-- delete from triplestore -->
-					<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
+					<!-- set URI for object, execute SPARQL/Update query to purge triples -->																		
+					<xforms:var name="uri" select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', instance('control-instance')/id) else concat(instance('config')/url, 'id/', instance('control-instance')/id)"/>
+					<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template')/query[@id=instance('pagination-result')//record[id = instance('control-instance')/id]/type], 'URI', $uri)"></xforms:setvalue>
+					<xforms:send submission="delete-graph"></xforms:send>
 
 					<!-- get new numCount -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
