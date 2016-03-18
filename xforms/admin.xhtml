@@ -1333,7 +1333,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 														<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"></xforms:setvalue>
 														<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"></xforms:setvalue>
 														<xforms:setvalue ref="callback" value="encode-for-uri(instance('request')/request-url)"></xforms:setvalue>
-														<xforms:setvalue ref="service">http://www.flickr.com/services/oauth/request_token</xforms:setvalue>
+														<xforms:setvalue ref="service">https://www.flickr.com/services/oauth/request_token</xforms:setvalue>
 														<!-- generating signature -->
 														<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;')"></xforms:var>
 														<xforms:var name="base"
@@ -1353,7 +1353,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 															origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"></xforms:insert>
 														<!-- load authorization page -->
 														<xforms:load
-															resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}&amp;perms=write"
+															resource="https://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}&amp;perms=write"
 															></xforms:load>
 													</xforms:action>
 												</xforms:trigger>
