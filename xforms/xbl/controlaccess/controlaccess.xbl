@@ -84,8 +84,6 @@
 							</xforms:repeat>
 						</div>
 					</xforms:group>
-					
-					<!-- ********************************************************************** -->
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

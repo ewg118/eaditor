@@ -72,7 +72,7 @@
 					</xxforms:dialog>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="access-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="access-elements-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- access elements -->
 						<xforms:instance id="corpname-template" xxforms:exclude-result-prefixes="#all">
 							<corpname/>
