@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:datetime="http://exslt.org/dates-and-times"
-	exclude-result-prefixes="#all" version="2.0">
+	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
+
+	<xsl:include href="../../functions.xsl"/>
+	
+	<!-- config variables -->
+	<xsl:variable name="url" select="/content/config/url"/>
+	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
+	<xsl:variable name="geonames-url">
+		<xsl:text>http://api.geonames.org</xsl:text>
+	</xsl:variable>
+	
+	<xsl:template match="/">
+		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+	</xsl:template>
 
 	<xsl:template match="mods:modsCollection">
 		<xsl:apply-templates select="mods:mods"/>
@@ -53,13 +68,13 @@
 						<xsl:text>, </xsl:text>
 					</xsl:if>
 					<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
-				</field>								
+				</field>
 				<xsl:for-each select="mods:name|mods:subject/*|//mods:physicalDescription/mods:form">
 					<xsl:variable name="facet">
 						<xsl:choose>
 							<xsl:when test="local-name()='form'">genreform</xsl:when>
-							<xsl:when test="local-name()='genre'">genreform</xsl:when>	
-							<xsl:when test="local-name()='geographic'">geogname</xsl:when>									
+							<xsl:when test="local-name()='genre'">genreform</xsl:when>
+							<xsl:when test="local-name()='geographic'">geogname</xsl:when>
 							<xsl:when test="local-name()='name'">
 								<xsl:choose>
 									<xsl:when test="@type='personal'">persname</xsl:when>
@@ -68,7 +83,7 @@
 								</xsl:choose>
 							</xsl:when>
 							<xsl:when test="local-name()='occupation'">occupation</xsl:when>
-							<xsl:when test="local-name()='topic'">subject</xsl:when>									
+							<xsl:when test="local-name()='topic'">subject</xsl:when>
 						</xsl:choose>
 					</xsl:variable>
 

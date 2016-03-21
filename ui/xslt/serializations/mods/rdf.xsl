@@ -3,10 +3,39 @@
 	xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	exclude-result-prefixes="#all" version="2.0">
-	<!-- ***************** MODS-TO-RDF ******************-->
-	<xsl:template name="mods-content">
-		<xsl:apply-templates select="//mods:mods"/>
+	<!-- config variables -->
+	<xsl:variable name="url" select="/content/config/url"/>
+	
+	<!-- url params -->
+	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
+	<xsl:variable name="path">
+		<xsl:choose>
+			<xsl:when test="contains($uri, 'ark:/')">
+				<xsl:value-of select="substring-before(substring-after(substring-after($uri, 'ark:/'), '/'), '.rdf')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="substring-before(substring-after($uri, 'id/'), '.rdf')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="objectUri">
+		<xsl:choose>
+			<xsl:when test="//config/ark[@enabled='true']">
+				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $path)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat($url, 'id/', $path)"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:template match="/">
+		<rdf:RDF>
+			<xsl:apply-templates select="//mods:mods"/>
+		</rdf:RDF>
 	</xsl:template>
+	
+	<!-- ***************** MODS-TO-RDF ******************-->
 
 	<xsl:template match="mods:mods">
 		<rdf:Description rdf:about="{$objectUri}">

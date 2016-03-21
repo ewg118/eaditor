@@ -12,32 +12,22 @@
 	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
 
 	<xsl:template match="/">
-		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+		<xsl:apply-templates select="/content/ead:ead"/>
 	</xsl:template>
 
-	<xsl:template match="mods:mods|ead:ead">
+	<xsl:template match="ead:ead">
 		<kml xmlns="http://earth.google.com/kml/2.0">
 			<Document>
-				<xsl:choose>
-					<xsl:when test="namespace-uri()='http://www.loc.gov/mods/v3'">
-						<xsl:call-template name="mods-content"/>
-					</xsl:when>
-					<xsl:when test="namespace-uri()='urn:isbn:1-931666-22-9'">
-						<xsl:call-template name="ead-content"/>
-					</xsl:when>
-				</xsl:choose>
+				<xsl:variable name="id" select="ead:eadheader/ead:eadid"/>
+				
+				<xsl:apply-templates select="descendant::ead:geogname[string(@source) and string(@authfilenumber)]">
+					<xsl:with-param name="id" select="$id"/>
+				</xsl:apply-templates>
 			</Document>
 		</kml>
 	</xsl:template>
 
 	<!-- **************** EAD TO KML ******************* -->
-	<xsl:template name="ead-content">
-		<xsl:variable name="id" select="ead:eadheader/ead:eadid"/>
-
-		<xsl:apply-templates select="descendant::ead:geogname[string(@source) and string(@authfilenumber)]">
-			<xsl:with-param name="id" select="$id"/>
-		</xsl:apply-templates>
-	</xsl:template>
 
 	<xsl:template match="ead:geogname">
 		<xsl:param name="id"/>

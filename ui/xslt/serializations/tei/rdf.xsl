@@ -4,9 +4,40 @@
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#"
 	xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:schema="https://schema.org/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:oa="http://www.w3.org/ns/oa#"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" exclude-result-prefixes="#all" version="2.0">
+	<!-- config variables -->
+	<xsl:variable name="url" select="/content/config/url"/>
+	
+	<!-- url params -->
+	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
+	<xsl:variable name="path">
+		<xsl:choose>
+			<xsl:when test="contains($uri, 'ark:/')">
+				<xsl:value-of select="substring-before(substring-after(substring-after($uri, 'ark:/'), '/'), '.rdf')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="substring-before(substring-after($uri, 'id/'), '.rdf')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="objectUri">
+		<xsl:choose>
+			<xsl:when test="//config/ark[@enabled='true']">
+				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $path)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat($url, 'id/', $path)"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<xsl:template match="/">
+		<rdf:RDF>
+			<xsl:apply-templates select="/content/tei:TEI"/>
+		</rdf:RDF>
+	</xsl:template>
 
 	<!-- ***************** TEI-TO-RDF ******************-->
-	<xsl:template name="tei-content">
+	<xsl:template match="tei:TEI">
 		<!-- handle serialization of individual facsimiles or the TEI documen as a whole -->
 		<xsl:choose>
 			<xsl:when test="local-name()='facsimile'">

@@ -11,38 +11,27 @@
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
 	
-	<p:processor name="oxf:request">
-		<p:input name="config">
-			<config>
-				<include>/request</include>				
-			</config>
-		</p:input>
-		<p:output name="data" id="request"/>
-	</p:processor>
-	
-	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="../../../models/config.xpl"/>		
-		<p:output name="data" id="config"/>
-	</p:processor>
-	
-	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="request" href="#request"/>
-		<p:input name="data" href="aggregate('content', #data, #config)"/>		
-		<p:input name="config" href="../../../../ui/xslt/serializations/object/html.xsl"/>
-		<p:output name="data" id="model"/>
-	</p:processor>
-	
-	<p:processor name="oxf:html-converter">
-		<p:input name="data" href="#model"/>
-		<p:input name="config">
-			<config>
-				<version>5.0</version>
-				<indent>true</indent>
-				<content-type>text/html</content-type>
-				<encoding>utf-8</encoding>
-				<indent-amount>4</indent-amount>
-			</config>
-		</p:input>
-		<p:output name="data" ref="data"/>
-	</p:processor>
+	<p:choose href="#data">
+		<p:when test="/*[namespace-uri()='urn:isbn:1-931666-22-9']">
+			<p:processor name="oxf:pipeline">
+				<p:input name="data" href="#data"/>
+				<p:input name="config" href="../ead/html.xpl"/>		
+				<p:output name="data" ref="data"/>
+			</p:processor>
+		</p:when>
+		<p:when test="/*[namespace-uri()='http://www.loc.gov/mods/v3']">
+			<p:processor name="oxf:pipeline">
+				<p:input name="data" href="#data"/>
+				<p:input name="config" href="../mods/html.xpl"/>		
+				<p:output name="data" ref="data"/>
+			</p:processor>
+		</p:when>
+		<p:when test="/*[namespace-uri()='http://www.tei-c.org/ns/1.0']">
+			<p:processor name="oxf:pipeline">
+				<p:input name="data" href="#data"/>
+				<p:input name="config" href="../tei/html.xpl"/>		
+				<p:output name="data" ref="data"/>
+			</p:processor>
+		</p:when>		
+	</p:choose>
 </p:config>

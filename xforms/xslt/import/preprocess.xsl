@@ -27,9 +27,7 @@
 			<xsl:apply-templates/>
 		</ead>
 	</xsl:template>
-	
-	
-	
+		
 	<xsl:template match="*[local-name()='dsc'] | *[local-name()='archdesc']">
 		<xsl:variable name="id">
 			<xsl:choose>

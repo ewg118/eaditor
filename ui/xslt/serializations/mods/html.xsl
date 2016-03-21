@@ -4,6 +4,219 @@
 	xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
 	version="2.0">
+	
+	<xsl:include href="../../templates.xsl"/>
+	<xsl:include href="../../functions.xsl"/>
+	
+	<!-- path and document params -->
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
+	<xsl:variable name="pipeline">display</xsl:variable>
+	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
+	<xsl:param name="path">
+		<xsl:choose>
+			<xsl:when test="contains($uri, 'ark:/')">
+				<xsl:value-of select="substring-after(substring-after($uri, 'ark:/'), '/')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="substring-after($uri, 'id/')"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:param>
+	<xsl:variable name="doc">
+		<xsl:choose>
+			<xsl:when test="contains($path, '/')">
+				<xsl:value-of select="tokenize($path, '/')[1]"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="contains($path, '.')">
+						<xsl:variable name="pieces" select="tokenize($path, '\.')"/>
+						
+						<xsl:for-each select="$pieces[not(position()=last())]">
+							<xsl:value-of select="."/>
+							<xsl:if test="not(position()=last())">
+								<xsl:text>.</xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$path"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="id">
+		<xsl:if test="contains($path, '/')">
+			<xsl:variable name="last-piece" select="substring-after($path, '/')"/>
+			<xsl:choose>
+				<xsl:when test="contains($last-piece, '.')">
+					<xsl:variable name="pieces" select="tokenize($last-piece, '\.')"/>
+					<xsl:for-each select="$pieces[not(position()=last())]">
+						<xsl:value-of select="."/>
+						<xsl:if test="not(position()=last())">
+							<xsl:text>.</xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$last-piece"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:variable>
+	
+	<!-- config variables -->
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
+	<xsl:variable name="url" select="/content/config/url"/>
+	
+	<!-- display path -->
+	<xsl:variable name="display_path">
+		<xsl:variable name="default">
+			<xsl:choose>
+				<xsl:when test="$mode='private'">
+					<xsl:choose>
+						<xsl:when test="string($id)">
+							<xsl:text>../../../</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>../../</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="contains($uri, 'ark:/')">
+							<xsl:choose>
+								<xsl:when test="string($id)">
+									<xsl:text>../../../</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>../../</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="string($id)">
+									<xsl:text>../../</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>../</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<!-- after default path is set, replace ../ when it is an aggregate collection -->		
+		<xsl:choose>
+			<xsl:when test="/content/config/aggregator='true'">
+				<xsl:value-of select="concat($default, '../')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$default"/>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+	</xsl:variable>
+	
+	<xsl:variable name="include_path">
+		<xsl:choose>
+			<xsl:when test="$mode='private'">
+				<xsl:choose>
+					<xsl:when test="string($id)">
+						<xsl:text>../../../../</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>../../../</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="contains($uri, 'ark:/')">
+						<xsl:choose>
+							<xsl:when test="string($id)">
+								<xsl:text>../../../../</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>../../../</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+							<xsl:when test="string($id)">
+								<xsl:text>../../../</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>../../</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	<!-- boolean variable as to whether there are mappable points -->
+	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
+	
+	<!-- url params -->
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="mode">
+		<xsl:choose>
+			<xsl:when test="contains($uri, 'admin/')">private</xsl:when>
+			<xsl:otherwise>public</xsl:otherwise>
+		</xsl:choose>
+	</xsl:param>
+	
+	<xsl:template match="/">
+		<xsl:apply-templates select="/content//mods:mods"/>
+	</xsl:template>
+	
+	<xsl:template match="mods:mods">
+		<html>
+			<head prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
+				<title id="{$path}">
+					<xsl:value-of select="/content/config/title"/>
+					<xsl:text>: </xsl:text>
+					<xsl:value-of select="mods:titleInfo/mods:title"/>
+				</title>
+				<!-- alternates -->
+				<link rel="alternate" type="text/xml" href="{$path}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$path}.rdf"/>
+				
+				<meta name="viewport" content="width=device-width, initial-scale=1"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				<!-- bootstrap -->
+				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
+				<!-- include fancybox -->
+				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				
+				<xsl:if test="string(//config/google_analytics)">
+					<script type="text/javascript">
+						<xsl:value-of select="//config/google_analytics"/>
+					</script>
+				</xsl:if>
+			</head>
+			<body>
+				<xsl:call-template name="header"/>
+				<div class="container-fluid">
+					<xsl:call-template name="mods-content"/>
+				</div>
+				<div id="path" style="display:none">../</div>
+				<xsl:call-template name="footer"/>
+			</body>
+		</html>
+	</xsl:template>
 
 	<xsl:template name="mods-content">
 		<div class="row">

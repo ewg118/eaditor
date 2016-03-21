@@ -11,34 +11,27 @@
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
 	
-	<p:processor name="oxf:request">
-		<p:input name="config">
-			<config>
-				<include>/request/parameters</include>
-			</config>
-		</p:input>
-		<p:output name="data" id="request"/>
-	</p:processor>
-	
-	<p:processor name="oxf:pipeline">
-		<p:input name="config" href="../../../models/config.xpl"/>		
-		<p:output name="data" id="config"/>
-	</p:processor>
-	
-	<p:processor name="oxf:unsafe-xslt">
-		<p:input name="request" href="#request"/>
-		<p:input name="data" href="aggregate('content', #data, #config)"/>		
-		<p:input name="config" href="../../../../ui/xslt/serializations/object/kml.xsl"/>
-		<p:output name="data" id="model"/>		
-	</p:processor>
-
-	<p:processor name="oxf:xml-serializer">
-		<p:input name="data" href="#model"/>
-		<p:input name="config">
-			<config>
-				<content-type>application/vnd.google-earth.kml+xml</content-type>
-			</config>
-		</p:input>
-		<p:output name="data" ref="data"/>
-	</p:processor>
+	<p:choose href="#data">
+		<p:when test="/*[namespace-uri()='urn:isbn:1-931666-22-9']">
+			<p:processor name="oxf:pipeline">
+				<p:input name="data" href="#data"/>
+				<p:input name="config" href="../ead/kml.xpl"/>		
+				<p:output name="data" ref="data"/>
+			</p:processor>
+		</p:when>		
+		<!--<p:when test="/*[namespace-uri()='http://www.loc.gov/mods/v3']">
+			<p:processor name="oxf:pipeline">
+				<p:input name="data" href="#data"/>
+				<p:input name="config" href="../mods/kml.xpl"/>		
+				<p:output name="data" id="model"/>
+			</p:processor>
+		</p:when>-->	
+		<p:otherwise>
+			<p:processor name="oxf:pipeline">
+				<p:input name="data" href="#data"/>
+				<p:input name="config" href="../../../controllers/404-not-found.xpl"/>		
+				<p:output name="data" ref="data"/>
+			</p:processor>
+		</p:otherwise>
+	</p:choose>
 </p:config>

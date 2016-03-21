@@ -2,6 +2,36 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:datetime="http://exslt.org/dates-and-times"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
+	
+	<xsl:include href="../../functions.xsl"/>
+	
+	<!-- config variables -->
+	<xsl:variable name="url" select="/content/config/url"/>
+	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
+	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
+	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
+	<xsl:variable name="geonames-url">
+		<xsl:text>http://api.geonames.org</xsl:text>
+	</xsl:variable>
+	
+	<xsl:variable name="places" as="node()*">
+		<places>
+			<xsl:for-each select="descendant::ead:geogname[@source='geonames' and string(@authfilenumber)]">
+				<xsl:variable name="geonames_data" as="node()*">
+					<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
+				</xsl:variable>
+				
+				<place authfilenumber="{@authfilenumber}">
+					<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
+				</place>
+			</xsl:for-each>
+		</places>
+	</xsl:variable>
+	
+	<xsl:template match="/">
+		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+	</xsl:template>
+	
 	<xsl:template match="ead:ead">
 		<xsl:variable name="title" select="ead:archdesc/ead:did/ead:unittitle"/>
 		<xsl:variable name="recordId" select="ead:eadheader/ead:eadid"/>
@@ -279,9 +309,10 @@
 
 			<xsl:for-each select="ead:unitdate">
 				<xsl:for-each select="tokenize(@normal, '/')">
-					<xsl:call-template name="get_date_hierarchy">
+					<xsl:call-template name="eaditor:get_date_hierarchy">
 						<xsl:with-param name="date" select="."/>
 					</xsl:call-template>
+					
 				</xsl:for-each>
 			</xsl:for-each>
 		</xsl:if>
