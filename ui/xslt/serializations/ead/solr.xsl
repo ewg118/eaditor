@@ -29,7 +29,7 @@
 	</xsl:variable>
 	
 	<xsl:template match="/">
-		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+		<xsl:apply-templates select="/content/ead:ead"/>
 	</xsl:template>
 	
 	<xsl:template match="ead:ead">
@@ -38,6 +38,8 @@
 		<xsl:variable name="archdesc-level" select="ead:archdesc/@level"/>
 
 		<add>
+			<!--<xsl:copy-of select="/content/pleiades"/>-->
+			
 			<xsl:if test="/content/config/levels/archdesc/@enabled = true()">
 				<xsl:call-template name="ead-doc">
 					<xsl:with-param name="title" select="$title"/>
@@ -230,19 +232,13 @@
 					</field>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
-					<xsl:variable name="rdf" as="node()*">
-						<xsl:copy-of select="document(concat('http://pleiades.stoa.org/places/', $authfilenumber, '/rdf'))"/>
-					</xsl:variable>
-
-					<xsl:if test="number($rdf//geo:long) and number($rdf//geo:lat)">
-						<field name="georef">
-							<xsl:value-of select="$authfilenumber"/>
-							<xsl:text>|</xsl:text>
-							<xsl:value-of select="normalize-space(.)"/>
-							<xsl:text>|</xsl:text>
-							<xsl:value-of select="concat($rdf//geo:long, ',', $rdf//geo:lat)"/>
-						</field>
-					</xsl:if>
+					<field name="georef">
+						<xsl:value-of select="$authfilenumber"/>
+						<xsl:text>|</xsl:text>
+						<xsl:value-of select="normalize-space(.)"/>
+						<xsl:text>|</xsl:text>
+						<xsl:value-of select="concat(/content/pleiades/place[@id=$authfilenumber]/long, ',', /content/pleiades/place[@id=$authfilenumber]/lat)"/>
+					</field>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:if>

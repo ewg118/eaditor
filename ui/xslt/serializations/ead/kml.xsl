@@ -41,7 +41,7 @@
 
 					<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
 				</xsl:when>
-				<xsl:when test="@source='pleiades'">
+				<!--<xsl:when test="@source='pleiades'">
 					<xsl:variable name="rdf" as="node()*">
 						<xsl:copy-of select="document(concat('http://pleiades.stoa.org/places/', @authfilenumber, '/rdf'))"/>
 					</xsl:variable>
@@ -49,7 +49,7 @@
 					<xsl:if test="number($rdf//geo:long) and number($rdf//geo:lat)">
 						<xsl:value-of select="concat($rdf//geo:long, ',', $rdf//geo:lat)"/>
 					</xsl:if>
-				</xsl:when>
+				</xsl:when>-->
 			</xsl:choose>
 		</xsl:variable>
 
