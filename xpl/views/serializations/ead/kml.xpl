@@ -5,7 +5,7 @@
 	Apache License 2.0: https://github.com/ewg118/eaditor
 	
 -->
-<p:config xmlns:p="http://www.orbeon.com/oxf/pipeline" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9">
+<p:config xmlns:p="http://www.orbeon.com/oxf/pipeline" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xforms="http://www.w3.org/2002/xforms">
 
 	<p:param type="input" name="data"/>
 	<p:param type="output" name="data"/>
@@ -25,59 +25,52 @@
 	</p:processor>
 
 	<!-- iterate through geognames with a @source of 'pleiades' in order to aggregate coordinates -->
-	<p:for-each href="#data" select="distinct-values(descendant::ead:geogname[@source='pleiades']/@authfilenumber)" root="pleiades" id="pleiades">
+	<p:for-each href="#data" select="descendant::ead:geogname[@source='pleiades'][not(@authfilenumber=preceding::ead:geogname/@authfilenumber)]" root="pleiades" id="pleiades">
 		<!-- construct a URL generator config -->
 		<p:processor name="oxf:unsafe-xslt">
 			<p:input name="data" href="current()"/>
 			<p:input name="config">
 				<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-					<xsl:variable name="service" select="concat('http://pleiades.stoa.org/places/', ., '/rdf')"/>
-
+					<xsl:variable name="service" select="concat('http://pleiades.stoa.org/places/', ead:geogname/@authfilenumber, '/json2')"/>
+					
 					<xsl:template match="/">
-						<config>
-							<url>
-								<xsl:value-of select="$service"/>
-							</url>
-							<content-type>application/xml</content-type>
-							<header>
-								<name>User-Agent</name>
-								<value>EADitor/XForms</value>
-							</header>
-							<encoding>utf-8</encoding>
-						</config>
+						<xforms:submission method="get" action="{$service}">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
+						</xforms:submission>
+					</xsl:template>
+				</xsl:stylesheet>
+			</p:input>
+			<p:output name="data" id="xforms-config"/>
+		</p:processor>
+		
+		<p:processor name="oxf:xforms-submission">
+			<p:input name="request" href="#request"/>
+			<p:input name="submission" href="#xforms-config"/>
+			<p:output name="response" id="json"/>
+		</p:processor>
+		
+		<p:processor name="oxf:unsafe-xslt">
+			<p:input name="data" href="#json"/>
+			<p:input name="config">
+				<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+					
+					<xsl:template match="/json">
+						<place id="{tokenize(documenturi, '/')[last()]}">
+							<lat>
+								<xsl:value-of select="reprPoint/_[2]"/>
+							</lat>
+							<long>
+								<xsl:value-of select="reprPoint/_[1]"/>
+							</long>
+						</place>
 					</xsl:template>
 				</xsl:stylesheet>
 			</p:input>
 			<p:output name="data" ref="pleiades"/>
 		</p:processor>
-
-		<!--<p:processor name="oxf:url-generator">
-			<p:input name="config" href="#generator-config"/>
-			<p:output name="data" ref="pleiades"/>
-		</p:processor>-->
-
-		<!--<p:processor name="oxf:unsafe-xslt">
-			<p:input name="request" href="#request"/>
-			<p:input name="data" href="#config"/>
-			<p:input name="config">
-				<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">	
-					<xsl:variable name="service" select="concat('http://pleiades.stoa.org/places/', current(), '/rdf')"/>
-					
-					<xsl:template match="/">
-						<config>
-							<url>
-								<xsl:value-of select="$service"/>
-							</url>
-							<content-type>application/xml</content-type>
-							<encoding>utf-8</encoding>
-						</config>
-					</xsl:template>
-				</xsl:stylesheet>
-			</p:input>
-			<p:output name="data" id="generator-config"/>
-		</p:processor>-->
-
-
 	</p:for-each>
 
 	<p:processor name="oxf:unsafe-xslt">

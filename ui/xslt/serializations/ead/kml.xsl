@@ -33,23 +33,19 @@
 		<xsl:param name="id"/>
 
 		<xsl:variable name="coordinates">
+			<xsl:variable name="authfilenumber" select="@authfilenumber"/>
+			
 			<xsl:choose>
 				<xsl:when test="@source='geonames'">
 					<xsl:variable name="geonames_data" as="node()*">
-						<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
+						<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', $authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
 					</xsl:variable>
 
 					<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
 				</xsl:when>
-				<!--<xsl:when test="@source='pleiades'">
-					<xsl:variable name="rdf" as="node()*">
-						<xsl:copy-of select="document(concat('http://pleiades.stoa.org/places/', @authfilenumber, '/rdf'))"/>
-					</xsl:variable>
-
-					<xsl:if test="number($rdf//geo:long) and number($rdf//geo:lat)">
-						<xsl:value-of select="concat($rdf//geo:long, ',', $rdf//geo:lat)"/>
-					</xsl:if>
-				</xsl:when>-->
+				<xsl:when test="@source='pleiades'">
+					<xsl:value-of select="concat(/content/pleiades/place[@id=$authfilenumber]/long, ',', /content/pleiades/place[@id=$authfilenumber]/lat)"/>
+				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 

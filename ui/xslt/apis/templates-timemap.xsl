@@ -99,19 +99,9 @@
 				<xsl:value-of select="$coordinates"/>
 			</xsl:when>
 			<xsl:when test="contains($href, 'pleiades')">
-				<xsl:choose>
-					<xsl:when
-						test="number($rdf//spatial:Feature[@rdf:about=concat($href, '#this')]/descendant::geo:lat) and number($rdf//spatial:Feature[@rdf:about=concat($href, '#this')]/descendant::geo:long)">
-						<xsl:value-of
-							select="concat($rdf//spatial:Feature[@rdf:about=concat($href, '#this')]/descendant::geo:long, '|', $rdf//spatial:Feature[@rdf:about=concat($href, '#this')]/descendant::geo:lat)"
-						/>
-					</xsl:when>
-					<xsl:when test="$rdf//*[@rdf:about=concat($href, '#this')]/following-sibling::osgeo:AbstractGeometry">
-						<xsl:variable name="area"
-							select="$rdf//*[@rdf:about=concat($href, '#this')]/following-sibling::osgeo:AbstractGeometry[1]/osgeo:asGeoJSON"/>
-						<xsl:value-of select="translate(replace(replace(substring-after($area, '['), ',\s', ','), '\],', ' '), '[]}', '')"/>
-					</xsl:when>
-				</xsl:choose>
+				<xsl:variable name="authfilenumber" select="tokenize($href, '/')[last()]"/>
+				
+				<xsl:value-of select="concat(/content/pleiades/place[@id=$authfilenumber]/long, '|', /content/pleiades/place[@id=$authfilenumber]/lat)"/>				
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>	

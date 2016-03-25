@@ -71,35 +71,6 @@
 			</p:input>
 			<p:output name="data" ref="pleiades"/>
 		</p:processor>
-
-
-		<!--<p:processor name="oxf:url-generator">
-			<p:input name="config" href="#generator-config"/>
-			<p:output name="data" ref="pleiades"/>
-		</p:processor>-->
-
-		<!--<p:processor name="oxf:unsafe-xslt">
-			<p:input name="request" href="#request"/>
-			<p:input name="data" href="#config"/>
-			<p:input name="config">
-				<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">	
-					<xsl:variable name="service" select="concat('http://pleiades.stoa.org/places/', current(), '/rdf')"/>
-					
-					<xsl:template match="/">
-						<config>
-							<url>
-								<xsl:value-of select="$service"/>
-							</url>
-							<content-type>application/xml</content-type>
-							<encoding>utf-8</encoding>
-						</config>
-					</xsl:template>
-				</xsl:stylesheet>
-			</p:input>
-			<p:output name="data" id="generator-config"/>
-		</p:processor>-->
-
-
 	</p:for-each>
 
 	<p:processor name="oxf:unsafe-xslt">
