@@ -44,7 +44,7 @@
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-							<p class="bg-warning">Content is required.</p>
+							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> Element must contain content.</div>
 							<div>
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">

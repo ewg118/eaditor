@@ -41,7 +41,7 @@
 					</xforms:repeat>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="component-level-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="component-level-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="ptr-template" xxforms:exclude-result-prefixes="#all">
 							<ptr linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>

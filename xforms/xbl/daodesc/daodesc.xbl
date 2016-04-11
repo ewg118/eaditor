@@ -39,7 +39,7 @@
 					</xforms:repeat>					
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="daodesc-model">
+					<xforms:model id="daodesc-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
 							<head/>
 						</xforms:instance>

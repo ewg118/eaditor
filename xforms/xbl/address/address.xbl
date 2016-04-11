@@ -44,7 +44,7 @@
 					</xforms:group>
 					
 					<!-- ********************************************************************** -->
-					<xforms:model id="address-elements-model"  xmlns:ead="urn:isbn:1-931666-22-9">
+					<xforms:model id="address-elements-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- generic instances -->
 						<xforms:instance id="addressline-template" xxforms:exclude-result-prefixes="#all">
 							<addressline/>

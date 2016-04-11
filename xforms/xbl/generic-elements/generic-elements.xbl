@@ -64,7 +64,7 @@
 					</xxforms:dialog>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="generic-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="generic-elements-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- generic instances -->
 						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
 							<address>

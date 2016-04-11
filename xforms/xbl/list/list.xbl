@@ -55,7 +55,8 @@
 						
 						<xforms:group
 							ref="$binding[count(child::ead:item) &lt; 1 and count(child::ead:defitem) &lt; 1]">
-							<div class="warning"><b>Warning:</b> List must contain either at least one Item or Definition Item.</div>
+							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> List must contain either at least one Item or Definition Item.</div>
+							
 						</xforms:group>
 
 						<!-- listhead -->
@@ -102,7 +103,7 @@
 						</xforms:repeat>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="list-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="list-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="head-template">
 							<head/>
 						</xforms:instance>

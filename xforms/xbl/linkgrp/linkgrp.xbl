@@ -63,7 +63,7 @@
 					</div>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="linkgrp-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="linkgrp-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="extptrloc-template" xxforms:exclude-result-prefixes="#all">
 							<extptrloc linktype="locator" xlink:href=""/>
 						</xforms:instance>

@@ -98,13 +98,11 @@
 									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('repository-template')"/>
 								</xforms:trigger>
 							</xforms:group>
-							<xforms:group ref=".[count(ead:unitdate) &lt; 1]">
-								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<span class="glyphicon glyphicon-plus"/>Unit Date</xforms:label>
-									<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('unitdate-template')"/>
-								</xforms:trigger>
-							</xforms:group>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Unit Date</xforms:label>
+								<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('unitdate-template')"/>
+							</xforms:trigger>
 							<xforms:group ref=".[count(ead:unitid) &lt; 1]">
 								<xforms:trigger appearance="minimal">
 									<xforms:label>
@@ -190,17 +188,17 @@
 							</div>
 						</xforms:group>
 
+						<!-- unitdate -->
+						<xforms:repeat nodeset="ead:unitdate">
+							<eaditor:date/>
+						</xforms:repeat>
+						
+
 						<!-- header -->
 						<xforms:group ref="ead:head">
 							<eaditor:head/>
 						</xforms:group>
-
-
-						<!-- unitdate -->
-						<xforms:group ref="ead:unitdate">
-							<eaditor:date/>
-						</xforms:group>
-
+						
 						<xforms:repeat nodeset="ead:abstract">
 							<div>
 								<xforms:textarea ref=".">
@@ -453,7 +451,7 @@
 
 						<xforms:group ref="ead:unitid">
 							<div>
-								<xforms:input ref="ead:unitid">
+								<xforms:input ref=".">
 									<xforms:label>Unit ID</xforms:label>
 								</xforms:input>
 								<xforms:trigger appearance="minimal">
@@ -469,7 +467,7 @@
 
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="did-model" xmlns:ead="urn:isbn:1-931666-22-9">
+					<xforms:model id="did-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- digital object elements -->
 						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>
@@ -521,7 +519,7 @@
 							<repository/>
 						</xforms:instance>
 						<xforms:instance id="unitdate-template" xxforms:exclude-result-prefixes="#all">
-							<unitdate normal=""/>
+							<unitdate normal="" type="inclusive"/>
 						</xforms:instance>
 						<xforms:instance id="unitid-template" xxforms:exclude-result-prefixes="#all">
 							<unitid/>

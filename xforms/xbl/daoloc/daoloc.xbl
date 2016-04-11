@@ -54,9 +54,9 @@
 					</div>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="daoloc-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="daoloc-model">
 						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all">
-							<daodesc>
+							<daodesc xmlns="urn:isbn:1-931666-22-9">
 								<p/>
 							</daodesc>
 						</xforms:instance>

@@ -9,63 +9,70 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-					<div class="subsection">
-						<h3>Component</h3>
-						<eaditor:attributes ref="$binding"/>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
-						<div>
-							<xforms:select1 ref="$binding/@level">
-								<xforms:label>Level</xforms:label>
-								<xforms:itemset nodeset="instance('level-template')/level">
-									<xforms:label ref="."/>
-									<xforms:value ref="@value"/>
-								</xforms:itemset>
-								<xforms:alert>Required</xforms:alert>
-								<xforms:action ev:event="xforms-value-changed">
-									<xforms:insert context="$binding" origin="xforms:attribute('otherlevel', '')" if="$binding/@level='otherlevel'"/>
-									<xforms:delete if="$binding/@level != 'otherlevel'" context="$binding" nodeset="@otherlevel"/>
+					
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Component</h3>
+							<eaditor:attributes ref="."/>
+							<xforms:trigger appearance="minimal">							
+								<xforms:label>
+									<span class="glyphicon glyphicon-remove"/>
+								</xforms:label>
+								<xforms:action ev:event="DOMActivate">	
+									<xforms:delete if="parent::ead:dsc and count(parent::node()/ead:c) = 1" nodeset="parent::ead:dsc"/>
+									<xforms:delete if="not(parent::ead:dsc) or (parent::ead:dsc and count(parent::node()/ead:c) &gt; 1)" nodeset="."/>									
 								</xforms:action>
-							</xforms:select1>
-						</div>	
-						<xforms:group ref="$binding[@level='otherlevel']">
+							</xforms:trigger>
 							<div>
-								<xforms:input ref="$binding/@otherlevel">
-									<xforms:label>Other Level</xforms:label>
-									<xforms:alert>Must be a valid nametoken</xforms:alert>
+								<xforms:select1 ref="@level">
+									<xforms:label>Level</xforms:label>
+									<xforms:itemset nodeset="instance('level-template')/level">
+										<xforms:label ref="."/>
+										<xforms:value ref="@value"/>
+									</xforms:itemset>
+									<xforms:alert>Required</xforms:alert>
+									<xforms:action ev:event="xforms-value-changed">
+										<xforms:insert context="." origin="xforms:attribute('otherlevel', '')" if="@level='otherlevel'"/>
+										<xforms:delete if="@level != 'otherlevel'" context="." nodeset="@otherlevel"/>
+									</xforms:action>
+								</xforms:select1>
+							</div>	
+							<xforms:group ref=".[@level='otherlevel']">
+								<div>
+									<xforms:input ref="@otherlevel">
+										<xforms:label>Other Level</xforms:label>
+										<xforms:alert>Must be a valid nametoken</xforms:alert>
+									</xforms:input>
+								</div>
+							</xforms:group>						
+							<div>
+								<xforms:input ref="ead:did/ead:unittitle">
+									<xforms:label>Unit Title</xforms:label>
+									<xforms:alert>Required</xforms:alert>
 								</xforms:input>
 							</div>
-						</xforms:group>						
-						<div>
-							<xforms:input ref="$binding/ead:did/ead:unittitle">
-								<xforms:label>Unit Title</xforms:label>
-								<xforms:alert>Required</xforms:alert>
-							</xforms:input>
-						</div>
-						<xforms:group ref="$binding/ead:did/ead:unitdate">
-							<eaditor:date/>
-						</xforms:group>						
-						<div>
-							<xforms:input ref="$binding/@id">
-								<xforms:label>ID</xforms:label>
-								<xforms:alert>Required</xforms:alert>
-							</xforms:input>
-						</div>	
-						<xforms:group ref="$binding[string(@audience)]">
+							<xforms:group ref="ead:did/ead:unitdate">
+								<eaditor:date/>
+							</xforms:group>						
 							<div>
-								<xforms:output ref="$binding/@audience">
-									<xforms:label>Audience</xforms:label>												
-								</xforms:output>
-							</div>
-						</xforms:group>						
-					</div>
+								<xforms:input ref="@id">
+									<xforms:label>ID</xforms:label>
+									<xforms:alert>Required</xforms:alert>
+								</xforms:input>
+							</div>	
+							<xforms:group ref=".[string(@audience)]">
+								<div>
+									<xforms:output ref="$binding/@audience">
+										<xforms:label>Audience</xforms:label>												
+									</xforms:output>
+								</div>
+							</xforms:group>						
+						</div>
+					</xforms:group>
+					
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="c-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="c-model">
 						<xforms:instance id="level-template">
 							<levels xmlns="">
 								<level value="">Select...</level>

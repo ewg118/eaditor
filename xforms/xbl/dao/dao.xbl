@@ -40,7 +40,7 @@
 					</div>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="dao-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="dao-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="daodesc-template">
 							<daodesc xxforms:exclude-result-prefixes="#all">
 								<p/>

@@ -30,7 +30,7 @@
 						
 						<xforms:group
 							ref="$binding[count(child::ead:p) &lt; 1]">
-							<div class="warning"><b>Warning:</b> Element must contain content.</div>
+							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
 						</xforms:group>
 						
 						<xforms:repeat nodeset="$binding/ead:p">
@@ -41,7 +41,7 @@
 					<xforms:model id="note-elements-model">
 						<!-- generic instances -->
 						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
-							<p/>
+							<p xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 					</xforms:model>
 				</xforms:group>

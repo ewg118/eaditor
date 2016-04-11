@@ -53,8 +53,9 @@
 								</xforms:label>
 							</xforms:trigger>
 							
-							<p class="bg-warning">Content is required.</p>
-							<div style="display:table;width:100%;">
+							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> Element must contain content.</div>
+							
+							<div>
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">
 										<xforms:label>Interface Type</xforms:label>

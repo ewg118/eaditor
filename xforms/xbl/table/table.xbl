@@ -95,7 +95,7 @@
 						</xforms:repeat>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="table-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="table-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
 							<head/>
 						</xforms:instance>

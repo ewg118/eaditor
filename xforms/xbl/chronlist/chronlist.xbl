@@ -83,8 +83,8 @@
 								</xforms:group>
 								
 								<xforms:group
-									ref=".[count(child::ead:event) &lt; 1 and count(child::ead:eventgrp) &lt; 1]">
-									<div class="warning"><b>Warning:</b> Chronology Item must contain either an Event or Event Group.</div>
+									ref=".[count(child::ead:event) &lt; 1 and count(child::ead:eventgrp) &lt; 1]">									
+									<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> Chronology Item must contain either an Event or Event Group.</div>
 								</xforms:group>
 
 
@@ -135,7 +135,7 @@
 						</xforms:repeat>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="chronlist-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="chronlist-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
 							<head/>
 						</xforms:instance>

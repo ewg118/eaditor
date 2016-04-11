@@ -848,16 +848,7 @@
 								<fr:label>Archival Description</fr:label>
 								<div class="row">
 									<div class="col-md-12">
-										<h1>Archival Description</h1>
-										<div>
-											<xforms:group ref=".[count(ead:dsc) &lt; 1]">
-												<xforms:trigger appearance="minimal">
-													<xforms:label>
-														<span class="glyphicon glyphicon-plus"></span>Description of Subordinate Components</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('dsc-template')"></xforms:insert>
-												</xforms:trigger>
-											</xforms:group>
-										</div>
+										<h1>Archival Description</h1>										
 										<div>
 											<xforms:select1 ref="@level">
 												<xforms:label>Level</xforms:label>
@@ -875,34 +866,40 @@
 									</div>
 									<div class="col-md-6">
 										<eaditor:component-level></eaditor:component-level>
-									</div>
-									<div class="col-md-12">
-										<xforms:group ref="ead:dsc">
-											<h1>Description of Subordinate Components</h1>
-											<xforms:trigger appearance="minimal">
-												<xforms:label>
-													<span class="glyphicon glyphicon-remove"></span>
-												</xforms:label>
-												<xforms:action ev:event="DOMActivate">
-													<xforms:delete nodeset="."></xforms:delete>
-												</xforms:action>
-											</xforms:trigger>
-											<div>
-												<xforms:trigger appearance="minimal">
-													<xforms:label>
-														<span class="glyphicon glyphicon-plus"></span>Component</xforms:label>
-													<xforms:insert ev:event="DOMActivate" context="." nodeset="./child::node()[last()]" origin="instance('c-template')"></xforms:insert>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:setvalue ref="ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"></xforms:setvalue>
-													</xforms:action>
-												</xforms:trigger>
-											</div>
-											<xforms:repeat nodeset="ead:c">
-												<eaditor:c></eaditor:c>
-											</xforms:repeat>
-										</xforms:group>
-									</div>
+									</div>									
 								</div>
+							</fr:tab>
+							<fr:tab id="dsc-tab">
+								<fr:label>Description of Subordinate Components</fr:label>
+								<xforms:group ref="instance('guide')/ead:archdesc">
+									<h2>Description of Subordinate Components</h2>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-remove"></span>
+										</xforms:label>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:dispatch targetid="archdesc-tab" name="fr-toggle"></xforms:dispatch>
+											<xforms:delete nodeset="ead:dsc"></xforms:delete>
+										</xforms:action>
+									</xforms:trigger>
+									<div>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"></span>Component</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<!-- insert dsc if it doesn't exist -->
+												<xforms:insert context="." nodeset="./child::node()[last()]" origin="instance('dsc-template')" if="not(ead:dsc)"></xforms:insert>
+												<xforms:insert context="ead:dsc" nodeset="./child::node()[last()]" origin="instance('c-template')"></xforms:insert>
+												<xforms:setvalue ref="ead:dsc/ead:c[last()]/@id" value="concat('c_', string(digest( string( random( true ) ), 'MD5', 'hex' )))"></xforms:setvalue>
+											</xforms:action>
+										</xforms:trigger>
+									</div>
+									<xforms:group ref="ead:dsc">
+										<xforms:repeat nodeset="ead:c">
+											<eaditor:c></eaditor:c>
+										</xforms:repeat>
+									</xforms:group>
+								</xforms:group>
 							</fr:tab>
 							<!--<fr:tab id="preview">
 							<fr:label>XML Preview</fr:label>

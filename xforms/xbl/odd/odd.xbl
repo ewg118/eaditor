@@ -36,7 +36,7 @@
 						</div>
 
 						<xforms:group ref="$binding[count(child::node()) &lt; 1]">
-							<div class="warning"><b>Warning:</b> Element must contain content.</div>
+							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:head">
@@ -82,7 +82,7 @@
 
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="odd-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="odd-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href=""/>
 						</xforms:instance>

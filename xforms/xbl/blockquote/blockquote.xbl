@@ -61,7 +61,7 @@
 
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
-							<div class="warning"><b>Warning:</b> Element must contain content.</div>
+							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:address">
@@ -89,7 +89,7 @@
 						</xforms:group>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="blockquote-elements-model" xmlns:xforms="http://www.w3.org/2002/xforms">
+					<xforms:model id="blockquote-elements-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- generic instances -->
 						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
 							<address>

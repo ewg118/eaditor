@@ -1,5 +1,5 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-otherfindaid" element="eaditor|otherfindaid">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -59,7 +59,7 @@
 						
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
-							<div class="warning"><b>Warning:</b> Element must contain content.</div>
+							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
 						</xforms:group>
 
 						<xforms:group ref="$binding/ead:head">
@@ -113,7 +113,7 @@
 						
 					<!-- ********************************************************************** -->		
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="otherfindaid-model"  xmlns:xlink="http://www.w3.org/1999/xlink">
+					<xforms:model id="otherfindaid-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="bibref-template" xxforms:exclude-result-prefixes="#all">
 							<bibref/>
 						</xforms:instance>
