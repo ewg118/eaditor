@@ -11,7 +11,7 @@
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
 					<div class="subsection">
-						<h2>Separated Material</h2>
+						<h3>Separated Material</h3>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>

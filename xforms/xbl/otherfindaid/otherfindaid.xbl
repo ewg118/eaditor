@@ -11,7 +11,7 @@
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
 					<div class="subsection">
-						<h2>Other Finding Aid</h2>
+						<h3>Other Finding Aid</h3>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>

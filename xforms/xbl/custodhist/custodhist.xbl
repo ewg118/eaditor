@@ -11,7 +11,7 @@
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
 					<div class="subsection">
-						<h2>Custodial History</h2>
+						<h3>Custodial History</h3>
 						<eaditor:attributes ref="$binding"/>
 						<xforms:trigger appearance="minimal">
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
