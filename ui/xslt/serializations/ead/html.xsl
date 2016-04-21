@@ -186,7 +186,15 @@
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:choose>
-						<xsl:when test="string(ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper)">
+						<xsl:when test="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper">
+							<xsl:choose>
+								<xsl:when test="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[@type='sort']">
+									<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[@type='sort']"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[1]"/>
+								</xsl:otherwise>
+							</xsl:choose>
 							<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
 						</xsl:when>
 						<xsl:when test="string(ead:did/ead:unittitle)">
