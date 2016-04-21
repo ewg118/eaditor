@@ -49,11 +49,11 @@
 			</xsl:if>
 
 			<!-- apply templates only to those components when the level has been enabled in the config -->
-			<xsl:apply-templates select="descendant::ead:c[boolean(index-of(/content/config/levels/level[@enabled=true()], @level)) = true()]">
+			<!--<xsl:apply-templates select="descendant::ead:c[boolean(index-of(/content/config/levels/level[@enabled=true()], @level)) = true()]">
 				<xsl:with-param name="title" select="$title"/>
 				<xsl:with-param name="recordId" select="$recordId"/>
 				<xsl:with-param name="archdesc-level" select="$archdesc-level"/>
-			</xsl:apply-templates>
+			</xsl:apply-templates>-->
 		</add>
 	</xsl:template>
 
