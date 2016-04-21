@@ -268,10 +268,10 @@
 					<span property="dcterms:title">
 						<xsl:value-of select="ead:archdesc/ead:did/ead:unittitle"/>
 					</span>
-					<xsl:if test="string(ead:archdesc/ead:did/ead:unitdate)">
+					<xsl:if test="ead:archdesc/ead:did/ead:unitdate">
 						<xsl:text>, </xsl:text>
 						<span>
-							<xsl:value-of select="ead:archdesc/ead:did/ead:unitdate"/>
+							<xsl:value-of select="string-join(ead:archdesc/ead:did/ead:unitdate, ', ')"/>
 						</span>
 					</xsl:if>
 				</h1>
