@@ -83,7 +83,7 @@
 	</xsl:template>
 
 	<!-- suppress internal non-component elements -->
-	<xsl:template match="*[not(local-name()='c') and @audience='internal']"/>
+	<xsl:template match="*[not(self::ead:eadheader)][not(local-name()='c') and @audience='internal']"/>
 
 	<xsl:template name="audience">
 		<xsl:param name="id"/>
