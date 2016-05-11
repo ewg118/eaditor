@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -461,19 +462,19 @@
 						</xforms:instance>
 
 						<!-- daodesc and associated elements -->
-						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all" xmlns:ead="urn:isbn:1-931666-22-9">
+						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
 							<daodesc/>
 						</xforms:instance>
 
-						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all" xmlns:ead="urn:isbn:1-931666-22-9">
+						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
 							<head/>
 						</xforms:instance>
 
-						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all" xmlns:ead="urn:isbn:1-931666-22-9">
+						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
 							<p/>
 						</xforms:instance>
 
-						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all" xmlns:ead="urn:isbn:1-931666-22-9">
+						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
 							<daoloc xlink:type="locator" xlink:href="" xlink:label=""/>
 						</xforms:instance>
 
