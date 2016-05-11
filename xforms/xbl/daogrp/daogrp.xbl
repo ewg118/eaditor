@@ -508,12 +508,16 @@
 						<!-- query flickr.photos.getSizes API -->
 						<xforms:submission id="query-flickr-getSizes" serialization="none" method="get"
 							action="https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
-							replace="instance" instance="flickr-sizes"/>
+							replace="instance" instance="flickr-sizes">
+							<xforms:message ev:event="xforms-submit-error" level="modal">flickr API getSizes error</xforms:message>
+						</xforms:submission>
 
 						<!-- query flickr.photos.getInfo API for title and description -->
 						<xforms:submission id="query-flickr-getInfo" serialization="none" method="get"
 							action="https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;photo_id={instance('photo_id')}&amp;api_key={instance('config')/flickr_api_key}"
-							replace="instance" instance="flickr-info"/>
+							replace="instance" instance="flickr-info">
+							<xforms:message ev:event="xforms-submit-error" level="modal">flickr API getInfo error</xforms:message>
+						</xforms:submission>
 
 						<!-- test for flickr echo -->
 						<xforms:submission id="test-for-echo" serialization="none" method="get"
