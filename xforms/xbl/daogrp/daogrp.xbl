@@ -47,7 +47,7 @@
 
 											<!-- get photo id and flickr photo info if it hasn't already been loaded -->
 											<xforms:action if="not(instance('flickr-info')/@stat = 'ok')">
-												<xforms:setvalue ref="instance('photo_id')" value="substring-before(tokenize(substring-after($binding/ead:daoloc[1]/@xlink:href, 'http://'), '/')[3],
+												<xforms:setvalue ref="instance('photo_id')" value="substring-before(tokenize(substring-after($binding/ead:daoloc[1]/@xlink:href, '://'), '/')[3],
 													'_')"/>
 												<xforms:send submission="query-flickr-getInfo"/>
 											</xforms:action>
