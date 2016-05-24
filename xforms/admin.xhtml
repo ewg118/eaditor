@@ -586,11 +586,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 
 			<xforms:submission id="save-collections" ref="instance('collections-list')" action="{instance('exist-config')/url}eaditor/collections-list.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Collections List.</xforms:message>
-				<xforms:action ev:event="xforms-submit-done">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[last()]/@name"></xforms:setvalue>
-					<xforms:send submission="save-config"></xforms:send>
-				</xforms:action>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Collections List.</xforms:message>				
 			</xforms:submission>
 			
 			<!-- delete collection-->
@@ -1205,6 +1201,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 													<xforms:action ev:event="DOMActivate">
 														<!-- save collections list, config, and XQL files -->
 														<xforms:send submission="save-collections"></xforms:send>
+														<xforms:action ev:event="xforms-submit-done">
+															<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[last()]/@name"></xforms:setvalue>
+															<xforms:send submission="save-config"></xforms:send>
+														</xforms:action>
 														<xforms:toggle case="collections-list-interface"></xforms:toggle>
 													</xforms:action>
 												</xforms:trigger>
