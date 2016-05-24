@@ -592,6 +592,12 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					<xforms:send submission="save-config"></xforms:send>
 				</xforms:action>
 			</xforms:submission>
+			
+			<!-- delete collection-->
+			<xforms:submission id="delete-collection" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}"
+				method="delete" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Collection successfully deleted.</xforms:setvalue>
+			</xforms:submission>			
 
 			<!-- loading, saving config -->
 			<xforms:submission id="load-config" serialization="none" method="get"
@@ -998,6 +1004,13 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																				<!-- load the associated config and display the EADitor editor interface -->
 																				<xforms:send submission="load-config"></xforms:send>
 																				<xforms:toggle case="eaditor-editor"></xforms:toggle>
+																			</xforms:action>
+																		</xforms:trigger>
+																		<xforms:trigger appearance="minimal">
+																			<xforms:label><span class="glyphicon glyphicon-trash"/></xforms:label>
+																			<xforms:action ev:event="DOMActivate">
+																				<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"/>
+																				<xforms:dispatch target="delete-collection-dialog" name="fr-show"></xforms:dispatch>
 																			</xforms:action>
 																		</xforms:trigger>
 																	</td>
@@ -1665,7 +1678,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
+				<fr:xforms-inspector></fr:xforms-inspector>
 			</div>
 			<!-- variables for js usage -->
 			<div style="display:none">
@@ -1682,8 +1695,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 		<fr:alert-dialog id="republish-dialog">
 			<fr:label>Republish</fr:label>
 			<fr:message>Do you want to reindex currently published finding aids?</fr:message>
-			<fr:negative-choice></fr:negative-choice>
+			<fr:negative-choice><fr:label>No</fr:label></fr:negative-choice>
 			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
 				<xforms:action ev:event="DOMActivate">
 					<xforms:send submission="republish"></xforms:send>
 					<xforms:send submission="optimize" ev:event="xforms-submit-done"></xforms:send>
@@ -1694,8 +1708,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 		<fr:alert-dialog id="unpublish-all">
 			<fr:label>Unpublish All</fr:label>
 			<fr:message>Do you want to unpublish all finding aids?</fr:message>
-			<fr:negative-choice></fr:negative-choice>
+			<fr:negative-choice><fr:label>No</fr:label></fr:negative-choice>
 			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
 				<xforms:action ev:event="DOMActivate">
 					<!-- set the deleteAll query to delete only from the current collection name -->
 					<xforms:setvalue ref="instance('deleteAll')/query" value="concat('collection-name:', instance('control-instance')/collection-name)"></xforms:setvalue>
@@ -1710,8 +1725,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 		<fr:alert-dialog id="publish-all">
 			<fr:label>Publish All</fr:label>
 			<fr:message>Do you want to publish all finding aids? This may take several minutes.</fr:message>
-			<fr:negative-choice></fr:negative-choice>
+			<fr:negative-choice><fr:label>No</fr:label></fr:negative-choice>
 			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
 				<xforms:action ev:event="DOMActivate">
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='publish-ead']"></xforms:setvalue>
 					<xforms:send submission="xquery-collection"></xforms:send>
@@ -1730,8 +1746,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 		<fr:alert-dialog id="publish-mods">
 			<fr:label>Publish MODS</fr:label>
 			<fr:message>Do you want to publish all MODS records? This may take several minutes.</fr:message>
-			<fr:negative-choice></fr:negative-choice>
+			<fr:negative-choice><fr:label>No</fr:label></fr:negative-choice>
 			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
 				<xforms:action ev:event="DOMActivate">
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='publish-mods']"></xforms:setvalue>
 					<xforms:send submission="xquery-collection"></xforms:send>
@@ -1752,8 +1769,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 		<fr:alert-dialog id="delete">
 			<fr:label>Delete</fr:label>
 			<fr:message>Are you sure you want to delete this finding aid?</fr:message>
-			<fr:negative-choice></fr:negative-choice>
+			<fr:negative-choice><fr:label>No</fr:label></fr:negative-choice>
 			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
 				<xforms:action ev:event="DOMActivate">
 					<!-- delete from exist and solr -->
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
@@ -1770,6 +1788,33 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
 					<xforms:send submission="xquery-collection"></xforms:send>
 
+					<!-- reload table -->
+					<xforms:var name="page" select="number(instance('control-instance')/page)"></xforms:var>
+					<xforms:var name="start" select="(($page - 1) * 20) + 1"></xforms:var>
+					<xforms:var name="end" select="$page * 20"></xforms:var>
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', string($start))"></xforms:setvalue>
+					<xforms:send submission="xquery-pagination"></xforms:send>
+				</xforms:action>
+			</fr:positive-choice>
+		</fr:alert-dialog>
+		<fr:alert-dialog id="delete-collection-dialog">
+			<fr:label>Delete</fr:label>
+			<fr:message>Are you sure you want to delete collection?</fr:message>
+			<fr:negative-choice><fr:label>No</fr:label></fr:negative-choice>
+			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
+				<xforms:action ev:event="DOMActivate">
+					<!-- delete from exist and solr -->
+					<xforms:setvalue ref="instance('deleteId')/query" value="concat('collection-name:&#x022;', instance('control-instance')/collection-name, '&#x022;')"></xforms:setvalue>	
+					<xforms:delete nodeset="instance('collections-list')/collection[@name=instance('control-instance')/collection-name]"/>
+					<xforms:send submission="delete-solr-doc"></xforms:send>
+					<xforms:send submission="delete-collection"></xforms:send>
+					<xforms:send submission="save-collections" ev:event="xforms-submit-done"/>
+					
+					<!-- get new numCount -->
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='collection-count']"></xforms:setvalue>
+					<xforms:send submission="xquery-collection"></xforms:send>
+					
 					<!-- reload table -->
 					<xforms:var name="page" select="number(instance('control-instance')/page)"></xforms:var>
 					<xforms:var name="start" select="(($page - 1) * 20) + 1"></xforms:var>
