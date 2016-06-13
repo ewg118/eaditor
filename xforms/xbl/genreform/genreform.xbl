@@ -76,7 +76,8 @@
 												<xforms:setvalue ref="instance('search-query')"/>
 												<!-- add attributes -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'aat')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', '')"/>
+												<xforms:setvalue ref="$binding/@source">aat</xforms:setvalue>
 												<xforms:toggle case="aat-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'lcgft'">
@@ -86,7 +87,8 @@
 												<xforms:setvalue ref="instance('search-query')"/>
 												<!-- add attributes -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'lcgft')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', '')"/>
+												<xforms:setvalue ref="$binding/@source">lcgft</xforms:setvalue>
 												<xforms:toggle case="lcgft-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">
@@ -126,6 +128,7 @@
 												<xforms:label ref="res:binding[@name='label']/res:literal"/>
 												<xforms:value ref="res:binding[@name='c']/res:uri"/>
 											</xforms:itemset>
+											<xforms:setvalue ref="instance('temp')" value="instance('sparqlResponse')//res:result[res:binding[@name='c']/res:uri = instance('temp')/@href]/res:binding[@name='def']/res:literal" ev:event="xforms-value-changed"></xforms:setvalue>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
@@ -209,6 +212,18 @@
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
+							
+							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
+								<div>
+									<xforms:output ref=".">
+										<xforms:label>Defintion</xforms:label>
+									</xforms:output>
+									<xforms:trigger appearance="minimal">
+										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+									</xforms:trigger>
+								</div>
+							</xforms:group>
 						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->
@@ -267,12 +282,13 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 PREFIX aat: <http://vocab.getty.edu/aat/>
-SELECT ?c ?label WHERE {
+SELECT ?c ?label ?def WHERE {
 ?c a gvp:Concept ;
 skos:inScheme aat: ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
-luc:term "SEARCH_QUERY" 
-FILTER langMatches(lang(?label), "en")} LIMIT 25]]>
+luc:term "SEARCH_QUERY" FILTER langMatches(lang(?label), "en")
+OPTIONAL {?c skos:scopeNote ?note .
+?note rdf:value ?def FILTER langMatches(lang(?def), "en")}} LIMIT 25]]>
 							</query>
 						</xforms:instance>
 

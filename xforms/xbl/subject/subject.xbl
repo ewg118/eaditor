@@ -114,16 +114,15 @@
 											<xforms:label>Term</xforms:label>
 											<xforms:itemset nodeset="instance('feed')//atom:entry">
 												<xforms:label ref="atom:title"/>
-												<xforms:value ref="atom:link[@rel='alternate' and not(@type)]/@href"/>
-											</xforms:itemset>
+												<xforms:value ref="atom:link[@rel='alternate' and not(@type)]/@href"/>												
+											</xforms:itemset>	
+											<xforms:setvalue ref="instance('temp')" value="instance('feed')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href = instance('temp')/@href]/atom:title" ev:event="xforms-value-changed"></xforms:setvalue>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
-												<!--<xforms:setvalue ref="$binding/@identifier" value="instance('temp')/@identifier"/>-->
-												<xforms:setvalue ref="$binding"
-													value="instance('feed')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href = instance('temp')/@href]/atom:title"/>
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -168,6 +167,18 @@
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
+							
+							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
+								<div>
+									<xforms:output ref=".">
+										<xforms:label>Defintion</xforms:label>
+									</xforms:output>
+									<xforms:trigger appearance="minimal">
+										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+									</xforms:trigger>
+								</div>
+							</xforms:group>
 						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->

@@ -176,14 +176,13 @@
 												<xforms:label ref="label"/>
 												<xforms:value ref="geonameId"/>
 											</xforms:itemset>
+											<xforms:setvalue ev:event="xforms-value-changed" ref="instance('temp')" value="instance('geonames')//geoname[geonameId = instance('temp')/@href]/label"/>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<!--<xforms:setvalue ref="$binding/@authfilenumber" value="concat('http://www.geonames.org/', instance('temp')/@href, '/')"/>-->
-												<xforms:var name="href" select="instance('temp')/@href"/>
-												<xforms:setvalue ref="$binding/@authfilenumber" value="$href"/>
-												<xforms:setvalue ref="$binding" value="instance('geonames')//geoname[geonameId = $href]/label"/>
+												<xforms:setvalue ref="$binding/@authfilenumber" value="instance('temp')/@href"/>
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -209,10 +208,8 @@
 												<xforms:label ref="res:binding[@name='label']/res:literal"/>
 												<xforms:value ref="res:binding[@name='c']/res:uri"/>
 											</xforms:itemset>
-											<xforms:action ev:event="xforms-value-changed">
-												<xforms:setvalue ref="instance('description')" value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
-													instance('temp')/@href]/res:binding[@name='scopeNote']/res:literal"/>
-											</xforms:action>
+											<xforms:setvalue ev:event="xforms-value-changed" ref="instance('temp')" value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
+												instance('temp')/@href]/res:binding[@name='def']/res:literal"/>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
@@ -223,19 +220,7 @@
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-									<xforms:group ref=".[string(instance('temp')/@href)]">
-										<div>
-											<xforms:output ref="instance('description')">
-												<xforms:label>Description</xforms:label>
-											</xforms:output>
-											<xforms:trigger appearance="xxforms:link">
-												<xforms:label>
-													<img src="/xeac/xforms/images/external.png"/>
-												</xforms:label>
-												<xforms:load ev:event="DOMActivate" show="new" ref="instance('temp')/@href"/>
-											</xforms:trigger>
-										</div>
-									</xforms:group>
+									
 								</xforms:case>
 								<xforms:case id="pleiades-search">
 									<div>
@@ -258,9 +243,8 @@
 												<xforms:label ref="rss:title"/>
 												<xforms:value ref="rss:link"/>
 											</xforms:itemset>
-											<xforms:action ev:event="xforms-value-changed">
-												<xforms:setvalue ref="instance('description')" value="instance('feed')//rss:item[rss:link = instance('temp')/@href]/rss:description"/>
-											</xforms:action>
+											<xforms:setvalue ev:event="xforms-value-changed" ref="instance('temp')" value="instance('feed')//rss:item[rss:link = instance('temp')/@href]/rss:description"/>
+											
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
@@ -269,20 +253,7 @@
 												<xforms:setvalue ref="$binding" value="instance('feed')//rss:item[rss:link = instance('temp')/@href]/rss:title"/>
 											</xforms:action>
 										</xforms:trigger>
-									</xforms:group>
-									<xforms:group ref=".[string(instance('temp')/@href)]">
-										<div>
-											<xforms:output ref="instance('description')">
-												<xforms:label>Description</xforms:label>
-											</xforms:output>
-											<xforms:trigger appearance="xxforms:link">
-												<xforms:label>
-													<img src="/xeac/xforms/images/external.png"/>
-												</xforms:label>
-												<xforms:load ev:event="DOMActivate" show="new" ref="instance('temp')/@href"/>
-											</xforms:trigger>
-										</div>
-									</xforms:group>
+									</xforms:group>									
 								</xforms:case>
 								<xforms:case id="local-autosuggest">
 									<div>
@@ -324,6 +295,18 @@
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
+							
+							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
+								<div>
+									<xforms:output ref=".">
+										<xforms:label>Defintion</xforms:label>
+									</xforms:output>
+									<xforms:trigger appearance="minimal">
+										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+									</xforms:trigger>
+								</div>
+							</xforms:group>
 						</xforms:group>
 					</xforms:group>
 					<!-- ********************************************************************** -->
@@ -472,22 +455,18 @@
 						<xforms:instance id="feed">
 							<feed xmlns=""/>
 						</xforms:instance>
-
-						<xforms:instance id="description">
-							<description xmlns=""/>
-						</xforms:instance>
-
+						
 						<!-- getty TNG instances -->
 						<xforms:instance id="sparqlQueryTemplate">
 							<query><![CDATA[PREFIX gvp: <http://vocab.getty.edu/ontology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
 PREFIX tgn: <http://vocab.getty.edu/tgn/>
-SELECT ?c ?label ?scopeNote WHERE {
+SELECT ?c ?label ?def WHERE {
 ?c a gvp:AdminPlaceConcept; skos:inScheme tgn: ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
-skos:scopeNote/rdf:value ?scopeNote ;
-luc:term "SEARCH_QUERY"} LIMIT 20]]>
+skos:scopeNote/rdf:value ?def ;
+luc:term "SEARCH_QUERY"} LIMIT 25]]>
 							</query>
 						</xforms:instance>
 						<xforms:instance id="sparqlQuery">

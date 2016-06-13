@@ -111,6 +111,7 @@
 												<xforms:label ref="res:binding[@name='label']/res:literal"/>
 												<xforms:value ref="res:binding[@name='c']/res:uri"/>
 											</xforms:itemset>
+											<xforms:setvalue ref="instance('temp')" value="instance('sparqlResponse')//res:result[res:binding[@name='c']/res:uri = instance('temp')/@href]/res:binding[@name='def']/res:literal" ev:event="xforms-value-changed"></xforms:setvalue>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
@@ -162,6 +163,18 @@
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
+							
+							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
+								<div>
+									<xforms:output ref=".">
+										<xforms:label>Defintion</xforms:label>
+									</xforms:output>
+									<xforms:trigger appearance="minimal">
+										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+									</xforms:trigger>
+								</div>
+							</xforms:group>
 						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->
@@ -219,12 +232,13 @@
 							<query><![CDATA[PREFIX gvp: <http://vocab.getty.edu/ontology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX luc: <http://www.ontotext.com/owlim/lucene#>
-SELECT ?c ?label {
+SELECT ?c ?label ?def {
 ?c a gvp:Concept; skos:inScheme aat: ;
 gvp:broaderExtended aat:300024980 ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
-luc:term "SEARCH_QUERY*"
-FILTER langMatches(lang(?label), "en")} LIMIT 25]]></query>
+luc:term "SEARCH_QUERY*" FILTER langMatches(lang(?label), "en")
+OPTIONAL {?c skos:scopeNote ?note .
+?note rdf:value ?def FILTER langMatches(lang(?def), "en")}} LIMIT 25]]></query>
 						</xforms:instance>
 
 						<xforms:instance id="sparqlQuery">

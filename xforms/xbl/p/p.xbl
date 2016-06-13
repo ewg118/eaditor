@@ -1,5 +1,5 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor">
 	<xbl:binding id="eaditor-p" element="eaditor|p">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -7,18 +7,29 @@
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
-					</xforms:var>					
-					<xforms:textarea ref="$binding">
-						<xforms:alert>Empty paragraphs are prohibited.</xforms:alert>
-						<xforms:label>Paragraph</xforms:label>
-					</xforms:textarea>
-					<xforms:trigger appearance="minimal">
-						<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-						<xforms:label>
-							<span class="glyphicon glyphicon-remove"/>
-						</xforms:label>
-					</xforms:trigger>
-					<!-- ********************************************************************** -->
+					</xforms:var>	
+					<xforms:group ref="$binding">						
+						<xforms:textarea ref=".">
+							<xforms:alert>Empty paragraphs are prohibited.</xforms:alert>
+							<xforms:label>Paragraph</xforms:label>
+						</xforms:textarea>
+						<xforms:trigger appearance="minimal">
+							<xforms:delete ev:event="DOMActivate" nodeset="."/>
+							<xforms:label><span class="glyphicon glyphicon-remove"/></xforms:label>
+						</xforms:trigger>
+						<xforms:trigger appearance="minimal">
+							<xforms:action ev:event="DOMActivate">
+								<xforms:insert nodeset="self::node()" origin="instance('p-template')"/>
+							</xforms:action>						
+							<xforms:label><span class="glyphicon glyphicon-indent-left"/></xforms:label>
+							<xforms:hint>Insert another paragraph below.</xforms:hint>
+						</xforms:trigger>
+					</xforms:group>
+					<xforms:model id="p-model" xmlns="urn:isbn:1-931666-22-9">
+						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+							<p/>
+						</xforms:instance>
+					</xforms:model>
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

@@ -146,12 +146,13 @@
 												<xforms:label ref="title"/>
 												<xforms:value ref="link"/>
 											</xforms:itemset>
+											<xforms:setvalue ref="instance('temp')" value="instance('rss')//item[link = instance('temp')/@href]/title" ev:event="xforms-value-changed"></xforms:setvalue>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding/@authfilenumber" value="substring-after(instance('temp')/@href, 'http://viaf.org/viaf/')"/>
-												<xforms:setvalue ref="$binding" value="instance('rss')//item[link = instance('temp')/@href]/title"/>
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -180,13 +181,16 @@
 												<xforms:value ref="concat('http://socialarchive.iath.virginia.edu/ark:/', substring-after(tokenize(@path, '-')[1], ':'), '/',
 													substring-before(tokenize(@path, '-')[2], '.xml'))"/>
 											</xforms:itemset>
+											<xforms:action ev:event="xforms-value-changed">.
+												<xforms:var name="path" select="concat('default:', tokenize(instance('temp')/@href, '/')[5], '-', tokenize(instance('temp')/@href, '/')[6] , '.xml')"/>
+												<xforms:setvalue ref="instance('temp')" value="instance('snac-response')//docHit[@path=$path]/meta/identity[1]"></xforms:setvalue>
+											</xforms:action>											
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:var name="path" select="concat('default:', tokenize(instance('temp')/@href, '/')[5], '-', tokenize(instance('temp')/@href, '/')[6] , '.xml')"/>
+											<xforms:action ev:event="DOMActivate">												
 												<xforms:setvalue ref="$binding/@authfilenumber" value="instance('temp')/@href"/>
-												<xforms:setvalue ref="$binding" value="instance('snac-response')//docHit[@path=$path]/meta/identity[1]"/>
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -214,12 +218,13 @@
 												<xforms:label ref="atom:title"/>
 												<xforms:value ref="atom:link[not(@rel)]/@href"/>
 											</xforms:itemset>
+											<xforms:setvalue ref="instance('temp')" value="instance('xeac-response')//atom:entry[atom:link[not(@rel)]/@href = instance('temp')/@href]/atom:title" ev:event="xforms-value-changed"></xforms:setvalue>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding/@authfilenumber" value="instance('temp')/@href"/>
-												<xforms:setvalue ref="$binding" value="instance('xeac-response')//atom:entry[atom:link[not(@rel)]/@href = instance('temp')/@href]/atom:title"/>
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -264,6 +269,18 @@
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
+							
+							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
+								<div>
+									<xforms:output ref=".">
+										<xforms:label>Defintion</xforms:label>
+									</xforms:output>
+									<xforms:trigger appearance="minimal">
+										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+									</xforms:trigger>
+								</div>
+							</xforms:group>
 						</div>
 					</xforms:group>
 
@@ -358,9 +375,10 @@
 							action="http://viaf.org/viaf/search?query=local.corporateNames+all+%22{instance('search-query')}%22&amp;maximumRecords=100&amp;httpAccept=application/rss%2bxml"
 							instance="rss" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:message if="number(instance('rss')//opensearch:totalResults) = 0" level="modal">No results found for query.</xforms:message>
-								<xforms:setvalue if="number(instance('rss')//opensearch:totalResults) != 0" ref="instance('search-results')" value="concat('Displaying first 100 of ',
-									instance('rss')//opensearch:totalResults, ' result(s).')"/>
+								<xforms:var name="total" select="number(instance('rss')//opensearch:totalResults)"/>
+								<xforms:message if="$total = 0" level="modal">No results found for query.</xforms:message>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 100" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 100" ref="instance('search-results')" value="concat('Displaying first 100 of ', $total, ' result(s).')"/>
 							</xforms:action>
 						</xforms:submission>
 
@@ -368,9 +386,10 @@
 							action="{instance('config')/xeac}feed/?q=entityType_facet:corporateBody+AND+&#x022;{instance('search-query')}&#x022;" instance="xeac-response" replace="instance">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query xEAC.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:message if="number(instance('xeac-response')//opensearch:totalResults) = 0" level="modal">No results found for query.</xforms:message>
-								<xforms:setvalue if="number(instance('xeac-response')//opensearch:totalResults) != 0" ref="instance('search-results')" value="concat('Displaying first 100 of ',
-									instance('xeac-response')//opensearch:totalResults, ' result(s).')"/>
+								<xforms:var name="total" select="number(instance('xeac-response')//opensearch:totalResults)"/>
+								<xforms:message if="$total = 0" level="modal">No results found for query.</xforms:message>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 100" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 100" ref="instance('search-results')" value="concat('Displaying first 100 of ', $total, ' result(s).')"/>
 							</xforms:action>
 						</xforms:submission>
 
@@ -379,9 +398,10 @@
 							instance="snac-response" replace="instance">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query SNAC.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:message if="number(instance('snac-response')/@totalDocs) = 0" level="modal">No results found for query.</xforms:message>
-								<xforms:setvalue if="number(instance('snac-response')/@totalDocs) != 0" ref="instance('search-results')" value="concat('Displaying first 25 of ',
-									instance('snac-response')/@totalDocs, ' result(s).')"/>
+								<xforms:var name="total" select="number(instance('snac-response')/@totalDocs)"/>
+								<xforms:message if="$total = 0" level="modal">No results found for query.</xforms:message>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 100" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 100" ref="instance('search-results')" value="concat('Displaying first 100 of ', $total, ' result(s).')"/>
 							</xforms:action>
 						</xforms:submission>
 
