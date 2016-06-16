@@ -119,6 +119,9 @@
 				<xsl:when test="@source='lcsh' or @source='lcgft'">
 					<xsl:value-of select="concat('http://id.loc.gov/authorities/', @authfilenumber)"/>
 				</xsl:when>
+				<xsl:when test="@source='lcnaf'">
+					<xsl:value-of select="concat('http://id.loc.gov/authorities/names/', @authfilenumber)"/>
+				</xsl:when>
 				<xsl:when test="@source='viaf'">
 					<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>
 				</xsl:when>
@@ -176,24 +179,12 @@
 							<xsl:when test="@authfilenumber and @source">
 								<xsl:attribute name="rdf:resource">
 									<xsl:choose>
-										<xsl:when test="@source='geonames'">
-											<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>
-										</xsl:when>
-										<xsl:when test="@source='pleiades'">
-											<xsl:value-of select="concat('http://pleiades.stoa.org/places/', @authfilenumber)"/>
-										</xsl:when>
-										<xsl:when test="@source='lcsh' or @source='lcgft'">
-											<xsl:value-of select="concat('http://id.loc.gov/authorities/', @authfilenumber)"/>
+										<xsl:when test="@source='lcnaf'">
+											<xsl:value-of select="concat('http://id.loc.gov/authorities/names/', @authfilenumber)"/>
 										</xsl:when>
 										<xsl:when test="@source='viaf'">
 											<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>
-										</xsl:when>
-										<xsl:when test="@source='aat'">
-											<xsl:value-of select="concat('http://vocab.getty.edu/aat/', @authfilenumber)"/>
-										</xsl:when>
-										<xsl:when test="@source='tgn'">
-											<xsl:value-of select="concat('http://vocab.getty.edu/tgn/', @authfilenumber)"/>
-										</xsl:when>
+										</xsl:when>										
 										<xsl:when test="contains(@authfilenumber, 'http://')">
 											<xsl:value-of select="@authfilenumber"/>
 										</xsl:when>

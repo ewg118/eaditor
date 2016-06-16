@@ -759,6 +759,11 @@
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
 					</a>
 				</xsl:when>
+				<xsl:when test="@source='lcnaf'">
+					<a href="http://id.loc.gov/authorities/names/{@authfilenumber}" title="LCNAF">
+						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+					</a>
+				</xsl:when>
 				<xsl:when test="@source='viaf'">
 					<a href="http://viaf.org/viaf/{@authfilenumber}" title="VIAF" rel="arch:correspondedWith">
 						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
