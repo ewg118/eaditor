@@ -776,6 +776,9 @@
 			<xsl:value-of select="@role"/>
 			<xsl:text>)</xsl:text>
 		</xsl:if>
+		<xsl:if test="not(position()=last())">
+			<xsl:text>, </xsl:text>
+		</xsl:if>
 	</xsl:template>
 
 

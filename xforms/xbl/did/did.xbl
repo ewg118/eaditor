@@ -136,34 +136,32 @@
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
-								<xforms:group ref=".[not(child::*)]">
-									<div>
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<span class="glyphicon glyphicon-plus"/>Corporate Name</xforms:label>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="."/>
-												<xforms:insert context="." ev:event="DOMActivate" origin="instance('corpname-template')"/>
-											</xforms:action>
-										</xforms:trigger>
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<span class="glyphicon glyphicon-plus"/>Family Name</xforms:label>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="."/>
-												<xforms:insert context="." ev:event="DOMActivate" origin="instance('famname-template')"/>
-											</xforms:action>
-										</xforms:trigger>
-										<xforms:trigger appearance="minimal">
-											<xforms:label>
-												<span class="glyphicon glyphicon-plus"/>Personal Name</xforms:label>
-											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="."/>
-												<xforms:insert context="." ev:event="DOMActivate" origin="instance('persname-template')"/>
-											</xforms:action>
-										</xforms:trigger>
-									</div>
-								</xforms:group>
+								<div>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Corporate Name</xforms:label>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:setvalue ref="." if="not(child::*)"/>
+											<xforms:insert context="." origin="instance('corpname-template')"/>
+										</xforms:action>
+									</xforms:trigger>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Family Name</xforms:label>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:setvalue ref="." if="not(child::*)"/>
+											<xforms:insert context="." origin="instance('famname-template')"/>
+										</xforms:action>
+									</xforms:trigger>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Personal Name</xforms:label>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:setvalue ref="." if="not(child::*)"/>
+											<xforms:insert context="." origin="instance('persname-template')"/>
+										</xforms:action>
+									</xforms:trigger>
+								</div>
 
 								<xforms:group ref=".[not(child::*) and string-length(.) &gt; 0]">
 									<div>
@@ -173,18 +171,18 @@
 									</div>
 								</xforms:group>
 
-								<xforms:group ref="ead:corpname">
+								<xforms:repeat ref="ead:corpname">
 									<eaditor:corpname/>
-								</xforms:group>
+								</xforms:repeat>
 
 								<!-- famname -->
-								<xforms:group ref="ead:famname">
+								<xforms:repeat ref="ead:famname">
 									<eaditor:famname/>
-								</xforms:group>
+								</xforms:repeat>
 
-								<xforms:group ref="ead:persname">
+								<xforms:repeat ref="ead:persname">
 									<eaditor:persname/>
-								</xforms:group>
+								</xforms:repeat>
 							</div>
 						</xforms:group>
 

@@ -157,15 +157,65 @@
 			<xsl:if test="@xml:lang">
 				<xsl:attribute name="xml:lang" select="@xml:lang"/>
 			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="contains(child::node()/@authfilenumber, 'http://')">
-					<xsl:attribute name="rdf:resource" select="child::node()[contains(@authfilenumber, 'http://')][1]/@authfilenumber"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="."/>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:value-of select="."/>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="ead:origination">
+		<xsl:choose>
+			<xsl:when test="child::*">
+				<xsl:for-each select="child::*">
+					<dcterms:creator>
+						<xsl:if test="@xml:lang">
+							<xsl:attribute name="xml:lang" select="@xml:lang"/>
+						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="matches(@authfilenumber, 'https?://')">
+								<xsl:attribute name="rdf:resource" select="@authfilenumber"/>
+							</xsl:when>
+							<xsl:when test="@authfilenumber and @source">
+								<xsl:attribute name="rdf:resource">
+									<xsl:choose>
+										<xsl:when test="@source='geonames'">
+											<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>
+										</xsl:when>
+										<xsl:when test="@source='pleiades'">
+											<xsl:value-of select="concat('http://pleiades.stoa.org/places/', @authfilenumber)"/>
+										</xsl:when>
+										<xsl:when test="@source='lcsh' or @source='lcgft'">
+											<xsl:value-of select="concat('http://id.loc.gov/authorities/', @authfilenumber)"/>
+										</xsl:when>
+										<xsl:when test="@source='viaf'">
+											<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>
+										</xsl:when>
+										<xsl:when test="@source='aat'">
+											<xsl:value-of select="concat('http://vocab.getty.edu/aat/', @authfilenumber)"/>
+										</xsl:when>
+										<xsl:when test="@source='tgn'">
+											<xsl:value-of select="concat('http://vocab.getty.edu/tgn/', @authfilenumber)"/>
+										</xsl:when>
+										<xsl:when test="contains(@authfilenumber, 'http://')">
+											<xsl:value-of select="@authfilenumber"/>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="."/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</dcterms:creator>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<dcterms:creator>
+					<xsl:if test="@xml:lang">
+						<xsl:attribute name="xml:lang" select="@xml:lang"/>
+					</xsl:if>
+					<xsl:value-of select="."/>
+				</dcterms:creator>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="ead:daogrp">		
