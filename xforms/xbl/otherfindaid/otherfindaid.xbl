@@ -1,5 +1,6 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
+	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-otherfindaid" element="eaditor|otherfindaid">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,124 +10,239 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-						
-					<div class="subsection">
-						<h3>Other Finding Aid</h3>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
 
-						<!-- include generic triggers -->
-						<eaditor:generic-elements ref="$binding"/>
-						
-						<div>
-							<span>Specific Elements: </span>
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Bibliographic Reference</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding"
-									nodeset="child::node()[last()]" origin="instance('bibref-template')"/>
-							</xforms:trigger>
-							<xforms:group ref="$binding[count(ead:extref) &lt; 1]">
-								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<span class="glyphicon glyphicon-plus"/>Extended Reference</xforms:label>
-									<xforms:insert ev:event="DOMActivate" context="$binding"
-										nodeset="child::node()[last()]" origin="instance('extref-template')"/>
-								</xforms:trigger>
+
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<!-- handle file uploads -->
+							<xforms:group ref=".[@type='eaditor_upload']">
+								<h3>Container List File</h3>
+								<xforms:group ref=".[string(ead:bibref/ead:extptr/@xlink:href)]">
+									<div>
+										<h4>Media <small>
+											<!--<xforms:trigger appearance="minimal">
+												<xforms:label><span class="glyphicon glyphicon-new-window"></span></xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:setvalue ref="instance('control-instance')/media_url"
+														value="concat(instance('config')/url, instance('doc')/mods:mods/mods:location/mods:url)"></xforms:setvalue>
+													<xforms:load ref="instance('control-instance')/media_url"></xforms:load>
+												</xforms:action>
+											</xforms:trigger>-->
+												<xforms:trigger appearance="minimal">
+													<xforms:label><span class="glyphicon glyphicon-remove"/></xforms:label>
+													<xforms:dispatch ev:event="DOMActivate" target="delete-document-dialog" name="fr-show"/>
+												</xforms:trigger>
+											</small>
+										</h4>
+									</div>
+									<div>
+										<xforms:output ref="ead:bibref/ead:extptr/@xlink:href">
+											<xforms:label>URL</xforms:label>
+										</xforms:output>
+									</div>
+									<div>
+										<xforms:output ref="ead:bibref/ead:extptr/@xlink:role">
+											<xforms:label>Content Type</xforms:label>
+										</xforms:output>
+									</div>
+								</xforms:group>
+								<xforms:group ref=".[not(string(ead:bibref/ead:extptr/@xlink:href))]">
+									<h4>Upload</h4>
+									<fr:upload ref="instance('file')">
+										<xforms:filename ref="@filename"/>
+										<xforms:mediatype ref="@mediatype"/>
+										<xxforms:size ref="@size"/>
+									</fr:upload>
+									<br/>
+									<xforms:trigger>
+										<xforms:label>Upload</xforms:label>
+										<xforms:action ev:event="DOMActivate">
+											<xforms:send submission="upload-file"/>
+											<!--get the temp file written to disk, and move it into the docs folder in the etdpub app directory -->
+											<xforms:action ev:event="xforms-submit-done">
+												<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 12), '.',
+													lower-case(tokenize(instance('file')/@filename, '\.')[last()]))"/>
+
+												<xforms:setvalue ref="instance('generator-config')/url" value="instance('file')"/>
+												<xforms:setvalue ref="instance('generator-config')/content-type" value="instance('file')/@mediatype"/>
+												<xforms:setvalue ref="instance('serializer-config')/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'),
+													'/', $filename)"/>
+												<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/move-file.xpl', ('generator-config',
+													'serializer-config'), (instance('generator-config'), instance('serializer-config')), 'data')"/>
+												<!-- set the data within the EAD document -->
+												<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:href" value="$filename"/>
+												<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:role" value="instance('file')/@mediatype"/>
+											</xforms:action>
+										</xforms:action>
+									</xforms:trigger>
+								</xforms:group>
 							</xforms:group>
-							<xforms:group
-								ref="$binding[count(ead:linkgrp) &lt; 1 and count(ead:extref) &lt; 1 and count(ead:ref) &lt; 1]">
+
+							<xforms:group ref=".[not(@type='eaditor_upload')]">
+								<h3>Other Finding Aid</h3>
 								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 									<xforms:label>
-										<span class="glyphicon glyphicon-plus"/>Linking Group</xforms:label>
-									<xforms:insert ev:event="DOMActivate" context="$binding"
-										nodeset="child::node()[last()]" origin="instance('linkgrp-template')"/>
+										<span class="glyphicon glyphicon-remove"/>
+									</xforms:label>
 								</xforms:trigger>
-							</xforms:group>
-							<xforms:group ref="$binding[count(ead:ref) &lt; 1]">
-								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<span class="glyphicon glyphicon-plus"/>Reference</xforms:label>
-									<xforms:insert ev:event="DOMActivate" context="$binding"
-										nodeset="child::node()[last()]" origin="instance('ref-template')"/>
-								</xforms:trigger>
+
+								<!-- include generic triggers -->
+								<eaditor:generic-elements ref="$binding"/>
+
+								<div>
+									<span>Specific Elements: </span>
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Bibliographic Reference</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('bibref-template')"/>
+									</xforms:trigger>
+									<xforms:group ref="$binding[count(ead:extref) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Extended Reference</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('extref-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:group ref="$binding[count(ead:linkgrp) &lt; 1 and count(ead:extref) &lt; 1 and count(ead:ref) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Linking Group</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('linkgrp-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:group ref="$binding[count(ead:ref) &lt; 1]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Reference</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('ref-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</div>
+
+								<xforms:group ref="$binding[count(child::node()) &lt; 1]">
+									<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> Element must contain content.</div>
+								</xforms:group>
+
+								<xforms:group ref="$binding/ead:head">
+									<eaditor:head/>
+								</xforms:group>
+
+								<xforms:repeat nodeset="$binding/ead:address">
+									<eaditor:address/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:bibref">
+									<eaditor:bibref/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:blockquote">
+									<eaditor:blockquote/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:chronlist">
+									<eaditor:chronlist/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:extref">
+									<eaditor:extref/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:linkgrp">
+									<eaditor:linkgrp/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:list">
+									<eaditor:list/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:note">
+									<eaditor:note/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:p">
+									<eaditor:p/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:ref">
+									<eaditor:ref/>
+								</xforms:repeat>
+
+								<xforms:repeat nodeset="$binding/ead:table">
+									<eaditor:table/>
+								</xforms:repeat>
 							</xforms:group>
 						</div>
-						
-						<xforms:group
-							ref="$binding[count(child::node()) &lt; 1]">
-							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
-						</xforms:group>
 
-						<xforms:group ref="$binding/ead:head">
-							<eaditor:head/>
-						</xforms:group>
-						
-						<xforms:repeat nodeset="$binding/ead:address">
-							<eaditor:address/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:bibref">
-							<eaditor:bibref/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:blockquote">
-							<eaditor:blockquote/>
-						</xforms:repeat>
-												
-						<xforms:repeat nodeset="$binding/ead:chronlist">
-							<eaditor:chronlist/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:extref">
-							<eaditor:extref/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:linkgrp">
-							<eaditor:linkgrp/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:list">
-							<eaditor:list/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:note">
-							<eaditor:note/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:p">
-							<eaditor:p/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:ref">
-							<eaditor:ref/>
-						</xforms:repeat>
+						<fr:alert-dialog id="delete-document-dialog">
+							<fr:label>Delete Document</fr:label>
+							<fr:message>Are you sure you want to delete the document file?</fr:message>
+							<fr:positive-choice>
+								<fr:label>Yes</fr:label>
+								<xforms:action ev:event="DOMActivate">
+									<!-- delete the file -->
+									<xforms:setvalue ref="instance('delete-config')/delete/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'), '/',
+										$binding/ead:bibref/ead:extptr/@xlink:href)"/>
+									<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/delete-document.xpl', 'configuration', instance('delete-config'),
+										'data')"/>
+									<xforms:delete nodeset="$binding"/>
+								</xforms:action>
+							</fr:positive-choice>
+							<fr:negative-choice>
+								<fr:label>No</fr:label>
+							</fr:negative-choice>
+						</fr:alert-dialog>
+					</xforms:group>
 
-						<xforms:repeat nodeset="$binding/ead:table">
-							<eaditor:table/>
-						</xforms:repeat>
-					</div>
-						
-					<!-- ********************************************************************** -->		
+					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="otherfindaid-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="otherfindaid-model">
 						<xforms:instance id="bibref-template" xxforms:exclude-result-prefixes="#all">
-							<bibref/>
+							<bibref xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="extref-template" xxforms:exclude-result-prefixes="#all">
-							<extref linktype="simple" actuate="onrequest" xlink:href=""/>
+							<extref linktype="simple" actuate="onrequest" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="linkgrp-template" xxforms:exclude-result-prefixes="#all">
 							<linkgrp/>
 						</xforms:instance>
 						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
-							<ref linktype="simple" actuate="onrequest" target=""/>
+							<ref linktype="simple" actuate="onrequest" target="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-					</xforms:model>					
+
+						<!-- upload instances -->
+						<xforms:instance id="file">
+							<!-- Start with placeholders for three files -->
+							<file xmlns="" xsi:type="xs:anyURI" filename="" mediatype="" size="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+						</xforms:instance>
+
+						<xforms:instance id="serializer-config">
+							<config xmlns="">
+								<url/>
+								<make-directories>true</make-directories>
+							</config>
+						</xforms:instance>
+
+						<xforms:instance id="generator-config">
+							<config xmlns="">
+								<url/>
+								<mode>binary</mode>
+								<content-type/>
+							</config>
+						</xforms:instance>
+
+						<xforms:instance id="delete-config">
+							<config xmlns="">
+								<delete>
+									<url/>
+								</delete>
+							</config>
+						</xforms:instance>
+
+						<xforms:instance id="dump">
+							<dump xmlns=""/>
+						</xforms:instance>
+					</xforms:model>
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>
