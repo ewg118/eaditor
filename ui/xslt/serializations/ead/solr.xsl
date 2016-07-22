@@ -3,7 +3,7 @@
 	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:datetime="http://exslt.org/dates-and-times"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
 
-	<xsl:param name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
+	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
 	
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>

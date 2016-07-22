@@ -101,6 +101,10 @@ div.cchild{
 .display-thumb{
 	height:160px;
 }
+.doc-icon{
+	vertical-align:bottom;
+	margin-left:10px;
+}
 /*
   ****************************************
   SEARCH PAGE

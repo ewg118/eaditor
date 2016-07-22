@@ -127,6 +127,7 @@
 	
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
+	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
 	
 	<!-- url params -->
 	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
@@ -375,22 +376,64 @@
 					<xsl:otherwise>Descriptive Identification</xsl:otherwise>
 				</xsl:choose>
 			</h2>
-			<dl class="dl-horizontal">
-				<xsl:apply-templates select="ead:unitid"/>
-				<xsl:apply-templates select="ead:container"/>
-				<xsl:apply-templates select="ead:repository"/>
-				<xsl:apply-templates select="ead:physdesc/ead:extent"/>
-				<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
-				<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
-				<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
-				<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
-				<xsl:apply-templates select="ead:physloc"/>
-				<xsl:apply-templates select="ead:langmaterial"/>
-				<xsl:apply-templates select="ead:materialspec"/>
-				<xsl:apply-templates select="ead:abstract"/>
-				<xsl:apply-templates select="ead:note"/>
-			</dl>
+			
+			<xsl:choose>
+				<xsl:when test="$upload = true()">
+					<xsl:variable name="content-type" select="parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
+					
+					<div class="col-md-8">
+						<xsl:call-template name="did-dl"/>
+					</div>
+					<div class="col-md-4">
+						<div class="highlight">
+							<h3>Download Container List</h3>
+							<h4>
+								<a href="{$include_path}uploads/{$collection-name}/{parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href}" itemprop="url">
+									<xsl:choose>
+										<xsl:when test="$content-type='application/pdf'">
+											<img src="{$include_path}ui/images/adobe.png" alt="PDF" class="doc-icon"/>
+										</xsl:when>
+										<xsl:when test="contains($content-type, 'oasis') or contains($content-type, 'sun')">
+											<img src="{$include_path}ui/images/writer.png" alt="LibreOffice Writer" class="doc-icon"/>
+										</xsl:when>
+										<xsl:when test="contains($content-type, 'word') or contains($content-type, 'document')">
+											<img src="{$include_path}ui/images/word.png" alt="Microsoft Word" class="doc-icon"/>
+										</xsl:when>
+										<xsl:when test="contains($content-type, 'excel') or contains($content-type, 'sheet')">
+											<img src="{$include_path}ui/images/excel.png" alt="Microsoft Excel" class="doc-icon"/>
+										</xsl:when>										
+										<xsl:otherwise>
+											<xsl:value-of select="$content-type"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</a>
+							</h4>
+						</div>
+					</div>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="did-dl"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</div>
+	</xsl:template>
+	
+	<xsl:template name="did-dl">
+		<dl class="dl-horizontal">
+			<xsl:apply-templates select="ead:unitid"/>
+			<xsl:apply-templates select="ead:container"/>
+			<xsl:apply-templates select="ead:repository"/>
+			<xsl:apply-templates select="ead:physdesc/ead:extent"/>
+			<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
+			<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
+			<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
+			<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
+			<xsl:apply-templates select="ead:physloc"/>
+			<xsl:apply-templates select="ead:langmaterial"/>
+			<xsl:apply-templates select="ead:materialspec"/>
+			<xsl:apply-templates select="ead:abstract"/>
+			<xsl:apply-templates select="ead:note"/>
+		</dl>
 	</xsl:template>
 	
 	<xsl:template name="archdesc-images">

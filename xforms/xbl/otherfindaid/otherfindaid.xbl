@@ -20,14 +20,6 @@
 								<xforms:group ref=".[string(ead:bibref/ead:extptr/@xlink:href)]">
 									<div>
 										<h4>Media <small>
-											<!--<xforms:trigger appearance="minimal">
-												<xforms:label><span class="glyphicon glyphicon-new-window"></span></xforms:label>
-												<xforms:action ev:event="DOMActivate">
-													<xforms:setvalue ref="instance('control-instance')/media_url"
-														value="concat(instance('config')/url, instance('doc')/mods:mods/mods:location/mods:url)"></xforms:setvalue>
-													<xforms:load ref="instance('control-instance')/media_url"></xforms:load>
-												</xforms:action>
-											</xforms:trigger>-->
 												<xforms:trigger appearance="minimal">
 													<xforms:label><span class="glyphicon glyphicon-remove"/></xforms:label>
 													<xforms:dispatch ev:event="DOMActivate" target="delete-document-dialog" name="fr-show"/>
@@ -37,8 +29,16 @@
 									</div>
 									<div>
 										<xforms:output ref="ead:bibref/ead:extptr/@xlink:href">
-											<xforms:label>URL</xforms:label>
+											<xforms:label>File</xforms:label>
 										</xforms:output>
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('dump'), 'data')"></xforms:insert>
+												<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', xxforms:get-session-attribute('collection-name'), '/', $binding/ead:bibref/ead:extptr/@xlink:href)"/>
+												<xforms:load ref="instance('control-instance')/stream-url"></xforms:load>
+											</xforms:action>
+										</xforms:trigger>
 									</div>
 									<div>
 										<xforms:output ref="ead:bibref/ead:extptr/@xlink:role">
@@ -211,6 +211,12 @@
 						</xforms:instance>
 
 						<!-- upload instances -->
+						<xforms:instance id="control-instance" xxforms:exclude-result-prefixes="#all">
+							<controls xmlns="">
+								<stream-url/>
+							</controls>
+						</xforms:instance>
+						
 						<xforms:instance id="file">
 							<!-- Start with placeholders for three files -->
 							<file xmlns="" xsi:type="xs:anyURI" filename="" mediatype="" size="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
@@ -241,6 +247,10 @@
 
 						<xforms:instance id="dump">
 							<dump xmlns=""/>
+						</xforms:instance>
+						
+						<xforms:instance id="request">
+							<request xmlns=""/>
 						</xforms:instance>
 					</xforms:model>
 				</xforms:group>
