@@ -57,9 +57,9 @@
 					<status></status>
 					<url/>
 					<!-- Solr file indexing -->
-					<working/>
 					<stream-url/>
 					<content-type/>
+					<new>true</new>
 				</controls>
 			</xforms:instance>
 
@@ -101,6 +101,10 @@
 			<!-- Instance for Solr commit-->
 			<xforms:instance id="sendCommit">
 				<commit></commit>
+			</xforms:instance>
+			
+			<xforms:instance id="request">
+				<request xmlns=""></request>
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
@@ -336,7 +340,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			</xforms:bind>
 			
 			<xforms:bind nodeset="instance('control-instance')">
-				
+				<xforms:bind nodeset="new" type="xs:boolean"/>
 			</xforms:bind>
 
 			<!-- bind tabs -->
@@ -423,14 +427,16 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
 					<!-- post doc to solr -->
-					<xforms:action if="instance('guide')/ead:ead/ead:archdesc/ead:dao[@type='eaditor_upload]">
+					<xforms:var name="filename" select="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href"/>
+					<xforms:action if="string($filename)">
 						<!-- set the document URL -->
-						<xforms:setvalue ref="instance('control-instance')/stream_url"
-							value="concat(instance('control-instance')/url, 'uploads/', instance('control-instance')/collection-name, '/', instance('guide')/ead:ead/ead:archdesc/ead:dao[@type='eaditor_upload]/@xlink:href)"></xforms:setvalue>
+						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+						<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', instance('control-instance')/collection-name, '/', $filename)"/>
+						<xforms:setvalue ref="instance('control-instance')/content-type" value="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
 						
 						<xforms:send submission="put-document"></xforms:send>
 					</xforms:action>
-					<xforms:action if="not(instance('guide')/ead:ead/ead:archdesc/ead:dao[@type='eaditor_upload])">
+					<xforms:action if="not(string($filename))">
 						<xforms:send submission="doc-to-solr"></xforms:send>
 					</xforms:action>
 					
@@ -460,17 +466,16 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
 			
+			<!-- post document file to Solr for fulltext indexing -->
 			<xforms:submission id="put-document" ref="instance('dump')" method="post" replace="none"
-				resource="instance('config')/solr_published}update/extract?literal.id={instance('guide')/ead:eadheader/ead:eadid}&amp;stream.url={instance('control-instance')/stream_url}&amp;fmap.content=text&amp;fmap.date=timestamp&amp;commit=true">
+				resource="{instance('config')/solr_published}update/extract?literal.id={instance('guide')/ead:eadheader/ead:eadid}&amp;stream.url={instance('control-instance')/stream-url}&amp;fmap.content=text&amp;fmap.date=timestamp&amp;commit=true">
 				<xforms:header>
 					<xforms:name>Content-type</xforms:name>
-					<xforms:value ref="instance('control-instance')/content_type"></xforms:value>
+					<xforms:value ref="instance('control-instance')/content-type"></xforms:value>
 				</xforms:header>
-				<xforms:setvalue ev:event="xforms-submit" ref="instance('control-instance')/working" value="true()"></xforms:setvalue>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to index the document file.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">Document successfully saved to Solr.</xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/working" value="false()"></xforms:setvalue>
 					<xforms:send submission="doc-to-solr"></xforms:send>
 				</xforms:action>
 			</xforms:submission>
@@ -1221,11 +1226,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 									</fr:alert-dialog>
 								</xforms:group>
 							</fr:tab>
-							<fr:tab id="preview">
+							<!--<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
 								<fr:xforms-inspector/>
-							</fr:tab>
+							</fr:tab>-->
 							<!--**************************************** END ARCHDESC **********************************-->
 						</fr:tabview>
 					</div>

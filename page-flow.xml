@@ -101,7 +101,6 @@
 	<page path="/eaditor/[^\/]+/maps" model="xpl/models/solr/maps.xpl" view="xpl/views/pages/maps.xpl"/>
 	<page path="/eaditor/[^\/]+/maps/fullscreen" model="xpl/models/solr/maps.xpl" view="xpl/views/pages/maps-fullscreen.xpl"/>
 
-
 	<!-- Services -->
 	<!-- Atom feed -->
 	<page path="/eaditor/[^\/]+/feed/" model="xpl/models/solr/feed.xpl" view="xpl/views/serializations/solr/atom.xpl"/>

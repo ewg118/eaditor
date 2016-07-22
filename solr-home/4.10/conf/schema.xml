@@ -49,12 +49,12 @@
 	<field name="_version_" type="long" indexed="true" stored="true"/>
 
 	<!-- EADitor fields -->
-	<field name="id" type="string" indexed="true" stored="true" required="true"/>
+	<field name="id" type="string" indexed="true" required="true" stored="true" multiValued="false"/>
 	<field name="cid" type="string" indexed="true" stored="true"/>
 	<field name="collection-name" type="string" indexed="true" stored="true"/>
 	<field name="recordId" type="string" indexed="true" stored="true"/>
 	<field name="lang" type="string" indexed="true" stored="true"/>
-	<field name="timestamp" type="date" stored="true"/>
+	<field name="timestamp" type="date" indexed="true" stored="true"/>
 
 	<!-- displayable fields, sometimes used for sorting -->
 	<dynamicField name="*_display" type="string" indexed="true" stored="true"/>
@@ -94,8 +94,14 @@
 
 	<!-- OAI-PMH -->
 	<field name="oai_id" type="string" indexed="true" stored="true"/>
+	
+	<!-- ignored meta from Tika (document indexing) -->
+	<dynamicField name="ignored_*" type="ignored"/>
+	<field name="title" type="string" indexed="true" stored="true"/>
+	<field name="author" type="string" indexed="true" stored="true" />
+	<field name="date" type="string" indexed="true" stored="true" />
 
-	<field name="text" type="text_general" indexed="true" stored="false" multiValued="false"/>
+	<field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
 	<uniqueKey>id</uniqueKey>
 

@@ -460,6 +460,15 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 			<xforms:instance id="request">
 				<request xmlns=""></request>
 			</xforms:instance>
+			
+			<!-- uploaded document deletion -->
+			<xforms:instance id="delete-config">
+				<config xmlns="">
+					<delete>
+						<url/>
+					</delete>
+				</config>
+			</xforms:instance>
 
 			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('control-instance')">
@@ -827,16 +836,14 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 			
 			<!-- uplaod file -->
 			<xforms:submission id="put-document" ref="instance('dump')" method="post" replace="none"
-				resource="instance('config')/solr_published}update/extract?literal.id={instance('control-instance')/id}&amp;stream.url={instance('control-instance')/stream_url}&amp;fmap.content=text&amp;fmap.date=timestamp&amp;commit=true">
+				resource="{instance('config')/solr_published}update/extract?literal.id={instance('control-instance')/id}&amp;stream.url={instance('control-instance')/stream-url}&amp;fmap.content=text&amp;fmap.date=timestamp&amp;commit=true">
 				<xforms:header>
 					<xforms:name>Content-type</xforms:name>
-					<xforms:value ref="instance('control-instance')/content_type"></xforms:value>
+					<xforms:value ref="instance('control-instance')/content-type"></xforms:value>
 				</xforms:header>
-				<!--<xforms:setvalue ev:event="xforms-submit" ref="instance('control-instance')/working" value="true()"></xforms:setvalue>-->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to index the document file.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">Document successfully saved to Solr.</xforms:setvalue>
-					<!--<xforms:setvalue ref="instance('control-instance')/working" value="false()"></xforms:setvalue>-->
 					<xforms:send submission="doc-to-solr"></xforms:send>
 				</xforms:action>
 			</xforms:submission>
@@ -1671,7 +1678,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																		<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template')/query[@id=$type], 'URI', $uri)"></xforms:setvalue>
 																		<xforms:send submission="delete-graph"></xforms:send>
 																		<!-- delete from solr -->
-																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
+																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('id:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
 																		<xforms:send submission="delete-solr-doc"></xforms:send>
 																		<!-- delete from triplestore -->
 																		<xforms:setvalue ref="." value="false()"></xforms:setvalue>
@@ -1683,13 +1690,25 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																	<xforms:label><span class="glyphicon glyphicon-{if (.=true()) then 'ok' else 'unchecked'}"></span></xforms:label>
 																	<xforms:action ev:event="DOMActivate">
 																		<xforms:var name="val" select="." as="xs:boolean"></xforms:var>
+																		
 																		<!-- publish the record if the box is checked -->
 																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
+																		<xforms:var name="filename" select="instance('pagination-result')//record[id=$id]/upload/file"/>
+																		
 																		<!-- post to solr -->
-																		<xforms:send submission="doc-to-solr"></xforms:send>
+																		<xforms:action if="string($filename)">
+																			<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+																			<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', instance('control-instance')/collection-name, '/', $filename)"/>
+																			<xforms:setvalue ref="instance('control-instance')/content-type" value="instance('pagination-result')//record[id=$id]/upload/content-type"/>
+																			<xforms:send submission="put-document"></xforms:send>
+																		</xforms:action>
+																		<xforms:action if="not(string($filename))">
+																			<xforms:send submission="doc-to-solr"></xforms:send>
+																		</xforms:action>
+																		
 																		<xforms:send submission="commit"></xforms:send>
 																		<!-- post to SPARQL endpoint, if it exists -->
-																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
+																		<!--<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>-->
 																		<xforms:setvalue ref="." value="true()"></xforms:setvalue>
 																	</xforms:action>
 																</xforms:trigger>
@@ -1720,7 +1739,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<fr:xforms-inspector></fr:xforms-inspector>
+				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
 			</div>
 			<!-- variables for js usage -->
 			<div style="display:none">
@@ -1825,10 +1844,18 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 			<fr:positive-choice>
 				<fr:label>Yes</fr:label>
 				<xforms:action ev:event="DOMActivate">
+					<xforms:var name="filename" select="instance('pagination-result')//record[id=instance('control-instance')/id]/upload/file"/>
+					
 					<!-- delete from exist and solr -->
 					<xforms:setvalue ref="instance('deleteId')/query" value="concat('recordId:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
 					<xforms:send submission="delete-doc"></xforms:send>
 					<xforms:send submission="delete-solr-doc"></xforms:send>
+					
+					<!-- delete associated file, if applicable -->
+					<xforms:action if="string($filename)">
+						<xforms:setvalue ref="instance('delete-config')/delete/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'), '/', $filename)"/>
+						<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/delete-document.xpl', 'configuration', instance('delete-config'), 'data')"/>
+					</xforms:action>					
 
 					<!-- delete from triplestore -->
 					<!-- set URI for object, execute SPARQL/Update query to purge triples -->

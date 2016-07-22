@@ -2,14 +2,15 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:datetime="http://exslt.org/dates-and-times"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
-	
-	<xsl:include href="../../functions.xsl"/>
+
+	<xsl:param name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
 	
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
+	
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
@@ -79,22 +80,37 @@
 		<doc>
 			<field name="id">
 				<xsl:value-of select="$id"/>
-			</field>
+			</field>			
 			<field name="recordId">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="$recordId"/>
 			</field>
 			<field name="collection-name">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="$collection-name"/>
 			</field>
 			<xsl:if test="local-name()='c'">
 				<field name="cid">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="$id"/>
 				</field>
 			</xsl:if>
 			<field name="level_facet">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="if (local-name()='c') then @level else ead:archdesc/@level"/>
 			</field>
 			<field name="oai_id">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:text>oai:</xsl:text>
 				<xsl:value-of select="substring-before(substring-after($url, 'http://'), '/olr')"/>
 				<xsl:text>:</xsl:text>
@@ -105,6 +121,9 @@
 			<xsl:for-each select="ancestor::ead:c">
 				<xsl:sort select="position()" data-type="number" order="descending"/>
 				<field name="dsc_hier">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="position()"/>
 					<xsl:text>|</xsl:text>
 					<xsl:value-of select="concat($recordId, '/', @id)"/>
@@ -117,6 +136,9 @@
 			<!-- if the doc is a component, added dsc_hier field for the archdesc -->
 			<xsl:if test="local-name()='c'">
 				<field name="dsc_hier">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="count(ancestor::ead:c) + 1"/>
 					<xsl:text>|</xsl:text>
 					<xsl:value-of select="$recordId"/>
@@ -129,9 +151,15 @@
 
 			<xsl:if test="string(normalize-space(//ead:publicationstmt/ead:publisher))">
 				<field name="publisher_display">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
 				</field>
 				<field name="agency_facet">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="normalize-space(//ead:publicationstmt/ead:publisher)"/>
 				</field>
 			</xsl:if>
@@ -149,6 +177,9 @@
 			<!-- facets -->
 			<xsl:if test="string(normalize-space(//ead:eadid/@mainagencycode))">
 				<field name="agencycode_facet">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="normalize-space(//ead:eadid/@mainagencycode)"/>
 				</field>
 			</xsl:if>
@@ -161,6 +192,9 @@
 			<xsl:apply-templates select="descendant::ead:archdesc/ead:did/ead:daogrp"/>
 
 			<field name="timestamp">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:variable name="timestamp" select="datetime:dateTime()"/>
 				<xsl:choose>
 					<xsl:when test="contains($timestamp, 'Z')">
@@ -173,6 +207,9 @@
 			</field>
 
 			<field name="text">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">add</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="@id"/>
 				<xsl:text> </xsl:text>
 				<xsl:for-each select="descendant-or-self::node()">
@@ -189,9 +226,15 @@
 
 	<xsl:template match="ead:daogrp">
 		<field name="collection_thumb">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
 			<xsl:value-of select="ead:daoloc[@xlink:label='Thumbnail']/@xlink:href"/>
 		</field>
 		<field name="collection_reference">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
 			<xsl:choose>
 				<!-- display Medium primarily, Small secondarily -->
 				<xsl:when test="string(ead:daoloc[@xlink:label='Medium']/@xlink:href)">
@@ -202,19 +245,25 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</field>
-		<xsl:if test="contains(ead:daoloc[@xlink:label='Thumbnail']/@xlink:href, 'flickr.com')">
+		<!--<xsl:if test="contains(ead:daoloc[@xlink:label='Thumbnail']/@xlink:href, 'flickr.com')">
 			<field name="flickr_uri">
 				<xsl:variable name="photo_id" select="substring-before(tokenize(ead:daoloc[@xlink:label='Thumbnail']/@xlink:href, '/')[last()], '_')"/>
 				<xsl:value-of select="eaditor:get_flickr_uri($photo_id)"/>
 			</field>
-		</xsl:if>
+		</xsl:if>-->
 	</xsl:template>
 
 	<xsl:template match="ead:corpname | ead:famname | ead:genreform | ead:geogname | ead:language | ead:persname | ead:subject">
 		<field name="{local-name()}_facet">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
 			<xsl:value-of select="normalize-space(.)"/>
 		</field>
 		<field name="{local-name()}_text">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
 			<xsl:value-of select="normalize-space(.)"/>
 		</field>
 
@@ -224,6 +273,9 @@
 			<xsl:choose>
 				<xsl:when test="@source='geonames'">
 					<field name="georef">
+						<xsl:if test="$upload = true()">
+							<xsl:attribute name="update">set</xsl:attribute>
+						</xsl:if>
 						<xsl:value-of select="$authfilenumber"/>
 						<xsl:text>|</xsl:text>
 						<xsl:value-of select="normalize-space(.)"/>
@@ -233,6 +285,9 @@
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
 					<field name="georef">
+						<xsl:if test="$upload = true()">
+							<xsl:attribute name="update">set</xsl:attribute>
+						</xsl:if>
 						<xsl:value-of select="$authfilenumber"/>
 						<xsl:text>|</xsl:text>
 						<xsl:value-of select="normalize-space(.)"/>
@@ -273,10 +328,16 @@
 
 			<xsl:if test="string($resource)">
 				<field name="{local-name()}_uri">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="$resource"/>
 				</field>
 				<xsl:if test="@source='pleiades'">
 					<field name="pleiades_uri">
+						<xsl:if test="$upload = true()">
+							<xsl:attribute name="update">set</xsl:attribute>
+						</xsl:if>
 						<xsl:value-of select="$resource"/>
 					</field>
 				</xsl:if>
@@ -287,14 +348,29 @@
 
 	<xsl:template match="ead:did">
 		<field name="unittitle_display">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
+			<xsl:value-of select="normalize-space(ead:unittitle)"/>
+		</field>
+		<field name="title">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
 			<xsl:value-of select="normalize-space(ead:unittitle)"/>
 		</field>
 		<field name="unittitle_text">
+			<xsl:if test="$upload = true()">
+				<xsl:attribute name="update">set</xsl:attribute>
+			</xsl:if>
 			<xsl:value-of select="normalize-space(ead:unittitle)"/>
 		</field>
 
 		<xsl:if test="ead:unitdate">
 			<field name="unitdate_display">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:for-each select="ead:unitdate">
 					<xsl:value-of select="."/>
 					<xsl:if test="not(position()=last())">
@@ -314,13 +390,54 @@
 		</xsl:if>
 		<xsl:if test="string(ead:unitid)">
 			<field name="unitid_display">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="ead:unitid"/>
 			</field>
 		</xsl:if>
 		<xsl:if test="ead:physdesc/ead:extent">
 			<field name="extent_display">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
 				<xsl:value-of select="ead:physdesc/ead:extent"/>
 			</field>
 		</xsl:if>
 	</xsl:template>
+	
+	<!-- functions -->
+	<xsl:template name="eaditor:get_date_hierarchy">
+		<xsl:param name="date"/>
+		
+		<xsl:if test="$date castable as xs:gYear">
+			<xsl:variable name="year_string" select="string(abs(number($date)))"/>
+			<xsl:variable name="century" select="if(number($date) &gt; 0) then ceiling(number($date) div 100) else floor(number($date) div 100)"/>
+			<xsl:variable name="decade" select="floor(abs(number($date)) div 10) * 10"/>			
+			
+			<xsl:if test="number($century)">
+				<field name="century_num">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="$century"/>
+				</field>
+			</xsl:if>
+			<field name="decade_num">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="$decade"/>
+			</field>
+			<xsl:if test="number($date)">
+				<field name="year_num">
+					<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
+					<xsl:value-of select="number($date)"/>
+				</field>
+			</xsl:if>
+		</xsl:if>		
+	</xsl:template>
+	
 </xsl:stylesheet>
