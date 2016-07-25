@@ -101,7 +101,7 @@
 	<field name="author" type="string" indexed="true" stored="true" />
 	<field name="date" type="string" indexed="true" stored="true" />
 
-	<field name="text" type="text_general" indexed="true" stored="true" multiValued="true"/>
+	<field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
 	<uniqueKey>id</uniqueKey>
 
