@@ -468,7 +468,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			
 			<!-- post document file to Solr for fulltext indexing -->
 			<xforms:submission id="put-document" ref="instance('dump')" method="post" replace="none"
-				resource="{instance('config')/solr_published}update/extract?literal.id={instance('guide')/ead:eadheader/ead:eadid}&amp;stream.url={instance('control-instance')/stream-url}&amp;fmap.content=text&amp;fmap.date=timestamp&amp;commit=true">
+				resource="{instance('config')/solr_published}update/extract?literal.id={instance('guide')/ead:eadheader/ead:eadid}&amp;stream.url={instance('control-instance')/stream-url}&amp;fmap.content=text&amp;commit=true">
 				<xforms:header>
 					<xforms:name>Content-type</xforms:name>
 					<xforms:value ref="instance('control-instance')/content-type"></xforms:value>
