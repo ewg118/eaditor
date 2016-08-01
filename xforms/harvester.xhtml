@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:exist="http://exist.sourceforge.net/NS/exist">
+	<head>
+		<title>EADitor: Edit Settings</title>
+		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css" />
+		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
+		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
+		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
+
+		<xforms:model xmlns="urn:isbn:1-931666-22-9">
+			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+				<xsd:simpleType name="emailAddress">
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="[^@]+@[^\.]+\..+"></xsd:pattern>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:schema>
+
+
+			<!-- exist URL is stored in an XML file -->
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"></xi:include>
+			</xforms:instance>
+
+			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
+				<config xmlns=""></config>
+			</xforms:instance>
+
+			<xforms:instance id="control-instance" xxforms:exclude-result-prefixes="#all">
+				<controls xmlns="">
+					<status></status>
+					<error></error>
+					<interface></interface>
+				</controls>
+			</xforms:instance>
+
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""></collections>
+			</xforms:instance>
+
+			<xforms:instance id="harvesters" xxforms:exclude-result-prefixes="#all">
+				<harvesters xmlns=""></harvesters>
+			</xforms:instance>
+			
+			<xforms:instance id="harvester-template" xxforms:exclude-result-prefixes="#all">
+				<harvester collection="" type="" url="" date=""></harvester>
+			</xforms:instance>
+
+			<!-- XQuery -->
+			<xforms:instance id="eXist-xquery">
+				<exist:query xmlns="">
+					<exist:text></exist:text>
+				</exist:query>
+			</xforms:instance>
+
+			<xforms:instance id="xquery-result">
+				<exist:result></exist:result>
+			</xforms:instance>
+
+			<xforms:instance id="xqueries">
+				<queries xmlns="">
+					<query id="collection-metadata">
+						<![CDATA[xquery version "1.0";
+						declare namespace ead="urn:isbn:1-931666-22-9";
+						let $sequence:= tokenize('%SEQUENCE%', ',')
+						let $aggregate:=%AGG%()
+						return
+						<metadata>
+							{
+							for $collection-name in $sequence
+							let $config:= concat('/db/eaditor/', $collection-name, '/config.xml')
+							return 
+								<collection id="{$collection-name}">
+									<title>{if ($aggregate = true()) then data(doc(concat('/db/eaditor/', $collection-name, '/ead-template.xml'))//ead:publisher) else data(doc($config)/config/title)}</title>
+									<description>{data(doc($config)/config/description)}</description>
+									<url>{data(doc($config)/config/url)}</url>
+								</collection>
+							}
+						</metadata>]]>
+					</query>
+				</queries>
+			</xforms:instance>
+
+			<!-- ************* SUBMISSIONS ************* -->
+			<xforms:bind nodeset="instance('config')">
+				<xforms:bind nodeset="aggregator" type="xs:boolean"></xforms:bind>
+			</xforms:bind>
+
+			<!-- ************* SUBMISSIONS ************* -->
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance" instance="config"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-error">No harvesters have been set up yet.</xforms:setvalue>
+			</xforms:submission>
+
+			<xforms:submission id="save-harvesters" ref="instance('harvesters')" action="{instance('exist-config')/url}eaditor/harvesters.xml" method="put" replace="none"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Error saving harvester XML file.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error loading collections list.</xforms:setvalue>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
+						value="replace(replace(instance('xqueries')/query[@id='collection-metadata'], '%SEQUENCE%', string-join(instance('collections-list')/collection/@name, ',')), '%AGG%', instance('config')/aggregator)"></xforms:setvalue>
+					<xforms:send submission="xquery-db"></xforms:send>
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- XQuery -->
+			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance" instance="xquery-result"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
+			</xforms:submission>
+
+
+			<!-- ********** XFORMS-MODEL-CONSTRUCT-DONE ********** -->
+			<xforms:action ev:event="xforms-model-construct-done">
+				<xforms:action if="not(xxforms:is-user-in-role('eaditor-admin'))">
+					<xforms:setvalue ref="instance('control-instance')/interface">unauthorized-user</xforms:setvalue>
+				</xforms:action>
+				<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
+					<xforms:setvalue ref="instance('control-instance')/interface">harvester</xforms:setvalue>
+					<xforms:send submission="load-config"></xforms:send>
+					<xforms:send submission="load-collections"></xforms:send>
+					<xforms:send submission="load-harvesters"></xforms:send>
+				</xforms:action>
+			</xforms:action>
+
+			<!-- ************************* XFORMS-READY ************************** -->
+			<!-- set case on xforms-ready -->
+			<xforms:action ev:event="xforms-ready">
+				<xforms:toggle case="{instance('control-instance')/interface}"></xforms:toggle>
+			</xforms:action>
+		</xforms:model>
+	</head>
+
+	<body>
+		<xforms:var name="display_path">../</xforms:var>
+		<xi:include href="header.xml"></xi:include>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<xforms:group ref="instance('control-instance')/error/text()">
+						<div class="bg-wanger alert-box">
+							<span class="glyphicon glyphicon-info-sign"></span>
+							<xforms:output ref="instance('control-instance')/error"></xforms:output>
+						</div>
+					</xforms:group>
+					<xforms:group ref="instance('control-instance')/status/text()">
+						<div class="bg-warning alert-box">
+							<span class="glyphicon glyphicon-info-sign"></span>
+							<xforms:output ref="instance('control-instance')/status"></xforms:output>
+						</div>
+					</xforms:group>
+					<h1>EAD Harvester</h1>
+					<xforms:switch>
+						<xforms:case id="unauthorized-user">
+							<p>The user is not authorized to access the EAD harvester. Only users in the eaditor-admin group can access this interface.</p>
+						</xforms:case>
+						<xforms:case id="harvester">
+							<xforms:switch>
+								<xforms:case id="harvester-list">
+									<xforms:group ref="instance('harvesters')">
+										<xforms:group ref=".[count(harvester) &gt; 0]">
+											<table class="table">
+												<thead>
+													<tr>
+														<th>Code</th>
+														<th>Name</th>
+														<th>Type</th>
+														<th>URL</th>
+														<th>Date</th>
+													</tr>
+												</thead>
+												<tbody>
+													<xforms:repeat nodeset="harvester">
+														<xforms:var name="id" select="@collection"/>
+														<tr>
+															<td><xforms:output ref="@collection"/></td>
+															<td><xforms:output ref="instance('xquery-result')//collection[@id=$id]/title"/></td>
+															<td>Type</td>
+															<td>URL</td>
+															<td>Date</td>
+														</tr>
+													</xforms:repeat>
+												</tbody>
+											</table>
+										</xforms:group>
+										<xforms:group ref=".[count(harvester) = 0]">
+											<p>There are no harvesters configured in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
+												one.</xforms:label>
+												<xforms:toggle case="add-harvester" ev:event="DOMActivate"/>
+											</xforms:trigger></p>
+										</xforms:group>
+									</xforms:group>
+								</xforms:case>
+								<xforms:case id="add-harvester">
+									<h3>Add Harvester</h3>
+									<xforms:group ref="instance('harvester-template')">
+										<div>
+											<xforms:select1 ref="@collection">
+												<xforms:label>Collections</xforms:label>
+												<xforms:item>
+													<xforms:label>Select Collection...</xforms:label>
+													<xforms:value></xforms:value>
+												</xforms:item>
+												<xforms:itemset nodeset="instance('xquery-result')//collection">
+													<xforms:label ref="concat(title, ' (', @id, ')')"></xforms:label>
+													<xforms:value ref="@id"></xforms:value>
+												</xforms:itemset>
+												<xforms:alert>Required</xforms:alert>												
+											</xforms:select1>
+										</div>
+										
+										
+										<xforms:trigger>
+											<xforms:label>Validate</xforms:label>
+										</xforms:trigger>
+									</xforms:group>
+								</xforms:case>
+							</xforms:switch>
+							
+							
+						</xforms:case>
+					</xforms:switch>
+					<fr:xforms-inspector></fr:xforms-inspector>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
