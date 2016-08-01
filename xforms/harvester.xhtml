@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
-	xmlns:exist="http://exist.sourceforge.net/NS/exist">
+	xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
 	<head>
 		<title>EADitor: Edit Settings</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css" />
@@ -15,9 +15,9 @@
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
 			<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-				<xsd:simpleType name="emailAddress">
+				<xsd:simpleType name="url">
 					<xsd:restriction base="xsd:string">
-						<xsd:pattern value="[^@]+@[^\.]+\..+"></xsd:pattern>
+						<xsd:pattern value="@^(https?|ftp)://[^\s/$.?#].[^\s]*$@iS"></xsd:pattern>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:schema>
@@ -37,6 +37,8 @@
 					<status></status>
 					<error></error>
 					<interface></interface>
+					<validate-trigger>false</validate-trigger>
+					<oai-valid></oai-valid>
 				</controls>
 			</xforms:instance>
 
@@ -47,9 +49,14 @@
 			<xforms:instance id="harvesters" xxforms:exclude-result-prefixes="#all">
 				<harvesters xmlns=""></harvesters>
 			</xforms:instance>
-			
+
 			<xforms:instance id="harvester-template" xxforms:exclude-result-prefixes="#all">
-				<harvester collection="" type="" url="" date=""></harvester>
+				<harvester collection="" type="oai" url="" date="" xmlns=""></harvester>
+			</xforms:instance>
+
+			<!-- OAI-PMH -->
+			<xforms:instance id="oai-pmh" xxforms:exclude-result-prefixes="#all">
+				<OAI-PMH xmlns=""></OAI-PMH>
 			</xforms:instance>
 
 			<!-- XQuery -->
@@ -87,19 +94,41 @@
 				</queries>
 			</xforms:instance>
 
-			<!-- ************* SUBMISSIONS ************* -->
+			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="aggregator" type="xs:boolean"></xforms:bind>
+				<xforms:bind id="validate-trigger" nodeset="validate-trigger" type="xs:boolean" readonly=". != true()"></xforms:bind>
 			</xforms:bind>
 
+			<xforms:bind nodeset="instance('harvesters')">
+				<xforms:bind nodeset="harvester">
+					<xforms:bind nodeset="@date" type="xs:date"></xforms:bind>
+				</xforms:bind>
+			</xforms:bind>
+
+			<xforms:bind nodeset="instance('harvester-template')">
+				<xforms:bind nodeset="@collection" required="true()"></xforms:bind>
+				<xforms:bind nodeset="@url" required="true()" type="xs:anyURI"></xforms:bind>
+			</xforms:bind>
+
+			<!-- **************** DYNAMIC VALIDATION CONTROLS ********************** -->
+			<xforms:action ev:event="xxforms-invalid" ev:observer="harvester-template">
+				<xforms:setvalue ref="instance('control-instance')/validate-trigger" value="false()"></xforms:setvalue>
+			</xforms:action>
+
+			<xforms:action ev:event="xxforms-valid" ev:observer="harvester-template">
+				<xforms:setvalue ref="instance('control-instance')/validate-trigger" value="true()"></xforms:setvalue>
+			</xforms:action>
+
 			<!-- ************* SUBMISSIONS ************* -->
+			<!-- load and save files from eXist -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance" instance="config"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance"
+				instance="harvesters" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-error">No harvesters have been set up yet.</xforms:setvalue>
 			</xforms:submission>
 
@@ -118,9 +147,34 @@
 				</xforms:action>
 			</xforms:submission>
 
+			<!-- interacting with OAI-PMH -->
+			<xforms:submission id="query-oai" serialization="none" method="get" action="{instance('harvester-template')/@url}" replace="instance" instance="oai-pmh">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/error">The URL does to yield a parseable response (not OAI-PMH).</xforms:setvalue>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- clear error message -->
+					<xforms:setvalue ref="instance('control-instance')/error"></xforms:setvalue>
+
+					<!-- evaluate namespace of returned XML document -->
+					<xforms:action  if="namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/'">
+						<!-- insert harvester into master list and save it -->
+						<xforms:insert context="instance('harvesters')" nodeset="./child::node()[last()]" origin="instance('harvester-template')"/>
+						<xforms:send submission="save-harvesters"/>
+						
+						<!-- clear template -->
+						<xforms:setvalue ref="instance('harvester-template')/@*"/>						
+						
+						<xforms:setvalue ref="instance('control-instance')/status">Extracting EAD document list.</xforms:setvalue>
+					</xforms:action>					
+					<xforms:setvalue ref="instance('control-instance')/error" if="not(namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/')">The XML response
+						does not belong to the OAI-PMH namespace.</xforms:setvalue>
+				</xforms:action>
+			</xforms:submission>
+
 			<!-- XQuery -->
-			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance" instance="xquery-result"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance"
+				instance="xquery-result" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
 
@@ -153,7 +207,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<xforms:group ref="instance('control-instance')/error/text()">
-						<div class="bg-wanger alert-box">
+						<div class="bg-danger alert-box">
 							<span class="glyphicon glyphicon-info-sign"></span>
 							<xforms:output ref="instance('control-instance')/error"></xforms:output>
 						</div>
@@ -181,28 +235,28 @@
 														<th>Name</th>
 														<th>Type</th>
 														<th>URL</th>
-														<th>Date</th>
+														<th>Last Harvest</th>
 													</tr>
 												</thead>
 												<tbody>
 													<xforms:repeat nodeset="harvester">
-														<xforms:var name="id" select="@collection"/>
+														<xforms:var name="id" select="@collection"></xforms:var>
 														<tr>
-															<td><xforms:output ref="@collection"/></td>
-															<td><xforms:output ref="instance('xquery-result')//collection[@id=$id]/title"/></td>
-															<td>Type</td>
-															<td>URL</td>
-															<td>Date</td>
+															<td><xforms:output ref="@collection"></xforms:output></td>
+															<td><xforms:output ref="instance('xquery-result')//collection[@id=$id]/title"></xforms:output></td>
+															<td><xforms:output ref="@type"/></td>
+															<td><xforms:output ref="@url"/></td>
+															<td><xforms:output value="if (string-length(@date) &gt; 0) then @date else 'Never harvested'"/></td>
 														</tr>
 													</xforms:repeat>
 												</tbody>
 											</table>
 										</xforms:group>
 										<xforms:group ref=".[count(harvester) = 0]">
-											<p>There are no harvesters configured in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
-												one.</xforms:label>
-												<xforms:toggle case="add-harvester" ev:event="DOMActivate"/>
-											</xforms:trigger></p>
+											<p>There are no harvesters configured in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span
+															class="glyphicon glyphicon-plus"></span>Add one.</xforms:label>
+													<xforms:toggle case="add-harvester" ev:event="DOMActivate"></xforms:toggle>
+												</xforms:trigger></p>
 										</xforms:group>
 									</xforms:group>
 								</xforms:case>
@@ -211,28 +265,46 @@
 									<xforms:group ref="instance('harvester-template')">
 										<div>
 											<xforms:select1 ref="@collection">
-												<xforms:label>Collections</xforms:label>
+												<xforms:label>Agency</xforms:label>
 												<xforms:item>
-													<xforms:label>Select Collection...</xforms:label>
+													<xforms:label>Select Agency...</xforms:label>
 													<xforms:value></xforms:value>
 												</xforms:item>
 												<xforms:itemset nodeset="instance('xquery-result')//collection">
 													<xforms:label ref="concat(title, ' (', @id, ')')"></xforms:label>
 													<xforms:value ref="@id"></xforms:value>
 												</xforms:itemset>
-												<xforms:alert>Required</xforms:alert>												
+												<xforms:alert>Required</xforms:alert>
 											</xforms:select1>
 										</div>
-										
-										
-										<xforms:trigger>
+										<div>
+											<xforms:select1 ref="@type" appearance="full">
+												<xforms:label>Type</xforms:label>
+												<xforms:item>
+													<xforms:label>OAI-PMH</xforms:label>
+													<xforms:value>oai</xforms:value>
+												</xforms:item>
+												<xforms:item>
+													<xforms:label>Directory List</xforms:label>
+													<xforms:value>directory</xforms:value>
+												</xforms:item>
+											</xforms:select1>
+										</div>
+										<div>
+											<xforms:input ref="@url">
+												<xforms:label>URL</xforms:label>
+												<xforms:alert>Invalid URL</xforms:alert>
+												<xforms:hint value="concat('Input URL for ', if (../@type='oai') then 'OAI-PMH set' else 'directory listing')"></xforms:hint>
+											</xforms:input>
+										</div> <xforms:trigger>
 											<xforms:label>Validate</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:send submission="query-oai"></xforms:send>
+											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
-							
-							
 						</xforms:case>
 					</xforms:switch>
 					<fr:xforms-inspector></fr:xforms-inspector>

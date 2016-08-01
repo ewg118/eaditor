@@ -27,7 +27,9 @@
 	<page path="/eaditor/admin/harvester/" view="xforms/harvester.xhtml"/>
 	<page path="/eaditor/admin/users/" view="xforms/users.xhtml"/>
 	<page path="/eaditor/admin/query" view="xpl/xforms/sql.xpl"/>
-	<!--<page path="/eaditor/admin/control/" view="xforms/control.xhtml"/>-->
+	
+	<!-- harvesting REST interfaces -->
+	<page path="/eaditor/admin/extract" view="xpl/xforms/harvest/extract.xpl"/>
 	
 	<!-- editor forms -->
 	<!-- EAD-related -->
