@@ -274,7 +274,7 @@
 								</a>
 								<xsl:if test="string(@valueURI)">
 									<a href="{@valueURI}" rel="dcterms:subject">
-										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+										<span class="glyphicon glyphicon-new-window"/>
 									</a>
 								</xsl:if>
 							</dd>
@@ -312,7 +312,7 @@
 			</a>
 			<xsl:if test="string(@valueURI)">
 				<a href="{@valueURI}" rel="dcterms:format">
-					<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+					<span class="glyphicon glyphicon-new-window"/>
 				</a>
 			</xsl:if>
 		</dd>

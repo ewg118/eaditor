@@ -313,7 +313,7 @@
 										<xsl:value-of select="$label"/>
 									</a>
 									<a href="{$uri}" target="_blank">
-										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+										<span class="glyphicon glyphicon-new-window"/>
 									</a>
 								</strong>
 							</xsl:when>
@@ -321,7 +321,7 @@
 								<strong>
 									<xsl:value-of select="$label"/>
 									<a href="{$uri}" target="_blank">
-										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+										<span class="glyphicon glyphicon-new-window"/>
 									</a>
 								</strong>
 							</xsl:otherwise>

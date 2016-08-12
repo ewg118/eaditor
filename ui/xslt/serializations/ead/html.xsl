@@ -770,53 +770,53 @@
 			href="{$display_path}results?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
 			<xsl:value-of select="normalize-space(.)"/>
 		</a>
-		<xsl:if test="@source">
+		<xsl:if test="string(@source) and string(@authfilenumber)">
 			<xsl:choose>
 				<xsl:when test="@source='aat'">
 					<a href="http://vocab.getty.edu/aat/{@authfilenumber}" title="Getty AAT" rel="dcterms:format">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='tgn'">
 					<a href="http://vocab.getty.edu/tgn/{@authfilenumber}" title="Getty TGN" rel="dcterms:coverage">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='geonames'">
 					<a href="http://www.geonames.org/{@authfilenumber}" title="Geonames" rel="dcterms:coverage">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
 					<a href="http://pleiades.stoa.org/places/{@authfilenumber}" title="Pleiades" rel="dcterms:coverage">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcsh'">
 					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCSH" rel="dcterms:subject">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcgft'">
 					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCGFT" rel="dcterms:format">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcnaf'">
 					<a href="http://id.loc.gov/authorities/names/{@authfilenumber}" title="LCNAF">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='viaf'">
 					<a href="http://viaf.org/viaf/{@authfilenumber}" title="VIAF" rel="arch:correspondedWith">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="contains(@authfilenumber, 'http://')">
 			<a href="{@authfilenumber}" rel="{if (parent::ead:origination) then 'dcterms:creator' else 'arch:correspondedWith'}">
-				<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+				<span class="glyphicon glyphicon-new-window"/>
 			</a>
 		</xsl:if>
 		<xsl:if test="string(normalize-space(@role))">
