@@ -75,48 +75,23 @@
 			</p:processor>
 		</p:when>
 		<p:when test="/harvester/@type='oai'">
-			<!-- get the OAI-PMH XML and parse it into a XML file listing -->
 			<p:processor name="oxf:unsafe-xslt">
-				<p:input name="data" href="#harvester"/>				
+				<p:input name="data" href="#harvester"/>
+				
 				<p:input name="config">
-					<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">						
+					<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+						
 						<xsl:template match="/harvester">
-							<config>
-								<url>
-									<xsl:choose>
-										<xsl:when test="not(string(@date))">
-											<xsl:value-of select="@url"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat(@url, 'amp;from=', @date)"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</url>
-								<mode>xml</mode>
-								<content-type>application/xml</content-type>
-								<header>
-									<name>User-Agent</name>
-									<value>XForms/EADitor</value>
-								</header>
-								<encoding>utf-8</encoding>
-							</config>
+							<xforms:submission method="get" action="{@url}">
+								<xforms:header>
+									<xforms:name>User-Agent</xforms:name>
+									<xforms:value>XForms/EADitor</xforms:value>
+								</xforms:header>
+							</xforms:submission>				
 						</xsl:template>
 					</xsl:stylesheet>
 				</p:input>
-				<p:output name="data" id="oai-url-generator-config"/>
-			</p:processor>			
-			
-			<p:processor name="oxf:url-generator">
-				<p:input name="config" href="#oai-url-generator-config"/>
-				<p:output name="data" id="oai-pmh"/>
-				<!--<p:output name="data" ref="data"/>-->
-			</p:processor>
-			
-			<!-- execute XSLT transformation from OAI to RDF/XML -->
-			<p:processor name="oxf:pipeline">
-				<p:input name="data" href="#oai-pmh"/>
-				<p:input name="harvester" href="#harvester"/>
-				<p:input name="config" href="../../controllers/parse-oai.xpl"/>
+				<!--<p:output name="data" id="xforms-config"/>-->
 				<p:output name="data" ref="data"/>
 			</p:processor>
 		</p:when>

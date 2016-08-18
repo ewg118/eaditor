@@ -39,6 +39,7 @@
 					<interface></interface>
 					<validate-trigger>false</validate-trigger>
 					<oai-valid></oai-valid>
+					<agencycode/>
 				</controls>
 			</xforms:instance>
 
@@ -52,6 +53,11 @@
 
 			<xforms:instance id="harvester-template" xxforms:exclude-result-prefixes="#all">
 				<harvester collection="" type="oai" url="" date="" xmlns=""></harvester>
+			</xforms:instance>
+			
+			<!-- file list -->
+			<xforms:instance id="files" xxforms:exclude-result-prefixes="#all">
+				<files xmlns=""/>
 			</xforms:instance>
 
 			<!-- OAI-PMH -->
@@ -102,7 +108,7 @@
 
 			<xforms:bind nodeset="instance('harvesters')">
 				<xforms:bind nodeset="harvester">
-					<xforms:bind nodeset="@date" type="xs:date"></xforms:bind>
+					<xforms:bind nodeset="@url" required="true()"/>
 				</xforms:bind>
 			</xforms:bind>
 
@@ -160,15 +166,25 @@
 					<xforms:action  if="namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/'">
 						<!-- insert harvester into master list and save it -->
 						<xforms:insert context="instance('harvesters')" nodeset="./child::node()[last()]" origin="instance('harvester-template')"/>
-						<xforms:send submission="save-harvesters"/>
-						
+						<xforms:setvalue ref="instance('control-instance')/agencycode" value="instance('harvester-template')/@collection"/>
 						<!-- clear template -->
-						<xforms:setvalue ref="instance('harvester-template')/@*"/>						
+						<xforms:setvalue ref="instance('harvester-template')/@url"/>		
+						<xforms:setvalue ref="instance('harvester-template')/@collection"/>
 						
-						<xforms:setvalue ref="instance('control-instance')/status">Extracting EAD document list.</xforms:setvalue>
+						<xforms:send submission="save-harvesters"/>
+						<xforms:action if="xforms-submit-done">
+							<xforms:send submission="parse-oai"/>
+							<xforms:setvalue ref="instance('control-instance')/status">Extracting EAD document list.</xforms:setvalue>
+						</xforms:action>
 					</xforms:action>					
 					<xforms:setvalue ref="instance('control-instance')/error" if="not(namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/')">The XML response
 						does not belong to the OAI-PMH namespace.</xforms:setvalue>
+				</xforms:action>
+			</xforms:submission>
+			
+			<xforms:submission id="parse-oai" serialization="none" method="get" action="/eaditor/admin/harvest/extract?agencycode={instance('control-instance')/agencycode}" replace="instance" instance="files">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/error">Parse error with OAI-PMH (malformed XML, bad resumption token?)</xforms:setvalue>
 				</xforms:action>
 			</xforms:submission>
 
@@ -177,7 +193,6 @@
 				instance="xquery-result" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
-
 
 			<!-- ********** XFORMS-MODEL-CONSTRUCT-DONE ********** -->
 			<xforms:action ev:event="xforms-model-construct-done">
@@ -226,6 +241,12 @@
 						<xforms:case id="harvester">
 							<xforms:switch>
 								<xforms:case id="harvester-list">
+									<div>
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-plus"></span>Add harvester</xforms:label>
+											<xforms:toggle case="add-harvester" ev:event="DOMActivate"></xforms:toggle>
+										</xforms:trigger>
+									</div>
 									<xforms:group ref="instance('harvesters')">
 										<xforms:group ref=".[count(harvester) &gt; 0]">
 											<table class="table">
@@ -236,17 +257,28 @@
 														<th>Type</th>
 														<th>URL</th>
 														<th>Last Harvest</th>
+														<th>Actions</th>
 													</tr>
 												</thead>
 												<tbody>
 													<xforms:repeat nodeset="harvester">
 														<xforms:var name="id" select="@collection"></xforms:var>
 														<tr>
-															<td><xforms:output ref="@collection"></xforms:output></td>
+															<td><xforms:output ref="$id"></xforms:output></td>
 															<td><xforms:output ref="instance('xquery-result')//collection[@id=$id]/title"></xforms:output></td>
 															<td><xforms:output ref="@type"/></td>
 															<td><xforms:output ref="@url"/></td>
 															<td><xforms:output value="if (string-length(@date) &gt; 0) then @date else 'Never harvested'"/></td>
+															<td>
+																<xforms:trigger appearance="minimal">
+																	<xforms:label><span class="glyphicon glyphicon-refresh"/></xforms:label>
+																	<xforms:hint>Re-harvest from last date.</xforms:hint>
+																	<xforms:action ev:event="DOMActivate">
+																		<xforms:setvalue ref="instance('control-instance')/agencycode" value="$id"/>
+																		<xforms:send submission="parse-oai"/>
+																	</xforms:action>																	
+																</xforms:trigger>
+															</td>
 														</tr>
 													</xforms:repeat>
 												</tbody>
@@ -296,7 +328,8 @@
 												<xforms:alert>Invalid URL</xforms:alert>
 												<xforms:hint value="concat('Input URL for ', if (../@type='oai') then 'OAI-PMH set' else 'directory listing')"></xforms:hint>
 											</xforms:input>
-										</div> <xforms:trigger>
+										</div>
+										<xforms:trigger>
 											<xforms:label>Validate</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:send submission="query-oai"></xforms:send>

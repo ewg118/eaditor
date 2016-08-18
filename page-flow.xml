@@ -29,7 +29,7 @@
 	<page path="/eaditor/admin/query" view="xpl/xforms/sql.xpl"/>
 	
 	<!-- harvesting REST interfaces -->
-	<page path="/eaditor/admin/extract" view="xpl/xforms/harvest/extract.xpl"/>
+	<page path="/eaditor/admin/harvest/extract" view="xpl/xforms/harvest/extract.xpl"/>
 	
 	<!-- editor forms -->
 	<!-- EAD-related -->
