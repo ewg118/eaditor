@@ -116,7 +116,7 @@
 			<p:processor name="oxf:pipeline">
 				<p:input name="data" href="#oai-pmh"/>
 				<p:input name="harvester" href="#harvester"/>
-				<p:input name="config" href="../../controllers/parse-oai.xpl"/>
+				<p:input name="config" href="../../controllers/oai-to-list.xpl"/>
 				<p:output name="data" ref="data"/>
 			</p:processor>
 		</p:when>

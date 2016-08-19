@@ -40,6 +40,8 @@
 					<validate-trigger>false</validate-trigger>
 					<oai-valid></oai-valid>
 					<agencycode/>
+					<ead-file/>
+					<ead-file-pos/>
 				</controls>
 			</xforms:instance>
 
@@ -58,6 +60,18 @@
 			<!-- file list -->
 			<xforms:instance id="files" xxforms:exclude-result-prefixes="#all">
 				<files xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="old-ead" xxforms:exclude-result-prefixes="#all">
+				<ead xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="new-ead" xxforms:exclude-result-prefixes="#all">
+				<ead xmlns=""/>
+			</xforms:instance>
+			
+			<xforms:instance id="ead-template" xxforms:exclude-result-prefixes="#all">
+				<ead xmlns=""/>
 			</xforms:instance>
 
 			<!-- OAI-PMH -->
@@ -186,6 +200,50 @@
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/error">Parse error with OAI-PMH (malformed XML, bad resumption token?)</xforms:setvalue>
 				</xforms:action>
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- iterate through all the XML files in the list and perform validation. if validation passes, then process the file and publish to eXist. otherwise report errors -->
+				
+					<xforms:action xxforms:iterate="instance('files')//file[1]">
+						<xforms:var name="position" select="position()"/>
+						
+						<xforms:setvalue ref="instance('control-instance')/ead-file" value="context()/url"/>
+						<xforms:setvalue ref="instance('control-instance')/ead-file-pos" value="$position"/>
+						
+						<!-- load EAD file -->
+						<xforms:send submission="load-ead"/>						
+					</xforms:action>
+				</xforms:action>
+			</xforms:submission>
+			
+			<!-- Load / Save EAD files -->
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/agencycode}/ead-template.xml"
+				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			</xforms:submission>
+			
+			<xforms:submission id="load-ead" serialization="none" method="get" action="{instance('control-instance')/ead-file}" replace="instance" instance="old-ead">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:insert context="instance('files')/file[instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]" origin="xforms:element('error', 'Unable to load file. Probably malformed XML')"/>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- perform validation checks -->
+					<xforms:insert context="instance('files')/file[instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]" origin="xforms:element('error', 'No eadid')" if="not(string(instance('old-ead')//*:eadid))"/>
+					
+					<!-- if no errors are found, apply the XSLT transformation for data normalization and post to eXist -->
+					<xforms:action if="count(instance('files')/file[instance('control-instance')/ead-file-pos]/error) = 0">
+						<!-- load template to gather standardized agency code, publisher, etc. -->
+						<xforms:send submission="load-ead-template"/>
+						<xforms:action ev:event="xforms-submit-done">
+							<!-- apply normalization tranformation -->
+							<xforms:insert nodeset="instance('new-ead')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/normalize-ead.xpl', ('data', 'template'), (instance('old-ead'), instance('ead-template')), 'data')"></xforms:insert>
+							<xforms:send submission="save-ead"/>
+						</xforms:action>						
+					</xforms:action>
+				</xforms:action>				
+			</xforms:submission>
+			
+			<xforms:submission id="save-ead" ref="instance('new-ead')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/agencycode}/guides/{instance('new-ead')//ead:eadid}.xml" method="put" replace="none"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to save XML file to eXist.</xforms:message>
 			</xforms:submission>
 
 			<!-- XQuery -->
