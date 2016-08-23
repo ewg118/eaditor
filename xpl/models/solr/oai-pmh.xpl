@@ -72,10 +72,10 @@
 					<xsl:choose>
 						<!-- when there is a collection name, apply collection name in Solr query -->
 						<xsl:when test="/config/aggregator = 'true'">
-							<xsl:value-of select="concat($solr-url, '?q=', $q, '&amp;sort=timestamp%20desc&amp;rows=10000')"/>
+							<xsl:value-of select="concat($solr-url, '?q=', $q, '+AND+oai_set:ead&amp;sort=timestamp%20desc&amp;rows=10000')"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', $q, '&amp;sort=timestamp%20desc&amp;rows=10000')"/>
+							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', $q, '+AND+oai_set:ead&amp;sort=timestamp%20desc&amp;rows=10000')"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>

@@ -458,7 +458,9 @@
 		<field name="cid" type="string" indexed="true" stored="true"/>		
 		<field name="collection-name" type="string" indexed="true" stored="true"/>
 		<field name="recordId" type="string" indexed="true" stored="true"/>
-		<field name="lang" type="string" index="true" stored="true"/>
+		<field name="lang" type="string" indexed="true" stored="true"/>
+		<field name="oai_set" type="string" indexed="true" stored="true"/>
+		<field name="title" type="string" indexed="true" stored="true"/>
 		<field name="timestamp" type="date" stored="true"/>
 
 		<!-- displayable fields, sometimes used for sorting -->

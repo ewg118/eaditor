@@ -262,7 +262,9 @@
 			<datestamp>
 				<xsl:value-of select="date[@name='timestamp']"/>
 			</datestamp>
-			<setSpec>ead</setSpec>
+			<setSpec>
+				<xsl:value-of select="str[@name='oai_id']"/>
+			</setSpec>
 		</header>
 	</xsl:template>
 
@@ -300,7 +302,9 @@
 				<datestamp>
 					<xsl:value-of select="substring-before(date[@name='timestamp'], 'T')"/>
 				</datestamp>
-				<setSpec>ead</setSpec>
+				<setSpec>
+					<xsl:value-of select="str[@name='oai_set']"/>
+				</setSpec>
 			</header>
 			<metadata>
 				<oai_dc:dc>
@@ -339,8 +343,7 @@
 					<xsl:for-each select="arr[@name='geogname_uri']/str">
 						<dcterms:coverage rdf:resource="{.}"/>
 					</xsl:for-each>
-					<dc:rights>Open for public research.</dc:rights>
-					<dc:format>ead</dc:format>
+					<dc:rights>Open for public research.</dc:rights>					
 				</oai_dc:dc>
 			</metadata>
 		</record>

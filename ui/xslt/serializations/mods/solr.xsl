@@ -33,6 +33,7 @@
 				<field name="collection-name">
 					<xsl:value-of select="$collection-name"/>
 				</field>
+				<field name="oai_set">mods</field>
 				<field name="oai_id">
 					<xsl:text>oai:</xsl:text>
 					<xsl:value-of select="substring-before(substring-after($url, 'http://'), '/')"/>

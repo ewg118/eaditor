@@ -39,10 +39,14 @@
 					<interface></interface>
 					<validate-trigger>false</validate-trigger>
 					<oai-valid></oai-valid>
-					<agencycode/>
-					<ead-file/>
-					<ead-file-pos/>
+					<collection-name></collection-name>
+					<ead-file></ead-file>
+					<ead-file-pos></ead-file-pos>
 				</controls>
+			</xforms:instance>
+
+			<xforms:instance id="test">
+				<test xmlns=""></test>
 			</xforms:instance>
 
 			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
@@ -54,24 +58,24 @@
 			</xforms:instance>
 
 			<xforms:instance id="harvester-template" xxforms:exclude-result-prefixes="#all">
-				<harvester collection="" type="oai" url="" date="" xmlns=""></harvester>
+				<harvester collection="" type="oai" url="" date="" lastFile="" xmlns=""></harvester>
 			</xforms:instance>
-			
+
 			<!-- file list -->
 			<xforms:instance id="files" xxforms:exclude-result-prefixes="#all">
-				<files xmlns=""/>
+				<files xmlns=""></files>
 			</xforms:instance>
-			
+
 			<xforms:instance id="old-ead" xxforms:exclude-result-prefixes="#all">
-				<ead xmlns=""/>
+				<ead xmlns=""></ead>
 			</xforms:instance>
-			
+
 			<xforms:instance id="new-ead" xxforms:exclude-result-prefixes="#all">
-				<ead xmlns=""/>
+				<ead xmlns=""></ead>
 			</xforms:instance>
-			
+
 			<xforms:instance id="ead-template" xxforms:exclude-result-prefixes="#all">
-				<ead xmlns=""/>
+				<ead xmlns=""></ead>
 			</xforms:instance>
 
 			<!-- OAI-PMH -->
@@ -114,6 +118,15 @@
 				</queries>
 			</xforms:instance>
 
+			<!-- Solr instances -->
+			<xforms:instance id="addIndex">
+				<add xmlns=""></add>
+			</xforms:instance>
+			<!-- Instance for Solr commit-->
+			<xforms:instance id="sendCommit">
+				<commit></commit>
+			</xforms:instance>
+
 			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="aggregator" type="xs:boolean"></xforms:bind>
@@ -122,7 +135,7 @@
 
 			<xforms:bind nodeset="instance('harvesters')">
 				<xforms:bind nodeset="harvester">
-					<xforms:bind nodeset="@url" required="true()"/>
+					<xforms:bind nodeset="@url" required="true()"></xforms:bind>
 				</xforms:bind>
 			</xforms:bind>
 
@@ -147,8 +160,8 @@
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance"
-				instance="harvesters" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance" instance="harvesters"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-error">No harvesters have been set up yet.</xforms:setvalue>
 			</xforms:submission>
 
@@ -177,78 +190,119 @@
 					<xforms:setvalue ref="instance('control-instance')/error"></xforms:setvalue>
 
 					<!-- evaluate namespace of returned XML document -->
-					<xforms:action  if="namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/'">
+					<xforms:action if="namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/'">
 						<!-- insert harvester into master list and save it -->
-						<xforms:insert context="instance('harvesters')" nodeset="./child::node()[last()]" origin="instance('harvester-template')"/>
-						<xforms:setvalue ref="instance('control-instance')/agencycode" value="instance('harvester-template')/@collection"/>
+						<xforms:insert context="instance('harvesters')" nodeset="./child::node()[last()]" origin="instance('harvester-template')"></xforms:insert>
+						<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('harvester-template')/@collection"></xforms:setvalue>
 						<!-- clear template -->
-						<xforms:setvalue ref="instance('harvester-template')/@url"/>		
-						<xforms:setvalue ref="instance('harvester-template')/@collection"/>
-						
-						<xforms:send submission="save-harvesters"/>
+						<xforms:setvalue ref="instance('harvester-template')/@url"></xforms:setvalue>
+						<xforms:setvalue ref="instance('harvester-template')/@collection"></xforms:setvalue>
+
+						<xforms:send submission="save-harvesters"></xforms:send>
 						<xforms:action if="xforms-submit-done">
-							<xforms:send submission="parse-oai"/>
+							<xforms:send submission="parse-oai"></xforms:send>
 							<xforms:setvalue ref="instance('control-instance')/status">Extracting EAD document list.</xforms:setvalue>
 						</xforms:action>
-					</xforms:action>					
-					<xforms:setvalue ref="instance('control-instance')/error" if="not(namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/')">The XML response
-						does not belong to the OAI-PMH namespace.</xforms:setvalue>
+					</xforms:action>
+					<xforms:setvalue ref="instance('control-instance')/error" if="not(namespace-uri(instance('oai-pmh')) = 'http://www.openarchives.org/OAI/2.0/')">The XML response does not belong to
+						the OAI-PMH namespace.</xforms:setvalue>
 				</xforms:action>
 			</xforms:submission>
-			
-			<xforms:submission id="parse-oai" serialization="none" method="get" action="/eaditor/admin/harvest/extract?agencycode={instance('control-instance')/agencycode}" replace="instance" instance="files">
+
+			<xforms:submission id="parse-oai" serialization="none" method="get" action="/eaditor/admin/harvest/extract?agencycode={instance('control-instance')/collection-name}" replace="instance"
+				instance="files">
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:setvalue ref="instance('control-instance')/error">Parse error with OAI-PMH (malformed XML, bad resumption token?)</xforms:setvalue>
 				</xforms:action>
-				<xforms:action ev:event="xforms-submit-done">
-					<!-- iterate through all the XML files in the list and perform validation. if validation passes, then process the file and publish to eXist. otherwise report errors -->
-				
-					<xforms:action xxforms:iterate="instance('files')//file[1]">
-						<xforms:var name="position" select="position()"/>
-						
-						<xforms:setvalue ref="instance('control-instance')/ead-file" value="context()/url"/>
-						<xforms:setvalue ref="instance('control-instance')/ead-file-pos" value="$position"/>
-						
-						<!-- load EAD file -->
-						<xforms:send submission="load-ead"/>						
-					</xforms:action>
-				</xforms:action>
-			</xforms:submission>
-			
-			<!-- Load / Save EAD files -->
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/agencycode}/ead-template.xml"
-				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
-			</xforms:submission>
-			
-			<xforms:submission id="load-ead" serialization="none" method="get" action="{instance('control-instance')/ead-file}" replace="instance" instance="old-ead">
-				<xforms:action ev:event="xforms-submit-error">
-					<xforms:insert context="instance('files')/file[instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]" origin="xforms:element('error', 'Unable to load file. Probably malformed XML')"/>
-				</xforms:action>
-				<xforms:action ev:event="xforms-submit-done">
-					<!-- perform validation checks -->
-					<xforms:insert context="instance('files')/file[instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]" origin="xforms:element('error', 'No eadid')" if="not(string(instance('old-ead')//*:eadid))"/>
-					
-					<!-- if no errors are found, apply the XSLT transformation for data normalization and post to eXist -->
-					<xforms:action if="count(instance('files')/file[instance('control-instance')/ead-file-pos]/error) = 0">
-						<!-- load template to gather standardized agency code, publisher, etc. -->
-						<xforms:send submission="load-ead-template"/>
-						<xforms:action ev:event="xforms-submit-done">
-							<!-- apply normalization tranformation -->
-							<xforms:insert nodeset="instance('new-ead')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/normalize-ead.xpl', ('data', 'template'), (instance('old-ead'), instance('ead-template')), 'data')"></xforms:insert>
-							<xforms:send submission="save-ead"/>
-						</xforms:action>						
-					</xforms:action>
-				</xforms:action>				
-			</xforms:submission>
-			
-			<xforms:submission id="save-ead" ref="instance('new-ead')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/agencycode}/guides/{instance('new-ead')//ead:eadid}.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
-				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to save XML file to eXist.</xforms:message>
+				<xforms:toggle case="validation-interface" ev:event="xforms-submit-done"></xforms:toggle>
 			</xforms:submission>
 
+			<!-- Load / Save EAD files -->
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
+				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"> </xforms:submission>
+
+			<xforms:submission id="load-ead" serialization="none" method="get" action="{instance('control-instance')/ead-file}" replace="instance" instance="old-ead">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+						origin="xforms:element('error', 'Unable to load file. Probably malformed XML')"></xforms:insert>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- perform validation checks 
+					1. root element: ead
+					2. whether eadid exists
+					3. check titleproper
+					4. publicationstmt/publisher
+					5. profiledesc
+					6. archdesc/did/unittitle
+					7. archdesc/did/origin-->
+
+					<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+						origin="xforms:element('error', 'Root node is not &#x022;ead&#x022;')" if="not(instance('old-ead')/local-name()='ead')"></xforms:insert>
+
+					<!-- only proceed with other validations if the root node is 'ead' -->
+					<xforms:action if="instance('old-ead')/local-name()='ead'">
+						<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+							origin="xforms:element('error', 'No eadid')" if="not(string(instance('old-ead')//*:eadid))"></xforms:insert>
+						<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+							origin="xforms:element('error', 'No titleproper')" if="not(string(instance('old-ead')/*:eadheader/*:filedesc/*:titlestmt/*:titleproper))"></xforms:insert>
+						<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+							origin="xforms:element('error', 'No publisher')" if="not(string(instance('old-ead')/*:eadheader/*:filedesc/*:publicationstmt/*:publisher))"></xforms:insert>
+						<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+							origin="xforms:element('error', 'No profiledesc')" if="not(instance('old-ead')/*:eadheader/*:profiledesc)"></xforms:insert>
+						<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+							origin="xforms:element('error', 'No archdesc/did/unittitle')" if="not(string(instance('old-ead')/*:archdesc/*:did/*:unittitle))"></xforms:insert>
+						<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+							origin="xforms:element('error', 'No archdesc/did/origination')" if="not(instance('old-ead')/*:archdesc/*:did/*:origination)"></xforms:insert>
+					</xforms:action>
+
+					<!-- if no errors are found, apply the XSLT transformation for data normalization and post to eXist -->
+					<xforms:action if="count(instance('files')/file[position() = instance('control-instance')/ead-file-pos]/error) = 0">
+						<!-- apply normalization tranformation -->
+						<xforms:insert nodeset="instance('new-ead')"
+							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/normalize-ead.xpl', ('data', 'template'), (instance('old-ead'), instance('ead-template')), 'data')"></xforms:insert>
+						<xforms:send submission="save-ead"></xforms:send>
+					</xforms:action>
+				</xforms:action>
+			</xforms:submission>
+
+			<xforms:submission id="save-ead" ref="instance('new-ead')"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('new-ead')//ead:eadid}.xml" method="put" replace="none"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to save XML file to eXist.</xforms:message>
+				<!-- if the EAD record successfully saves, then publish to Solr -->
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:send submission="doc-to-solr"></xforms:send>
+					<!-- update SPARQL -->
+					<!--<xforms:action if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)">
+						<xforms:var name="uri"
+							select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', instance('new-ead')/ead:eadheader/ead:eadid) else concat(instance('config')/url, 'id/', instance('new-ead')/ead:eadheader/ead:eadid)"></xforms:var>
+						<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"></xforms:setvalue>
+						<xforms:send submission="delete-graph"></xforms:send>
+					</xforms:action>-->
+				</xforms:action>
+			</xforms:submission>
+
+			<!-- ************** SOLR ***************** -->
+			<!-- access service to read in pre-transformed solr doc -->
+			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none"
+				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('new-ead')//ead:eadid}.solr">
+				<xforms:insert ev:event="xforms-submit-error" context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+					origin="xforms:element('warning', 'Unable to transform into Solr document.')"></xforms:insert>
+				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"></xforms:send>
+			</xforms:submission>
+
+			<!-- post instance to Solr -->
+			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
+				<xforms:insert ev:event="xforms-submit-error" context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
+					origin="xforms:element('warning', 'Unable to post to Solr. Add doc invalid to schema.xml')"></xforms:insert>
+			</xforms:submission>
+
+			<!-- send commit -->
+			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"></xforms:submission>
+
 			<!-- XQuery -->
-			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance"
-				instance="xquery-result" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance" instance="xquery-result"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
 
@@ -291,6 +345,9 @@
 							<xforms:output ref="instance('control-instance')/status"></xforms:output>
 						</div>
 					</xforms:group>
+					<p>
+						<a href="{$display_path}"><span class="glyphicon glyphicon-arrow-left"></span> Return to Admin</a>
+					</p>
 					<h1>EAD Harvester</h1>
 					<xforms:switch>
 						<xforms:case id="unauthorized-user">
@@ -324,17 +381,17 @@
 														<tr>
 															<td><xforms:output ref="$id"></xforms:output></td>
 															<td><xforms:output ref="instance('xquery-result')//collection[@id=$id]/title"></xforms:output></td>
-															<td><xforms:output ref="@type"/></td>
-															<td><xforms:output ref="@url"/></td>
-															<td><xforms:output value="if (string-length(@date) &gt; 0) then @date else 'Never harvested'"/></td>
+															<td><xforms:output ref="@type"></xforms:output></td>
+															<td><xforms:output ref="@url"></xforms:output></td>
+															<td><xforms:output value="if (string-length(@date) &gt; 0) then @date else 'Never harvested'"></xforms:output></td>
 															<td>
 																<xforms:trigger appearance="minimal">
-																	<xforms:label><span class="glyphicon glyphicon-refresh"/></xforms:label>
+																	<xforms:label><span class="glyphicon glyphicon-refresh"></span></xforms:label>
 																	<xforms:hint>Re-harvest from last date.</xforms:hint>
 																	<xforms:action ev:event="DOMActivate">
-																		<xforms:setvalue ref="instance('control-instance')/agencycode" value="$id"/>
-																		<xforms:send submission="parse-oai"/>
-																	</xforms:action>																	
+																		<xforms:setvalue ref="instance('control-instance')/collection-name" value="$id"></xforms:setvalue>
+																		<xforms:send submission="parse-oai"></xforms:send>
+																	</xforms:action>
 																</xforms:trigger>
 															</td>
 														</tr>
@@ -343,10 +400,91 @@
 											</table>
 										</xforms:group>
 										<xforms:group ref=".[count(harvester) = 0]">
-											<p>There are no harvesters configured in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span
-															class="glyphicon glyphicon-plus"></span>Add one.</xforms:label>
+											<p>There are no harvesters configured in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
+														one.</xforms:label>
 													<xforms:toggle case="add-harvester" ev:event="DOMActivate"></xforms:toggle>
 												</xforms:trigger></p>
+										</xforms:group>
+									</xforms:group>
+								</xforms:case>
+								<xforms:case id="validation-interface">
+									<h3>Validate and Import Files</h3>
+									<xforms:group ref="instance('files')">
+										<xforms:group ref=".[count(file) = 0]">
+											<p>No XML files have been returned by the access point.</p>
+										</xforms:group>
+										<xforms:group ref=".[count(file) &gt; 0]">
+											<p><xforms:output value="count(file)"></xforms:output> file URLs have been returned by the access point.</p> <xforms:trigger>
+												<xforms:label>Begin Process</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<!-- load template to gather standardized agency code, publisher, etc. -->
+													<xforms:send submission="load-ead-template"></xforms:send>
+													<!-- iterate through all the XML files in the list and perform validation. if validation passes, then process the file and publish to eXist. otherwise report errors -->
+													<xforms:action xxforms:iterate="instance('files')//file[position() &lt; 10]">
+														<xforms:var name="position" select="position()"></xforms:var>
+														<xforms:var name="url" select="context()/url"></xforms:var>
+														<xforms:setvalue ref="instance('control-instance')/ead-file" value="$url"></xforms:setvalue>
+														<xforms:setvalue ref="instance('control-instance')/ead-file-pos" value="$position"></xforms:setvalue>
+														<!-- load EAD file, which triggers validation and publication process -->
+														<xforms:send submission="load-ead"></xforms:send>
+														<!-- set last file successfully processed and save harvester -->
+														<xforms:setvalue ref="instance('harvesters')/harvester[@collection = instance('control-instance')/collection-name]/@lastFile" value="$url"></xforms:setvalue>
+														<xforms:send submission="save-harvesters"></xforms:send>
+													</xforms:action>
+													<!-- after the iteration is complete, post the commit to Solr and display the validation results -->
+													<xforms:send submission="submit-commit"></xforms:send>
+													<xforms:toggle case="validation-complete"></xforms:toggle>
+												</xforms:action>
+											</xforms:trigger>
+										</xforms:group>
+									</xforms:group>
+								</xforms:case>
+								<xforms:case id="validation-complete">
+									<h3>Harvest Results</h3>
+									<xforms:group ref="instance('files')">
+										<!-- if there are no errors, simply display a success message -->
+										<xforms:group ref=".[count(file[error]) = 0 and count(file[warning]) = 0]">
+											<div class="bg-success alert-box">
+												<span class="glyphicon glyphicon-info-sign"></span> Files successfully imported into EADitor.</div>
+										</xforms:group>
+										<!-- otherwise display results -->
+										<xforms:group ref=".[count(file[error]) &gt; 0 or count(file[warning]) &gt; 0]">
+											<div class="bg-danger alert-box">
+												<span class="glyphicon glyphicon-info-sign"></span> Validation errors or Solr indexing warnings have been reported.</div> <div>
+												<xforms:output value="count(file[error])">
+													<xforms:label>Errors</xforms:label>
+												</xforms:output>
+											</div>
+											<div>
+												<xforms:output value="count(file[warning])">
+													<xforms:label>Warnings</xforms:label>
+												</xforms:output>
+											</div>
+											<div> </div>
+											<table class="table">
+												<thead>
+													<tr>
+														<th>Filename</th>
+														<th>Errors</th>
+														<th>Warnings</th>
+													</tr>
+												</thead>
+												<tbody>
+													<xforms:repeat nodeset="file">
+														<tr>
+															<td>
+																<xforms:output ref="url"></xforms:output>
+															</td>
+															<td>
+																<xforms:output value="string-join(error, ', ')"></xforms:output>
+															</td>
+															<td>
+																<xforms:output value="string-join(warning, ', ')"></xforms:output>
+															</td>
+														</tr>
+													</xforms:repeat>
+												</tbody>
+											</table>
 										</xforms:group>
 									</xforms:group>
 								</xforms:case>

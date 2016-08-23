@@ -107,6 +107,7 @@
 				</xsl:if>
 				<xsl:value-of select="if (local-name()='c') then @level else ead:archdesc/@level"/>
 			</field>
+			<field name="oai_set">ead</field>
 			<field name="oai_id">
 				<xsl:if test="$upload = true()">
 					<xsl:attribute name="update">set</xsl:attribute>
@@ -209,8 +210,7 @@
 			<field name="text">
 				<xsl:if test="$upload = true()">
 					<xsl:attribute name="update">add</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="@id"/>
+				</xsl:if>				
 				<xsl:text> </xsl:text>
 				<xsl:for-each select="descendant-or-self::node()">
 					<xsl:value-of select="text()"/>
