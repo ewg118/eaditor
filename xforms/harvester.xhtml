@@ -460,7 +460,15 @@
 													<xforms:label>Warnings</xforms:label>
 												</xforms:output>
 											</div>
-											<div> </div>
+											<div>
+												<xforms:trigger appearance="minimal">
+													<xforms:label>Download CSV</xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<xforms:insert nodeset="instance('new-ead')"
+															origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>
+													</xforms:action>
+												</xforms:trigger>
+											</div>											
 											<table class="table">
 												<thead>
 													<tr>

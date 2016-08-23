@@ -54,8 +54,7 @@
 	<field name="collection-name" type="string" indexed="true" stored="true"/>
 	<field name="recordId" type="string" indexed="true" stored="true"/>
 	<field name="lang" type="string" indexed="true" stored="true"/>
-	<field name="oai_set" type="string" indexed="true" stored="true"/>
-	<field name="title" type="string" indexed="true" stored="true"/>
+	<field name="oai_set" type="string" indexed="true" stored="true"/>	
 	<field name="timestamp" type="date" indexed="true" stored="true"/>
 
 	<!-- displayable fields, sometimes used for sorting -->
