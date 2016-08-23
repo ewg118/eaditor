@@ -127,6 +127,15 @@
 				<commit></commit>
 			</xforms:instance>
 
+			<!-- download CSV -->
+			<xforms:instance id="csv">
+				<csv xmlns=""></csv>
+			</xforms:instance>
+
+			<xforms:instance id="csv-download">
+				<csv xmlns=""></csv>
+			</xforms:instance>
+
 			<!-- ************* BINDINGS ************* -->
 			<xforms:bind nodeset="instance('config')">
 				<xforms:bind nodeset="aggregator" type="xs:boolean"></xforms:bind>
@@ -414,7 +423,8 @@
 											<p>No XML files have been returned by the access point.</p>
 										</xforms:group>
 										<xforms:group ref=".[count(file) &gt; 0]">
-											<p><xforms:output value="count(file)"></xforms:output> file URLs have been returned by the access point.</p> <xforms:trigger>
+											<p><xforms:output value="count(file)"></xforms:output> file URLs have been returned by the access point.</p>
+											<xforms:trigger>
 												<xforms:label>Begin Process</xforms:label>
 												<xforms:action ev:event="DOMActivate">
 													<!-- load template to gather standardized agency code, publisher, etc. -->
@@ -428,11 +438,15 @@
 														<!-- load EAD file, which triggers validation and publication process -->
 														<xforms:send submission="load-ead"></xforms:send>
 														<!-- set last file successfully processed and save harvester -->
-														<xforms:setvalue ref="instance('harvesters')/harvester[@collection = instance('control-instance')/collection-name]/@lastFile" value="$url"></xforms:setvalue>
-														<xforms:send submission="save-harvesters"></xforms:send>
+														<!--<xforms:setvalue ref="instance('harvesters')/harvester[@collection = instance('control-instance')/collection-name]/@lastFile" value="$url"></xforms:setvalue>
+														<xforms:send submission="save-harvesters"></xforms:send>-->
 													</xforms:action>
 													<!-- after the iteration is complete, post the commit to Solr and display the validation results -->
 													<xforms:send submission="submit-commit"></xforms:send>
+													<!-- generate the CSV response -->
+													<xforms:insert nodeset="instance('csv')"
+														origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>
+													<!--<xforms:setvalue ref="instance('csv-download')" value="saxon:string-to-base64Binary(saxon:serialize(instance('csv'), 'text'), 'UTF-8')"></xforms:setvalue>-->
 													<xforms:toggle case="validation-complete"></xforms:toggle>
 												</xforms:action>
 											</xforms:trigger>
@@ -450,7 +464,8 @@
 										<!-- otherwise display results -->
 										<xforms:group ref=".[count(file[error]) &gt; 0 or count(file[warning]) &gt; 0]">
 											<div class="bg-danger alert-box">
-												<span class="glyphicon glyphicon-info-sign"></span> Validation errors or Solr indexing warnings have been reported.</div> <div>
+												<span class="glyphicon glyphicon-info-sign"></span> Validation errors or Solr indexing warnings have been reported.</div>
+											<div>
 												<xforms:output value="count(file[error])">
 													<xforms:label>Errors</xforms:label>
 												</xforms:output>
@@ -460,15 +475,13 @@
 													<xforms:label>Warnings</xforms:label>
 												</xforms:output>
 											</div>
-											<div>
-												<xforms:trigger appearance="minimal">
+											<!--<div>												
+												<xforms:output ref="instance('csv-download')" appearance="xxforms:download">
 													<xforms:label>Download CSV</xforms:label>
-													<xforms:action ev:event="DOMActivate">
-														<xforms:insert nodeset="instance('new-ead')"
-															origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>
-													</xforms:action>
-												</xforms:trigger>
-											</div>											
+													<xforms:mediatype>text/csv</xforms:mediatype>
+													<xforms:filename ref="concat(instance('control-instance')/collection-name, '.csv')"></xforms:filename>
+												</xforms:output>
+											</div>-->
 											<table class="table">
 												<thead>
 													<tr>
