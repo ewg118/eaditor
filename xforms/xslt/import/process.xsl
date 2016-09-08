@@ -198,6 +198,9 @@
 	<xsl:template match="text()">
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
+	
+	<!-- strip frontmatter -->
+	<xsl:template match="*[local-name()='frontmatter']"/>
 
 	<!--========== XLINK ==========-->
 

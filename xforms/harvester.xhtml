@@ -152,6 +152,8 @@
 				<xforms:bind nodeset="@collection" required="true()"></xforms:bind>
 				<xforms:bind nodeset="@url" required="true()" type="xs:anyURI"></xforms:bind>
 			</xforms:bind>
+			
+			<xforms:bind nodeset="instance('csv-download')" type="xs:base64Binary"/>
 
 			<!-- **************** DYNAMIC VALIDATION CONTROLS ********************** -->
 			<xforms:action ev:event="xxforms-invalid" ev:observer="harvester-template">
@@ -225,6 +227,33 @@
 				</xforms:action>
 				<xforms:toggle case="validation-interface" ev:event="xforms-submit-done"></xforms:toggle>
 			</xforms:submission>
+			
+			<!-- parse the directory listing -->
+			<xforms:submission id="parse-directory" serialization="none" method="get" action="/eaditor/admin/harvest/extract?agencycode={instance('control-instance')/collection-name}" replace="instance"
+				instance="files">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/error">Parse error with export feed (potential PHP script error)</xforms:setvalue>
+					<xforms:delete nodeset="instance('harvesters')/harvester[last()]"/>
+					<xforms:send submission="save-harvesters"></xforms:send>
+				</xforms:action>
+				<xforms:action ev:event="xforms-submit-done">
+					<!-- if the XML responds with an error message, then display error and delete the harvester -->
+					<xforms:action  if="instance('files')/error">
+						<xforms:setvalue ref="instance('control-instance')/error">Unable to parse the directory listing at the URL provided</xforms:setvalue>
+						<xforms:delete nodeset="instance('harvesters')/harvester[last()]"/>
+						<xforms:send submission="save-harvesters"></xforms:send>
+					</xforms:action>
+					<!-- if an XML response yields files, then save the harvester -->
+					<xforms:action if="count(instance('files')/file) &gt; 0">
+						<!-- clear template -->
+						<xforms:setvalue ref="instance('harvester-template')/@url"></xforms:setvalue>
+						<xforms:setvalue ref="instance('harvester-template')/@collection"></xforms:setvalue>
+						<xforms:toggle case="validation-interface"/>
+					</xforms:action>
+					
+				</xforms:action>
+				
+			</xforms:submission>
 
 			<!-- Load / Save EAD files -->
 			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
@@ -243,7 +272,7 @@
 					4. publicationstmt/publisher
 					5. profiledesc
 					6. archdesc/did/unittitle
-					7. archdesc/did/origin-->
+					7. archdesc/did/origination-->
 
 					<xforms:insert context="instance('files')/file[position() = instance('control-instance')/ead-file-pos]" nodeset="./child::node()[last()]"
 						origin="xforms:element('error', 'Root node is not &#x022;ead&#x022;')" if="not(instance('old-ead')/local-name()='ead')"></xforms:insert>
@@ -396,10 +425,18 @@
 															<td>
 																<xforms:trigger appearance="minimal">
 																	<xforms:label><span class="glyphicon glyphicon-refresh"></span></xforms:label>
-																	<xforms:hint>Re-harvest from last date.</xforms:hint>
+																	<xforms:hint>Re-harvest from last date</xforms:hint>
 																	<xforms:action ev:event="DOMActivate">
 																		<xforms:setvalue ref="instance('control-instance')/collection-name" value="$id"></xforms:setvalue>
 																		<xforms:send submission="parse-oai"></xforms:send>
+																	</xforms:action>
+																</xforms:trigger>
+																<xforms:trigger appearance="minimal">
+																	<xforms:label><span class="glyphicon glyphicon-remove"></span></xforms:label>
+																	<xforms:hint>Delete harvester</xforms:hint>
+																	<xforms:action ev:event="DOMActivate">
+																		<xforms:delete nodeset="."/>
+																		<xforms:send submission="save-harvesters"/>																	
 																	</xforms:action>
 																</xforms:trigger>
 															</td>
@@ -430,7 +467,7 @@
 													<!-- load template to gather standardized agency code, publisher, etc. -->
 													<xforms:send submission="load-ead-template"></xforms:send>
 													<!-- iterate through all the XML files in the list and perform validation. if validation passes, then process the file and publish to eXist. otherwise report errors -->
-													<xforms:action xxforms:iterate="instance('files')//file[position() &lt; 10]">
+													<xforms:action xxforms:iterate="instance('files')//file[position()= 1]">
 														<xforms:var name="position" select="position()"></xforms:var>
 														<xforms:var name="url" select="context()/url"></xforms:var>
 														<xforms:setvalue ref="instance('control-instance')/ead-file" value="$url"></xforms:setvalue>
@@ -446,7 +483,7 @@
 													<!-- generate the CSV response -->
 													<xforms:insert nodeset="instance('csv')"
 														origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>
-													<!--<xforms:setvalue ref="instance('csv-download')" value="saxon:string-to-base64Binary(saxon:serialize(instance('csv'), 'text'), 'UTF-8')"></xforms:setvalue>-->
+													<xforms:setvalue ref="instance('csv-download')" value="saxon:string-to-base64Binary(saxon:serialize(instance('csv'), 'text'), 'UTF-8')"></xforms:setvalue>
 													<xforms:toggle case="validation-complete"></xforms:toggle>
 												</xforms:action>
 											</xforms:trigger>
@@ -460,6 +497,13 @@
 										<xforms:group ref=".[count(file[error]) = 0 and count(file[warning]) = 0]">
 											<div class="bg-success alert-box">
 												<span class="glyphicon glyphicon-info-sign"></span> Files successfully imported into EADitor.</div>
+											<div>												
+												<xforms:output ref="instance('csv-download')" appearance="xxforms:download">
+													<xforms:label>Download CSV</xforms:label>
+													<xforms:mediatype>text/csv</xforms:mediatype>
+													<xforms:filename ref="concat(instance('control-instance')/collection-name, '.csv')"></xforms:filename>													
+												</xforms:output>
+											</div>
 										</xforms:group>
 										<!-- otherwise display results -->
 										<xforms:group ref=".[count(file[error]) &gt; 0 or count(file[warning]) &gt; 0]">
@@ -475,13 +519,13 @@
 													<xforms:label>Warnings</xforms:label>
 												</xforms:output>
 											</div>
-											<!--<div>												
+											<div>												
 												<xforms:output ref="instance('csv-download')" appearance="xxforms:download">
 													<xforms:label>Download CSV</xforms:label>
 													<xforms:mediatype>text/csv</xforms:mediatype>
-													<xforms:filename ref="concat(instance('control-instance')/collection-name, '.csv')"></xforms:filename>
+													<xforms:filename ref="concat(instance('control-instance')/collection-name, '.csv')"></xforms:filename>													
 												</xforms:output>
-											</div>-->
+											</div>
 											<table class="table">
 												<thead>
 													<tr>
@@ -549,7 +593,16 @@
 										<xforms:trigger>
 											<xforms:label>Validate</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:send submission="query-oai"></xforms:send>
+												<!-- submit query depending on feed type-->
+												<xforms:send submission="query-oai" if="instance('harvester-template')/@type='oai'"></xforms:send>
+												<xforms:action if="instance('harvester-template')/@type='directory'">
+													<!-- insert harvester into master list and save it -->
+													<xforms:insert context="instance('harvesters')" nodeset="./child::node()[last()]" origin="instance('harvester-template')"></xforms:insert>
+													<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('harvester-template')/@collection"></xforms:setvalue>
+													
+													<xforms:send submission="save-harvesters"></xforms:send>													
+													<xforms:send submission="parse-directory" ev:event="xforms-submit-done"></xforms:send>
+												</xforms:action>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>

@@ -30,6 +30,7 @@
 	
 	<!-- harvesting REST interfaces -->
 	<page path="/eaditor/admin/harvest/extract" view="xpl/xforms/harvest/extract.xpl"/>
+	<page path="/eaditor/admin/harvest/parse-html" view="xpl/xforms/harvest/parse-html.xpl"/>
 	
 	<!-- editor forms -->
 	<!-- EAD-related -->

@@ -1,0 +1,3 @@
+Author: Ethan Gruber
+Date: September 2016
+Function: The function of this folder is to contain a PHP script that screen scrapes HTML directory listings in order to gather a list of EAD XML files to be loaded for ingesting into EADitor via the Harvester feature.
