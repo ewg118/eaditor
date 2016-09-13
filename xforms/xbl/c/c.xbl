@@ -47,7 +47,7 @@
 							</xforms:group>						
 							<div>
 								<xforms:input ref="ead:did/ead:unittitle">
-									<xforms:label>Unit Title</xforms:label>
+									<xforms:label>Title</xforms:label>
 									<xforms:alert>Required</xforms:alert>
 								</xforms:input>
 							</div>

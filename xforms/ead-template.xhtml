@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2010 Ethan Gruber
+    Author: Ethan Gruber
     EADitor: https://github.com/ewg118/eaditor
-    Apache License 2.0: https://github.com/ewg118/eaditor    
+    Function: EAD core XForms template editor (EAD Header, Archdesc)  
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -326,9 +326,9 @@
 						<fr:tabview>
 							<!--**************************************** EADHEADER **********************************-->
 							<fr:tab id="eadheader-tab">
-								<fr:label>EAD Header</fr:label>
+								<fr:label>Finding Aid Info</fr:label>
 								<xforms:group ref="instance('ead-template')/ead:eadheader">
-									<h1>EAD Header</h1>
+									<h1>Finding Aid Info</h1>
 									<span class="add">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
@@ -338,7 +338,7 @@
 										</xforms:trigger>
 									</span>
 									<xxforms:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
-										<xforms:label>EAD Header Elements</xforms:label>
+										<xforms:label>Available Elements</xforms:label>
 										<xforms:group ref=".[count(ead:profiledesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
@@ -845,10 +845,10 @@
 							<!--**************************************** END EADHEADER **********************************-->
 							<!--**************************************** ARCHDESC **********************************-->
 							<fr:tab bind="archdesc-tab">
-								<fr:label>Archival Description</fr:label>
+								<fr:label>Collection Info</fr:label>
 								<div class="row">
 									<div class="col-md-12">
-										<h1>Archival Description</h1>										
+										<h1>Collection Info</h1>										
 										<div>
 											<xforms:select1 ref="@level">
 												<xforms:label>Level</xforms:label>
@@ -870,9 +870,9 @@
 								</div>
 							</fr:tab>
 							<fr:tab id="dsc-tab">
-								<fr:label>Description of Subordinate Components</fr:label>
+								<fr:label>Inventory</fr:label>
 								<xforms:group ref="instance('guide')/ead:archdesc">
-									<h2>Description of Subordinate Components</h2>
+									<h2>Inventory</h2>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
 											<span class="glyphicon glyphicon-remove"></span>

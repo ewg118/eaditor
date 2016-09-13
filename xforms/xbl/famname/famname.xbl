@@ -14,6 +14,10 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
+					
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer">	
+						<xforms:send submission="load-config" if="not(string($binding))"/>
+					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
 						<div>
@@ -34,7 +38,7 @@
 						</div>
 					</xforms:group>
 					<xforms:group ref=".[not(string($binding))]">
-						<div style="display:table;width:100%">
+						<div>
 							<h4>Family Name</h4>
 							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
@@ -106,7 +110,6 @@
 							</div>
 							
 							<xforms:switch>
-								<xforms:case id="default"/>
 								<xforms:case id="snac-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
@@ -120,6 +123,12 @@
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
 									</div>
+									
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
 									
 									<xforms:group ref=".[number(instance('snac-response')/@totalDocs) &gt; 0]">
 										<xforms:output ref="instance('search-results')"/>
@@ -158,9 +167,13 @@
 										</xforms:trigger>
 									</div>
 									
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
+									
 									<xforms:group ref=".[count(instance('xeac-response')//atom:entry) &gt; 0]">
-										<xforms:output ref="instance('search-results')"/>
-										<br/>
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact">
 											<xforms:label>Name</xforms:label>
 											<xforms:itemset nodeset="instance('xeac-response')//atom:entry">
@@ -223,14 +236,16 @@
 							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
 								<div>
 									<xforms:output ref=".">
-										<xforms:label>Defintion</xforms:label>
+										<xforms:label>Definition</xforms:label>
 									</xforms:output>
 									<xforms:trigger appearance="minimal">
 										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:hint ref="@href"/>
 										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
 									</xforms:trigger>
 								</div>
 							</xforms:group>
+							<hr/>
 						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->
@@ -274,6 +289,11 @@
 						<xforms:instance id="search-query">
 							<query/>
 						</xforms:instance>
+						
+						<!-- total results -->
+						<xforms:instance id="search-results">
+							<results/>
+						</xforms:instance>
 
 						<!-- local vocabulary -->
 						<xforms:instance id="solr-response">
@@ -288,7 +308,7 @@
 							</interfaces>
 						</xforms:instance>
 						<xforms:instance id="interface-type">
-							<interface/>
+							<interface>snac</interface>
 						</xforms:instance>
 
 						<!-- ***** SUBMISSIONS ***** -->
@@ -303,7 +323,7 @@
 									<xforms:setvalue ref="instance('interface-type')">xeac</xforms:setvalue>
 								</xforms:action>
 								<xforms:action if="string-length(instance('config')/xeac) = 0">
-									<xforms:setvalue ref="instance('interface-type')">local</xforms:setvalue>
+									<xforms:setvalue ref="instance('interface-type')">snac</xforms:setvalue>
 								</xforms:action>
 							</xforms:action>
 						</xforms:submission>
@@ -315,7 +335,7 @@
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query xEAC.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:var name="total" select="number(instance('xeac-response')//opensearch:totalResults)"/>
-								<xforms:message if="$total = 0" level="modal">No results found for query.</xforms:message>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
 								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 100" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
 								<xforms:setvalue if="$total &gt; 100" ref="instance('search-results')" value="concat('Displaying first 100 of ', $total, ' result(s).')"/>
 							</xforms:action>
@@ -327,7 +347,7 @@
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query SNAC.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:var name="total" select="number(instance('snac-response')/@totalDocs)"/>
-								<xforms:message if="$total = 0" level="modal">No results found for query.</xforms:message>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
 								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 100" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
 								<xforms:setvalue if="$total &gt; 100" ref="instance('search-results')" value="concat('Displaying first 100 of ', $total, ' result(s).')"/>
 							</xforms:action>

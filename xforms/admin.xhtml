@@ -1624,7 +1624,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																		<xforms:output ref="concat('(', $id, ')')"></xforms:output>
 																	</a>
 																	<xforms:group ref=".[components = true()]">
-																		<span class="expand" cid="{$id}-link">expand</span>
+																		<a href="#" class="expand" id="{$id}-link">expand</a>
 																	</xforms:group>
 																</xforms:group>
 																<xforms:group ref=".[type='mods']">
@@ -1639,7 +1639,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																</xforms:group>
 															</h4>
 															<xforms:group ref=".[components = true()]">
-																<div class="{$id}_container" style="display:none"></div>
+																<div id="{$id}_container" style="display:none"></div>
 															</xforms:group>
 														</td>
 														<td class="text-center">

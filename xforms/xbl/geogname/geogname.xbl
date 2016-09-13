@@ -4,9 +4,10 @@
 	or geonames (refers to geonames.org APIs)
 -->
 
-<xbl:xbl  xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:rss="http://purl.org/rss/1.0/" xmlns:res="http://www.w3.org/2005/sparql-results#">
+	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:rss="http://purl.org/rss/1.0/"
+	xmlns:res="http://www.w3.org/2005/sparql-results#">
 	<xbl:binding id="eaditor-geogname" element="eaditor|geogname">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -14,16 +15,14 @@
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
-					</xforms:var>					
-					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:setvalue ref="instance('interface-type')">geonames</xforms:setvalue>
-					</xforms:action>
+					</xforms:var>
+
 					<xforms:group ref="$binding">
 						<xforms:group ref=".[string(text())]">
 							<div>
 								<xforms:output ref=".">
 									<xforms:label>Geographic Name</xforms:label>
-								</xforms:output>							
+								</xforms:output>
 								<xforms:trigger appearance="minimal">
 									<xforms:action ev:event="DOMActivate">
 										<!-- delete all holdover values before removing bind, possible orbeon bug -->
@@ -43,7 +42,7 @@
 						</xforms:group>
 						<xforms:group ref=".[not(string(text()))]">
 							<h4>Geographic Name</h4>
-							<eaditor:attributes ref="$binding"/>							
+							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
 								<xforms:action ev:event="DOMActivate">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -52,9 +51,9 @@
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-							
-							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> Element must contain content.</div>
-							
+
+							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Warning:</strong> Element must contain content.</div>
+
 							<div>
 								<radiogroup>
 									<xforms:select1 ref="instance('interface-type')" appearance="full">
@@ -82,31 +81,31 @@
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<!-- remove temporary values, applicable when switching back to geonames from local -->
 												<xforms:delete context="instance('geonames')/*"/>
-												<xforms:delete context="instance('feed')/*"/>
+												<xforms:delete context="instance('pleiades-response')/*"/>
 												<xforms:setvalue ref="instance('search-query')"/>
 
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
 												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'geonames')"/>
-												
-												<!-- set source if the attributes already exist -->												
-												<xforms:setvalue if="$binding/@source" ref="$binding/@source">geonames</xforms:setvalue>												
+
+												<!-- set source if the attributes already exist -->
+												<xforms:setvalue if="$binding/@source" ref="$binding/@source">geonames</xforms:setvalue>
 												<xforms:toggle case="geonames-search"/>
-											</xforms:action>	
+											</xforms:action>
 											<xforms:action if=". = 'tgn'">
 												<!-- clear temp -->
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<!-- remove temporary values, applicable when switching back to geonames from local -->
 												<xforms:delete context="instance('geonames')/*"/>
-												<xforms:delete context="instance('feed')/*"/>
+												<xforms:delete context="instance('pleiades-response')/*"/>
 												<xforms:setvalue ref="instance('search-query')"/>
-												
+
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
 												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'tgn')"/>
-												
-												<!-- clear authfilenumber and set source if the attributes already exist -->												
+
+												<!-- clear authfilenumber and set source if the attributes already exist -->
 												<xforms:setvalue if="$binding/@source" ref="$binding/@source">tgn</xforms:setvalue>
 												<xforms:toggle case="tgn-search"/>
 											</xforms:action>
@@ -116,14 +115,14 @@
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<!-- remove temporary values, applicable when switching back to geonames from local -->
 												<xforms:delete context="instance('geonames')/*"/>
-												<xforms:delete context="instance('feed')/*"/>
+												<xforms:delete context="instance('pleiades-response')/*"/>
 												<xforms:setvalue ref="instance('search-query')"/>
 
 												<!-- create attributes, clear $binding text when applicable -->
 												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
 												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'pleiades')"/>
-												
-												<!-- clear authfilenumber and set source if the attributes already exist -->												
+
+												<!-- clear authfilenumber and set source if the attributes already exist -->
 												<xforms:setvalue if="$binding/@source" ref="$binding/@source">pleiades</xforms:setvalue>
 												<xforms:toggle case="pleiades-search"/>
 											</xforms:action>
@@ -133,14 +132,14 @@
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<!-- delete attributes, clear $binding text when applicable -->
 												<xforms:delete context="instance('geonames')/*"/>
-												<xforms:delete context="instance('feed')/*"/>
+												<xforms:delete context="instance('pleiades-response')/*"/>
 												<!-- remove attributes -->
 												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
 
 												<!-- load config if it hasn't already been loaded -->
 												<xforms:action if="not(string(instance('config')/url))">
-													
+
 													<xforms:send submission="load-config"/>
 												</xforms:action>
 												<xforms:toggle case="local-autosuggest"/>
@@ -150,7 +149,6 @@
 								</radiogroup>
 							</div>
 							<xforms:switch>
-								<xforms:case id="default"/>
 								<xforms:case id="geonames-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
@@ -159,7 +157,7 @@
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:action if="not(string(instance('config')/url))">
-													
+
 													<xforms:send submission="load-config"/>
 												</xforms:action>
 												<xforms:delete context="instance('geonames')/*"/>
@@ -168,6 +166,12 @@
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
 									</div>
+
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
 
 									<xforms:group ref=".[count(instance('geonames')//geoname) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" id="geonames-list" size="10">
@@ -186,7 +190,7 @@
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-								</xforms:case>	
+								</xforms:case>
 								<xforms:case id="tgn-search">
 									<div>
 										<xforms:input ref="instance('search-query')">
@@ -201,6 +205,13 @@
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
 									</div>
+
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
+
 									<xforms:group ref=".[count(instance('getty-response')//res:result) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" length="20">
 											<xforms:label>Location</xforms:label>
@@ -220,7 +231,7 @@
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-									
+
 								</xforms:case>
 								<xforms:case id="pleiades-search">
 									<div>
@@ -229,31 +240,38 @@
 										</xforms:input>
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:delete context="instance('feed')/*"/>
+												<xforms:delete context="instance('pleiades-response')/*"/>
 												<xforms:send submission="query-pleiades"/>
 											</xforms:action>
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
 									</div>
 
-									<xforms:group ref=".[count(instance('feed')//rss:item) &gt; 0]">
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
+
+									<xforms:group ref=".[count(instance('pleiades-response')//rss:item) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" id="pleiades-list" size="10">
 											<xforms:label>Location</xforms:label>
-											<xforms:itemset nodeset="instance('feed')//rss:item">
+											<xforms:itemset nodeset="instance('pleiades-response')//rss:item">
 												<xforms:label ref="rss:title"/>
 												<xforms:value ref="rss:link"/>
 											</xforms:itemset>
-											<xforms:setvalue ev:event="xforms-value-changed" ref="instance('temp')" value="instance('feed')//rss:item[rss:link = instance('temp')/@href]/rss:description"/>
-											
+											<xforms:setvalue ev:event="xforms-value-changed" ref="instance('temp')" value="instance('pleiades-response')//rss:item[rss:link =
+												instance('temp')/@href]/rss:description"/>
+
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[5]"/>
-												<xforms:setvalue ref="$binding" value="instance('feed')//rss:item[rss:link = instance('temp')/@href]/rss:title"/>
+												<xforms:setvalue ref="$binding" value="instance('pleiades-response')//rss:item[rss:link = instance('temp')/@href]/rss:title"/>
 											</xforms:action>
 										</xforms:trigger>
-									</xforms:group>									
+									</xforms:group>
 								</xforms:case>
 								<xforms:case id="local-autosuggest">
 									<div>
@@ -286,7 +304,7 @@
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding" value="instance('temp')"/>
 											</xforms:action>
-										</xforms:trigger>										
+										</xforms:trigger>
 									</xforms:group>
 									<xforms:group ref=".[string-length(instance('control-instance')/local-message) &gt; 0]">
 										<p>
@@ -295,18 +313,22 @@
 									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
-							
+
 							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
 								<div>
 									<xforms:output ref=".">
-										<xforms:label>Defintion</xforms:label>
+										<xforms:label>Definition</xforms:label>
 									</xforms:output>
 									<xforms:trigger appearance="minimal">
-										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
-										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+										<xforms:label>
+											<span class="glyphicon glyphicon-new-window"/>
+										</xforms:label>
+										<xforms:hint ref="@href"/>
+										<xforms:load ev:event="DOMActivate" resource="{@href}" show="new"/>
 									</xforms:trigger>
 								</div>
 							</xforms:group>
+							<hr/>
 						</xforms:group>
 					</xforms:group>
 					<!-- ********************************************************************** -->
@@ -321,11 +343,11 @@
 						<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
 							<collections xmlns=""/>
 						</xforms:instance>
-						
+
 						<xforms:instance id="dump">
 							<dump xmlns=""/>
-						</xforms:instance>						
-						
+						</xforms:instance>
+
 						<xforms:instance id="control-instance">
 							<control xmlns="">
 								<collection-name/>
@@ -431,6 +453,11 @@
 							<query/>
 						</xforms:instance>
 
+						<!-- total results -->
+						<xforms:instance id="search-results">
+							<results/>
+						</xforms:instance>
+
 						<!-- geonames specific instances -->
 						<xforms:instance id="geoname-query-response">
 							<geoname/>
@@ -452,10 +479,10 @@
 						</xforms:instance>
 
 						<!-- instances for nomisma/pleiades -->
-						<xforms:instance id="feed">
+						<xforms:instance id="pleiades-response">
 							<feed xmlns=""/>
 						</xforms:instance>
-						
+
 						<!-- getty TNG instances -->
 						<xforms:instance id="sparqlQueryTemplate">
 							<query><![CDATA[PREFIX gvp: <http://vocab.getty.edu/ontology#>
@@ -466,7 +493,7 @@ SELECT ?c ?label ?def WHERE {
 ?c a gvp:AdminPlaceConcept; skos:inScheme tgn: ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
 skos:scopeNote/rdf:value ?def ;
-luc:term "SEARCH_QUERY"} LIMIT 25]]>
+luc:term "SEARCH_QUERY"} LIMIT 20]]>
 							</query>
 						</xforms:instance>
 						<xforms:instance id="sparqlQuery">
@@ -476,29 +503,34 @@ luc:term "SEARCH_QUERY"} LIMIT 25]]>
 							<sparql xmlns="http://www.w3.org/2005/sparql-results#"/>
 						</xforms:instance>
 
-						<!-- local vocabulary -->						
+						<!-- local vocabulary -->
 						<xforms:instance id="solr-response">
 							<response xmlns=""/>
 						</xforms:instance>
 
 						<!-- mint type radio button -->
 						<xforms:instance id="interface-type">
-							<interface/>
+							<interface>geonames</interface>
 						</xforms:instance>
-						
+
 						<!-- ********* SUBMISSIONS ***********-->
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
+						<xforms:submission id="load-config" serialization="none" method="get"
+							action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
 							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
 						<!-- search for matching keywords -->
 						<xforms:submission id="query-geonames" serialization="none" method="get"
-							action="http://api.geonames.org/search?q={instance('search-query')}&amp;maxRows=100&amp;lang=en&amp;username={instance('config')/geonames_api_key}&amp;style=full&amp;minChars=2"
+							action="http://api.geonames.org/search?q={instance('search-query')}&amp;maxRows=20&amp;lang=en&amp;username={instance('config')/geonames_api_key}&amp;style=full&amp;minChars=2"
 							instance="geoname-temp" replace="instance">
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:message if="number(instance('geoname-temp')/totalResultsCount) = 0" level="modal">No results found for query.</xforms:message>
-								<!--<xforms:insert if="number(instance('geoname-temp')/totalResultsCount) &gt; 0" context="instance('geonames')" origin="instance('geoname-temp')"/>-->
+								<!-- handle total -->
+								<xforms:var name="total" select="number(instance('geoname-temp')/totalResultsCount)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+								<!-- construct AACR2 label -->
 								<xforms:action xxforms:iterate="instance('geoname-temp')//geoname">
 									<xforms:var name="countryCode" select="countryCode"/>
 									<xforms:var name="countryName" select="countryName"/>
@@ -507,24 +539,32 @@ luc:term "SEARCH_QUERY"} LIMIT 25]]>
 									<xforms:var name="geonameId" select="geonameId"/>
 									<xforms:var name="fcode" select="fcode"/>
 									<!-- set a value equivalent to AACR2 standard for US, AU, CA, and GB.  This equation deviates from AACR2 for Malaysia since standard abbreviations for territories cannot be found -->
-									<xforms:setvalue ref="instance('geoname-template')/label"
-										value="if ($countryCode = 'US' or $countryCode = 'AU' or $countryCode = 'CA') then if ($fcode = 'ADM1') then $name else concat($name, ' (', instance('abbreviations')/country[@code=$countryCode]/place[. = $adminName1]/@abbr, ')') else if ($countryCode= 'GB') then  if ($fcode = 'ADM1') then $name else concat($name, ' (', $adminName1, ')') else if ($fcode = 'PCLI') then $name else concat($name, ' (', $countryName, ')')"/>
+									<xforms:setvalue ref="instance('geoname-template')/label" value="if ($countryCode = 'US' or $countryCode = 'AU' or $countryCode = 'CA') then if ($fcode = 'ADM1')
+										then $name else concat($name, ' (', instance('abbreviations')/country[@code=$countryCode]/place[. = $adminName1]/@abbr, ')') else if ($countryCode= 'GB') then
+										if ($fcode = 'ADM1') then $name else concat($name, ' (', $adminName1, ')') else if ($fcode = 'PCLI') then $name else concat($name, ' (', $countryName, ')')"/>
 									<xforms:setvalue ref="instance('geoname-template')/geonameId" value="$geonameId"/>
 									<xforms:insert context="instance('geonames')" origin="instance('geoname-template')" nodeset="./child::node()[last()]"/>
 								</xforms:action>
 							</xforms:action>
 						</xforms:submission>
-						
+
 						<!-- query pleiades for ancient places -->
 						<xforms:submission id="query-pleiades" serialization="none" method="get" action="http://pleiades.stoa.org/search_rss?Title={instance('search-query')}&amp;portal_type=Place"
-							instance="feed" replace="instance">
+							instance="pleiades-response" replace="instance">
 							<xforms:header>
 								<xforms:name>User-Agent</xforms:name>
 								<xforms:value>XForms/EADitor</xforms:value>
 							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with Pleiades RSS feed.</xforms:message>
+							<xforms:action ev:event="xforms-submit-done">
+								<!-- handle total -->
+								<xforms:var name="total" select="count(instance('pleiades-response')//rss:item)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+							</xforms:action>
 						</xforms:submission>
-						
+
 						<xforms:submission id="query-getty" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}" ref="instance('getty-response')" replace="instance"
 							method="get">
 							<xforms:header>
@@ -536,6 +576,12 @@ luc:term "SEARCH_QUERY"} LIMIT 25]]>
 								<xforms:value>application/sparql-results+xml</xforms:value>
 							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">SPARQL query failed.</xforms:message>
+							<xforms:action ev:event="xforms-submit-done">
+								<xforms:var name="total" select="count(instance('getty-response')//res:result)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+							</xforms:action>
 						</xforms:submission>
 
 						<!-- local vocabulary-->

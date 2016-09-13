@@ -100,7 +100,7 @@
 							</xforms:group>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Unit Date</xforms:label>
+									<span class="glyphicon glyphicon-plus"/>Dates</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('unitdate-template')"/>
 							</xforms:trigger>
 							<xforms:group ref=".[count(ead:unitid) &lt; 1]">
@@ -157,8 +157,14 @@
 										<xforms:label>
 											<span class="glyphicon glyphicon-plus"/>Personal Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
-											<xforms:setvalue ref="." if="not(child::*)"/>
-											<xforms:insert context="." origin="instance('persname-template')"/>
+											<xforms:setvalue if="not(child::*)">
+												<xforms:var name="value" select="normalize-space(.)"/>
+												<xforms:insert context="." origin="instance('persname-template')"/>
+												<xforms:setvalue ref="ead:persname" value="$value"/>
+											</xforms:setvalue>
+											<xforms:setvalue if="child::*">
+												<xforms:insert context="." origin="instance('persname-template')"/>
+											</xforms:setvalue>
 										</xforms:action>
 									</xforms:trigger>
 								</div>
@@ -342,7 +348,7 @@
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<span class="glyphicon glyphicon-plus"/>Extent</xforms:label>
+											<span class="glyphicon glyphicon-plus"/><xforms:label value="if (ancestor::ead:c) then concat('Size of ', ancestor::ead:c[1]/@type) else 'Size of Collection'"/></xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extent-template')"/>
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
@@ -374,7 +380,7 @@
 								<xforms:repeat nodeset="ead:extent">
 									<div>
 										<xforms:input ref=".">
-											<xforms:label value="if (ancestor::ead:c) then 'Extent' else 'Size of Collection'"/>
+											<xforms:label value="if (ancestor::ead:c) then concat('Size of ', ancestor::ead:c[1]/@type) else 'Size of Collection'"/>
 											<xforms:alert>Required</xforms:alert>
 										</xforms:input>
 										<xforms:group ref=".[ancestor::ead:c]">
