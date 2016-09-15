@@ -136,35 +136,53 @@
 										</xforms:label>
 									</xforms:trigger>
 								</xforms:group>
+								
+								<xforms:group
+									ref=".[count(child::node()) &lt; 1]">
+									<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> A collection creator must be defined.</div>
+								</xforms:group>
+								
 								<div>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
 											<span class="glyphicon glyphicon-plus"/>Corporate Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
-											<xforms:setvalue ref="." if="not(child::*)"/>
-											<xforms:insert context="." origin="instance('corpname-template')"/>
+											<xforms:action if="child::*">
+												<xforms:insert context="." nodeset="child::node()[last()]" origin="instance('corpname-template')"/>
+											</xforms:action>
+											<xforms:action if="not(child::*)">
+												<xforms:var name="value" select="normalize-space(.)"/>
+												<xforms:insert context="." origin="instance('corpname-template')"/>
+												<xforms:setvalue ref="ead:corpname" value="$value"/>
+											</xforms:action>											
 										</xforms:action>
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
 											<span class="glyphicon glyphicon-plus"/>Family Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
-											<xforms:setvalue ref="." if="not(child::*)"/>
-											<xforms:insert context="." origin="instance('famname-template')"/>
+											<xforms:action if="child::*">
+												<xforms:insert context="." nodeset="child::node()[last()]" origin="instance('famname-template')"/>
+											</xforms:action>
+											<xforms:action if="not(child::*)">
+												<xforms:var name="value" select="normalize-space(.)"/>
+												<xforms:insert context="." origin="instance('famname-template')"/>
+												<xforms:setvalue ref="ead:famname" value="$value"/>
+											</xforms:action>											
 										</xforms:action>
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
 											<span class="glyphicon glyphicon-plus"/>Personal Name</xforms:label>
 										<xforms:action ev:event="DOMActivate">
-											<xforms:setvalue if="not(child::*)">
+											<xforms:action if="child::*">
+												<xforms:insert context="." nodeset="child::node()[last()]" origin="instance('persname-template')"/>
+											</xforms:action>
+											<xforms:action if="not(child::*)">
 												<xforms:var name="value" select="normalize-space(.)"/>
 												<xforms:insert context="." origin="instance('persname-template')"/>
 												<xforms:setvalue ref="ead:persname" value="$value"/>
-											</xforms:setvalue>
-											<xforms:setvalue if="child::*">
-												<xforms:insert context="." origin="instance('persname-template')"/>
-											</xforms:setvalue>
+											</xforms:action>											
 										</xforms:action>
 									</xforms:trigger>
 								</div>
@@ -348,7 +366,7 @@
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
-											<span class="glyphicon glyphicon-plus"/><xforms:label value="if (ancestor::ead:c) then concat('Size of ', ancestor::ead:c[1]/@type) else 'Size of Collection'"/></xforms:label>
+											<span class="glyphicon glyphicon-plus"/><xforms:output value="if (ancestor::ead:c) then concat('Size of ', ancestor::ead:c[1]/@level) else 'Size of Collection'"/></xforms:label>
 										<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extent-template')"/>
 									</xforms:trigger>
 									<xforms:trigger appearance="minimal">
@@ -380,9 +398,10 @@
 								<xforms:repeat nodeset="ead:extent">
 									<div>
 										<xforms:input ref=".">
-											<xforms:label value="if (ancestor::ead:c) then concat('Size of ', ancestor::ead:c[1]/@type) else 'Size of Collection'"/>
+											<xforms:label value="if (ancestor::ead:c) then concat('Size of ', ancestor::ead:c[1]/@level) else 'Size of Collection'"/>
 											<xforms:alert>Required</xforms:alert>
 										</xforms:input>
+										<!-- make the extent deletable when it falls under a component -->
 										<xforms:group ref=".[ancestor::ead:c]">
 											<xforms:trigger appearance="minimal">
 												<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -391,7 +410,17 @@
 												</xforms:label>
 											</xforms:trigger>
 										</xforms:group>
-
+										<!-- only allow extent to be deletable if there are more than 1 if they fall under the archdesc/did -->
+										<xforms:group ref=".[not(ancestor::ead:c)]">
+											<xforms:group ref=".[count(parent::ead:physdesc/ead:extent) &gt; 1]">
+												<xforms:trigger appearance="minimal">
+													<xforms:delete ev:event="DOMActivate" nodeset="."/>
+													<xforms:label>
+														<span class="glyphicon glyphicon-remove"/>
+													</xforms:label>
+												</xforms:trigger>
+											</xforms:group>											
+										</xforms:group>
 									</div>
 								</xforms:repeat>
 

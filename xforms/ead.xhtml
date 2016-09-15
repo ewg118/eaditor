@@ -280,6 +280,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<xforms:bind nodeset="ead:archdesc">
 					<xforms:bind nodeset="@level" required="true()"></xforms:bind>
 					<xforms:bind nodeset="ead:did">
+						<xforms:bind nodeset="ead:origination" constraint="count(*) &gt; 0">
+							<xforms:bind nodeset="*" required="true()"/>
+						</xforms:bind>
 						<xforms:bind nodeset="ead:unitid" required="true()"></xforms:bind>
 						<xforms:bind nodeset="ead:langmaterial">
 							<xforms:bind ref="ead:language">

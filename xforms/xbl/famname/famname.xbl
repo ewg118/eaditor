@@ -332,6 +332,10 @@
 						<xforms:submission id="query-xeac" serialization="none" method="get"
 							action="{instance('config')/xeac}feed/?q=entityType_facet:family+AND+&#x022;{instance('search-query')}&#x022;" instance="xeac-response"
 							replace="instance">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query xEAC.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:var name="total" select="number(instance('xeac-response')//opensearch:totalResults)"/>
@@ -344,6 +348,10 @@
 						<xforms:submission id="query-snac" serialization="none" method="get"
 							action="http://socialarchive.iath.virginia.edu/snac/search?facet-entityType=family&amp;text={instance('search-query')}&amp;sectionType=identity&amp;rmode=slickgrid&amp;raw=1"
 							instance="snac-response" replace="instance">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query SNAC.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:var name="total" select="number(instance('snac-response')/@totalDocs)"/>
