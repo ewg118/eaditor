@@ -16,14 +16,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:action if="not(string($binding))">
-							<!-- otherwise active search interfaces -->
-							<xforms:setvalue ref="instance('interface-type')" value="'lcsh'"/>
-						</xforms:action>
-						<xforms:action if="string($binding)">
-							<xforms:setvalue ref="instance('interface-type')" value="'lcsh'" if="$binding/@source = 'lcsh'"/>
-							<xforms:setvalue ref="instance('interface-type')" value="'local'" if="$binding/@source != 'lcsh'"/>
-						</xforms:action>
+						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">lcsh</xforms:setvalue>						
 					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
@@ -242,7 +235,7 @@
 
 						<!-- interface type radio button -->
 						<xforms:instance id="interface-type">
-							<interface>lcsh</interface>
+							<interface/>
 						</xforms:instance>
 
 						<xforms:submission id="query-lc" serialization="none" method="get" action="http://id.loc.gov/search/?q={instance('search-query')}

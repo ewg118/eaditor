@@ -16,6 +16,10 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
+					
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
+						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">geonames</xforms:setvalue>						
+					</xforms:action>
 
 					<xforms:group ref="$binding">
 						<xforms:group ref=".[string(text())]">
@@ -510,7 +514,7 @@ luc:term "SEARCH_QUERY"} LIMIT 20]]>
 
 						<!-- mint type radio button -->
 						<xforms:instance id="interface-type">
-							<interface>geonames</interface>
+							<interface/>
 						</xforms:instance>
 
 						<!-- ********* SUBMISSIONS ***********-->

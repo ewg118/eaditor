@@ -15,7 +15,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:toggle case="aat-search" if="not(string($binding))"/>
+						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">aat</xforms:setvalue>						
 					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
@@ -298,7 +298,7 @@
 
 						<!-- interface type radio button -->
 						<xforms:instance id="interface-type">
-							<interface>aat</interface>
+							<interface/>
 						</xforms:instance>
 
 						<!-- sparql queries -->

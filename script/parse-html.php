@@ -43,9 +43,7 @@ else {
 
 curl_close($ch);
 
-//end writer process
-$writer->endDocument();
-$writer->flush();
+'cou
 
 function process_html($url, $html, $writer) {
 	$from = $_GET['from'];

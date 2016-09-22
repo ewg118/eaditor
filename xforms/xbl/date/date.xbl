@@ -25,12 +25,14 @@
 					</xforms:action>
 					
 					<xforms:group ref="$binding">
+						<xforms:var name="deletable" as="xs:boolean" select="if (parent::ead:did/parent::ead:c) then true() else if (parent::ead:did/parent::ead:archdesc and count(parent::ead:did/ead:unitdate) &gt; 1) then true() else false()"/>
+						
 						<div class="pair_div">						
 							<h4>
 								<xforms:output ref="if (local-name()='unitdate') then 'Dates' else 'Date'"/>
 							</h4>
 							<eaditor:attributes ref="."/>
-							<xforms:group ref=".[count(parent::node()[local-name()='chronitem']) &lt; 1 and count(parent::node()[local-name()='change']) &lt; 1 and not(parent::ead:publicationstmt) and count(parent::ead:did/ead:unitdate) &gt; 1]">
+							<xforms:group ref=".[$deletable = true()]">
 								<xforms:trigger appearance="minimal">
 									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
@@ -50,6 +52,10 @@
 											<xforms:label>Date Range</xforms:label>
 											<xforms:value>dateRange</xforms:value>
 										</xforms:item>
+										<xforms:item>
+											<xforms:label>Approximate</xforms:label>
+											<xforms:value>approximate</xforms:value>
+										</xforms:item>
 										<xforms:action ev:event="xforms-value-changed">
 											<xforms:action if="not(instance('control-instance')/loaded=true())">
 												<!-- clear inputs -->
@@ -60,10 +66,16 @@
 												<xforms:setvalue ref="$binding/@normal"/>
 											</xforms:action>
 											<xforms:action if=". = 'date'">
+												<xforms:insert if="not($binding/@normal)" context="$binding" origin="xforms:attribute('normal', '')"/>
 												<xforms:toggle case="date"/>
 											</xforms:action>
-											<xforms:action if=". = 'dateRange'">											
+											<xforms:action if=". = 'dateRange'">	
+												<xforms:insert if="not($binding/@normal)" context="$binding" origin="xforms:attribute('normal', '')"/>
 												<xforms:toggle case="dateRange"/>										
+											</xforms:action>
+											<xforms:action if=". = 'approximate'">	
+												<xforms:delete if="$binding/@normal" context="$binding/@normal"/>
+												<xforms:toggle case="approximate"/>										
 											</xforms:action>
 											<xforms:setvalue ref="instance('control-instance')/loaded" value="false()"/>
 										</xforms:action>
@@ -134,6 +146,7 @@
 												</xforms:input>
 											</div>
 										</xforms:case>
+										<xforms:case id="approximate"/>
 									</xforms:switch>
 								</xforms:group>							
 							</xforms:group>
@@ -145,17 +158,19 @@
 							</div>
 							<!-- display drop down for @type for collection dates -->
 							<xforms:group ref=".[parent::ead:did/parent::ead:archdesc]">
-								<xforms:select1 ref="@type">
-									<xforms:label>Type</xforms:label>
-									<xforms:item>
-										<xforms:label>inclusive</xforms:label>
-										<xforms:value>inclusive</xforms:value>
-									</xforms:item>
-									<xforms:item>
-										<xforms:label>bulk</xforms:label>
-										<xforms:value>bulk</xforms:value>
-									</xforms:item>
-								</xforms:select1>
+								<div>
+									<xforms:select1 ref="@type">
+										<xforms:label>Type</xforms:label>
+										<xforms:item>
+											<xforms:label>inclusive</xforms:label>
+											<xforms:value>inclusive</xforms:value>
+										</xforms:item>
+										<xforms:item>
+											<xforms:label>bulk</xforms:label>
+											<xforms:value>bulk</xforms:value>
+										</xforms:item>
+									</xforms:select1>
+								</div>	
 							</xforms:group>
 						</div>
 					</xforms:group>
