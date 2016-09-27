@@ -553,7 +553,7 @@ luc:term "SEARCH_QUERY"} LIMIT 20]]>
 						</xforms:submission>
 
 						<!-- query pleiades for ancient places -->
-						<xforms:submission id="query-pleiades" serialization="none" method="get" action="http://pleiades.stoa.org/search_rss?Title={instance('search-query')}&amp;portal_type=Place"
+						<xforms:submission id="query-pleiades" serialization="none" method="get" action="https://pleiades.stoa.org/search_rss?Title={instance('search-query')}&amp;portal_type=Place"
 							instance="pleiades-response" replace="instance">
 							<xforms:header>
 								<xforms:name>User-Agent</xforms:name>

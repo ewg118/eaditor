@@ -43,8 +43,6 @@ else {
 
 curl_close($ch);
 
-'cou
-
 function process_html($url, $html, $writer) {
 	$from = $_GET['from'];
 	

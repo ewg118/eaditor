@@ -438,18 +438,16 @@
 						</xforms:instance>
 						
 						<xforms:instance id="interface-type">
-							<interface>lcnaf</interface>
+							<interface/>
 						</xforms:instance>
 
 						<!-- *********** SUBMISSIONS ************ -->
-						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
-							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml"
+							replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:action if="string-length(instance('config')/xeac) &gt; 0">
-									<xforms:insert context="instance('interfaces')" at="1" position="after"
-										origin="xforms:element('interface', (xforms:attribute('name', 'xEAC'), 'xeac'))"/>
+									<xforms:insert context="instance('interfaces')" at="1" position="after" origin="xforms:element('interface', (xforms:attribute('name', 'xEAC'), 'xeac'))"/>
 									<xforms:setvalue ref="instance('interface-type')">xeac</xforms:setvalue>
 								</xforms:action>
 								<xforms:action if="string-length(instance('config')/xeac) = 0">
