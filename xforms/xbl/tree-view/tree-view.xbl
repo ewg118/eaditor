@@ -55,7 +55,7 @@
 								</xforms:group>
 								<xforms:model id="model">
 									<xforms:instance id="c-copy">
-										<copy xmlns=""/>
+										<copy xmlns="urn:isbn:1-931666-22-9"/>
 									</xforms:instance>
 								</xforms:model>
 							</xforms:group>
