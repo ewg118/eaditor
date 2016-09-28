@@ -1357,7 +1357,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 								<xforms:group ref=".[xxforms:is-user-in-role('eaditor-admin')]">
 									<div>
 										<xforms:trigger appearance="minimal">
-											<xforms:label><span class="glyphicon glyphicon-arrow-left"></span> Return to Collections List</xforms:label>
+											<xforms:label><span class="glyphicon glyphicon-arrow-left"/> Return to Collections List</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<!-- load the collections-list if it has not been loaded yet -->
 												<xforms:send submission="load-collections" if="count(instance('collections-list')/collection) = 0"></xforms:send>
