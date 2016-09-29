@@ -13,12 +13,9 @@
 		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css" />
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
 		<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
-
-		<!-- expand components (unnecessary to include jquery: orbeon already does -->
 		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/get_components.js"></script>
 
 		<xforms:model>
@@ -1624,12 +1621,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																		<xforms:output ref="title"></xforms:output>
 																		<xforms:output ref="concat('(', $id, ')')"></xforms:output>
 																	</a>
-																	<!--<xforms:group ref=".[components = true()]">
-																		<!-\-<xforms:output ref="instance('control-instance')/image-url" id="image-url"></xforms:output>-\->
-																		<!-\-<a href="#" class="expand" id="{$id}-link">expand</a>-\->
-																		<!-\-<small>
+																	<xforms:group ref=".[components = true()]">
+																		<small class="expand">
 																			<xforms:trigger appearance="minimal">
-																				<xforms:label>expand</xforms:label>
+																				<xforms:label>show/hide components</xforms:label>
 																				<xforms:action ev:event="DOMActivate">
 																					<xforms:setvalue ref="instance('control-instance')/id" value="$id"/>
 																					<xxforms:script>																						
@@ -1637,8 +1632,8 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																					</xxforms:script>
 																				</xforms:action>
 																			</xforms:trigger>
-																		</small>-\->
-																	</xforms:group>-->
+																		</small>
+																	</xforms:group>
 																</xforms:group>
 																<xforms:group ref=".[type='mods']">
 																	<xforms:output ref="title"></xforms:output>
@@ -1652,7 +1647,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																</xforms:group>
 															</h4>
 															<xforms:group ref=".[components = true()]">
-																<div id="{$id}_container" style="display:none"></div>
+																<div class="{$id}_container hidden"></div>
 															</xforms:group>
 														</td>
 														<td class="text-center">

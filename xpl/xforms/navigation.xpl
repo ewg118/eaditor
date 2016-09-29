@@ -25,8 +25,21 @@
 		<p:input name="data" href="#data"/>
 		<p:input name="request" href="#request"/>
 		<p:input name="config" href="../../ui/xslt/ajax/navigation.xsl"/>
-		<p:output name="data" ref="data"/>
+		<p:output name="data" id="model"/>
 	</p:processor>
 	
+	<p:processor name="oxf:html-converter">
+		<p:input name="data" href="#model"/>
+		<p:input name="config">
+			<config>
+				<version>5.0</version>
+				<indent>true</indent>
+				<content-type>text/html</content-type>
+				<encoding>utf-8</encoding>
+				<indent-amount>4</indent-amount>
+			</config>
+		</p:input>
+		<p:output name="data" ref="data"/>
+	</p:processor>
 
 </p:config>

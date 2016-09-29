@@ -5,61 +5,25 @@ Library: jQuery
 Description: This calls the navigation/* pipeline to show/hide the table of contents for a finding aid
 in the admin home file liest
  ************************************/
+
 function expand() {
 	var collection = ORBEON.xforms.Document.getValue('collection-name');
 	var id = ORBEON.xforms.Document.getValue('eadid');
-
+	
 	var container = id + '_container';
-	if ($(this).text() == 'expand') {
-		$(this).text('collapse');
-		if ($('.' + container).html().indexOf('<li>') < 0) {
-			$.get('navigation/?collection=' + collection + '&guide=' + id, {
-			},
-			function (data) {
-				$('#temp').html(data);
-				$('#temp ul.list').clone().appendTo('#' + container);
-				$('.' + container).fadeIn('slow');
-			});
+	
+	if (ORBEON.jQuery('.' + container).html().indexOf('<li>') < 0) {
+		ORBEON.jQuery.get('navigation/?collection=' + collection + '&guide=' + id, {
+		},
+		function (data) {
+			ORBEON.jQuery('.' + container).html(data);
+			ORBEON.jQuery('.' + container).removeClass('hidden');
+		});
+	} else {
+		if (ORBEON.jQuery('.' + container).hasClass('hidden')){
+			ORBEON.jQuery('.' + container).removeClass('hidden');
 		} else {
-			$('#' + container).fadeIn('slow');
+			ORBEON.jQuery('.' + container).addClass('hidden');
 		}
-		return false;
-	} else if ($(this).text() == 'collapse') {
-		$('#' + container).fadeOut('slow');
-		$(this).text('expand');
-		return false;
 	}
 }
-
-/*$(function () {
-alert('test');
-$('.expand') .click(function () {
-alert('test');
-
-return false;
-/\*var collection = $('#collection-name').text();
-
-var id = $(this) .attr('id').split('-')[0];
-var container = id + '_container';
-if ($(this) .text() == 'expand') {
-$(this) .text('collapse');
-if ($('.' + container).html().indexOf('<li>') < 0){
-$.get('navigation/?collection=' + collection + '&guide=' + id, { },
-function (data) {
-$('#temp') .html(data);
-$('#temp ul.list').clone().appendTo('#' + container);
-$('.' + container) .fadeIn('slow');
-}
-
-);
-}else {
-$('#' + container) .fadeIn('slow');
-}
-return false;
-} else if ($(this) .text() == 'collapse') {
-$('#' + container) .fadeOut('slow');
-$(this) .text('expand');
-return false;
-}*\/
-});
-});*/
