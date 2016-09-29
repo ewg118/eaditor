@@ -137,10 +137,11 @@
 .add {
 	display:inline;	
 }
-.xbl-eaditor-generic-elements, .xbl-eaditor-attributes, .xbl-eaditor-access-elements {
+.xbl-eaditor-generic-elements, .xbl-eaditor-attributes, .xbl-eaditor-access-elements, .xbl-eaditor-delete-dialog {
 	display:inline;
 	color:gray;	
 }
+
 /*
   ****************************************
   PAGINATION

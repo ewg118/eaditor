@@ -13,10 +13,10 @@
 					<div class="subsection">
 						<h3>Processing Information</h3>
 						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
 							<xforms:label>
 								<span class="glyphicon glyphicon-remove"/>
 							</xforms:label>
+							<xforms:dispatch target="delete-dialog" name="fr-show" ev:event="DOMActivate"/>
 						</xforms:trigger>
 
 						<!-- include generic triggers -->
@@ -58,6 +58,18 @@
 						<xforms:repeat nodeset="$binding/ead:table">
 							<eaditor:table/>
 						</xforms:repeat>
+						
+						<fr:alert-dialog id="delete-dialog" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
+							<fr:label>Delete Element</fr:label>
+							<fr:message>Are you sure you want to delete this element?</fr:message>
+							<fr:negative-choice>
+								<fr:label>No</fr:label>
+							</fr:negative-choice>
+							<fr:positive-choice>
+								<fr:label>Yes</fr:label>
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							</fr:positive-choice>
+						</fr:alert-dialog>
 					</div>
 						
 					<!-- ********************************************************************** -->					

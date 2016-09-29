@@ -1,5 +1,5 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
 	<xbl:binding id="eaditor-accruals" element="eaditor|accruals">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -14,10 +14,10 @@
 						<div class="subsection">
 							<h3>Accruals</h3>
 							<xforms:trigger appearance="minimal">
-								<xforms:delete ev:event="DOMActivate" nodeset="."/>
 								<xforms:label>
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
+								<xforms:dispatch target="delete-dialog" name="fr-show" ev:event="DOMActivate"/>
 							</xforms:trigger>
 							
 							<!-- include generic triggers -->
@@ -60,7 +60,19 @@
 								<eaditor:table/>
 							</xforms:repeat>
 						</div>
-					</xforms:group>			
+						<fr:alert-dialog id="delete-dialog">
+							<fr:label>Delete Element</fr:label>
+							<fr:message>Are you sure you want to delete this element?</fr:message>
+							<fr:negative-choice>
+								<fr:label>No</fr:label>
+							</fr:negative-choice>
+							<fr:positive-choice>
+								<fr:label>Yes</fr:label>
+								<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+							</fr:positive-choice>
+						</fr:alert-dialog>
+					</xforms:group>
+					
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>
