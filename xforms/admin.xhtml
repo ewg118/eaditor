@@ -1617,10 +1617,12 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 														<td>
 															<h4>
 																<xforms:group ref=".[type='ead']">
-																	<a href="edit/core/?guide={$id}">
-																		<xforms:output ref="title"></xforms:output>
-																		<xforms:output ref="concat('(', $id, ')')"></xforms:output>
-																	</a>
+																	<xforms:trigger appearance="minimal">
+																		<xforms:label value="concat(title, ' (', $id, ')')"/>
+																		<xforms:action ev:event="DOMActivate">
+																			<xforms:load show="replace" resource="edit/core/?guide={$id}"/>
+																		</xforms:action>
+																	</xforms:trigger>
 																	<xforms:group ref=".[components = true()]">
 																		<small class="expand">
 																			<xforms:trigger appearance="minimal">
@@ -1640,10 +1642,12 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																	<xforms:output ref="concat('(', $id, ')')"></xforms:output>
 																</xforms:group>
 																<xforms:group ref=".[type='tei']">
-																	<a href="edit/tei/?id={$id}">
-																		<xforms:output ref="title"></xforms:output>
-																		<xforms:output ref="concat('(', $id, ')')"></xforms:output>
-																	</a>
+																	<xforms:trigger appearance="minimal">
+																		<xforms:label value="concat(title, ' (', $id, ')')"/>
+																		<xforms:action ev:event="DOMActivate">
+																			<xforms:load show="replace" resource="edit/tei/?id={$id}"/>
+																		</xforms:action>
+																	</xforms:trigger>																	
 																</xforms:group>
 															</h4>
 															<xforms:group ref=".[components = true()]">

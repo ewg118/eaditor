@@ -153,12 +153,6 @@
 							<eaditor:date/>
 						</xforms:repeat>
 						
-
-						<!-- header -->
-						<xforms:group ref="ead:head">
-							<eaditor:head/>
-						</xforms:group>
-						
 						<xforms:repeat nodeset="ead:abstract">
 							<div>
 								<xforms:textarea ref=".">
@@ -173,8 +167,88 @@
 								</xforms:trigger>
 							</div>
 						</xforms:repeat>
+						
+						<xforms:group ref="ead:repository">
+							<div class="subsection">
+								<h3>Repository</h3>
+								<xforms:trigger appearance="minimal">
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+									<xforms:label>
+										<span class="glyphicon glyphicon-remove"/>
+									</xforms:label>
+								</xforms:trigger>
+								
+								<div>
+									<xforms:group ref=".[count(ead:subarea) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Subarea</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('subarea-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:group ref=".[count(ead:address) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/>Address</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('address-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+									<xforms:group ref=".[count(ead:extref) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/>URL</xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extref-template')"/>
+										</xforms:trigger>
+									</xforms:group>
+								</div>
+								
+								<div>
+									<xforms:input ref="ead:corpname">
+										<xforms:label>Name</xforms:label>
+										<xforms:alert>Required</xforms:alert>
+									</xforms:input>								
+								</div>
+								
+								<xforms:group ref="ead:subarea">
+									<div>
+										<xforms:input ref=".">
+											<xforms:label>Subarea</xforms:label>
+											<xforms:alert>Required</xforms:alert>
+										</xforms:input>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<span class="glyphicon glyphicon-remove"/>
+											</xforms:label>
+										</xforms:trigger>
+									</div>
+									
+								</xforms:group>
+								
+								<!-- address -->
+								<xforms:group ref="ead:address">
+									<eaditor:address></eaditor:address>
+								</xforms:group>
+								
+								<!-- repository URL -->
+								<xforms:group ref="ead:extref">
+									<div>
+										<xforms:input ref="@xlink:href">
+											<xforms:label>URL</xforms:label>
+											<xforms:alert>Required, must be a URL</xforms:alert>
+										</xforms:input>
+										<xforms:trigger appearance="minimal">
+											<xforms:delete ev:event="DOMActivate" nodeset="."/>
+											<xforms:label>
+												<span class="glyphicon glyphicon-remove"/>
+											</xforms:label>
+										</xforms:trigger>
+									</div>
+								</xforms:group>
+							</div>							
+						</xforms:group>
+						
 						<xforms:repeat nodeset="ead:container">
-
 							<div>
 								<xforms:input ref=".">
 									<xforms:label>Container</xforms:label>
@@ -278,7 +352,7 @@
 
 						<xforms:repeat nodeset="ead:physdesc">
 							<div class="subsection">
-								<h3>Physical Description</h3>
+								<h3>Physical Description</h3>								
 								<xforms:group ref=".[ancestor::ead:c]">
 									<xforms:trigger appearance="minimal">
 										<xforms:delete ev:event="DOMActivate" nodeset="."/>
@@ -408,20 +482,6 @@
 							</div>
 						</xforms:group>
 
-						<xforms:group ref="ead:repository">
-							<div>
-								<xforms:input ref=".">
-									<xforms:label>Repository</xforms:label>
-								</xforms:input>
-								<xforms:trigger appearance="minimal">
-									<xforms:delete ev:event="DOMActivate" nodeset="."/>
-									<xforms:label>
-										<span class="glyphicon glyphicon-remove"/>
-									</xforms:label>
-								</xforms:trigger>
-							</div>
-						</xforms:group>
-
 						<xforms:group ref="ead:unitid">
 							<div>
 								<xforms:input ref=".">
@@ -447,8 +507,7 @@
 								<element name="container" label="Container" max="0"/>
 								<element name="unitdate" label="Dates" max="0"/>
 								<element name="dao" label="Digital Archival Object" max="0"/>
-								<element name="daogrp" label="Digital Archival Object Group" max="0"/>
-								<element name="head" label="Header" max="1"/>
+								<element name="daogrp" label="Digital Archival Object Group" max="0"/>								
 								<element name="langmaterial" label="Language Material" max="1"/>
 								<element name="materialspec" label="Material Specific Details" max="0"/>
 								<element name="note" label="Note" max="0"/>
@@ -518,13 +577,30 @@
 							<physloc/>
 						</xforms:instance>
 						<xforms:instance id="repository-template" xxforms:exclude-result-prefixes="#all">
-							<repository/>
+							<repository>
+								<corpname/>
+							</repository>
 						</xforms:instance>
 						<xforms:instance id="unitdate-template" xxforms:exclude-result-prefixes="#all">
 							<unitdate normal="" type="inclusive"/>
 						</xforms:instance>
 						<xforms:instance id="unitid-template" xxforms:exclude-result-prefixes="#all">
 							<unitid/>
+						</xforms:instance>
+						
+						<!-- repository templates -->
+						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+							<address>
+								<addressline></addressline>
+							</address>
+						</xforms:instance>
+						
+						<xforms:instance id="subarea-template" xxforms:exclude-result-prefixes="#all">
+							<subarea/>
+						</xforms:instance>
+						
+						<xforms:instance id="extref-template" xxforms:exclude-result-prefixes="#all">
+							<extref xlink:type="simple" xlink:href=""/>
 						</xforms:instance>
 
 						<!-- shared/generic instance -->
