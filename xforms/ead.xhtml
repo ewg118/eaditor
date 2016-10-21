@@ -315,6 +315,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<xforms:bind nodeset="//ead:extref" required="true()">
 					<xforms:bind nodeset="@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				</xforms:bind>
+				<xforms:bind nodeset="//ead:extptr/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="//ead:dao/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="//ead:daoloc/@xlink:label" constraint="string-length(.) &gt; 0"></xforms:bind>
@@ -579,6 +580,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extptr/extptr.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"></xi:include>

@@ -29,7 +29,7 @@
 							<eaditor:attributes ref="."/>
 
 							<!-- include generic triggers -->
-							<eaditor:generic-elements ref="$binding"/>
+							<eaditor:generic-elements ref="."/>
 
 							<div>
 								<span>Specific Elements: </span>

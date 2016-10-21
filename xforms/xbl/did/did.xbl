@@ -193,11 +193,11 @@
 											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('address-template')"/>
 										</xforms:trigger>
 									</xforms:group>
-									<xforms:group ref=".[count(ead:extref) = 0]">
+									<xforms:group ref=".[count(ead:extptr) = 0]">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
 												<span class="glyphicon glyphicon-plus"/>URL</xforms:label>
-											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extref-template')"/>
+											<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extptr-template')"/>
 										</xforms:trigger>
 									</xforms:group>
 								</div>
@@ -231,19 +231,8 @@
 								</xforms:group>
 								
 								<!-- repository URL -->
-								<xforms:group ref="ead:extref">
-									<div>
-										<xforms:input ref="@xlink:href">
-											<xforms:label>URL</xforms:label>
-											<xforms:alert>Required, must be a URL</xforms:alert>
-										</xforms:input>
-										<xforms:trigger appearance="minimal">
-											<xforms:delete ev:event="DOMActivate" nodeset="."/>
-											<xforms:label>
-												<span class="glyphicon glyphicon-remove"/>
-											</xforms:label>
-										</xforms:trigger>
-									</div>
+								<xforms:group ref="ead:extptr">
+									<eaditor:extptr/>
 								</xforms:group>
 							</div>							
 						</xforms:group>
@@ -599,8 +588,8 @@
 							<subarea/>
 						</xforms:instance>
 						
-						<xforms:instance id="extref-template" xxforms:exclude-result-prefixes="#all">
-							<extref xlink:type="simple" xlink:href=""/>
+						<xforms:instance id="extptr-template" xxforms:exclude-result-prefixes="#all">
+							<extptr xlink:type="simple" xlink:href=""/>
 						</xforms:instance>
 
 						<!-- shared/generic instance -->
