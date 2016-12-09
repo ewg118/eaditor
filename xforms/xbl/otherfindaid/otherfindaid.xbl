@@ -63,8 +63,7 @@
 												<xforms:send submission="upload-file"/>
 												<!--get the temp file written to disk, and move it into the docs folder in the etdpub app directory -->
 												<xforms:action ev:event="xforms-submit-done">
-													<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 12), '.',
-														lower-case(tokenize(instance('file')/@filename, '\.')[last()]))"/>
+													<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 6), '_', instance('file')/@filename)"/>
 													
 													<xforms:setvalue ref="instance('generator-config')/url" value="instance('file')"/>
 													<xforms:setvalue ref="instance('generator-config')/content-type" value="instance('file')/@mediatype"/>
@@ -84,6 +83,7 @@
 										</xforms:trigger>
 									</div>									
 								</xforms:group>
+								<!--<fr:xforms-inspector/>-->
 							</xforms:group>
 
 							<xforms:group ref=".[not(@type='eaditor_upload')]">
