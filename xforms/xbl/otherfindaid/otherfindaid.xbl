@@ -47,34 +47,42 @@
 									</div>
 								</xforms:group>
 								<xforms:group ref=".[not(string(ead:bibref/ead:extptr/@xlink:href))]">
-									<h4>Upload</h4>
-									<fr:upload ref="instance('file')">
-										<xforms:filename ref="@filename"/>
-										<xforms:mediatype ref="@mediatype"/>
-										<xxforms:size ref="@size"/>
-									</fr:upload>
-									<br/>
-									<xforms:trigger>
-										<xforms:label>Upload</xforms:label>
-										<xforms:action ev:event="DOMActivate">
-											<xforms:send submission="upload-file"/>
-											<!--get the temp file written to disk, and move it into the docs folder in the etdpub app directory -->
-											<xforms:action ev:event="xforms-submit-done">
-												<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 12), '.',
-													lower-case(tokenize(instance('file')/@filename, '\.')[last()]))"/>
-
-												<xforms:setvalue ref="instance('generator-config')/url" value="instance('file')"/>
-												<xforms:setvalue ref="instance('generator-config')/content-type" value="instance('file')/@mediatype"/>
-												<xforms:setvalue ref="instance('serializer-config')/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'),
-													'/', $filename)"/>
-												<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/move-file.xpl', ('generator-config',
-													'serializer-config'), (instance('generator-config'), instance('serializer-config')), 'data')"/>
-												<!-- set the data within the EAD document -->
-												<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:href" value="$filename"/>
-												<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:role" value="instance('file')/@mediatype"/>
+									<div>
+										<div>
+											<h4>Upload</h4>
+										</div>
+										<fr:upload ref="instance('file')">
+											<xforms:filename ref="@filename"/>
+											<xforms:mediatype ref="@mediatype"/>
+											<xxforms:size ref="@size"/>
+										</fr:upload>
+										<br/>
+										<xforms:trigger>
+											<xforms:label>Upload</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:send submission="upload-file"/>
+												<!--get the temp file written to disk, and move it into the docs folder in the etdpub app directory -->
+												<xforms:action ev:event="xforms-submit-done">
+													<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 12), '.',
+														lower-case(tokenize(instance('file')/@filename, '\.')[last()]))"/>
+													
+													<xforms:setvalue ref="instance('generator-config')/url" value="instance('file')"/>
+													<xforms:setvalue ref="instance('generator-config')/content-type" value="instance('file')/@mediatype"/>
+													<xforms:setvalue ref="instance('serializer-config')/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'),
+														'/', $filename)"/>
+													<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/move-file.xpl', ('generator-config',
+														'serializer-config'), (instance('generator-config'), instance('serializer-config')), 'data')"/>
+													<!-- set the data within the EAD document -->
+													<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:href" value="$filename"/>
+													<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:role" value="instance('file')/@mediatype"/>
+												</xforms:action>
 											</xforms:action>
-										</xforms:action>
-									</xforms:trigger>
+										</xforms:trigger>
+										<xforms:trigger>
+											<xforms:label>Cancel</xforms:label>
+											<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+										</xforms:trigger>
+									</div>									
 								</xforms:group>
 							</xforms:group>
 
