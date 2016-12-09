@@ -13,22 +13,44 @@
 							<xforms:alert>Empty paragraphs are prohibited.</xforms:alert>
 							<xforms:label>Paragraph</xforms:label>
 						</xforms:textarea>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="."/>
+						
+						<xforms:trigger appearance="minimal">							
 							<xforms:label><span class="glyphicon glyphicon-remove"/></xforms:label>
+							<xforms:setvalue ref="instance('dialog-visible')" value="true()" ev:event="DOMActivate"/>
 						</xforms:trigger>
+						
 						<xforms:trigger appearance="minimal">
+							<xforms:label><span class="glyphicon glyphicon-indent-left"/></xforms:label>
 							<xforms:action ev:event="DOMActivate">
 								<xforms:insert nodeset="self::node()" origin="instance('p-template')"/>
-							</xforms:action>						
-							<xforms:label><span class="glyphicon glyphicon-indent-left"/></xforms:label>
+							</xforms:action>
 							<xforms:hint>Insert another paragraph below.</xforms:hint>
 						</xforms:trigger>
+						
+						<xforms:group ref=".[instance('dialog-visible') = true()]">
+							<div class="text-danger"><span class="glyphicon glyphicon-question-sign"></span><span> Are you sure you want to delete this paragraph?</span>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>Yes</xforms:label>
+									<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								</xforms:trigger>
+								<xforms:trigger appearance="minimal">
+									<xforms:label>No</xforms:label>
+									<xforms:setvalue ref="instance('dialog-visible')" value="false()" ev:event="DOMActivate"/>
+								</xforms:trigger>
+							</div>
+						</xforms:group>
+						
 					</xforms:group>
 					<xforms:model id="p-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
 							<p/>
 						</xforms:instance>
+						
+						<xforms:instance id="dialog-visible">
+							<visible>false</visible>
+						</xforms:instance>
+						
+						<xforms:bind nodeset="instance('dialog-visible')" type="xs:boolean"/>
 					</xforms:model>
 				</xforms:group>
 			</xforms:group>

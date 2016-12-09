@@ -291,9 +291,11 @@
 							{
 							for $collection-name in $sequence
 							let $config:= concat('/db/eaditor/', $collection-name, '/config.xml')
+							let $title:= (if ($aggregate = true()) then data(doc(concat('/db/eaditor/', $collection-name, '/ead-template.xml'))//ead:publisher) else data(doc($config)/config/title))
+							order by xs:string($title) ascending
 							return 
 								<collection id="{$collection-name}">
-									<title>{if ($aggregate = true()) then data(doc(concat('/db/eaditor/', $collection-name, '/ead-template.xml'))//ead:publisher) else data(doc($config)/config/title)}</title>
+									<title>{$title}</title>
 									<description>{data(doc($config)/config/description)}</description>
 									<url>{data(doc($config)/config/url)}</url>
 								</collection>
@@ -979,96 +981,90 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 									<xforms:case id="collections-list-interface">
 										<div>
 											<xforms:group ref=".[count(instance('collections-list')/collection) &gt; 0]">
-												<xforms:group ref="instance('collections-list')">
-													<h3>Collections List<small><xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
-																	collection</xforms:label>
-																<xforms:action ev:event="DOMActivate">
-																	<!-- insert new collection template -->
-																	<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]"
-																		origin="xforms:element('collection', (xforms:attribute('name', ''), xforms:attribute('role', '')))"></xforms:insert>
-																	<!-- preset config template with master config variables -->
-																	<xforms:setvalue ref="instance('config-template')/url" value="instance('config')/url"></xforms:setvalue>
-																	<xforms:setvalue ref="instance('config-template')/solr_published" value="instance('config')/solr_published"></xforms:setvalue>
-																	<xforms:setvalue ref="instance('config-template')/geonames_api_key" value="instance('config')/geonames_api_key"></xforms:setvalue>
-																	<xforms:setvalue ref="instance('ead-template')//ead:language/@langcode" value="instance('config')/language"></xforms:setvalue>
-																	<xforms:setvalue ref="instance('ead-template')//ead:language"
-																		value="instance('languages')//language[code=instance('config')/language]/name"></xforms:setvalue>
-																	<xforms:setvalue ref="instance('ead-template')//ead:langusage"
-																		value="concat('Finding aid is written in ', instance('languages')//language[code=instance('config')/language]/name)"></xforms:setvalue>
-																	<xforms:toggle case="add-collection-interface"></xforms:toggle>
-																</xforms:action></xforms:trigger>
-														</small></h3>
-													<table class="table">
-														<thead>
+												<h3>Collections List<small><xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
+													collection</xforms:label>
+													<xforms:action ev:event="DOMActivate">
+														<!-- insert new collection template -->
+														<xforms:insert context="instance('collections-list')" nodeset="./child::node()[last()]"
+															origin="xforms:element('collection', (xforms:attribute('name', ''), xforms:attribute('role', '')))"></xforms:insert>
+														<!-- preset config template with master config variables -->
+														<xforms:setvalue ref="instance('config-template')/url" value="instance('config')/url"></xforms:setvalue>
+														<xforms:setvalue ref="instance('config-template')/solr_published" value="instance('config')/solr_published"></xforms:setvalue>
+														<xforms:setvalue ref="instance('config-template')/geonames_api_key" value="instance('config')/geonames_api_key"></xforms:setvalue>
+														<xforms:setvalue ref="instance('ead-template')//ead:language/@langcode" value="instance('config')/language"></xforms:setvalue>
+														<xforms:setvalue ref="instance('ead-template')//ead:language"
+															value="instance('languages')//language[code=instance('config')/language]/name"></xforms:setvalue>
+														<xforms:setvalue ref="instance('ead-template')//ead:langusage"
+															value="concat('Finding aid is written in ', instance('languages')//language[code=instance('config')/language]/name)"></xforms:setvalue>
+														<xforms:toggle case="add-collection-interface"></xforms:toggle>
+													</xforms:action></xforms:trigger>
+												</small></h3>
+												<table class="table">
+													<thead>
+														<tr>
+															<th>Agency Code</th>
+															<th>
+																<xforms:output value="if(instance('config')/aggregator=true()) then 'Agency' else 'Title'"></xforms:output>
+															</th>
+															<th>
+																<xforms:output value="if(instance('config')/aggregator=true()) then 'URI Space' else 'URL'"></xforms:output>
+															</th>
+															<th>Description</th>
+															<th>Actions</th>
+														</tr>
+													</thead>
+													<tbody>
+														<xforms:repeat nodeset="instance('xquery-result')//collection">
+															
+															<xforms:var name="name" select="@id"></xforms:var>
 															<tr>
-																<th>Collection</th>
-																<th>Role</th>
-																<th>
-																	<xforms:output value="if(instance('config')/aggregator=true()) then 'Agency' else 'Title'"></xforms:output>
-																</th>
-																<th>
-																	<xforms:output value="if(instance('config')/aggregator=true()) then 'URI Space' else 'URL'"></xforms:output>
-																</th>
-																<th>Description</th>
-																<th>Actions</th>
-															</tr>
-														</thead>
-														<tbody>
-															<xforms:repeat nodeset="xxforms:sort(collection, @name, 'text', 'ascending')">
-
-																<xforms:var name="name" select="@name"></xforms:var>
-																<tr>
-																	<td>
-																		<xforms:output ref="$name"></xforms:output>
-																	</td>
-																	<td>
-																		<xforms:output ref="@role"></xforms:output>
-																	</td>
-																	<td>
-																		<xforms:output value="instance('xquery-result')//collection[@id=$name]/title"></xforms:output>
-																	</td>
-																	<td>
-																		<xforms:group ref=".[instance('config')/aggregator=true()]">
-																			<xforms:output value="instance('xquery-result')//collection[@id=$name]/url"></xforms:output>
-																		</xforms:group>
-																		<xforms:group ref=".[instance('config')/aggregator=false()]">
-																			<xforms:trigger appearance="minimal">
-																				<xforms:label value="instance('xquery-result')//collection[@id=$name]/url"></xforms:label>
-																				<xforms:load ev:event="DOMActivate" ref=" instance('xquery-result')//collection[@id=$name]/url" show="new"
+																<td>
+																	<xforms:output ref="$name"></xforms:output>
+																</td>																
+																<td>
+																	<xforms:output value="title"></xforms:output>
+																</td>
+																<td>
+																	<xforms:group ref=".[instance('config')/aggregator=true()]">
+																		<xforms:output value="url"></xforms:output>
+																	</xforms:group>
+																	<xforms:group ref=".[instance('config')/aggregator=false()]">
+																		<xforms:trigger appearance="minimal">
+																			<xforms:label value="url"></xforms:label>
+																			<xforms:load ev:event="DOMActivate" ref=" url" show="new"
 																				></xforms:load>
-																			</xforms:trigger>
-																		</xforms:group>
-																	</td>
-																	<td>
-																		<xforms:output ref="instance('xquery-result')//collection[@id=$name]/description"></xforms:output>
-																	</td>
-																	<td>
-																		<xforms:trigger appearance="minimal">
-																			<xforms:label><span class="glyphicon glyphicon-pencil"></span></xforms:label>
-																			<xforms:hint>Edit Collection</xforms:hint>
-																			<xforms:action ev:event="DOMActivate">
-																				<!-- set session attribute of the selected collection name -->
-																				<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"></xforms:setvalue>
-																				<xforms:insert context="."
-																					origin="xxforms:set-session-attribute('collection-name', instance('control-instance')/collection-name)"></xforms:insert>
-																				<!-- load the associated config and display the EADitor editor interface -->
-																				<xforms:send submission="load-config"></xforms:send>
-																				<xforms:toggle case="eaditor-editor"></xforms:toggle>
-																			</xforms:action>
 																		</xforms:trigger>
-																		<xforms:trigger appearance="minimal">
-																			<xforms:label><span class="glyphicon glyphicon-trash"></span></xforms:label>
-																			<xforms:action ev:event="DOMActivate">
-																				<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"></xforms:setvalue>
-																				<xforms:dispatch target="delete-collection-dialog" name="fr-show"></xforms:dispatch>
-																			</xforms:action>
-																		</xforms:trigger>
-																	</td>
-																</tr>
-															</xforms:repeat>
-														</tbody>
-													</table>
-												</xforms:group>
+																	</xforms:group>
+																</td>
+																<td>
+																	<xforms:output ref="description"></xforms:output>
+																</td>
+																<td>
+																	<xforms:trigger appearance="minimal">
+																		<xforms:label><span class="glyphicon glyphicon-pencil"></span></xforms:label>
+																		<xforms:hint>Edit Collection</xforms:hint>
+																		<xforms:action ev:event="DOMActivate">
+																			<!-- set session attribute of the selected collection name -->
+																			<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"></xforms:setvalue>
+																			<xforms:insert context="."
+																				origin="xxforms:set-session-attribute('collection-name', instance('control-instance')/collection-name)"></xforms:insert>
+																			<!-- load the associated config and display the EADitor editor interface -->
+																			<xforms:send submission="load-config"></xforms:send>
+																			<xforms:toggle case="eaditor-editor"></xforms:toggle>
+																		</xforms:action>
+																	</xforms:trigger>
+																	<xforms:trigger appearance="minimal">
+																		<xforms:label><span class="glyphicon glyphicon-trash"></span></xforms:label>
+																		<xforms:action ev:event="DOMActivate">
+																			<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"></xforms:setvalue>
+																			<xforms:dispatch target="delete-collection-dialog" name="fr-show"></xforms:dispatch>
+																		</xforms:action>
+																	</xforms:trigger>
+																</td>
+															</tr>
+														</xforms:repeat>
+													</tbody>
+												</table>
 											</xforms:group>
 											<xforms:group ref=".[count(instance('collections-list')/collection) = 0]">
 												<p>There are no collections in EADitor.<xforms:trigger appearance="minimal"><xforms:label><span class="glyphicon glyphicon-plus"></span>Add
@@ -1751,7 +1747,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
+				<fr:xforms-inspector></fr:xforms-inspector>
 			</div>
 			<!-- variables for js usage -->
 			<div class="hidden">
