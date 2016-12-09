@@ -50,7 +50,7 @@
 					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 
 					<!-- maps -->
-					<script type="text/javascript" src="http://openlayers.org/api/2.12/OpenLayers.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/OpenLayers.js"/>
 					<script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3.2&amp;sensor=false"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/maps_functions.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/facet_functions.js"/>

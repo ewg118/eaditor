@@ -184,7 +184,7 @@
 				<xsl:if test="$hasPoints = true()">
 					<!-- mapping -->
 					<!--<link type="text/css" href="{$include_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>-->
-					<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"/>
+					<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/mxn.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/timeline-2.3.0.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/timemap_full.pack.js"/>
