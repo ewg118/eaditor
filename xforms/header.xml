@@ -15,15 +15,12 @@
 				<li>
 					<a href="{$display_path}.">Admin Home</a>
 				</li>
+				<li>
+					<a href="{$display_path}templates/">Edit Templates</a>
+				</li>
 				<xforms:group ref=".[xxforms:is-user-in-role('eaditor-admin')]">
 					<li>
 						<a href="{$display_path}settings/">Modify Settings</a>
-					</li>
-				</xforms:group>
-				
-				<xforms:group ref=".[not(xxforms:is-user-in-role('eaditor-admin'))]">
-					<li>
-						<a href="{$display_path}templates/">Edit Templates</a>
 					</li>
 				</xforms:group>
 				<xforms:group ref=".[xxforms:is-user-in-role('eaditor-admin')]">
