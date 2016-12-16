@@ -51,11 +51,11 @@
 										<div>
 											<h4>Upload</h4>
 										</div>
-										<fr:upload ref="instance('file')">
+										<xforms:upload ref="instance('file')">
 											<xforms:filename ref="@filename"/>
 											<xforms:mediatype ref="@mediatype"/>
 											<xxforms:size ref="@size"/>
-										</fr:upload>
+										</xforms:upload>
 										<br/>
 										<xforms:trigger>
 											<xforms:label>Upload</xforms:label>
@@ -63,7 +63,7 @@
 												<xforms:send submission="upload-file"/>
 												<!--get the temp file written to disk, and move it into the docs folder in the etdpub app directory -->
 												<xforms:action ev:event="xforms-submit-done">
-													<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 6), '_', instance('file')/@filename)"/>
+													<xforms:var name="filename" select="concat(substring(string(digest( string( random( true ) ), 'MD5', 'hex' )), 1, 6), '_', encode-for-uri(replace(instance('file')/@filename, ' ', '_')))"/>
 													
 													<xforms:setvalue ref="instance('generator-config')/url" value="instance('file')"/>
 													<xforms:setvalue ref="instance('generator-config')/content-type" value="instance('file')/@mediatype"/>
@@ -79,7 +79,14 @@
 										</xforms:trigger>
 										<xforms:trigger>
 											<xforms:label>Cancel</xforms:label>
-											<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+											<xforms:action ev:event="DOMActivate">
+												<!-- clear file parameters and delete the node -->
+												<xforms:setvalue ref="instance('file')"/>
+												<xforms:setvalue ref="instance('file')/@filename"/>
+												<xforms:setvalue ref="instance('file')/@mediatype"/>
+												<xforms:setvalue ref="instance('file')/@size"/>
+												<xforms:delete nodeset="$binding"/>
+											</xforms:action>											
 										</xforms:trigger>
 									</div>									
 								</xforms:group>
@@ -188,6 +195,12 @@
 							<fr:positive-choice>
 								<fr:label>Yes</fr:label>
 								<xforms:action ev:event="DOMActivate">
+									<!-- clear file parameters and delete the node -->
+									<xforms:setvalue ref="instance('file')"/>
+									<xforms:setvalue ref="instance('file')/@filename"/>
+									<xforms:setvalue ref="instance('file')/@mediatype"/>
+									<xforms:setvalue ref="instance('file')/@size"/>
+									
 									<!-- delete the file -->
 									<xforms:setvalue ref="instance('delete-config')/delete/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'), '/',
 										$binding/ead:bibref/ead:extptr/@xlink:href)"/>

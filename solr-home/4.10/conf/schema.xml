@@ -101,7 +101,9 @@
 	<field name="title" type="ignored"/>
 	<field name="author" type="ignored"/>
 	<field name="date" type="ignored"/>
-	<field name="content" type="text_general" indexed="false" stored="true" multiValued="false"/>	
+	
+	<!-- fulltext -->
+	<field name="content" type="text_general" indexed="false" stored="true" multiValued="false"/>		
 	<field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
 	
 	<copyField source="content" dest="text"/>
