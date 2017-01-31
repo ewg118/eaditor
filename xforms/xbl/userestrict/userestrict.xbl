@@ -10,54 +10,72 @@
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 
-					<div class="subsection">
-						<h3>Use Restriction</h3>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Use Restriction</h3>
+							<xforms:group ref=".[ancestor::ead:c]">
+								<xforms:trigger appearance="minimal">
+									<xforms:label>
+										<span class="glyphicon glyphicon-remove"/>
+									</xforms:label>
+									<xforms:dispatch target="delete-dialog" name="fr-show" ev:event="DOMActivate"/>
+								</xforms:trigger>
+							</xforms:group>
+							
+							<!-- include generic triggers -->
+							<eaditor:generic-elements ref="."/>
+							
+							<xforms:group ref=".[count(child::node()) &lt; 1]">
+								<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
+							</xforms:group>
+							
+							<xforms:group ref="ead:head">
+								<eaditor:head/>
+							</xforms:group>
+							
+							<xforms:repeat nodeset="ead:address">
+								<eaditor:address/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:blockquote">
+								<eaditor:blockquote/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:chronlist">
+								<eaditor:chronlist/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:list">
+								<eaditor:list/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:note">
+								<eaditor:note/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:p">
+								<eaditor:p/>
+							</xforms:repeat>
+							
+							<xforms:repeat nodeset="ead:table">
+								<eaditor:table/>
+							</xforms:repeat>
+							
+							<fr:alert-dialog id="delete-dialog" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
+								<fr:label>Delete Element</fr:label>
+								<fr:message>Are you sure you want to delete this element?</fr:message>
+								<fr:negative-choice>
+									<fr:label>No</fr:label>
+								</fr:negative-choice>
+								<fr:positive-choice>
+									<fr:label>Yes</fr:label>
+									<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+								</fr:positive-choice>
+							</fr:alert-dialog>
+						</div>
+					</xforms:group>
 
-						<!-- include generic triggers -->
-						<eaditor:generic-elements ref="$binding"/>
-
-						<xforms:group ref="$binding[count(child::node()) &lt; 1]">
-							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
-						</xforms:group>
-
-						<xforms:group ref="$binding/ead:head">
-							<eaditor:head/>
-						</xforms:group>
-
-						<xforms:repeat nodeset="$binding/ead:address">
-							<eaditor:address/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:blockquote">
-							<eaditor:blockquote/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:chronlist">
-							<eaditor:chronlist/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:list">
-							<eaditor:list/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:note">
-							<eaditor:note/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:p">
-							<eaditor:p/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:table">
-							<eaditor:table/>
-						</xforms:repeat>
-					</div>
+					
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

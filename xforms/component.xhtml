@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-	Copyright (C) 2010 Ethan Gruber
-	EADitor: https://github.com/ewg118/eaditor
-	Apache License 2.0: https://github.com/ewg118/eaditor    
+    Author: Ethan Gruber
+    EADitor: https://github.com/ewg118/eaditor
+    Function: EAD component XForms editor
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9"
@@ -14,8 +14,8 @@
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
-		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
@@ -51,6 +51,8 @@
 					<collection-name></collection-name>
 					<id></id>
 					<status></status>
+					<stream-url/>
+					<content-type/>
 				</controls>
 			</xforms:instance>
 
@@ -81,6 +83,10 @@
 			<!-- Instance for Solr commit-->
 			<xforms:instance id="sendCommit">
 				<commit></commit>
+			</xforms:instance>
+			
+			<xforms:instance id="request">
+				<request xmlns=""></request>
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
@@ -127,6 +133,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:bind nodeset="@otherlevel" type="xs:NMTOKEN"></xforms:bind>
 					<xforms:bind nodeset="ead:did">
 						<xforms:bind nodeset="ead:unitid" required="true()"></xforms:bind>
+						<xforms:bind nodeset="ead:repository">
+							<xforms:bind nodeset="ead:corpname" required="true()"/>
+							<xforms:bind nodeset="ead:subarea" required="true()"/>
+						</xforms:bind>
 						<xforms:bind nodeset="ead:langmaterial">
 							<xforms:bind ref="ead:language">
 								<xforms:bind constraint="string-length(@langcode) &gt; 0"></xforms:bind>
@@ -145,10 +155,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</xforms:bind>
 				<xforms:bind nodeset="//ead:ref" required="true()"></xforms:bind>
 				<xforms:bind nodeset="//ead:extref" required="true()">
-					<xforms:bind nodeset="@xlink:href" required="true()"></xforms:bind>
+					<xforms:bind nodeset="@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				</xforms:bind>
-				<xforms:bind nodeset="//ead:dao/@xlink:href" required="true()"></xforms:bind>
-				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()"></xforms:bind>
+				<xforms:bind nodeset="//ead:extptr/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
+				<xforms:bind nodeset="//ead:dao/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
+				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="//ead:daoloc/@xlink:label" constraint="string-length(.) &gt; 0"></xforms:bind>
 				<xforms:bind nodeset="//ead:daodesc">
 					<xforms:bind nodeset="ead:head" required="true()"></xforms:bind>
@@ -212,7 +223,18 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
 					<!-- post doc to solr -->
-					<xforms:send submission="doc-to-solr"></xforms:send>
+					<xforms:var name="filename" select="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href"/>
+					<xforms:action if="string($filename)">
+						<!-- set the document URL -->
+						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+						<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', instance('control-instance')/collection-name, '/', $filename)"/>
+						<xforms:setvalue ref="instance('control-instance')/content-type" value="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
+						
+						<xforms:send submission="put-document"></xforms:send>
+					</xforms:action>
+					<xforms:action if="not(string($filename))">
+						<xforms:send submission="doc-to-solr"></xforms:send>
+					</xforms:action>
 					
 					<!-- update SPARQL -->
 					<xforms:action if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)">
@@ -237,7 +259,22 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">EAD guide saved and updated to search index.</xforms:setvalue>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
 			</xforms:submission>
+			
+			<!-- post document file to Solr for fulltext indexing -->
+			<xforms:submission id="put-document" ref="instance('dump')" method="post" replace="none"
+				resource="{instance('config')/solr_published}update/extract?literal.id={instance('guide')/ead:eadheader/ead:eadid}&amp;stream.url={instance('control-instance')/stream-url}&amp;fmap.content=text&amp;commit=true">
+				<xforms:header>
+					<xforms:name>Content-type</xforms:name>
+					<xforms:value ref="instance('control-instance')/content-type"></xforms:value>
+				</xforms:header>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to index the document file.</xforms:message>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/status">Document successfully saved to Solr.</xforms:setvalue>
+					<xforms:send submission="doc-to-solr"></xforms:send>
+				</xforms:action>
+			</xforms:submission>
 
+			<!-- send commit -->
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"></xforms:submission>
 
 			<!-- ************** POST RDF TO TRIPLESTORE ***************** -->
@@ -311,6 +348,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extptr/extptr.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"></xi:include>
@@ -375,7 +413,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 						</div>
 					</xforms:group>
 					<p>
-						<a href="{$display_path}">&lt; Return</a>
+						<a href="{$display_path}"><span class="glyphicon glyphicon-arrow-left"/> Return</a>
 					</p>
 					<div class="submission">
 						<xforms:submit submission="save-guide" appearance="minimal">

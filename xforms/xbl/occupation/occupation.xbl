@@ -15,10 +15,7 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:action if="not(string($binding))">
-							<!-- otherwise active search interfaces -->
-							<xforms:setvalue ref="instance('interface-type')" value="'aat'"/>
-						</xforms:action>
+						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">aat</xforms:setvalue>						
 					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
@@ -41,7 +38,7 @@
 					</xforms:group>
 
 					<xforms:group ref=".[not(string($binding))]">
-						<div style="display:table;width:100%;">
+						<div>
 							<h4>Occupation</h4>
 							<eaditor:attributes ref="$binding"/>
 							<xforms:trigger appearance="minimal">
@@ -94,7 +91,9 @@
 							<xforms:switch>
 								<xforms:case id="aat-search">
 									<div>
-										<xforms:input ref="instance('search-query')"/>										
+										<xforms:input ref="instance('search-query')">
+											<xforms:label>Search</xforms:label>
+										</xforms:input>										
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:var name="search_query" select="string-join(tokenize(instance('search-query'), ' '), ' AND ')"/>
@@ -105,20 +104,29 @@
 											<xforms:label>Search</xforms:label>
 										</xforms:trigger>
 									</div>
-									<xforms:group ref=".[count(instance('sparqlResponse')//res:result) &gt; 0]">
+									
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
+									
+									<xforms:group ref=".[count(instance('getty-response')//res:result) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" length="20">
-											<xforms:itemset nodeset="instance('sparqlResponse')//res:result">
+											<xforms:label>Term</xforms:label>
+											<xforms:itemset nodeset="instance('getty-response')//res:result">
 												<xforms:label ref="res:binding[@name='label']/res:literal"/>
 												<xforms:value ref="res:binding[@name='c']/res:uri"/>
 											</xforms:itemset>
-											<xforms:setvalue ref="instance('temp')" value="instance('sparqlResponse')//res:result[res:binding[@name='c']/res:uri = instance('temp')/@href]/res:binding[@name='def']/res:literal" ev:event="xforms-value-changed"></xforms:setvalue>
+											<xforms:setvalue ev:event="xforms-value-changed" ref="instance('temp')" value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
+												instance('temp')/@href]/res:binding[@name='def']/res:literal"/>											
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
 												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
 												<xforms:setvalue ref="$binding"
-													value="instance('sparqlResponse')//res:result[res:binding[@name='c']/res:uri = instance('temp')/@href]/res:binding[@name='label']/res:literal"/>
+													value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri = instance('temp')/@href]/res:binding[@name='label']/res:literal"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -167,14 +175,16 @@
 							<xforms:group ref="instance('temp')[string-length(@href) &gt; 0]">
 								<div>
 									<xforms:output ref=".">
-										<xforms:label>Defintion</xforms:label>
+										<xforms:label>Definition</xforms:label>
 									</xforms:output>
 									<xforms:trigger appearance="minimal">
 										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:hint ref="@href"/>
 										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
 									</xforms:trigger>
 								</div>
 							</xforms:group>
+							<hr/>
 						</div>
 					</xforms:group>
 					<!-- ********************************************************************** -->
@@ -212,6 +222,11 @@
 							<query/>
 						</xforms:instance>
 
+						<!-- total results -->
+						<xforms:instance id="search-results">
+							<results/>
+						</xforms:instance>
+
 						<!-- lcgft -->
 						<xforms:instance id="feed">
 							<feed xmlns=""/>
@@ -238,7 +253,7 @@ gvp:broaderExtended aat:300024980 ;
 gvp:prefLabelGVP/xl:literalForm ?label ;
 luc:term "SEARCH_QUERY*" FILTER langMatches(lang(?label), "en")
 OPTIONAL {?c skos:scopeNote ?note .
-?note rdf:value ?def FILTER langMatches(lang(?def), "en")}} LIMIT 25]]></query>
+?note rdf:value ?def FILTER langMatches(lang(?def), "en")}} LIMIT 20]]></query>
 						</xforms:instance>
 
 						<xforms:instance id="sparqlQuery">
@@ -246,13 +261,13 @@ OPTIONAL {?c skos:scopeNote ?note .
 						</xforms:instance>
 
 						<!-- preloaded instances -->
-						<xforms:instance id="sparqlResponse">
+						<xforms:instance id="getty-response">
 							<sparql xmlns="http://www.w3.org/2005/sparql-results#"/>
 						</xforms:instance>
 
 						<!-- ************* SUBMISSIONS **********************-->
 						<!-- SPARQL queries -->
-						<xforms:submission id="query-aat" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}&amp;format=xml" ref="instance('sparqlResponse')"
+						<xforms:submission id="query-aat" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}&amp;format=xml" ref="instance('getty-response')"
 							replace="instance" method="get">
 							<xforms:header>
 								<xforms:name>User-Agent</xforms:name>
@@ -263,6 +278,12 @@ OPTIONAL {?c skos:scopeNote ?note .
 								<xforms:value>application/sparql-results+xml</xforms:value>
 							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">SPARQL query failed.</xforms:message>
+							<xforms:action ev:event="xforms-submit-done">
+								<xforms:var name="total" select="count(instance('getty-response')//res:result)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+							</xforms:action>
 						</xforms:submission>
 
 						<!-- submissions -->

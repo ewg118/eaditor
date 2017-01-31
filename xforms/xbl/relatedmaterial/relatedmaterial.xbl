@@ -1,5 +1,6 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-relatedmaterial" element="eaditor|relatedmaterial">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -9,58 +10,92 @@
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
-						
-					<div class="subsection">
-						<h3>Related Material</h3>
-						<xforms:trigger appearance="minimal">
+
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Related Material</h3>
+							<xforms:trigger appearance="minimal">
+								<xforms:label>
+									<span class="glyphicon glyphicon-remove"/>
+								</xforms:label>
+								<xforms:dispatch target="delete-dialog" name="fr-show" ev:event="DOMActivate"/>
+							</xforms:trigger>
+
+							<!-- include generic triggers -->
+							<eaditor:generic-elements ref="."/>
+
+							<!-- specific elements -->
+							<div>
+								<span>Specific Elements: </span>
+								<xforms:group ref=".[count(ead:extptr) &lt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"/>URL</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." nodeset="child::node()[last()]" origin="instance('extptr-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+							</div>
+
+							<xforms:group ref=".[count(child::node()) &lt; 1]">
+								<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> Element must
+									contain content.</div>
+							</xforms:group>
+
+							<xforms:group ref="ead:head">
+								<eaditor:head/>
+							</xforms:group>
+
+							<xforms:repeat nodeset="ead:address">
+								<eaditor:address/>
+							</xforms:repeat>
+
+							<xforms:repeat nodeset="ead:blockquote">
+								<eaditor:blockquote/>
+							</xforms:repeat>
+
+							<xforms:repeat nodeset="ead:chronlist">
+								<eaditor:chronlist/>
+							</xforms:repeat>
+
+							<xforms:repeat nodeset="ead:list">
+								<eaditor:list/>
+							</xforms:repeat>
+
+							<xforms:repeat nodeset="ead:note">
+								<eaditor:note/>
+							</xforms:repeat>
+
+							<xforms:repeat nodeset="ead:p">
+								<eaditor:p/>
+							</xforms:repeat>
+
+							<xforms:repeat nodeset="ead:table">
+								<eaditor:table/>
+							</xforms:repeat>
+
+							<xforms:group ref="ead:extptr">
+								<eaditor:extptr/>
+							</xforms:group>
+						</div>
+					</xforms:group>
+
+					<fr:alert-dialog id="delete-dialog" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
+						<fr:label>Delete Element</fr:label>
+						<fr:message>Are you sure you want to delete this element?</fr:message>
+						<fr:negative-choice>
+							<fr:label>No</fr:label>
+						</fr:negative-choice>
+						<fr:positive-choice>
+							<fr:label>Yes</fr:label>
 							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
+						</fr:positive-choice>
+					</fr:alert-dialog>
 
-						<!-- include generic triggers -->
-						<eaditor:generic-elements ref="$binding"/>
-						
-						<xforms:group
-							ref="$binding[count(child::node()) &lt; 1]">
-							<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
-						</xforms:group>
-
-						<xforms:group ref="$binding/ead:head">
-							<eaditor:head/>
-						</xforms:group>
-						
-						<xforms:repeat nodeset="$binding/ead:address">
-							<eaditor:address/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:blockquote">
-							<eaditor:blockquote/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:chronlist">
-							<eaditor:chronlist/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:list">
-							<eaditor:list/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:note">
-							<eaditor:note/>
-						</xforms:repeat>
-						
-						<xforms:repeat nodeset="$binding/ead:p">
-							<eaditor:p/>
-						</xforms:repeat>
-
-						<xforms:repeat nodeset="$binding/ead:table">
-							<eaditor:table/>
-						</xforms:repeat>
-					</div>
-						
-					<!-- ********************************************************************** -->					
+					<xforms:model id="relatedmaterial-model" xmlns="urn:isbn:1-931666-22-9">
+						<xforms:instance id="extptr-template" xxforms:exclude-result-prefixes="#all">
+							<extptr xlink:type="simple" xlink:href=""/>
+						</xforms:instance>
+					</xforms:model>
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

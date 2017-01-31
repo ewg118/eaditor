@@ -34,9 +34,12 @@
 								<xforms:var name="guide_id" select="@id"/>
 								<h4>
 									<xforms:group ref=".[string(instance('c-id'))]">
-										<a href="../core/?guide={'{$guide_id}'}">
-											<xforms:output ref="@title"/>
-										</a>
+										<xforms:trigger appearance="minimal">
+											<xforms:label value="@title"/>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:load show="replace" resource="../core/?guide={'{$guide_id}'}"/>
+											</xforms:action>
+										</xforms:trigger>
 									</xforms:group>
 									<xforms:group ref=".[not(string(instance('c-id')))]">
 										<xforms:output ref="@title"/>
@@ -82,9 +85,12 @@
 								</b>
 							</xforms:group>
 							<xforms:group ref=".[not(@id = instance('c-id'))]">
-								<a href="../component/?guide={'{$guide_id}'}&amp;component={'{@id}'}">
-									<xforms:output value="concat(@level, ': ', @unittitle)"/>
-								</a>
+								<xforms:trigger appearance="minimal">
+									<xforms:label value="concat(@level, ': ', @unittitle)"/>
+									<xforms:action ev:event="DOMActivate">
+										<xforms:load show="replace" resource="../component/?guide={'{$guide_id}'}&amp;component={'{@id}'}"/>
+									</xforms:action>
+								</xforms:trigger>
 							</xforms:group>
 						</li>
 					</xsl:if>

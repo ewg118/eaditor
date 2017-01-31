@@ -21,175 +21,28 @@
 					</span>
 					<xxforms:dialog id="clevel-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 						<xforms:label>Component-Level Elements</xforms:label>
-						<xforms:group ref="$binding[count(ead:accessrestrict) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Access Restriction</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('accessrestrict-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:accruals) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Accruals</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('accruals-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:acqinfo) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Acquisition Information</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('acqinfo-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:altformavail) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Alt. Form Available</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('altformavail-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:appraisal) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Appraisal</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('appraisal-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:arrangement) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Arrangement</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('arrangement-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:bibliography) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Bibliography</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('bibliography-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Biography/History</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('bioghist-template')"/>
-						</xforms:trigger>
-						<xforms:group ref="$binding[count(ead:controlaccess) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Controlled Access Headings</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('controlaccess-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:custodhist) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Custodial History</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('custodhist-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Digital Archival Object</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('dao-template')"/>
-						</xforms:trigger>
-
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Digital Archival Object Group</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('daogrp-template')"/>
-						</xforms:trigger>
-
-						<xforms:group ref="$binding[count(ead:fileplan) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>File Plan</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('fileplan-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:index) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Index</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('index-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:originalsloc) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Location of Originals</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('originalsloc-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('note-template')"/>
-						</xforms:trigger>
-						<xforms:group ref="$binding[count(ead:odd) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Other Descriptive Data</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('odd-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:otherfindaid) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Other Finding Aid</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('otherfindaid-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:phystech) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Phys./Tech.</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('phystech-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:prefercite) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Preferred Citation</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('prefercite-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:processinfo) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Processing Information</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('processinfo-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:relatedmaterial) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Related Material</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('relatedmaterial-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:scopecontent) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Scope and Content</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('scopecontent-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:separatedmaterial) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Separated Material</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('separatedmaterial-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:group ref="$binding[count(ead:userestrict) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Use Restriction</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance('userestrict-template')"/>
-							</xforms:trigger>
-						</xforms:group>
+						<ul class="list-unstyled">
+							<xforms:repeat nodeset="instance('elements')/element">
+								<xforms:var name="name" select="@name"/>
+								<xforms:var name="label" select="@label"/>
+								<xforms:var name="max" select="@max"/>
+								
+								<xforms:group ref="$binding[if ($max = 0) then true() else count(*[local-name()=$name]) &lt; $max]">
+									<li>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/><xforms:output value="$label"/></xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="ead:did" position="after" origin="instance(concat($name, '-template'))"/>
+										</xforms:trigger>
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+											<xforms:hint>eadiva reference</xforms:hint>
+											<xforms:load resource="{concat('http://eadiva.com/', $name)}" ev:event="DOMActivate" show="new"></xforms:load>
+										</xforms:trigger>
+									</li>											
+								</xforms:group>							
+							</xforms:repeat>
+						</ul>						
 					</xxforms:dialog>
 
 					<xforms:group ref="$binding/ead:accessrestrict">
@@ -243,7 +96,7 @@
 					<xforms:group ref="$binding/ead:originalsloc">
 						<eaditor:originalsloc/>
 					</xforms:group>
-					<xforms:group ref="$binding/ead:otherfindaid">
+					<xforms:group ref="$binding/ead:otherfindaid[not(@type='eaditor_upload')]">
 						<eaditor:otherfindaid/>
 					</xforms:group>
 					<xforms:group ref="$binding/ead:phystech">
@@ -271,6 +124,37 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="component-level-model" xmlns="urn:isbn:1-931666-22-9">
+						<xforms:instance id="elements">
+							<elements xmlns="">
+								<element name="accessrestrict" label="Access Restriction" max="1"/>
+								<element name="accruals" label="Accruals" max="1"/>
+								<element name="acqinfo" label="Acquisition Information" max="1"/>
+								<element name="altformavail" label="Alt. Form Available" max="1"/>
+								<element name="appraisal" label="Appraisal" max="1"/>
+								<element name="arrangement" label="Arrangement" max="1"/>
+								<element name="bibliography" label="Bibliography" max="1"/>
+								<element name="bioghist" label="Biography/History" max="0"/>
+								<element name="controlaccess" label="Controlled Access Headings" max="1"/>
+								<element name="custodhist" label="Custodial History" max="1"/>
+								<element name="dao" label="Digital Archival Object" max="0"/>
+								<element name="daogrp" label="Digital Archival Object Group" max="0"/>
+								<element name="fileplan" label="File Plan" max="1"/>
+								<element name="index" label="Index" max="1"/>
+								<element name="originalsloc" label="Location of Originals" max="1"/>
+								<element name="note" label="Note" max="0"/>
+								<element name="odd" label="Other Descriptive Data" max="1"/>
+								<element name="otherfindaid" label="Other Finding Aid" max="1"/>
+								<element name="phystech" label="Phys./Tech." max="1"/>
+								<element name="prefercite" label="Preferred Citation" max="1"/>
+								<element name="processinfo" label="Processing Information" max="1"/>
+								<element name="relatedmaterial" label="Related Material" max="1"/>
+								<element name="scopecontent" label="Scope and Content" max="1"/>
+								<element name="separatedmaterial" label="Separated Material" max="1"/>
+								<element name="userestrict" label="Use Restriction" max="1"/>
+							</elements>
+						</xforms:instance>						
+						
+						<!-- ead instances -->
 						<xforms:instance id="accessrestrict-template" xxforms:exclude-result-prefixes="#all">
 							<accessrestrict/>
 						</xforms:instance>

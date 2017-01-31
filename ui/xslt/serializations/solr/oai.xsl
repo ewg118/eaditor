@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:datetime="http://exslt.org/dates-and-times" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="xs datetime"
-	version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" exclude-result-prefixes="xs" version="2.0">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes"/>
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="solr-url" select="concat(/content/config/solr_published, 'select/')"/>
@@ -36,11 +36,11 @@
 	<xsl:variable name="publisher_code" select="content/config/publisher_code"/>
 
 	<xsl:template match="/">
-		<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
-			http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+		<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/
+			http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
 			<responseDate>
-				<xsl:variable name="timestamp" select="concat(substring-before(datetime:dateTime(), '.'), 'Z')"/>
+				<xsl:variable name="timestamp" select="concat(substring-before(string(current-dateTime()), '.'), 'Z')"/>
 				<xsl:value-of select="$timestamp"/>
 			</responseDate>
 			<request verb="{$verb}">
@@ -74,9 +74,7 @@
 						<deletedRecord>no</deletedRecord>
 						<granularity>YYYY-MM-DD</granularity>
 						<description>
-							<oai-identifier xmlns="http://www.openarchives.org/OAI/2.0/oai-identifier" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-								xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai-identifier
-								http://www.openarchives.org/OAI/2.0/oai-identifier.xsd">
+							<oai-identifier>
 								<scheme>oai</scheme>
 								<repositoryIdentifier>
 									<xsl:value-of select="substring-before(substring-after(//url, 'http://'), '/')"/>
@@ -95,15 +93,11 @@
 							<setSpec>ead</setSpec>
 							<setName>Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"/></setName>
 							<setDescription>
-								<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dcterms="http://purl.org/dc/terms/"
-									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-									xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ 
-									http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-									<dcterms:title xml:lang="en">Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"
-										/></dcterms:title>
-									<dcterms:creator>
+								<oai_dc:dc>
+									<dc:title>Encoded Archival Description (EAD) collection of <xsl:value-of select="$publisher"/></dc:title>
+									<dc:creator>
 										<xsl:value-of select="$publisher"/>
-									</dcterms:creator>
+									</dc:creator>
 								</oai_dc:dc>
 							</setDescription>
 						</set>
@@ -268,11 +262,38 @@
 			<datestamp>
 				<xsl:value-of select="date[@name='timestamp']"/>
 			</datestamp>
-			<setSpec>ead</setSpec>
+			<setSpec>
+				<xsl:value-of select="str[@name='oai_id']"/>
+			</setSpec>
 		</header>
 	</xsl:template>
 
 	<xsl:template match="doc" mode="ListRecords">
+		<xsl:variable name="objectUri">
+			<xsl:choose>
+				<xsl:when test="//config/ark[@enabled='true']">
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="string(str[@name='cid'])">
+							<xsl:value-of select="concat($url, str[@name='collection-name'], '/id/', str[@name='recordId'], '/', str[@name='cid'])"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($url, str[@name='collection-name'], '/id/', str[@name='recordId'])"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
 		<record>
 			<header>
 				<identifier>
@@ -281,47 +302,24 @@
 				<datestamp>
 					<xsl:value-of select="substring-before(date[@name='timestamp'], 'T')"/>
 				</datestamp>
-				<setSpec>ead</setSpec>
+				<setSpec>
+					<xsl:value-of select="str[@name='oai_set']"/>
+				</setSpec>
 			</header>
 			<metadata>
-				<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dcterms="http://purl.org/dc/terms/"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-					xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/
-					http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-					<dcterms:title>
+				<oai_dc:dc>
+					<dc:title>
 						<xsl:value-of select="str[@name='unittitle_display']"/>
-					</dcterms:title>
-					<dcterms:publisher>
+					</dc:title>
+					<dc:publisher>
 						<xsl:value-of select="$publisher"/>
-					</dcterms:publisher>
-					<dcterms:identifier>
-						<xsl:variable name="objectUri">
-							<xsl:choose>
-								<xsl:when test="//config/ark[@enabled='true']">
-									<xsl:choose>
-										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'], '/', str[@name='cid'])"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', str[@name='recordId'])"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:choose>
-										<xsl:when test="string(str[@name='cid'])">
-											<xsl:value-of select="concat($url, str[@name='collection-name'], '/id/', str[@name='recordId'], '/', str[@name='cid'])"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="concat($url, str[@name='collection-name'], '/id/', str[@name='recordId'])"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-
+					</dc:publisher>
+					<dc:identifier>
 						<xsl:value-of select="$objectUri"/>
-					</dcterms:identifier>
+					</dc:identifier>
+					<dc:relation>
+						<xsl:value-of select="concat($objectUri, '.xml')"/>
+					</dc:relation>
 					<xsl:if test="string(str[@name='unitdate_display'])">
 						<dcterms:date>
 							<xsl:value-of select="str[@name='unitdate_display']"/>
@@ -333,20 +331,19 @@
 						</dcterms:extent>
 					</xsl:if>
 					<xsl:for-each select="arr[@name='language_facet']/str">
-						<dcterms:language>
+						<dc:language>
 							<xsl:value-of select="."/>
-						</dcterms:language>
+						</dc:language>
 					</xsl:for-each>
 					<xsl:for-each select="arr[@name='subject_facet']/str">
-						<dcterms:subject>
+						<dc:subject>
 							<xsl:value-of select="."/>
-						</dcterms:subject>
+						</dc:subject>
 					</xsl:for-each>
 					<xsl:for-each select="arr[@name='geogname_uri']/str">
 						<dcterms:coverage rdf:resource="{.}"/>
 					</xsl:for-each>
-					<dcterms:rights>Open for public research.</dcterms:rights>
-					<dcterms:format>ead</dcterms:format>
+					<dc:rights>Open for public research.</dc:rights>					
 				</oai_dc:dc>
 			</metadata>
 		</record>

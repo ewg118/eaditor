@@ -14,8 +14,8 @@
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
-		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
@@ -290,7 +290,7 @@
 							</div>
 						</xforms:group>
 						<p>
-							<a href="{$display_path}">&lt; Return</a>
+							<a href="{$display_path}"><span class="glyphicon glyphicon-arrow-left"/> Return</a>
 						</p>
 						<div class="submission">
 							<xforms:trigger ref="instance('control-instance')/save-trigger" appearance="minimal">
@@ -671,7 +671,7 @@
 							</div>
 						</xforms:group>
 					</div>
-					<fr:xforms-inspector></fr:xforms-inspector>
+					<!--<fr:xforms-inspector></fr:xforms-inspector>-->
 				</div>
 			</div>
 		</div>

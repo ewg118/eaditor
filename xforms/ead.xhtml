@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2010 Ethan Gruber
+    Author: Ethan Gruber
     EADitor: https://github.com/ewg118/eaditor
-    Apache License 2.0: https://github.com/ewg118/eaditor    
+    Function: EAD core XForms editor (EAD Header, Archdesc)
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor"
@@ -15,8 +15,8 @@
 		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
-		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
@@ -46,11 +46,20 @@
 			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
 				<config></config>
 			</xforms:instance>
+			
+			<xforms:instance id="master-config" xxforms:exclude-result-prefixes="#all">
+				<config></config>
+			</xforms:instance>
 
 			<xforms:instance id="control-instance">
 				<controls xmlns="">
 					<collection-name></collection-name>
 					<status></status>
+					<url/>
+					<!-- Solr file indexing -->
+					<stream-url/>
+					<content-type/>
+					<new>true</new>
 				</controls>
 			</xforms:instance>
 
@@ -92,6 +101,10 @@
 			<!-- Instance for Solr commit-->
 			<xforms:instance id="sendCommit">
 				<commit></commit>
+			</xforms:instance>
+			
+			<xforms:instance id="request">
+				<request xmlns=""></request>
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
@@ -210,6 +223,15 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<xforms:instance id="dsc-template" xxforms:exclude-result-prefixes="#all">
 				<dsc></dsc>
 			</xforms:instance>
+			
+			<!-- uploading a file into an otherfindaid -->
+			<xforms:instance id="upload-template" xxforms:exclude-result-prefixes="#all">
+				<otherfindaid type="eaditor_upload">
+					<bibref>
+						<extptr xlink:type="simple" xlink:href="" xlink:role=""/>
+					</bibref>
+				</otherfindaid>
+			</xforms:instance>
 
 			<xforms:instance id="level-template">
 				<levels xmlns="">
@@ -228,6 +250,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</levels>
 			</xforms:instance>
 
+			<!-- ************** BINDINGS ********************-->
 			<xforms:bind node="instance('guide')">
 				<xforms:bind nodeset="//*/@id" type="xs:ID"></xforms:bind>
 				<xforms:bind nodeset="ead:eadheader">
@@ -257,7 +280,14 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<xforms:bind nodeset="ead:archdesc">
 					<xforms:bind nodeset="@level" required="true()"></xforms:bind>
 					<xforms:bind nodeset="ead:did">
+						<xforms:bind nodeset="ead:origination" constraint="count(*) &gt; 0">
+							<xforms:bind nodeset="*" required="true()"/>
+						</xforms:bind>
 						<xforms:bind nodeset="ead:unitid" required="true()"></xforms:bind>
+						<xforms:bind nodeset="ead:repository">
+							<xforms:bind nodeset="ead:corpname" required="true()"/>
+							<xforms:bind nodeset="ead:subarea" required="true()"/>
+						</xforms:bind>
 						<xforms:bind nodeset="ead:langmaterial">
 							<xforms:bind ref="ead:language">
 								<xforms:bind constraint="string-length(@langcode) &gt; 0"></xforms:bind>
@@ -283,10 +313,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</xforms:bind>
 				<xforms:bind nodeset="//ead:ref" required="true()"></xforms:bind>
 				<xforms:bind nodeset="//ead:extref" required="true()">
-					<xforms:bind nodeset="@xlink:href" required="true()"></xforms:bind>
+					<xforms:bind nodeset="@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				</xforms:bind>
-				<xforms:bind nodeset="//ead:dao/@xlink:href" required="true()"></xforms:bind>
-				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()"></xforms:bind>
+				<xforms:bind nodeset="//ead:extptr/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
+				<xforms:bind nodeset="//ead:dao/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
+				<xforms:bind nodeset="//ead:daoloc/@xlink:href" required="true()" type="xs:anyURI"></xforms:bind>
 				<xforms:bind nodeset="//ead:daoloc/@xlink:label" constraint="string-length(.) &gt; 0"></xforms:bind>
 				<xforms:bind nodeset="//ead:daodesc">
 					<xforms:bind nodeset="ead:head" required="true()"></xforms:bind>
@@ -315,6 +346,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<xforms:bind nodeset="//ead:persname" required="true()"></xforms:bind>
 				<xforms:bind nodeset="//ead:subject" required="true()"></xforms:bind>
 			</xforms:bind>
+			
+			<xforms:bind nodeset="instance('control-instance')">
+				<xforms:bind nodeset="new" type="xs:boolean"/>
+			</xforms:bind>
 
 			<!-- bind tabs -->
 			<xforms:bind id="archdesc-tab" nodeset="instance('guide')/ead:archdesc"></xforms:bind>
@@ -325,8 +360,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
-
-
+			
+			<xforms:submission id="load-master-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml"
+				replace="instance" instance="master-config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading master config.</xforms:message>
+			</xforms:submission>
 
 			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
 				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
@@ -397,7 +435,19 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				<!-- if the document is found in solr, get the updated solr doc -->
 				<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
 					<!-- post doc to solr -->
-					<xforms:send submission="doc-to-solr"></xforms:send>
+					<xforms:var name="filename" select="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href"/>
+					<xforms:action if="string($filename)">
+						<!-- set the document URL -->
+						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+						<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', instance('control-instance')/collection-name, '/', $filename)"/>
+						<xforms:setvalue ref="instance('control-instance')/content-type" value="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
+						
+						<xforms:send submission="put-document"></xforms:send>
+					</xforms:action>
+					<xforms:action if="not(string($filename))">
+						<xforms:send submission="doc-to-solr"></xforms:send>
+					</xforms:action>
+					
 					<!-- update SPARQL -->
 					<xforms:action if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)">
 						<xforms:var name="uri"
@@ -422,6 +472,20 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved and updated to search index.</xforms:setvalue>
 				</xforms:action>
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
+			</xforms:submission>
+			
+			<!-- post document file to Solr for fulltext indexing -->
+			<xforms:submission id="put-document" ref="instance('dump')" method="post" replace="none"
+				resource="{instance('config')/solr_published}update/extract?literal.id={instance('guide')/ead:eadheader/ead:eadid}&amp;stream.url={instance('control-instance')/stream-url}&amp;stream.contentType={instance('control-instance')/content-type}&amp;fmap.content=text&amp;commit=true">
+				<xforms:header>
+					<xforms:name>Content-type</xforms:name>
+					<xforms:value ref="instance('control-instance')/content-type"></xforms:value>
+				</xforms:header>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to index the document file.</xforms:message>
+				<xforms:action ev:event="xforms-submit-done">
+					<xforms:setvalue ref="instance('control-instance')/status">Document successfully saved to Solr.</xforms:setvalue>
+					<xforms:send submission="doc-to-solr"></xforms:send>
+				</xforms:action>
 			</xforms:submission>
 
 			<!-- send commit -->
@@ -467,6 +531,8 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- load id parameter from url into @id attribute for EAD guide -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
+					<xforms:send submission="load-master-config"></xforms:send>
+					
 					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"></xforms:setvalue>
 					<xforms:send submission="load-config"></xforms:send>
 					<xforms:send submission="load-c-template"></xforms:send>
@@ -479,6 +545,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:action if="not(string(xxforms:get-request-parameter('guide')))">
 						<xforms:send submission="load-ead-template"></xforms:send>
 					</xforms:action>
+					
+					<!-- set control instance URL dependent upon the collection being an aggregator -->
+					<xforms:setvalue ref="instance('control-instance')/url" value="if (instance('master-config')/aggregator = 'true') then instance('master-config')/url else instance('config')/url"/>
 				</xforms:action>
 			</xforms:action>
 		</xforms:model>
@@ -511,6 +580,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 		<xi:include href="xbl/did/did.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extptrloc/extptrloc.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extref/extref.xbl" xxi:omit-xml-base="true"></xi:include>
+		<xi:include href="xbl/extptr/extptr.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/extrefloc/extrefloc.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/famname/famname.xbl" xxi:omit-xml-base="true"></xi:include>
 		<xi:include href="xbl/fileplan/fileplan.xbl" xxi:omit-xml-base="true"></xi:include>
@@ -577,7 +647,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 						</div>
 					</xforms:group>
 					<p>
-						<a href="{$display_path}">&lt; Return</a>
+						<a href="{$display_path}"><span class="glyphicon glyphicon-arrow-left"/> Return</a>
 					</p>
 					<div class="section">
 						<h1>Edit EAD Finding Aid</h1>
@@ -604,9 +674,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 						<fr:tabview>
 							<!--**************************************** EADHEADER **********************************-->
 							<fr:tab id="eadheader-tab">
-								<fr:label>EAD Header</fr:label>
+								<fr:label>Finding Aid Info</fr:label>
 								<xforms:group ref="instance('guide')/ead:eadheader">
-									<h1>EAD Header</h1>
+									<h1>Finding Aid Info</h1>
 									<span class="add">
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
@@ -617,7 +687,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 									</span>
 									<p>Information about the creation, revision, and publication of the finding aid.</p>
 									<xxforms:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
-										<xforms:label>EAD Header Elements</xforms:label>
+										<xforms:label>Available Elements</xforms:label>
 										<xforms:group ref=".[count(ead:profiledesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
 												<xforms:label>
@@ -1078,10 +1148,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 							<!--**************************************** END EADHEADER **********************************-->
 							<!--**************************************** ARCHDESC **********************************-->
 							<fr:tab bind="archdesc-tab">
-								<fr:label>Archival Description</fr:label>
+								<fr:label>Collection Info</fr:label>
 								<div class="row">
 									<div class="col-md-12">
-										<h1>Archival Description</h1>										
+										<h1>Collection Info</h1>										
 										<div>
 											<xforms:select1 ref="@level">
 												<xforms:label>Level</xforms:label>
@@ -1091,7 +1161,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 												</xforms:itemset>
 											</xforms:select1>
 										</div>
-									</div>
+									</div>									
 									<div class="col-md-6">
 										<xforms:group ref="ead:did">
 											<eaditor:did></eaditor:did>
@@ -1104,9 +1174,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 							</fr:tab>
 							<!--**************************************** DSC **********************************-->
 							<fr:tab id="dsc-tab">
-								<fr:label>Description of Subordinate Components</fr:label>
+								<fr:label>Inventory</fr:label>
 								<xforms:group ref="instance('guide')/ead:archdesc">
-									<h2>Description of Subordinate Components</h2>
+									<h2>Inventory</h2>
 									<xforms:group ref=".[ead:dsc]">
 										<xforms:trigger appearance="minimal">
 											<xforms:dispatch target="remove-dsc" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
@@ -1115,6 +1185,16 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 											</xforms:label>
 										</xforms:trigger>
 									</xforms:group>
+									<xforms:group ref=".[count(ead:otherfindaid[@type='eaditor_upload']) = 0]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-upload"></span>Upload Container List</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<!-- insert dsc if it doesn't exist -->
+												<xforms:insert context="." nodeset="./child::node()[last()]" origin="instance('upload-template')"></xforms:insert>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+									
 									<div>
 										<xforms:trigger appearance="minimal">
 											<xforms:label>
@@ -1127,6 +1207,9 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 											</xforms:action>
 										</xforms:trigger>
 									</div>
+									<xforms:group ref="ead:otherfindaid[@type='eaditor_upload']">
+										<eaditor:otherfindaid/>
+									</xforms:group>
 									<xforms:group ref="ead:dsc">
 										<xforms:group ref=".[count(ead:c) = 0]">
 											<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> The DSC must not be empty.</div>

@@ -19,52 +19,45 @@
 					</span>
 					<xxforms:dialog id="generic-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 						<xforms:label>Generic Elements</xforms:label>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Address</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('address-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Block Quote</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('blockquote-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Chronology List</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('chronlist-template')"/>
-						</xforms:trigger>
-						<xforms:group ref="$binding[count(ead:head) &lt; 1]">
-							<xforms:trigger appearance="minimal">
-								<xforms:label>
-									<span class="glyphicon glyphicon-plus"/>Header</xforms:label>
-								<xforms:insert ev:event="DOMActivate" context="$binding" origin="instance('head-template')"/>
-							</xforms:trigger>
-						</xforms:group>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>List</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('list-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Note</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('note-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Paragraph</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('p-template')"/>
-						</xforms:trigger>
-						<xforms:trigger appearance="minimal">
-							<xforms:label>
-								<span class="glyphicon glyphicon-plus"/>Table</xforms:label>
-							<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('table-template')"/>
-						</xforms:trigger>
+						<ul class="list-unstyled">
+							<xforms:repeat nodeset="instance('elements')/element">
+								<xforms:var name="name" select="@name"/>
+								<xforms:var name="label" select="@label"/>
+								<xforms:var name="max" select="@max"/>
+								
+								<xforms:group ref="$binding[if ($max = 0) then true() else count(*[local-name()=$name]) &lt; $max]">
+									<li>
+										<xforms:trigger appearance="minimal">
+											<xforms:label>
+												<span class="glyphicon glyphicon-plus"/><xforms:output value="$label"/></xforms:label>
+											<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance(concat($name, '-template'))"/>
+										</xforms:trigger>
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+											<xforms:hint>eadiva reference</xforms:hint>
+											<xforms:load resource="{concat('http://eadiva.com/', $name)}" ev:event="DOMActivate" show="new"></xforms:load>
+										</xforms:trigger>
+									</li>											
+								</xforms:group>							
+							</xforms:repeat>
+						</ul>
 					</xxforms:dialog>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="generic-elements-model" xmlns="urn:isbn:1-931666-22-9">
+						<xforms:instance id="elements">
+							<elements xmlns="">
+								<element name="address" label="Address" max="0"/>
+								<element name="blockquote" label="Block Quote" max="0"/>
+								<element name="chronlist" label="Chronology List" max="0"/>
+								<element name="head" label="Header" max="1"/>
+								<element name="list" label="List" max="0"/>
+								<element name="note" label="Note" max="0"/>
+								<element name="p" label="Paragraph" max="0"/>
+								<element name="table" label="Table" max="0"/>
+							</elements>
+						</xforms:instance>
+						
 						<!-- generic instances -->
 						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
 							<address>

@@ -1,5 +1,6 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ead="urn:isbn:1-931666-22-9">
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-dao" element="eaditor|dao">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -8,41 +9,43 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->					
-					<div class="subsection">
-						<h3>Digital Archival Object</h3>
-						<eaditor:attributes ref="$binding"/>
-						<xforms:trigger appearance="minimal">
-							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
-							<xforms:label>
-								<span class="glyphicon glyphicon-remove"/>
-							</xforms:label>
-						</xforms:trigger>
-						<div>
-							<xforms:group ref="$binding[count(ead:daodesc) &lt; 1]">
-								<xforms:trigger appearance="minimal">
-									<xforms:label>
-										<span class="glyphicon glyphicon-plus"/>Description</xforms:label>
-									<xforms:insert ev:event="DOMActivate" context="$binding"
-										origin="instance('daodesc-template')"/>
-								</xforms:trigger>
+					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
+					<xforms:group ref="$binding">
+						<div class="subsection">
+							<h3>Digital Archival Object</h3>
+							<eaditor:attributes ref="$binding"/>
+							<xforms:trigger appearance="minimal">
+								<xforms:delete ev:event="DOMActivate" nodeset="."/>
+								<xforms:label>
+									<span class="glyphicon glyphicon-remove"/>
+								</xforms:label>
+							</xforms:trigger>
+							<div>
+								<xforms:group ref=".[count(ead:daodesc) &lt; 1]">
+									<xforms:trigger appearance="minimal">
+										<xforms:label>
+											<span class="glyphicon glyphicon-plus"/>Description</xforms:label>
+										<xforms:insert ev:event="DOMActivate" context="." origin="instance('daodesc-template')"/>
+									</xforms:trigger>
+								</xforms:group>
+							</div>
+							<div>
+								<xforms:input ref="@xlink:href">
+									<xforms:label>Image URL</xforms:label>
+									<xforms:alert>Required</xforms:alert>
+								</xforms:input>
+							</div>
+							<xforms:group ref="ead:daodesc">
+								<eaditor:daodesc/>
 							</xforms:group>
 						</div>
-						<div>
-							<xforms:input ref="$binding/@xlink:href">
-								<xforms:label>Image URL</xforms:label>
-								<xforms:alert>Required</xforms:alert>
-							</xforms:input>
-						</div>
-						<xforms:group ref="$binding/ead:daodesc">
-							<eaditor:daodesc/>
-						</xforms:group>
-					</div>
+					</xforms:group>
+
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="dao-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="dao-model">
 						<xforms:instance id="daodesc-template">
-							<daodesc xxforms:exclude-result-prefixes="#all">
+							<daodesc xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
 								<p/>
 							</daodesc>
 						</xforms:instance>

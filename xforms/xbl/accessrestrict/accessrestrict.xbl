@@ -1,5 +1,6 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
-	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
 	<xbl:binding id="eaditor-accessrestrict" element="eaditor|accessrestrict">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -16,18 +17,19 @@
 							<h3>Access Restrictions</h3>
 							<xforms:group ref=".[ancestor::ead:c]">
 								<xforms:trigger appearance="minimal">
-									<xforms:delete ev:event="DOMActivate" nodeset="."/>
 									<xforms:label>
 										<span class="glyphicon glyphicon-remove"/>
 									</xforms:label>
+									<xforms:dispatch target="delete-dialog" name="fr-show" ev:event="DOMActivate"/>
 								</xforms:trigger>
 							</xforms:group>
+							
 
 							<!-- include attributes menu -->
 							<eaditor:attributes ref="."/>
 
 							<!-- include generic triggers -->
-							<eaditor:generic-elements ref="$binding"/>
+							<eaditor:generic-elements ref="."/>
 
 							<div>
 								<span>Specific Elements: </span>
@@ -41,7 +43,7 @@
 							</div>
 
 							<xforms:group ref="$binding[count(child::node()) &lt; 1]">
-								<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
+								<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> Element must contain content.</div>
 							</xforms:group>
 
 							<xforms:group ref="ead:head">
@@ -91,6 +93,18 @@
 							</xforms:repeat>
 						</div>
 					</xforms:group>
+
+					<fr:alert-dialog id="delete-dialog">
+						<fr:label>Delete Element</fr:label>
+						<fr:message>Are you sure you want to delete this element?</fr:message>
+						<fr:negative-choice>
+							<fr:label>No</fr:label>
+						</fr:negative-choice>
+						<fr:positive-choice>
+							<fr:label>Yes</fr:label>
+							<xforms:delete ev:event="DOMActivate" nodeset="$binding"/>
+						</fr:positive-choice>
+					</fr:alert-dialog>
 
 					<xforms:model id="accessrestrict-model" xmlns="urn:isbn:1-931666-22-9">
 						<xforms:instance id="legalstatus-template" xxforms:exclude-result-prefixes="#all">

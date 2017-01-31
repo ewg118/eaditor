@@ -127,6 +127,7 @@
 	
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
+	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
 	
 	<!-- url params -->
 	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
@@ -172,8 +173,8 @@
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<!-- bootstrap -->
-				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
-				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
+				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<!-- include fancybox -->
 				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
@@ -183,7 +184,7 @@
 				<xsl:if test="$hasPoints = true()">
 					<!-- mapping -->
 					<!--<link type="text/css" href="{$include_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>-->
-					<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"/>
+					<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/mxn.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/timeline-2.3.0.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/timemap_full.pack.js"/>
@@ -375,22 +376,64 @@
 					<xsl:otherwise>Descriptive Identification</xsl:otherwise>
 				</xsl:choose>
 			</h2>
-			<dl class="dl-horizontal">
-				<xsl:apply-templates select="ead:unitid"/>
-				<xsl:apply-templates select="ead:container"/>
-				<xsl:apply-templates select="ead:repository"/>
-				<xsl:apply-templates select="ead:physdesc/ead:extent"/>
-				<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
-				<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
-				<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
-				<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
-				<xsl:apply-templates select="ead:physloc"/>
-				<xsl:apply-templates select="ead:langmaterial"/>
-				<xsl:apply-templates select="ead:materialspec"/>
-				<xsl:apply-templates select="ead:abstract"/>
-				<xsl:apply-templates select="ead:note"/>
-			</dl>
+			
+			<xsl:choose>
+				<xsl:when test="$upload = true()">
+					<xsl:variable name="content-type" select="parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
+					
+					<div class="col-md-8">
+						<xsl:call-template name="did-dl"/>
+					</div>
+					<div class="col-md-4">
+						<div class="highlight">
+							<h3>Download Container List</h3>
+							<h4>
+								<a href="{$include_path}uploads/{$collection-name}/{parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href}" itemprop="url">
+									<xsl:choose>
+										<xsl:when test="$content-type='application/pdf'">
+											<img src="{$include_path}ui/images/adobe.png" alt="PDF" class="doc-icon"/>
+										</xsl:when>
+										<xsl:when test="contains($content-type, 'oasis') or contains($content-type, 'sun')">
+											<img src="{$include_path}ui/images/writer.png" alt="LibreOffice Writer" class="doc-icon"/>
+										</xsl:when>
+										<xsl:when test="contains($content-type, 'word') or contains($content-type, 'document')">
+											<img src="{$include_path}ui/images/word.png" alt="Microsoft Word" class="doc-icon"/>
+										</xsl:when>
+										<xsl:when test="contains($content-type, 'excel') or contains($content-type, 'sheet')">
+											<img src="{$include_path}ui/images/excel.png" alt="Microsoft Excel" class="doc-icon"/>
+										</xsl:when>										
+										<xsl:otherwise>
+											<xsl:value-of select="$content-type"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</a>
+							</h4>
+						</div>
+					</div>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="did-dl"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</div>
+	</xsl:template>
+	
+	<xsl:template name="did-dl">
+		<dl class="dl-horizontal">
+			<xsl:apply-templates select="ead:unitid"/>
+			<xsl:apply-templates select="ead:container"/>
+			<xsl:apply-templates select="ead:repository"/>
+			<xsl:apply-templates select="ead:physdesc/ead:extent"/>
+			<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
+			<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
+			<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
+			<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
+			<xsl:apply-templates select="ead:physloc"/>
+			<xsl:apply-templates select="ead:langmaterial"/>
+			<xsl:apply-templates select="ead:materialspec"/>
+			<xsl:apply-templates select="ead:abstract"/>
+			<xsl:apply-templates select="ead:note"/>
+		</dl>
 	</xsl:template>
 	
 	<xsl:template name="archdesc-images">
@@ -727,54 +770,62 @@
 			href="{$display_path}results?q={name()}_facet:&#x022;{if (contains(normalize-space(.), '&amp;')) then encode-for-uri(normalize-space(.)) else normalize-space(.)}&#x022;">
 			<xsl:value-of select="normalize-space(.)"/>
 		</a>
-		<xsl:if test="@source">
+		<xsl:if test="string(@source) and string(@authfilenumber)">
 			<xsl:choose>
 				<xsl:when test="@source='aat'">
 					<a href="http://vocab.getty.edu/aat/{@authfilenumber}" title="Getty AAT" rel="dcterms:format">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='tgn'">
 					<a href="http://vocab.getty.edu/tgn/{@authfilenumber}" title="Getty TGN" rel="dcterms:coverage">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='geonames'">
 					<a href="http://www.geonames.org/{@authfilenumber}" title="Geonames" rel="dcterms:coverage">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
 					<a href="http://pleiades.stoa.org/places/{@authfilenumber}" title="Pleiades" rel="dcterms:coverage">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcsh'">
 					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCSH" rel="dcterms:subject">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='lcgft'">
 					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCGFT" rel="dcterms:format">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
+					</a>
+				</xsl:when>
+				<xsl:when test="@source='lcnaf'">
+					<a href="http://id.loc.gov/authorities/names/{@authfilenumber}" title="LCNAF">
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='viaf'">
 					<a href="http://viaf.org/viaf/{@authfilenumber}" title="VIAF" rel="arch:correspondedWith">
-						<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="contains(@authfilenumber, 'http://')">
 			<a href="{@authfilenumber}" rel="{if (parent::ead:origination) then 'dcterms:creator' else 'arch:correspondedWith'}">
-				<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+				<span class="glyphicon glyphicon-new-window"/>
 			</a>
 		</xsl:if>
 		<xsl:if test="string(normalize-space(@role))">
 			<xsl:text> (</xsl:text>
 			<xsl:value-of select="@role"/>
 			<xsl:text>)</xsl:text>
+		</xsl:if>
+		<xsl:if test="not(position()=last())">
+			<xsl:text>, </xsl:text>
 		</xsl:if>
 	</xsl:template>
 

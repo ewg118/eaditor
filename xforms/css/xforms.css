@@ -90,7 +90,11 @@
 	 vertical-align: top 
 }
 .orbeon .xforms-input input[type=text], .orbeon .xforms-textarea textarea, .orbeon .xforms-select1 select {
-	width: 20em;
+	width: 24em;
+	margin-bottom: 2px;
+}
+.xforms-control-half .xforms-input input[type=text], .xforms-control-half .xforms-textarea textarea, .xforms-control-half  .xforms-select1 select {
+	width: 12em;
 	margin-bottom: 2px;
 }
 .orbeon .checkbox input {
@@ -137,10 +141,11 @@
 .add {
 	display:inline;	
 }
-.xbl-eaditor-generic-elements, .xbl-eaditor-attributes, .xbl-eaditor-access-elements {
+.xbl-eaditor-generic-elements, .xbl-eaditor-attributes, .xbl-eaditor-access-elements, .xbl-eaditor-delete-dialog {
 	display:inline;
 	color:gray;	
 }
+
 /*
   ****************************************
   PAGINATION

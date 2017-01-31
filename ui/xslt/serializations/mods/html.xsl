@@ -157,8 +157,8 @@
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<!-- bootstrap -->
-				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
-				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
+				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<!-- include fancybox -->
 				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
@@ -274,7 +274,7 @@
 								</a>
 								<xsl:if test="string(@valueURI)">
 									<a href="{@valueURI}" rel="dcterms:subject">
-										<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+										<span class="glyphicon glyphicon-new-window"/>
 									</a>
 								</xsl:if>
 							</dd>
@@ -312,7 +312,7 @@
 			</a>
 			<xsl:if test="string(@valueURI)">
 				<a href="{@valueURI}" rel="dcterms:format">
-					<img src="{$include_path}ui/images/external.png" alt="external link" class="external_link"/>
+					<span class="glyphicon glyphicon-new-window"/>
 				</a>
 			</xsl:if>
 		</dd>
