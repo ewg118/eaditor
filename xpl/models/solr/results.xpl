@@ -49,6 +49,7 @@
 					<xsl:text>&amp;facet.field=</xsl:text>
 					<xsl:value-of select="string-join(/config/facets/facet, '&amp;facet.field=')"/>
 				</xsl:variable>
+				<xsl:variable name="fl" select="string-join(('id', 'recordId', 'unittitle_display', 'unitdate_display', 'publisher_display', 'extent_display', 'collection-name'), ',')"/>
 
 				<xsl:variable name="service">
 					<xsl:choose>
@@ -60,11 +61,11 @@
 									<xsl:choose>
 										<xsl:when test="string($sort)">
 											<xsl:value-of
-												select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"
+												select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl, '&amp;sort=', encode-for-uri($sort))"
 											/>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+											<xsl:value-of select="concat($solr-url, '?q=', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl)"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
@@ -72,11 +73,11 @@
 									<xsl:choose>
 										<xsl:when test="string($sort)">
 											<xsl:value-of
-												select="concat($solr-url, '?q=*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"
+												select="concat($solr-url, '?q=*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl, '&amp;sort=', encode-for-uri($sort))"
 											/>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($solr-url, '?q=*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+											<xsl:value-of select="concat($solr-url, '?q=*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl)"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:otherwise>
@@ -90,11 +91,11 @@
 									<xsl:choose>
 										<xsl:when test="string($sort)">
 											<xsl:value-of
-												select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"
+												select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl, '&amp;sort=', encode-for-uri($sort))"
 											/>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+											<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+', encode-for-uri($q), '&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl)"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
@@ -102,11 +103,11 @@
 									<xsl:choose>
 										<xsl:when test="string($sort)">
 											<xsl:value-of
-												select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true', '&amp;sort=', encode-for-uri($sort))"
+												select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl, '&amp;sort=', encode-for-uri($sort))"
 											/>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true')"/>
+											<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+*:*&amp;start=', $start, $facets, '&amp;facet.field=georef&amp;facet.sort=index&amp;facet=true&amp;fl=', $fl)"/>
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:otherwise>

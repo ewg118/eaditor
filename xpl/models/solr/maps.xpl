@@ -40,10 +40,10 @@
 					<xsl:choose>
 						<!-- when there is a collection name, apply collection name in Solr query -->
 						<xsl:when test="/config/aggregator = 'true'">
-							<xsl:value-of select="concat($solr-url, '?q=georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true', $facets)"/>
+							<xsl:value-of select="concat($solr-url, '?q=georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true&amp;fl=id', $facets)"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true', $facets)"/>
+							<xsl:value-of select="concat($solr-url, '?q=collection-name:', $collection-name, '+AND+georef:*&amp;start=0&amp;rows=0&amp;facet.limit=1&amp;facet=true&amp;fl=id', $facets)"/>
 						</xsl:otherwise>
 					</xsl:choose>
 					
