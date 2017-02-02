@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div class="navbar navbar-default navbar-static-top" role="navigation" xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" >
+<div class="navbar navbar-default navbar-static-top" role="navigation" xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -30,16 +31,20 @@
 				</xforms:group>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li>
-					<a href="{instance('config')/url}" target="_blank"><span class="glyphicon glyphicon-new-window"/> View Public Site</a>
-				</li>
+				<xforms:group ref=".[instance('master-config')/aggregator='true']">
+					<li><a href="{instance('master-config')/url}" target="_blank"><span class="glyphicon glyphicon-new-window"/> View Public Site</a></li>
+				</xforms:group>
+				<xforms:group ref=".[not(instance('master-config')/aggregator='true')]">
+					<li><a href="{instance('config')/url}" target="_blank"><span class="glyphicon glyphicon-new-window"/> View Public Site</a></li>
+				</xforms:group>
 				<li>
 					<a href="{$display_path}logout"><span class="glyphicon glyphicon-log-out"/> Logout</a>
 				</li>
 			</ul>
 		</div>
 	</div>
-</div><!--
+</div>
+<!--
 
 <div id="hd">
 	
