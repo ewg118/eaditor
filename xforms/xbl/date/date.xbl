@@ -21,7 +21,11 @@
 							<xforms:action if="not(contains($binding/@normal, '/'))">
 								<xforms:setvalue ref="instance('control-instance')/inputs/date" value="$binding/@normal"/>							
 							</xforms:action>															
-						</xforms:action>						
+						</xforms:action>
+						<xforms:action if="$binding/@certainty='approximate'">
+							<xforms:setvalue ref="instance('control-instance')/loaded" value="true()"/>
+							<xforms:setvalue ref="instance('control-instance')/interface">approximate</xforms:setvalue>
+						</xforms:action>
 					</xforms:action>
 					
 					<xforms:group ref="$binding">
@@ -67,14 +71,17 @@
 											</xforms:action>
 											<xforms:action if=". = 'date'">
 												<xforms:insert if="not($binding/@normal)" context="$binding" origin="xforms:attribute('normal', '')"/>
+												<xforms:delete if="$binding/@certainty" context="$binding/@certainty"/>
 												<xforms:toggle case="date"/>
 											</xforms:action>
 											<xforms:action if=". = 'dateRange'">	
 												<xforms:insert if="not($binding/@normal)" context="$binding" origin="xforms:attribute('normal', '')"/>
+												<xforms:delete if="$binding/@certainty" context="$binding/@certainty"/>
 												<xforms:toggle case="dateRange"/>										
 											</xforms:action>
 											<xforms:action if=". = 'approximate'">	
 												<xforms:delete if="$binding/@normal" context="$binding/@normal"/>
+												<xforms:insert if="not($binding/@certainty)" context="$binding" origin="xforms:attribute('certainty', 'approximate')"/>
 												<xforms:toggle case="approximate"/>										
 											</xforms:action>
 											<xforms:setvalue ref="instance('control-instance')/loaded" value="false()"/>
@@ -152,7 +159,8 @@
 							</xforms:group>
 							<div>
 								<xforms:input ref=".">
-									<xforms:label>Text</xforms:label>
+									<xforms:label>Free Text</xforms:label>
+									<xforms:hint>The human-readable free text to express the date or date range.</xforms:hint>
 									<xforms:alert>Required</xforms:alert>
 								</xforms:input>
 							</div>
