@@ -48,11 +48,11 @@ comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,
     <div class="senylrc_top_container">
     <div class="top_left">
               <div id="logo">
-          <a href="/" title="Home"><img src="http://www.empireadc.org/sites/www.empireadc.org/files/ead_logo.gif"/></a>
+          <a href="http://www.empireadc.org" title="Home"><img src="/sites/www.empireadc.org/files/ead_logo.gif"/></a>
         </div>
 
       <h1 id="site-title">
-        <a href="http://www.empireadc.org" title="Home"></a>
+        <a href="http://www.empireadc.org/" title="Home"></a>
 
       </h1>
     </div>
