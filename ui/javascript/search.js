@@ -58,7 +58,7 @@ $(document).ready(function() {
 		//SELECTING OTHER DROP DOWN MENUS SECTION
 		else {
 			var category = $(this) .children("option:selected") .attr('value');
-			$(this) .parent('.searchItemTemplate') .children('.option_container') .html('<select class="search_text"></select>');			
+			$(this) .parent('.searchItemTemplateEaditor') .children('.option_container') .html('<select class="search_text"></select>');			
 			$.get('../get_facets/', {
 				q : category + ':[* TO *]', category:category, sort: 'index', limit:-1
 			}, function (data) {
@@ -80,8 +80,8 @@ $(document).ready(function() {
 	$('#advancedSearchForm').submit(function() {
 		var query = new Array();
 		
-		// loop through each ".searchItemTemplate" and build the query
-		$('.inputContainer .searchItemTemplate') .each(function () {
+		// loop through each ".searchItemTemplateEaditor" and build the query
+		$('.inputContainer .searchItemTemplateEaditor') .each(function () {
 			var field = $(this) .children('.category_list') .val();
 			if ($(this).children('.option_container').html().indexOf('search_text') > 0 && $(this) .children('.option_container') .children('.search_text') .val().length > 0) {
 				query.push (field + ':' + $(this) .children('.option_container') .children('.search_text') .val());
@@ -123,7 +123,7 @@ function cloneTemplate(formId) {
 	if (formId == 'sparqlForm') {
 		var tpl = $('#sparqlItemTemplate') .clone();
 	} else {
-		var tpl = $('#searchItemTemplate') .clone();
+		var tpl = $('#searchItemTemplateEaditor') .clone();
 	}
 	
 	//remove id to avoid duplication with the template
