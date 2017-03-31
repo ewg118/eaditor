@@ -2,28 +2,28 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
         <xsl:template name="header">
 <style type="text/css" media="all">
-@import url("http://www.empireadc.org/modules/system/system.base.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/system/system.menus.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/system/system.messages.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/system/system.theme.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/system/system.base.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/system/system.menus.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/system/system.messages.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/system/system.theme.css?ojxyvt");
 </style>
 <style type="text/css" media="all">
-@import url("http://www.empireadc.org/modules/comment/comment.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/field/theme/field.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/node/node.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/search/search.css?ojxyvt");
-@import url("http://www.empireadc.org/modules/user/user.css?ojxyvt");
-@import url("http://www.empireadc.org/sites/all/modules/ckeditor/css/ckeditor.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/comment/comment.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/field/theme/field.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/node/node.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/search/search.css?ojxyvt");
+@import url("https://www.empireadc.org/modules/user/user.css?ojxyvt");
+@import url("https://www.empireadc.org/sites/all/modules/ckeditor/css/ckeditor.css?ojxyvt");
 </style>
 <style type="text/css" media="all">
-@import url("http://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/css/font-awesome.css?ojxyvt");
-@import url("http://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/css/style.css?ojxyvt");
-@import url("http://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/css/media.css?ojxyvt");
+@import url("https://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/css/font-awesome.css?ojxyvt");
+@import url("https://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/css/style.css?ojxyvt");
+@import url("https://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/css/media.css?ojxyvt");
 </style>
-<script type="text/javascript" src="http://www.empireadc.org/misc/jquery.js?v=1.4.4"></script>
-<script type="text/javascript" src="http://www.empireadc.org/misc/jquery.once.js?v=1.2"></script>
-<script type="text/javascript" src="http://www.empireadc.org/misc/drupal.js?ojxyvt"></script>
-<script type="text/javascript" src="http://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/js/custom.js?ojxyvt"></script>
+<script type="text/javascript" src="https://www.empireadc.org/misc/jquery.js?v=1.4.4"></script>
+<script type="text/javascript" src="https://www.empireadc.org/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="https://www.empireadc.org/misc/drupal.js?ojxyvt"></script>
+<script type="text/javascript" src="https://www.empireadc.org/sites/www.empireadc.org/themes/esln_ead/js/custom.js?ojxyvt"></script>
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
 jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"esln_ead","theme_token":"C5g6AoNCYkK9rqXlAmQM3OZVQCmrnlVr4hd_cvnUhzI","js":{"misc\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites
@@ -48,11 +48,11 @@ comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,
     <div class="senylrc_top_container">
     <div class="top_left">
               <div id="logo">
-          <a href="http://www.empireadc.org" title="Home"><img src="http://www.empireadc.org/sites/www.empireadc.org/files/ead_logo.gif"/></a>
+          <a href="https://www.empireadc.org" title="Home"><img src="https://www.empireadc.org/sites/www.empireadc.org/files/ead_logo.gif"/></a>
         </div>
 
       <h1 id="site-title">
-        <a href="http://www.empireadc.org/" title="Home"></a>
+        <a href="https://www.empireadc.org/" title="Home"></a>
 
       </h1>
     </div>
@@ -62,11 +62,11 @@ comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,
       <nav id="main-menu"  role="navigation">
         <a class="nav-toggle" href="#">Menu</a>
         <div class="menu-navigation-container">
-          <ul class="menu"><li class="first leaf"><a href="http://www.empireadc.org/ead/results" title="">Browse</a></li>
-<li class="leaf"><a href="http://www.empireadc.org/ead/search" title="">Search</a></li>
-<li class="leaf"><a href="http://www.empireadc.org/ead/maps" title="">Map</a></li>
-<li class="leaf"><a href="http://www.empireadc.org/Participate" title="">Participate</a></li>
-<li class="last leaf"><a href="http://www.empireadc.org/about">About</a></li>
+          <ul class="menu"><li class="first leaf"><a href="https://www.empireadc.org/ead/results" title="">Browse</a></li>
+<li class="leaf"><a href="https://www.empireadc.org/ead/search" title="">Search</a></li>
+<li class="leaf"><a href="https://www.empireadc.org/ead/maps" title="">Map</a></li>
+<li class="leaf"><a href="https://www.empireadc.org/Participate" title="">Participate</a></li>
+<li class="last leaf"><a href="https://www.empireadc.org/about">About</a></li>
 </ul>        </div>
         <div class="clear"></div>
       </nav>
