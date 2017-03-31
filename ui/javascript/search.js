@@ -9,13 +9,13 @@ and piecing together the search query.
 $(document).ready(function() {
 
 	/***** TOGGLING FACET FORM*****/
-	$('.inputContainer') .on('click', '.searchItemTemplate .gateTypeBtn', function () {
+	$('.inputContainer') .on('click', '.searchItemTemplateEaditor .gateTypeBtn', function () {
 		gateTypeBtnClick($(this));
 		//disable date select option if there is already a date select option
 		if ($(this).closest('form').attr('id') == 'sparqlForm') {
 			var count = countDate();
 			if (count == 1) {
-				$('#sparqlForm .searchItemTemplate').each(function () {
+				$('#sparqlForm .searchItemTemplateEaditor').each(function () {
 					//disable all new searchItemTemplates which are not already set to date
 					if ($(this).children('.sparql_facets').val() != 'date') {
 						$(this).find('option[value=date]').attr('disabled', true);
@@ -26,10 +26,10 @@ $(document).ready(function() {
 		
 		return false;
 	});
-	$('.inputContainer').on('click', '.searchItemTemplate .removeBtn', function () {
+	$('.inputContainer').on('click', '.searchItemTemplateEaditor .removeBtn', function () {
 		//enable date option in sparql form if the date is being removed
 		if ($(this).closest('form').attr('id') == 'sparqlForm') {
-			$('#sparqlForm .searchItemTemplate').each(function () {
+			$('#sparqlForm .searchItemTemplateEaditor').each(function () {
 				$(this).find('option[value=date]').attr('disabled', false);
 				//enable submit
 				$('#sparqlForm input[type=submit]').attr('disabled', false);
@@ -45,7 +45,7 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	$('.inputContainer').on('change', '.searchItemTemplate .category_list', function () {
+	$('.inputContainer').on('change', '.searchItemTemplateEaditor .category_list', function () {
 		var selected_id = $(this) .children("option:selected") .attr('id');
 		var num = $(this) .parent() .attr('id') .split('_')[1];
 		var field = $(this).children('option:selected').val();
