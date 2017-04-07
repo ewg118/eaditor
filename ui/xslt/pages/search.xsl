@@ -72,7 +72,7 @@
 		<div class="search-form">
 			<form id="advancedSearchForm" method="GET" action="results">
 				<div class="inputContainer">
-					<div class="searchItemTemplateEaditor">
+					<div class="searchItemTemplate" style="margin-left:0px; margin-top:0;">
 						<select id="search_option_1" class="category_list form-control">
 							<xsl:call-template name="search_options"/>
 						</select>
@@ -89,7 +89,7 @@
 			</form>
 		</div>
 
-		<div id="searchItemTemplateEaditor" class="searchItemTemplateEaditor">
+		<div id="searchItemTemplate" class="searchItemTemplate" style="margin-left:0px; margin-top:0;">
 			<select id="search_option" class="category_list form-control">
 				<xsl:call-template name="search_options"/>
 			</select>

@@ -138,11 +138,11 @@ select[name = "interval"],
 	margin-right:5px;
 	display:inline;
 }
-#searchItemTemplateEaditor,
+#searchItemTemplate,
 #sparqlItemTemplate{
 	display:none;
 }
-.searchItemTemplateEaditor{
+.searchItemTemplate{
 	padding-top:5px;
 	padding-bottom:5px;
 }

@@ -23,7 +23,7 @@ $(document).ready(function() {
 		//SELECTING OTHER DROP DOWN MENUS SECTION
 		else {
 			var category = $(this) .children("option:selected") .attr('value');
-			$(this) .parent('.searchItemTemplateEaditor') .children('.option_container') .html('<select class="search_text"></select>');			
+			$(this) .parent('.searchItemTemplate') .children('.option_container') .html('<select class="search_text"></select>');			
 			$.get('../get_facets/', {
 				q : category + ':[* TO *]', category:category, sort: 'index', limit:-1
 			}, function (data) {

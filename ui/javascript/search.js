@@ -9,13 +9,13 @@ and piecing together the search query.
 $(document).ready(function() {
 
 	/***** TOGGLING FACET FORM*****/
-	$('.inputContainer') .on('click', '.searchItemTemplateEaditor .gateTypeBtn', function () {
+	$('.inputContainer') .on('click', '.searchItemTemplate .gateTypeBtn', function () {
 		gateTypeBtnClick($(this));
 		//disable date select option if there is already a date select option
 		if ($(this).closest('form').attr('id') == 'sparqlForm') {
 			var count = countDate();
 			if (count == 1) {
-				$('#sparqlForm .searchItemTemplateEaditor').each(function () {
+				$('#sparqlForm .searchItemTemplate').each(function () {
 					//disable all new searchItemTemplates which are not already set to date
 					if ($(this).children('.sparql_facets').val() != 'date') {
 						$(this).find('option[value=date]').attr('disabled', true);
@@ -26,10 +26,10 @@ $(document).ready(function() {
 		
 		return false;
 	});
-	$('.inputContainer').on('click', '.searchItemTemplateEaditor .removeBtn', function () {
+	$('.inputContainer').on('click', '.searchItemTemplate .removeBtn', function () {
 		//enable date option in sparql form if the date is being removed
 		if ($(this).closest('form').attr('id') == 'sparqlForm') {
-			$('#sparqlForm .searchItemTemplateEaditor').each(function () {
+			$('#sparqlForm .searchItemTemplate').each(function () {
 				$(this).find('option[value=date]').attr('disabled', false);
 				//enable submit
 				$('#sparqlForm input[type=submit]').attr('disabled', false);
@@ -45,7 +45,7 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	$('.inputContainer').on('change', '.searchItemTemplateEaditor .category_list', function () {
+	$('.inputContainer').on('change', '.searchItemTemplate .category_list', function () {
 		var selected_id = $(this) .children("option:selected") .attr('id');
 		var num = $(this) .parent() .attr('id') .split('_')[1];
 		var field = $(this).children('option:selected').val();
@@ -58,7 +58,7 @@ $(document).ready(function() {
 		//SELECTING OTHER DROP DOWN MENUS SECTION
 		else {
 			var category = $(this) .children("option:selected") .attr('value');
-			$(this) .parent('.searchItemTemplateEaditor') .children('.option_container') .html('<select class="search_text"></select>');			
+			$(this) .parent('.searchItemTemplate') .children('.option_container') .html('<select class="search_text"></select>');			
 			$.get('../get_facets/', {
 				q : category + ':[* TO *]', category:category, sort: 'index', limit:-1
 			}, function (data) {
@@ -80,8 +80,8 @@ $(document).ready(function() {
 	$('#advancedSearchForm').submit(function() {
 		var query = new Array();
 		
-		// loop through each ".searchItemTemplateEaditor" and build the query
-		$('.inputContainer .searchItemTemplateEaditor') .each(function () {
+		// loop through each ".searchItemTemplate" and build the query
+		$('.inputContainer .searchItemTemplate') .each(function () {
 			var field = $(this) .children('.category_list') .val();
 			if ($(this).children('.option_container').html().indexOf('search_text') > 0 && $(this) .children('.option_container') .children('.search_text') .val().length > 0) {
 				query.push (field + ':' + $(this) .children('.option_container') .children('.search_text') .val());
@@ -123,7 +123,7 @@ function cloneTemplate(formId) {
 	if (formId == 'sparqlForm') {
 		var tpl = $('#sparqlItemTemplate') .clone();
 	} else {
-		var tpl = $('#searchItemTemplateEaditor') .clone();
+		var tpl = $('#searchItemTemplate') .clone();
 	}
 	
 	//remove id to avoid duplication with the template
