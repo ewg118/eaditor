@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xhtml:div id="ft" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-	<xhtml:a href="https://github.com/ewg118/eaditor">EADitor</xhtml:a> ©2011 Ethan Gruber. <xhtml:a
-		href="http://www.apache.org/licenses/LICENSE-2.0.html">License.</xhtml:a>
+        <xhtml:a href="https://github.com/ewg118/eaditor">EADitor</xhtml:a> ©2011 Ethan Gruber. <xhtml:a
+                href="http://www.apache.org/licenses/LICENSE-2.0.html">License.</xhtml:a>
 </xhtml:div>
+
+
+
