@@ -28,6 +28,7 @@
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/esln.css"/>
 				<xsl:if test="string(/config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="/config/google_analytics"/>

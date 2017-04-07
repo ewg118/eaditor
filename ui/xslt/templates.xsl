@@ -1,61 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
 	<xsl:template name="header">
+	
+	<div class="top-msg-wrap">
+  		<div class="full-wrap clearfix">
+      		</div>
+	</div>
 
-		<div class="navbar navbar-default navbar-static-top" role="navigation">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"/>
-						<span class="icon-bar"/>
-						<span class="icon-bar"/>
-					</button>
-					<a class="navbar-brand" href="{$display_path}./">
-						<xsl:value-of select="//config/title"/>
-					</a>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<li>
-							<a href="{$display_path}results">Browse</a>
-						</li>
-						<li>
-							<a href="{$display_path}search">Search</a>
-						</li>
-						<li>
-							<a href="{$display_path}maps">Maps</a>
-						</li>
-						<xsl:if test="//config/sparql/endpoint=true()">
-							<li>
-								<a href="{$display_path}sparql">SPARQL</a>
-							</li>
-						</xsl:if>
-					</ul>
-					<xsl:if test="$pipeline='display'">
-						<ul class="nav navbar-nav navbar-right">
-							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
-							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
-							<xsl:if test="$collection-name != 'admin'">
-								<li><a href="{concat('http://', doc('input:request')/request/server-name, ':8080/orbeon/eaditor/admin/', $collection-name, '/id/', $path)}">Staff View</a></li>
-							</xsl:if>
-						</ul>
-					</xsl:if>
-					<form class="navbar-form navbar-right" role="search" action="{$display_path}results" method="GET">
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search" name="q" id="srch-term"/>
-							<div class="input-group-btn">
-								<button class="btn btn-default" type="submit">
-									<i class="glyphicon glyphicon-search"/>
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
+<div id="header_wrapper">
+
+  <header id="header" role="banner">
+    <div class="senylrc_top_container">
+    <div class="top_left">
+              <div id="logo">
+          <a href="/" title="Home"><img src="http://www2.empireadc.org/sites/www2.empireadc.org/files/ead_logo.gif"/></a>
+        </div>
+      
+      <h1 id="site-title">
+        <a href="/" title="Home"></a>
+      
+      </h1>
+    </div>
+	  
+    <div class="top_right">
+	<div id="site-description">Finding Aids at Your Fingertips</div> 
+      <nav id="main-menu"  role="navigation">
+        <a class="nav-toggle" href="#">Menu</a>
+        <div class="menu-navigation-container">
+          <ul class="menu"><li class="first leaf"><a href="http://www2.empireadc.org/ead/results" title="">Browse</a></li>
+<li class="leaf"><a href="http://www2.empireadc.org/ead/search" title="">Search</a></li>
+<li class="leaf"><a href="http://www2.empireadc.org/ead/maps" title="">Map</a></li>
+<li class="leaf"><a href="/participate" title="">Participate</a></li>
+<li class="last leaf"><a href="/about" title="">About</a></li>
+</ul>        </div>
+        <div class="clear"></div>
+      </nav>
+    </div>
+	</div>
+
+    <div class="clear"></div>
+
+  </header>
+	</div>
 	</xsl:template>
-
 	<xsl:template name="footer">
 		<xsl:copy-of select="//config/content/footer/*"/>
 	</xsl:template>
