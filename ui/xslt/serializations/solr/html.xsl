@@ -73,7 +73,9 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+			<div id="page-wrap">
 				<xsl:call-template name="results"/>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -90,17 +92,6 @@
 			<div class="row">
 				<div class="col-md-3">
 					<xsl:if test="//result[@name='response']/@numFound &gt; 0">
-						<div class="data_options">
-							<h3>Data Options</h3>
-							<a href="{$display_path}feed/?q={if (string($q)) then $q else '*:*'}">
-								<img alt="Atom" title="Atom" src="{$include_path}ui/images/atom-medium.png"/>
-							</a>
-							<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
-								<a href="{$display_path}query.kml?q={if (string($q)) then $q else '*:*'}">
-									<img src="{$include_path}ui/images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
-								</a>
-							</xsl:if>
-						</div>
 						<h3>Refine Results</h3>
 						<xsl:call-template name="quick_search"/>
 						<xsl:apply-templates select="descendant::lst[@name='facet_fields']"/>

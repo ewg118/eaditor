@@ -4,21 +4,19 @@
   ****************************************
  */
 
-
-html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figure, figcaption, footer, header, hgroup, menu, nav, output, section, summary, time, mark, audio, video {
-    border: 0 none;
-    font: inherit;
-    margin: 0;
-    padding: 0;
-    vertical-align: baseline;
+html {
+     background: #fff;
 }
-
 body {
     background: #fff none repeat scroll 0 0;
     color: #666;
     font-family: "Open Sans",sans-serif;
     font-size: 14px;
     line-height: 170%;
+}
+#page-wrap {
+    margin: 50px auto 20px;
+    max-width: 1024px;
 }
 .top-msg-wrap {
     background: #fff none repeat scroll 0 0;
@@ -130,10 +128,8 @@ a:hover {
   line-height: 100%;
   background: #58595b;
 }
-
-#main-menu li a.active{
-  color: white;
-  background: #F45145;
+#main-menu ul.menu li li:hover > a {
+    background-color: #f45145;
 }
 
 #main-menu li:hover >a{
@@ -221,9 +217,6 @@ ul.menu{
   margin: 0;
 }
 
-#main-menu ul.menu li li:hover >a{
-  background-color: #F45145;
-}
 
 #main-menu li li.expanded >a {
   padding-right: 30px;
@@ -262,3 +255,91 @@ img {
     max-width: 100%;
     outline: 0 none;
 }
+
+
+#footer a {
+ color: #8ea7d7 ;
+}
+#footer-area ul.menu li a.active{
+  color:#ddd;
+}
+#footer-area .column:last-child{
+  float: right;
+}
+
+#footer {
+  text-align: left;
+  margin: 0 auto;
+  background: #58595b;
+  width: 60%
+  
+}
+
+#footer li a:hover{
+  color: #F57C73;
+}
+
+#footer_wrapper,
+.footer_credit{
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+#footer_wrapper_ead p{
+        color:#000;
+}
+
+
+#footer_wrapper p{
+	color:#fff;
+}
+.footer_credit{
+  padding: 1% 0 0 0;
+}
+
+.footer_credit p{ color: #aaa; width: 30%; padding: 1% 0; }
+
+#footer-area .column {
+  float: left;
+  width: 32%;
+  margin: 0 0 0% 1%;
+  padding: 1%;
+}
+
+#footer-area .column:first-child {
+  margin-left:0;
+}
+
+#copyright {
+  clear:both;    
+  padding:1% 0px;
+}
+
+.copyright {
+  float:left;
+}
+
+.credits {
+  float:right;
+  margin-right:12px;
+  text-align:right;
+}
+
+#copyright p {
+  margin:0;
+}
+
+.footer_inner_credit{
+  margin: 10px auto;
+}
+
+#main-menu li a.active {
+    background: #f45145 none repeat scroll 0 0 !important;
+    color: white;
+}
+
+#li.leafA {
+    background: #f45145 none repeat scroll 0 0  !important; 
+    color: white;
+}
+

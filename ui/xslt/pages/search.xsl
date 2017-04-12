@@ -38,8 +38,10 @@
 				<script type="text/javascript" src="{$include_path}ui/javascript/search.js"/>
 			</head>
 			<body>
-				<xsl:call-template name="header"/>
+				<xsl:call-template name="header-search"/>
+			<div id="page-wrap">
 				<xsl:call-template name="content"/>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -71,7 +73,7 @@
 
 	<xsl:template name="search_forms">
 		<div class="search-form">
-			<form id="advancedSearchForm" method="GET" action="results">
+			<form style="margin-bottom:30px;" id="advancedSearchForm" method="GET" action="results">
 				<div class="inputContainer">
 					<div class="searchItemTemplate" style="margin-left:0px; margin-top:0;">
 						<select id="search_option_1" class="category_list form-control">

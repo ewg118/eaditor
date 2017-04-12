@@ -199,10 +199,12 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+			<div id="page-wrap">
 				<div class="container-fluid">
 					<xsl:call-template name="ead-content"/>
 				</div>
 				<div id="path" style="display:none">../</div>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>

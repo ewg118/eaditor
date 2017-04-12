@@ -37,7 +37,9 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+			<div id="page-wrap">
 				<xsl:call-template name="index"/>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
