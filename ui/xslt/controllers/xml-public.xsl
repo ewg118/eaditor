@@ -45,18 +45,6 @@
 						<xsl:apply-templates select="ead:did/ead:unittitle"/>
 					</did>
 					<xsl:apply-templates select="ead:c"/>
-					
-					<!-- insert odd to encode parent id -->
-					<odd type="eaditor:parent">
-						<xsl:choose>
-							<xsl:when test="parent::ead:dsc">
-								<xsl:value-of select="ancestor::ead:ead/ead:eadheader/ead:eadid"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="parent::ead:c/@id"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</odd>
 				</c>
 			</xsl:when>
 			<xsl:when test="$audience='external'">
@@ -65,17 +53,7 @@
 						<xsl:attribute name="{name()}">
 							<xsl:value-of select="."/>
 						</xsl:attribute>
-					</xsl:for-each>
-					<odd type="eaditor:parent">
-						<xsl:choose>
-							<xsl:when test="parent::ead:dsc">
-								<xsl:value-of select="ancestor::ead:ead/ead:eadheader/ead:eadid"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="concat(ancestor::ead:ead/ead:eadheader/ead:eadid, '/', parent::ead:c/@id)"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</odd>
+					</xsl:for-each>					
 					<xsl:apply-templates select="node()"/>
 				</c>
 			</xsl:when>

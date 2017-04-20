@@ -23,18 +23,13 @@
 	</xsl:template>
 
 	<xsl:template match="ead:c">
-		<li>
+		<li id="{@id}">
 			<xsl:call-template name="component-template"/>
 		</li>
 	</xsl:template>
 
 	<xsl:template name="component-template">
-		<xsl:if test="not(string($id))">
-			<xsl:if test="@level = 'series' or @level='subseries'">
-				<a name="{@id}"/>
-			</xsl:if>
-		</xsl:if>
-
+		
 		<xsl:apply-templates select="ead:did"/>
 
 		<xsl:apply-templates

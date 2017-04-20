@@ -65,17 +65,28 @@
 	</xsl:template>
 
 	<xsl:template name="c-content">
-		<arch:Collection rdf:about="{$objectUri}/{@id}">
+		<xsl:variable name="parentId">
+			<xsl:choose>
+				<xsl:when test="parent::ead:dsc">
+					<xsl:value-of select="ancestor::ead:ead/ead:eadheader/ead:eadid"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="concat(ancestor::ead:ead/ead:eadheader/ead:eadid, '#', parent::ead:c/@id)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<arch:Collection rdf:about="{$objectUri}#{@id}">
 			<!-- title, creator, abstract, etc. -->
 			<xsl:apply-templates select="ead:did"/>
 			<dcterms:isPartOf>
 				<xsl:attribute name="rdf:resource">
 					<xsl:choose>
 						<xsl:when test="//config/ark[@enabled='true']">
-							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', ead:odd[@type='eaditor:parent'])"/>
+							<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $parentId)"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($url, 'id/', ead:odd[@type='eaditor:parent'])"/>
+							<xsl:value-of select="concat($url, 'id/', $parentId)"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
