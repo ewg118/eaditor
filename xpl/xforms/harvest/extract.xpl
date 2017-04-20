@@ -100,8 +100,79 @@
 				<p:output name="data" ref="data"/>
 			</p:processor>
 		</p:when>
-		<p:when test="/harvester/@type='github'">
+		<p:when test="/harvester/@type='github'">			
+			<!-- use the harvester/@collection for a directory scan -->
+			<p:processor name="oxf:unsafe-xslt">
+				<p:input name="data" href="#harvester"/>
+				<p:input name="config">
+					<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xsl xs"
+						version="2.0">
+						
+						<xsl:template match="/harvester">
+							<config>
+								<base-directory>
+									<xsl:value-of select="concat('file:///usr/local/projects/ead_workflow/out/', @collection)"/>
+								</base-directory>
+								<include>*.xml</include>
+							</config>
+						</xsl:template>
+					</xsl:stylesheet>
+				</p:input>
+				<p:output name="data" id="scan-config"/>
+			</p:processor>
 			
+			<p:processor name="oxf:directory-scanner">
+				<p:input name="config" href="#scan-config"/>
+				<p:output name="data" id="directory-scan"/>
+			</p:processor>
+			
+			<p:processor name="oxf:unsafe-xslt">
+				<p:input name="data" href="#directory-scan"/>
+				<p:input name="request" href="#request"/>
+				<p:input name="harvester" href="#harvester"/>
+				<p:input name="config">
+					<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xsl xs" version="2.0">
+						<xsl:param name="force" select="doc('input:request')/request/parameters/parameter[name='force']/value"/>						
+						<xsl:variable name="path" select="concat('file://', /directory/@path)"/>
+						<xsl:variable name="harvest-date" select="doc('input:harvester')/harvester/@date"/>
+						
+						<xsl:template match="/">					
+							<files>
+								<xsl:for-each select="//file">
+									<xsl:variable name="modified" select="substring-before(@last-modified-date, 'T')"/>
+									
+									<xsl:choose>
+										<xsl:when test="$force=true()">
+											<file>
+												<url>
+													<xsl:value-of select="concat($path, '/', @name)"/>
+												</url>
+												<date>
+													<xsl:value-of select="$modified"/>
+												</date>
+											</file>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:if test="xs:date($modified) &gt;= xs:date($harvest-date) or not(string($harvest-date))">
+												<file>													
+													<url>
+														<xsl:value-of select="concat($path, '/', @name)"/>
+													</url>
+													<date>
+														<xsl:value-of select="$modified"/>
+													</date>
+												</file>
+											</xsl:if>
+										</xsl:otherwise>
+									</xsl:choose>
+									
+								</xsl:for-each>
+							</files>
+						</xsl:template>
+					</xsl:stylesheet>
+				</p:input>
+				<p:output name="data" ref="data"/>
+			</p:processor>
 		</p:when>
 		<p:when test="/harvester/@type='oai'">
 			<!-- get the OAI-PMH XML and parse it into a XML file listing -->

@@ -228,6 +228,14 @@
 				<xforms:toggle case="validation-interface" ev:event="xforms-submit-done"></xforms:toggle>
 			</xforms:submission>
 			
+			<xforms:submission id="parse-github" serialization="none" method="get" action="/eaditor/admin/harvest/extract?agencycode={instance('control-instance')/collection-name}" replace="instance"
+				instance="files">
+				<xforms:action ev:event="xforms-submit-error">
+					<xforms:setvalue ref="instance('control-instance')/error">Error parsing the processed Github repository on local filesystem.</xforms:setvalue>
+				</xforms:action>
+				<xforms:toggle case="validation-interface" ev:event="xforms-submit-done"></xforms:toggle>
+			</xforms:submission>
+			
 			<!-- parse the directory listing -->
 			<xforms:submission id="parse-directory" serialization="none" method="get" action="/eaditor/admin/harvest/extract?agencycode={instance('control-instance')/collection-name}" replace="instance"
 				instance="files">
@@ -428,7 +436,10 @@
 																	<xforms:hint>Re-harvest from last date</xforms:hint>
 																	<xforms:action ev:event="DOMActivate">
 																		<xforms:setvalue ref="instance('control-instance')/collection-name" value="$id"></xforms:setvalue>
-																		<xforms:send submission="parse-oai"></xforms:send>
+																		
+																		<!-- conditionals for pipeline call, depending on the harvest @type -->
+																		<xforms:send submission="parse-oai" if="@type='oai'"></xforms:send>
+																		<xforms:send submission="parse-github" if="@type='github'"></xforms:send>
 																	</xforms:action>
 																</xforms:trigger>
 																<xforms:trigger appearance="minimal">
@@ -467,19 +478,21 @@
 													<!-- load template to gather standardized agency code, publisher, etc. -->
 													<xforms:send submission="load-ead-template"></xforms:send>
 													<!-- iterate through all the XML files in the list and perform validation. if validation passes, then process the file and publish to eXist. otherwise report errors -->
-													<xforms:action xxforms:iterate="instance('files')//file[position()= 1]">
+													<xforms:action xxforms:iterate="instance('files')//file">
 														<xforms:var name="position" select="position()"></xforms:var>
 														<xforms:var name="url" select="context()/url"></xforms:var>
 														<xforms:setvalue ref="instance('control-instance')/ead-file" value="$url"></xforms:setvalue>
 														<xforms:setvalue ref="instance('control-instance')/ead-file-pos" value="$position"></xforms:setvalue>
 														<!-- load EAD file, which triggers validation and publication process -->
 														<xforms:send submission="load-ead"></xforms:send>
-														<!-- set last file successfully processed and save harvester -->
-														<!--<xforms:setvalue ref="instance('harvesters')/harvester[@collection = instance('control-instance')/collection-name]/@lastFile" value="$url"></xforms:setvalue>
-														<xforms:send submission="save-harvesters"></xforms:send>-->
 													</xforms:action>
 													<!-- after the iteration is complete, post the commit to Solr and display the validation results -->
 													<xforms:send submission="submit-commit"></xforms:send>
+													
+													<!-- update the harvester file with the current modification date -->
+													<xforms:setvalue ref="instance('harvesters')/harvester[@collection = instance('control-instance')/collection-name]/@date" value="substring(string(current-date()), 1, 10)"></xforms:setvalue>
+													<xforms:send submission="save-harvesters"></xforms:send>
+													
 													<!-- generate the CSV response -->
 													<xforms:insert nodeset="instance('csv')"
 														origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>

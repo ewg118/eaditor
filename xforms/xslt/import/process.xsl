@@ -14,7 +14,7 @@
 				<xsl:value-of select="doc('input:template')//ead:eadid/@mainagencycode"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="$mainagencycode"/>
+				<xsl:value-of select="concat('US-', $mainagencycode)"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -81,7 +81,7 @@
 
 	<xsl:template match="*[local-name() = 'eadid']">
 		<xsl:element name="eadid" namespace="urn:isbn:1-931666-22-9">
-			<xsl:attribute name="mainagencycode" select="concat('US-', $agencyCode)"/>
+			<xsl:attribute name="mainagencycode" select="$agencyCode"/>
 			<xsl:attribute name="countrycode">US</xsl:attribute>
 			<xsl:attribute name="url" select="base-uri()"/>
 			<xsl:value-of select="$eadid"/>
