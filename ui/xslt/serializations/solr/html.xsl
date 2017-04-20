@@ -114,7 +114,7 @@
 							<xsl:call-template name="paging"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start over.</a></h2>
+							<h2> No results found. <a href="{$display_path}results">Start over.</a></h2>
 						</xsl:otherwise>
 					</xsl:choose>
 					<div style="display:none">

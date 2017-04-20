@@ -118,9 +118,13 @@
 
       
   <div class="content">
-    <p><strong>ABOUT US</strong></p>
-<p>The Empire Archival Discovery Cooperative is an index, repository, and research tool that aggregates finding aids from across New York State.</p>
-<p>Empire ADC also provides support to smaller libraries, archives, and museums so they can expose their collections to researchers everywhere.</p>
+    <p>Export Options</p>
+<a href="feed/?q=*:*" style="margin:5px">
+<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
+</a>
+<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead" style="margin:5px">
+<img src="{$include_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/></a>
+
   </div>
   
 </div> <!-- /.block -->
@@ -138,13 +142,6 @@ Highland, NY 12528</p>
 <p>Phone: 845.883.9065</p>
 <p>
 Email: <a href="mailto:info@empireadc.org">info@empireadc.org</a></p>
-<p>Export Options</p>
-<a href="feed/?q=*:*" style="margin:5px">
-<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
-</a>
-<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead" style="margin:5px">
-<img src="{$include_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
-</a>
 </div>
   
 </div> <!-- /.block -->
@@ -156,8 +153,7 @@ Email: <a href="mailto:info@empireadc.org">info@empireadc.org</a></p>
 
       
   <div class="content">
-    <p>a project of the  <a href="http://www.esln.org/"><img alt="" height="46" src="http://www2.empireadc.org/sites/www.empireadc.org/files/empireadc_esln_footer_logo.png" width="300" /></a><br />
-Privacy Policy | Terms &amp; Conditions<br />
+    <p>A project of the  <a href="http://www.esln.org/"><img alt="" height="46" src="http://www2.empireadc.org/sites/www.empireadc.org/files/empireadc_esln_footer_logo.png" width="300" /></a><br />
 (c) 2017 Empire Archival Discovery Cooperative. All rights reserved.</p>
 <p>Powered by <a href="https://github.com/ewg118/eaditor" target="_blank">EADitor</a></p>
   </div>

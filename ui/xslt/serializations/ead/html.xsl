@@ -316,6 +316,10 @@
 						</li>
 					</xsl:if>
 				</ul>
+				<ul class="toc_ul">
+				 <li ><a target="_blank" href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
+				 <li ><a target="_blank" href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>	
+				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="summary">
 						<div class="col-md-3">

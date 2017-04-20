@@ -58,8 +58,8 @@
 				</xsl:if>
 			</head>
 			<body>
-			<div id="page-wrap">
 				<xsl:call-template name="header-map"/>
+			<div id="page-wrap">
 				<xsl:call-template name="content"/>
 			</div>
 				<xsl:call-template name="footer"/>
