@@ -52,8 +52,9 @@
 		<p:output name="data" id="harvester"/>
 	</p:processor>
 	
-	<p:choose href="#harvester">
+	<p:choose href="#harvester">		
 		<p:when test="/harvester/@type='directory'">
+			<!-- if a directory harvest via URL, then call parse-html pipeline, which is a middleware over a PHP script -->
 			<p:processor name="oxf:unsafe-xslt">
 				<p:input name="request" href="#request"/>
 				<p:input name="data" href="#harvester"/>				
@@ -98,6 +99,9 @@
 				<p:input name="config" href="#directory-url-generator-config"/>
 				<p:output name="data" ref="data"/>
 			</p:processor>
+		</p:when>
+		<p:when test="/harvester/@type='github'">
+			
 		</p:when>
 		<p:when test="/harvester/@type='oai'">
 			<!-- get the OAI-PMH XML and parse it into a XML file listing -->
