@@ -46,59 +46,36 @@
 							<!-- test to be sure naan in the URI matches that in the config -->
 							<xsl:choose>
 								<xsl:when test="/content/config/ark/naan = $naan">
-									<xsl:variable name="doc">
+									
+									<xsl:otherwise>
+										<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
+										
 										<xsl:choose>
-											<xsl:when test="contains($path, '/')">
-												<xsl:value-of select="tokenize($path, '/')[1]"/>
+											<xsl:when test="contains($doc, '.rdf')">
+												<xsl:value-of select="substring-before($doc, '.rdf')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.kml')">
+												<xsl:value-of select="substring-before($doc, '.kml')"/>
+											</xsl:when>							
+											<xsl:when test="contains($doc, '.solr')">
+												<xsl:value-of select="substring-before($doc, '.solr')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.ttl')">
+												<xsl:value-of select="substring-before($doc, '.ttl')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.jsonld')">
+												<xsl:value-of select="substring-before($doc, '.jsonld')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.xml')">
+												<xsl:value-of select="substring-before($doc, '.xml')"/>
 											</xsl:when>
 											<xsl:otherwise>
-												<xsl:choose>
-													<xsl:when test="contains($path, '.')">
-														<xsl:variable name="pieces" select="tokenize($path, '\.')"/>
-
-														<xsl:for-each select="$pieces[not(position()=last())]">
-															<xsl:value-of select="."/>
-															<xsl:if test="not(position()=last())">
-																<xsl:text>.</xsl:text>
-															</xsl:if>
-														</xsl:for-each>
-													</xsl:when>
-													<xsl:otherwise>
-														<xsl:value-of select="$path"/>
-													</xsl:otherwise>
-												</xsl:choose>
+												<xsl:value-of select="$doc"/>
 											</xsl:otherwise>
 										</xsl:choose>
-									</xsl:variable>
-									<xsl:variable name="id">
-										<xsl:if test="contains($path, '/')">
-											<xsl:variable name="last-piece" select="substring-after($path, '/')"/>
-											<xsl:choose>
-												<xsl:when test="contains($last-piece, '.')">
-													<xsl:variable name="pieces" select="tokenize($last-piece, '\.')"/>
-													<xsl:for-each select="$pieces[not(position()=last())]">
-														<xsl:value-of select="."/>
-														<xsl:if test="not(position()=last())">
-															<xsl:text>.</xsl:text>
-														</xsl:if>
-													</xsl:for-each>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="$last-piece"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:if>
-									</xsl:variable>
+									</xsl:otherwise>
 
-									<xsl:choose>
-										<xsl:when test="string($id)">
-											<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/descendant::*[@id=$id or
-												@xml:id=$id]"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/*"/>
-										</xsl:otherwise>
-									</xsl:choose>
+									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $id, '.xml'))/*"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<html>
@@ -129,61 +106,42 @@
 						<xsl:template match="/">
 							<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 							<xsl:variable name="path" select="substring-after(doc('input:request')/request/request-url, 'id/')"/>
-							<xsl:variable name="doc">
+							<xsl:variable name="id">
 								<xsl:choose>
 									<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='id']/value)">
 										<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='id']/value"/>
-									</xsl:when>
-									<xsl:when test="contains($path, '/')">
-										<xsl:value-of select="tokenize($path, '/')[1]"/>
-									</xsl:when>
+									</xsl:when>									
 									<xsl:otherwise>
+										<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
+										
 										<xsl:choose>
-											<xsl:when test="contains($path, '.')">
-												<xsl:variable name="pieces" select="tokenize($path, '\.')"/>
-
-												<xsl:for-each select="$pieces[not(position()=last())]">
-													<xsl:value-of select="."/>
-													<xsl:if test="not(position()=last())">
-														<xsl:text>.</xsl:text>
-													</xsl:if>
-												</xsl:for-each>
+											<xsl:when test="contains($doc, '.rdf')">
+												<xsl:value-of select="substring-before($doc, '.rdf')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.kml')">
+												<xsl:value-of select="substring-before($doc, '.kml')"/>
+											</xsl:when>							
+											<xsl:when test="contains($doc, '.solr')">
+												<xsl:value-of select="substring-before($doc, '.solr')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.ttl')">
+												<xsl:value-of select="substring-before($doc, '.ttl')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.jsonld')">
+												<xsl:value-of select="substring-before($doc, '.jsonld')"/>
+											</xsl:when>
+											<xsl:when test="contains($doc, '.xml')">
+												<xsl:value-of select="substring-before($doc, '.xml')"/>
 											</xsl:when>
 											<xsl:otherwise>
-												<xsl:value-of select="$path"/>
+												<xsl:value-of select="$doc"/>
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
-							</xsl:variable>
-							<xsl:variable name="id">
-								<xsl:if test="contains($path, '/')">
-									<xsl:variable name="last-piece" select="substring-after($path, '/')"/>
-									<xsl:choose>
-										<xsl:when test="contains($last-piece, '.')">
-											<xsl:variable name="pieces" select="tokenize($last-piece, '\.')"/>
-											<xsl:for-each select="$pieces[not(position()=last())]">
-												<xsl:value-of select="."/>
-												<xsl:if test="not(position()=last())">
-													<xsl:text>.</xsl:text>
-												</xsl:if>
-											</xsl:for-each>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="$last-piece"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:if>
-							</xsl:variable>
+							</xsl:variable>							
 
-							<xsl:choose>
-								<xsl:when test="string($id)">
-									<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/descendant::*[@id=$id or @xml:id=$id]"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/*"/>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $id, '.xml'))/*"/>
 
 						</xsl:template>
 					</xsl:stylesheet>
