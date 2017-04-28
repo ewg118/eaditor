@@ -316,7 +316,7 @@
 						</li>
 					</xsl:if>
 				</ul>
-				<ul class="toc_ul">
+				<ul class="toc_ul_esln">
 				 <li ><a target="_blank" href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
 				 <li ><a target="_blank" href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>	
 				</ul>

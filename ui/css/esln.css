@@ -343,3 +343,17 @@ img {
     color: white;
 }
 
+.toc_ul_esln {
+        padding:0;
+        margin:0;
+}
+.toc_ul_esln ul{
+        margin-left:2em;
+        padding:0;
+}
+.toc_ul_esln li a{
+        list-style-type:none;
+	color: #58595b;
+}
+
+
