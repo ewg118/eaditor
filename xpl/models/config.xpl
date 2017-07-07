@@ -26,7 +26,7 @@
 				<xsl:template match="/">
 					<config>
 						<url>
-							<xsl:value-of select="concat(/exist-config/url, 'eaditor/config.xml')"/>							
+							<xsl:value-of select="concat(/exist-config/url, 'eaditor2/config.xml')"/>							
 						</url>
 						<content-type>application/xml</content-type>
 						<encoding>utf-8</encoding>
@@ -69,7 +69,7 @@
 							
 							<config>
 								<url>
-									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/config.xml')"/>									
+									<xsl:value-of select="concat(/exist-config/url, 'eaditor2/', $collection-name, '/config.xml')"/>									
 								</url>
 								<content-type>application/xml</content-type>
 								<encoding>utf-8</encoding>
