@@ -30,6 +30,7 @@
 				<script type="text/javascript" src="{$include_path}ui/javascript/sparql_functions.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/codemirror.css"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/esln.css"/>
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="//config/google_analytics"/>
@@ -38,7 +39,9 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+			<div id="page-wrap">
 				<xsl:call-template name="body"/>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>

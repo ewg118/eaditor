@@ -37,6 +37,7 @@
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/esln.css"/>
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="//config/google_analytics"/>
@@ -64,8 +65,10 @@
 				</xsl:if>
 			</head>
 			<body>
-				<xsl:call-template name="header"/>
+				<xsl:call-template name="header-map"/>
+			<div id="page-wrap">
 				<xsl:call-template name="content"/>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -78,8 +81,13 @@
 				<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
 					<div class="row">
 						<div class="col-md-12">
+<p>This mapping feature allows you to access finding aids by location. The location points reflect the content of the collections described in the finding aids, not necessarily where the collections are physically located. Use the facets on the left to narrow your results.  After clicking on a point on the map, click “View” in the pop-up window and scroll down below the map to see the finding aids that match your search criteria. 
+</p><p>Please note that not all finding aids in Empire ADC can be browsed using this map feature. To browse all finding aids, visit the main <a href='http://www2.empireadc.org/ead/results'>Browse Page</a>.</p>
+
+
+
 							<h1>Maps</h1>
-							<p>View maps in <a href="maps/fullscreen">fullscreen</a>.</p>
+<!--							<p>View maps in <a href="maps/fullscreen">fullscreen</a>.</p>-->
 						</div>
 					</div>
 					<div class="row">

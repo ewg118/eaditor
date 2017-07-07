@@ -61,6 +61,7 @@
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<link rel="stylesheet" href="{$include_path}ui/css/esln.css"/>
 
 				<script type="text/javascript" src="{$include_path}ui/javascript/result_functions.js"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/get_facets.js"/>
@@ -72,7 +73,9 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+			<div id="page-wrap">
 				<xsl:call-template name="results"/>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -89,17 +92,6 @@
 			<div class="row">
 				<div class="col-md-3">
 					<xsl:if test="//result[@name='response']/@numFound &gt; 0">
-						<div class="data_options">
-							<h3>Data Options</h3>
-							<a href="{$display_path}feed/?q={if (string($q)) then $q else '*:*'}">
-								<img alt="Atom" title="Atom" src="{$include_path}ui/images/atom-medium.png"/>
-							</a>
-							<xsl:if test="count(//lst[@name='georef']/int) &gt; 0">
-								<a href="{$display_path}query.kml?q={if (string($q)) then $q else '*:*'}">
-									<img src="{$include_path}ui/images/googleearth.png" alt="KML" title="KML: Limit, 500 objects"/>
-								</a>
-							</xsl:if>
-						</div>
 						<h3>Refine Results</h3>
 						<xsl:call-template name="quick_search"/>
 						<xsl:apply-templates select="descendant::lst[@name='facet_fields']"/>
@@ -122,7 +114,7 @@
 							<xsl:call-template name="paging"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<h2> No results found. <a href="{$display_path}results/?q=*:*">Start over.</a></h2>
+							<h2> No results found. <a href="{$display_path}results">Start over.</a></h2>
 						</xsl:otherwise>
 					</xsl:choose>
 					<div style="display:none">

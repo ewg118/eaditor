@@ -179,7 +179,7 @@
 				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				
+				<link rel="stylesheet" href="{$include_path}ui/css/esln.css"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
 				<xsl:if test="$hasPoints = true()">
 					<!-- mapping -->
@@ -199,10 +199,12 @@
 			</head>
 			<body>
 				<xsl:call-template name="header"/>
+			<div id="page-wrap">
 				<div class="container-fluid">
 					<xsl:call-template name="ead-content"/>
 				</div>
 				<div id="path" style="display:none">../</div>
+			</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -313,6 +315,10 @@
 							<a href="#mapTab" id="mapButton" data-toggle="pill">Map</a>
 						</li>
 					</xsl:if>
+				</ul>
+				<ul class="toc_ul_esln">
+				 <li ><a target="_blank" href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
+				 <li ><a target="_blank" href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>	
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="summary">
