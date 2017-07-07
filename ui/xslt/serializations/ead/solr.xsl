@@ -17,13 +17,13 @@
 
 	<xsl:variable name="places" as="node()*">
 		<places>
-			<xsl:for-each select="descendant::ead:geogname[@source = 'geonames' and string(@authfilenumber)]">
+			<xsl:for-each select="distinct-values(descendant::ead:geogname[@source = 'geonames' and string(@authfilenumber)]/@authfilenumber)">
 				<xsl:variable name="geonames_data" as="node()*">
 					<xsl:copy-of
-						select="document(concat($geonames-url, '/get?geonameId=', @authfilenumber, '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
+						select="document(concat($geonames-url, '/get?geonameId=', ., '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
 				</xsl:variable>
 
-				<place authfilenumber="{@authfilenumber}">
+				<place authfilenumber="{.}">
 					<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
 				</place>
 			</xsl:for-each>

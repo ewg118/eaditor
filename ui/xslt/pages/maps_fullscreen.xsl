@@ -5,6 +5,7 @@
 	<xsl:include href="../functions.xsl"/>
 
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
+	<xsl:variable name="mapboxKey" select="/content/config/mapboxKey"/>
 	<!-- pipeline variables -->
 	<xsl:variable name="path"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
@@ -50,8 +51,14 @@
 					<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 
 					<!-- maps -->
-					<script type="text/javascript" src="{$include_path}ui/javascript/OpenLayers.js"/>
-					<script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3.2&amp;sensor=false"/>
+					<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.css"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.Default.css"/>
+					
+					<!-- js -->
+					<script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>					
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.ajax.min.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.markercluster.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/maps_functions.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/facet_functions.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/map_fullscreen_functions.js"/>
@@ -100,6 +107,9 @@
 						</xsl:if>
 						<span id="pipeline">
 							<xsl:value-of select="$pipeline"/>
+						</span>
+						<span id="mapboxKey">
+							<xsl:value-of select="$mapboxKey"/>
 						</span>
 						<span id="path">
 							<xsl:value-of select="$display_path"/>
