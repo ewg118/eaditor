@@ -519,7 +519,7 @@ luc:term "SEARCH_QUERY"} LIMIT 20]]>
 
 						<!-- ********* SUBMISSIONS ***********-->
 						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
+							action="{instance('exist-config')/url}eaditor2/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
 							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>

@@ -356,17 +356,17 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 
 			<!-- ************** SUBMISSIONS ***************** -->
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 			
-			<xforms:submission id="load-master-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml"
+			<xforms:submission id="load-master-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/config.xml"
 				replace="instance" instance="master-config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading master config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/ead-template.xml"
 				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EAD core template.</xforms:message>
 				<!-- set date on new document -->
@@ -395,14 +395,14 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</xforms:action>
 			</xforms:submission>
 
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/c-template.xml"
 				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load component template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-guide" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
+				action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"></xforms:send>
@@ -416,7 +416,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-guide" ref="instance('guide')"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
+				action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
@@ -492,7 +492,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"></xforms:submission>
 
 			<!-- ************** XQUERY ***************** -->
-			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/" method="post"
+			<xforms:submission id="xquery-collection" ref="instance('eXist-xquery')" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/" method="post"
 				replace="instance" instance="xquery-result">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>

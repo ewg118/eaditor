@@ -72,7 +72,7 @@
 				<xforms:send ev:event="xforms-submit-done" submission="put-to-exist"/>
 			</xforms:submission>
 
-			<xforms:submission id="put-to-exist" method="put" replace="none" ref="instance('new-guide')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('new-guide')/@id}.xml"
+			<xforms:submission id="put-to-exist" method="put" replace="none" ref="instance('new-guide')" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/{instance('new-guide')/@id}.xml"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error in writing file to eXist. Preprocessing XSLT transformation was successful, but resulting document is
 					invalid.</xforms:message>
@@ -81,7 +81,7 @@
 				</xforms:action>
 			</xforms:submission>
 			
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/collections-list.xml" replace="instance" instance="collections-list"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
@@ -93,7 +93,7 @@
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor collections list.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>

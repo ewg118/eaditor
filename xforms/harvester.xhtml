@@ -166,22 +166,22 @@
 
 			<!-- ************* SUBMISSIONS ************* -->
 			<!-- load and save files from eXist -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/config.xml" replace="instance" instance="config"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance" instance="harvesters"
+			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/harvesters.xml" replace="instance" instance="harvesters"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-error">No harvesters have been set up yet.</xforms:setvalue>
 			</xforms:submission>
 
-			<xforms:submission id="save-harvesters" ref="instance('harvesters')" action="{instance('exist-config')/url}eaditor/harvesters.xml" method="put" replace="none"
+			<xforms:submission id="save-harvesters" ref="instance('harvesters')" action="{instance('exist-config')/url}eaditor2/harvesters.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error saving harvester XML file.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/collections-list.xml" replace="instance"
 				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error loading collections list.</xforms:setvalue>
 				<xforms:action ev:event="xforms-submit-done">
@@ -264,7 +264,7 @@
 			</xforms:submission>
 
 			<!-- Load / Save EAD files -->
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/ead-template.xml"
 				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"> </xforms:submission>
 
 			<xforms:submission id="load-ead" serialization="none" method="get" action="{instance('control-instance')/ead-file}" replace="instance" instance="old-ead">
@@ -312,7 +312,7 @@
 			</xforms:submission>
 
 			<xforms:submission id="save-ead" ref="instance('new-ead')"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('new-ead')//ead:eadid}.xml" method="put" replace="none"
+				action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/{instance('new-ead')//ead:eadid}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to save XML file to eXist.</xforms:message>
 				<!-- if the EAD record successfully saves, then publish to Solr -->
