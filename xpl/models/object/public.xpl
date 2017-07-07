@@ -47,9 +47,9 @@
 							<xsl:choose>
 								<xsl:when test="/content/config/ark/naan = $naan">
 									
-									<xsl:otherwise>
-										<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
-										
+									<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
+									
+									<xsl:variable name="id">
 										<xsl:choose>
 											<xsl:when test="contains($doc, '.rdf')">
 												<xsl:value-of select="substring-before($doc, '.rdf')"/>
@@ -73,9 +73,10 @@
 												<xsl:value-of select="$doc"/>
 											</xsl:otherwise>
 										</xsl:choose>
-									</xsl:otherwise>
+									</xsl:variable>
+									
 
-									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $doc, '.xml'))/*"/>
+									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $id, '.xml'))/*"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<html>
