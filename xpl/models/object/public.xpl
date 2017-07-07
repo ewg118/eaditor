@@ -75,7 +75,7 @@
 										</xsl:choose>
 									</xsl:otherwise>
 
-									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $id, '.xml'))/*"/>
+									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $doc, '.xml'))/*"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<html>
