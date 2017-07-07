@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
-
+	
 	<xsl:template name="header">
 		<div class="navbar navbar-default navbar-static-top" role="navigation">
 			<div class="container-fluid">
@@ -31,6 +31,12 @@
 								<a href="{$display_path}sparql">SPARQL</a>
 							</li>
 						</xsl:if>
+						<li>
+							<a href="http://numismatics.org/authorities/">Biographies</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org">ANS Home</a>
+						</li>
 					</ul>
 					<xsl:if test="$pipeline='display'">
 						<ul class="nav navbar-nav navbar-right">
@@ -55,9 +61,9 @@
 			</div>
 		</div>
 	</xsl:template>
-
+	
 	<xsl:template name="footer">
 		<xsl:copy-of select="//config/content/footer/*"/>
 	</xsl:template>
-
+	
 </xsl:stylesheet>

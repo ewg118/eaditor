@@ -3,11 +3,23 @@
   GLOBAL
   ****************************************
  */
+@import url(//fonts.googleapis.com/css?family=Cuprum&#038;subset=latin);
 html{
 	background-color:#F8F8F8;
+	background-attachment:scroll;
+	background-image:url("http://numismatics.org/authorities/ui/images/pattern.gif");
+	background-position:center top;
+	background-repeat:repeat;
+}
+body{
+	color:#535e70;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	line-height:18px;
 }
 .navbar{
 	margin-bottom:0;
+	border-bottom:4px solid black;
 }
 a > img{
 	border:none;
@@ -23,17 +35,39 @@ ul li,
 ol li{
 	list-style-type:none;
 }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+	color:#434343;
+	font-family:Cuprum, sans-serif;
+}
+a{
+	color:#e64100;
+	text-decoration:none;
+}
+a:hover,
+a:focus{
+	color:#535e70;
+	text-decoration:underline
+}
 /*
   ***************************************
   FOOTER
   ***************************************
  */
 #footer{
-	background-color:#F8F8F8;
-	border-top:1px solid #E7E7E7;
+	background-color:#535e70;
+	border-top:1px solid #F8F8F8;
 	padding-top:10px;
 	padding-bottom:10px;
-	text-align:center;
+	color:white;
+}
+#footer a{
+	color:white;
+	text-decoration:underline;
 }
 /*
   ****************************************
@@ -100,10 +134,6 @@ div.cchild{
 }
 .display-thumb{
 	height:160px;
-}
-.doc-icon{
-	vertical-align:bottom;
-	margin-left:10px;
 }
 /*
   ****************************************
@@ -235,26 +265,26 @@ button.multiselect{
   SPARQL
   ****************************************
  */
- #sparqlForm {
-    margin: 20px 0;
+#sparqlForm{
+	margin:20px 0;
 }
-#sparqlForm select {
-    width: 200px;
+#sparqlForm select{
+	width:200px;
 }
-.CodeMirror {
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    color: #555;
-    padding: 6px 12px;
-    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+.CodeMirror{
+	background-color:#fff;
+	background-image:none;
+	border:1px solid #ccc;
+	border-radius:4px;
+	box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset;
+	color:#555;
+	padding:6px 12px;
+	transition:border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
-.CodeMirror:focus {
-    border-color: #66afe9;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
-    outline: 0 none;
+.CodeMirror:focus{
+	border-color:#66afe9;
+	box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
+	outline:0 none;
 }
 /*
   ****************************************

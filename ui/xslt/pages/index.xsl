@@ -25,8 +25,8 @@
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<!-- bootstrap -->
-				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
+				<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+				<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
 				<xsl:if test="string(/config/google_analytics)">
 					<script type="text/javascript">
@@ -43,26 +43,65 @@
 	</xsl:template>
 
 	<xsl:template name="index">
-		<div class="jumbotron">
+		<!--<div class="jumbotron">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col-md-8">
 						<h1>
 							<xsl:value-of select="/config/title"/>
 						</h1>
 						<p>
-							<xsl:value-of select="/config/description"/>
+							<xsl:value-of select="config/description"/>
 						</p>
+					</div>
+					<div class="col-md-4">
+						<img src="{$include_path}ui/images/ans_large.png"/>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="container-fluid">
+		</div>-->
+		<img src="{$include_path}ui/images/banner.jpg" style="width:100%"/>
+		<div class="container-fluid content">
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-3">
+					<h3>Navigation</h3>
+					<ul>
+						<li>
+							<a href="http://numismatics.org/archive/research/">Conducting Research</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/archive/citationformat/">Citation Format</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/pastofficers/">Officers</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/archive/awards/">Awards</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/seminar/">Graduate Seminar</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/publications/history/">Publications Program</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-6">
 					<xsl:copy-of select="/config/content/index/*"/>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
+					<div class="highlight">
+						<h3>Share</h3>
+						<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+							<a class="addthis_button_preferred_1"/>
+							<a class="addthis_button_preferred_2"/>
+							<a class="addthis_button_preferred_3"/>
+							<a class="addthis_button_preferred_4"/>
+							<a class="addthis_button_compact"/>
+							<a class="addthis_counter addthis_bubble_style"/>
+						</div>
+						<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4da715d011c943c2"/>
+					</div>
 					<div class="highlight">
 						<h3>Export Options</h3>
 						<a href="feed/?q=*:*" style="margin:5px">
