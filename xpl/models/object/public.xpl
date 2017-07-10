@@ -47,33 +47,40 @@
 							<xsl:choose>
 								<xsl:when test="/content/config/ark/naan = $naan">
 									
-									<xsl:otherwise>
-										<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
-										
+									<xsl:variable name="id">
 										<xsl:choose>
-											<xsl:when test="contains($doc, '.rdf')">
-												<xsl:value-of select="substring-before($doc, '.rdf')"/>
-											</xsl:when>
-											<xsl:when test="contains($doc, '.kml')">
-												<xsl:value-of select="substring-before($doc, '.kml')"/>
-											</xsl:when>							
-											<xsl:when test="contains($doc, '.solr')">
-												<xsl:value-of select="substring-before($doc, '.solr')"/>
-											</xsl:when>
-											<xsl:when test="contains($doc, '.ttl')">
-												<xsl:value-of select="substring-before($doc, '.ttl')"/>
-											</xsl:when>
-											<xsl:when test="contains($doc, '.jsonld')">
-												<xsl:value-of select="substring-before($doc, '.jsonld')"/>
-											</xsl:when>
-											<xsl:when test="contains($doc, '.xml')">
-												<xsl:value-of select="substring-before($doc, '.xml')"/>
-											</xsl:when>
+											<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='id']/value)">
+												<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='id']/value"/>
+											</xsl:when>									
 											<xsl:otherwise>
-												<xsl:value-of select="$doc"/>
+												<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
+												
+												<xsl:choose>
+													<xsl:when test="contains($doc, '.rdf')">
+														<xsl:value-of select="substring-before($doc, '.rdf')"/>
+													</xsl:when>
+													<xsl:when test="contains($doc, '.kml')">
+														<xsl:value-of select="substring-before($doc, '.kml')"/>
+													</xsl:when>							
+													<xsl:when test="contains($doc, '.solr')">
+														<xsl:value-of select="substring-before($doc, '.solr')"/>
+													</xsl:when>
+													<xsl:when test="contains($doc, '.ttl')">
+														<xsl:value-of select="substring-before($doc, '.ttl')"/>
+													</xsl:when>
+													<xsl:when test="contains($doc, '.jsonld')">
+														<xsl:value-of select="substring-before($doc, '.jsonld')"/>
+													</xsl:when>
+													<xsl:when test="contains($doc, '.xml')">
+														<xsl:value-of select="substring-before($doc, '.xml')"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:value-of select="$doc"/>
+													</xsl:otherwise>
+												</xsl:choose>
 											</xsl:otherwise>
 										</xsl:choose>
-									</xsl:otherwise>
+									</xsl:variable>
 
 									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $id, '.xml'))/*"/>
 								</xsl:when>
