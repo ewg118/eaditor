@@ -118,8 +118,9 @@
 	<!-- Pelagios -->
 	<page path="/eaditor/[^\/]+/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/views/serializations/config/void.xpl"/>
 	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/views/serializations/solr/rdf-pelagios.xpl"/>
-	<!-- KML -->
-	<page path="/eaditor/[^\/]+/query.kml" model="xpl/models/solr/kml.xpl" view="xpl/views/serializations/solr/kml.xpl"/>
+	<!-- Geographic output (KML, geoJSON) -->
+	<page path="/eaditor/[^\/]+/query.kml" model="xpl/models/solr/geo.xpl" view="xpl/views/serializations/solr/kml.xpl"/>
+	<page path="/eaditor/[^\/]+/query.geojson" model="xpl/models/solr/geo.xpl" view="xpl/views/serializations/solr/geojson.xpl"/>
 
 	<!-- ajax -->
 	<!-- facet results -->
