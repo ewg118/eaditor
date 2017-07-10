@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:datetime="http://exslt.org/dates-and-times" xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:pleiades="https://pleiades.stoa.org/places/vocab#" exclude-result-prefixes="#all" version="2.0">
 
 	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type = 'eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
 
@@ -17,15 +17,17 @@
 
 	<xsl:variable name="places" as="node()*">
 		<places>
+			<!-- get geonames coordinates -->
 			<xsl:for-each select="distinct-values(descendant::ead:geogname[@source = 'geonames' and string(@authfilenumber)]/@authfilenumber)">
 				<xsl:variable name="geonames_data" as="node()*">
-					<xsl:copy-of
-						select="document(concat($geonames-url, '/get?geonameId=', ., '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
+					<xsl:copy-of select="document(concat($geonames-url, '/get?geonameId=', ., '&amp;username=', $geonames_api_key, '&amp;style=full'))"/>
 				</xsl:variable>
 
-				<place authfilenumber="{.}">
-					<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
-				</place>
+				<xsl:if test="$geonames_data//lng and $geonames_data//lat">
+					<place authfilenumber="{.}">
+						<xsl:value-of select="concat($geonames_data//lng, ',', $geonames_data//lat)"/>
+					</place>
+				</xsl:if>
 			</xsl:for-each>
 		</places>
 	</xsl:variable>
@@ -106,7 +108,7 @@
 					<xsl:value-of select="$id"/>
 				</field>
 			</xsl:if>
-			
+
 			<field name="level_facet">
 				<xsl:if test="$upload = true()">
 					<xsl:attribute name="update">set</xsl:attribute>
@@ -117,14 +119,14 @@
 						else
 							ead:archdesc/@level"/>
 			</field>
-			
+
 			<field name="oai_set">
 				<xsl:if test="$upload = true()">
 					<xsl:attribute name="update">set</xsl:attribute>
 				</xsl:if>
 				<xsl:text>ead</xsl:text>
 			</field>
-			
+
 			<field name="oai_id">
 				<xsl:if test="$upload = true()">
 					<xsl:attribute name="update">set</xsl:attribute>
@@ -213,7 +215,7 @@
 				<xsl:if test="$upload = true()">
 					<xsl:attribute name="update">set</xsl:attribute>
 				</xsl:if>
-				<xsl:variable name="timestamp" select="datetime:dateTime()"/>
+				<xsl:variable name="timestamp" select="string(current-dateTime())"/>
 				<xsl:choose>
 					<xsl:when test="contains($timestamp, 'Z')">
 						<xsl:value-of select="$timestamp"/>

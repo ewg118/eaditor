@@ -397,7 +397,7 @@
 						</xforms:instance>
 
 						<xforms:instance id="interface-type">
-							<interface>manual</interface>
+							<interface xmlns="">manual</interface>
 						</xforms:instance>
 
 						<!-- flickr parameter values -->
@@ -462,20 +462,20 @@
 						</xforms:instance>
 
 						<!-- daodesc and associated elements -->
-						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
-							<daodesc/>
+						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all">
+							<daodesc xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
-							<head/>
+						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
-							<p/>
+						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+							<p xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all" xmlns="urn:isbn:1-931666-22-9">
-							<daoloc xlink:type="locator" xlink:href="" xlink:label=""/>
+						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all">
+							<daoloc xlink:type="locator" xlink:href="" xlink:label="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- interface type-->

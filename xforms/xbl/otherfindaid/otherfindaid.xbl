@@ -225,7 +225,7 @@
 							<extref linktype="simple" actuate="onrequest" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="linkgrp-template" xxforms:exclude-result-prefixes="#all">
-							<linkgrp/>
+							<linkgrp xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
 							<ref linktype="simple" actuate="onrequest" target="" xmlns="urn:isbn:1-931666-22-9"/>

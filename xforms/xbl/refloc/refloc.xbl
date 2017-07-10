@@ -19,7 +19,7 @@
 						<div>
 							<xforms:select1 ref="$binding/@target">
 								<xforms:label>Reference Target</xforms:label>
-								<xforms:itemset nodeset="instance('guide')//@id">
+								<xforms:itemset nodeset="$binding/ancestor::ead:ead//@id">
 									<xforms:label ref="."/>
 									<xforms:value ref="."/>
 								</xforms:itemset>

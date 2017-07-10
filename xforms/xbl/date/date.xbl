@@ -9,22 +9,26 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					<xforms:action ev:event="xforms-enabled" ev:target="#observer">						
-						<xforms:action if="string($binding/@normal)">							
+					<xforms:action ev:event="xforms-enabled" ev:target="#observer">			
+						
+						<xforms:var name="normal" select="string($binding/@normal)"/>
+						
+						<xforms:action if="string($normal)">
 							<!-- set values of control-instance if @normal has content -->
-							<xforms:action if="contains($binding/@normal, '/')">
-								<xforms:setvalue ref="instance('control-instance')/loaded" value="true()"/>	
-								<xforms:setvalue ref="instance('control-instance')/interface">dateRange</xforms:setvalue>								
-								<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/fromDate" value="substring-before($binding/@normal, '/')"/>
-								<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/toDate" value="substring-after($binding/@normal, '/')"/>							
+							<xforms:action if="contains($normal, '/')">
+								<xforms:setvalue ref="instance('control-instance')/eaditor:loaded" value="true()"/>	
+								<xforms:setvalue ref="instance('control-instance')/eaditor:interface">dateRange</xforms:setvalue>								
+								<xforms:setvalue ref="instance('control-instance')/eaditor:inputs/eaditor:dateRange/eaditor:fromDate" value="substring-before($normal, '/')"/>
+								<xforms:setvalue ref="instance('control-instance')/eaditor:inputs/eaditor:dateRange/eaditor:toDate" value="substring-after($normal, '/')"/>							
 							</xforms:action>
-							<xforms:action if="not(contains($binding/@normal, '/'))">
-								<xforms:setvalue ref="instance('control-instance')/inputs/date" value="$binding/@normal"/>							
+							<xforms:action if="not(contains($normal, '/'))">
+								<xforms:setvalue ref="instance('control-instance')/eaditor:loaded" value="true()"/>
+								<xforms:setvalue ref="instance('control-instance')/eaditor:inputs/eaditor:date" value="$normal"/>							
 							</xforms:action>															
 						</xforms:action>
 						<xforms:action if="$binding/@certainty='approximate'">
-							<xforms:setvalue ref="instance('control-instance')/loaded" value="true()"/>
-							<xforms:setvalue ref="instance('control-instance')/interface">approximate</xforms:setvalue>
+							<xforms:setvalue ref="instance('control-instance')/eaditor:loaded" value="true()"/>
+							<xforms:setvalue ref="instance('control-instance')/eaditor:interface">approximate</xforms:setvalue>
 						</xforms:action>
 					</xforms:action>
 					
@@ -186,7 +190,7 @@
 					<!--<fr:xforms-inspector xmlns:fr="http://orbeon.org/oxf/xml/form-runner"/>-->
 					
 					<!-- *****************************MODEL ***************************************** -->
-					<xforms:model xmlns:ead="urn:isbn:1-931666-22-9" id="date-model">
+					<xforms:model id="date-model">
 						<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified">
 							<xs:simpleType name="m.data.standardDate">
 								<xs:union>
@@ -209,8 +213,8 @@
 							</xs:simpleType>
 						</xs:schema>
 
-						<xforms:instance id="control-instance">
-							<controls xmlns="">
+						<xforms:instance id="control-instance" exclude-result-prefixed="#all">
+							<controls xmlns="https://github.com/ewg118/eaditor" >
 								<interface>date</interface>
 								<loaded>false</loaded>
 								<inputs>
@@ -224,10 +228,10 @@
 						</xforms:instance>
 
 						<xforms:bind nodeset="instance('control-instance')">
-							<xforms:bind nodeset="loaded" type="xs:boolean"/>
-							<xforms:bind nodeset="inputs/date" type="m.data.standardDate"/>
-							<xforms:bind nodeset="inputs/dateRange/fromDate" constraint=". &lt; parent::node()/toDate" type="m.data.standardDate"/>
-							<xforms:bind nodeset="inputs/dateRange/toDate" constraint=". &gt; parent::node()/fromDate" type="m.data.standardDate"/>
+							<xforms:bind nodeset="eaditor:loaded" type="xs:boolean"/>
+							<xforms:bind nodeset="eaditor:inputs/eaditor:date" type="m.data.standardDate"/>
+							<xforms:bind nodeset="eaditor:inputs/eaditor:dateRange/eaditor:fromDate" constraint=". &lt; parent::node()/toDate" type="m.data.standardDate"/>
+							<xforms:bind nodeset="eaditor:inputs/eaditor:dateRange/eaditor:toDate" constraint=". &gt; parent::node()/fromDate" type="m.data.standardDate"/>
 						</xforms:bind>
 					</xforms:model>
 				</xforms:group>
