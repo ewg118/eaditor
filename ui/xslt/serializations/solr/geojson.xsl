@@ -24,29 +24,32 @@
 		<xsl:variable name="long" select="normalize-space(substring-before($coordinates, ','))"/>
 		<xsl:variable name="lat" select="normalize-space(substring-after($coordinates, ','))"/>
 		
-		<xsl:text>{"type": "Feature","label":"</xsl:text>
-		<xsl:value-of select="$place"/>
-		<xsl:text>",</xsl:text>		
-		<!-- geometry -->
-		<xsl:text>"geometry": {"type": "Point","coordinates": [</xsl:text>
-		<xsl:value-of select="$long"/>
-		<xsl:text>, </xsl:text>
-		<xsl:value-of select="$lat"/>
-		<xsl:text>]},</xsl:text>
-		
-		<!-- properties -->
-		<xsl:text>"properties": {"toponym": "</xsl:text>
-		<xsl:value-of select="$place"/>
-		<xsl:text>","gazetteer_label": "</xsl:text>
-		<xsl:value-of select="$place"/>
-		<xsl:text>", "gazetteer_uri": "</xsl:text>
-		<xsl:value-of select="$url"/>
-		<xsl:text>","type": "relatedPlace","georef":"</xsl:text>
-		<xsl:value-of select="@name"/>
-		<xsl:text>"</xsl:text>
-		<xsl:text>}}</xsl:text>
-		<xsl:if test="not(position()=last())">
-			<xsl:text>,</xsl:text>
+		<!-- only include features that have valid lat and long -->
+		<xsl:if test="$lat castable as xs:integer and $long castable as xs:integer">
+			<xsl:text>{"type": "Feature","label":"</xsl:text>
+			<xsl:value-of select="$place"/>
+			<xsl:text>",</xsl:text>		
+			<!-- geometry -->
+			<xsl:text>"geometry": {"type": "Point","coordinates": [</xsl:text>
+			<xsl:value-of select="$long"/>
+			<xsl:text>, </xsl:text>
+			<xsl:value-of select="$lat"/>
+			<xsl:text>]},</xsl:text>
+			
+			<!-- properties -->
+			<xsl:text>"properties": {"toponym": "</xsl:text>
+			<xsl:value-of select="$place"/>
+			<xsl:text>","gazetteer_label": "</xsl:text>
+			<xsl:value-of select="$place"/>
+			<xsl:text>", "gazetteer_uri": "</xsl:text>
+			<xsl:value-of select="$url"/>
+			<xsl:text>","type": "relatedPlace","georef":"</xsl:text>
+			<xsl:value-of select="@name"/>
+			<xsl:text>"</xsl:text>
+			<xsl:text>}}</xsl:text>
+			<xsl:if test="not(position()=last())">
+				<xsl:text>,</xsl:text>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 
