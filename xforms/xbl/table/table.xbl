@@ -95,21 +95,21 @@
 						</xforms:repeat>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="table-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="table-model">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
-							<head/>
+							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="tgroup-template" xxforms:exclude-result-prefixes="#all">
-							<tgroup cols="">
+							<tgroup cols="" xmlns="urn:isbn:1-931666-22-9">
 								<thead/>
 								<tbody/>
 							</tgroup>
 						</xforms:instance>
 						<xforms:instance id="row-template" xxforms:exclude-result-prefixes="#all">
-							<row/>
+							<row xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="entry-template" xxforms:exclude-result-prefixes="#all">
-							<entry/>
+							<entry xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 					</xforms:model>
 				</xforms:group>

@@ -149,7 +149,6 @@
 									<eaditor:corpname/>
 								</xforms:repeat>
 
-								<!-- famname -->
 								<xforms:repeat ref="ead:famname">
 									<eaditor:famname/>
 								</xforms:repeat>
@@ -516,7 +515,7 @@
 
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="did-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="did-model">
 						<xforms:instance id="exist-config">
 							<xi:include href="../../../exist-config.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 						</xforms:instance>
@@ -545,7 +544,7 @@
 						</xforms:instance>
 
 						<xforms:instance id="containertypes">
-							<exist:result/>
+							<exist:result xmlns=""/>
 						</xforms:instance>
 
 						<!-- controls -->
@@ -578,95 +577,95 @@
 
 						<!-- digital object elements -->
 						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
-							<dao xlink:label="" xlink:href=""/>
+							<dao xlink:label="" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="daogrp-template" xxforms:exclude-result-prefixes="#all">
-							<daogrp/>
+							<daogrp xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- did elements -->
 						<xforms:instance id="abstract-template" xxforms:exclude-result-prefixes="#all">
-							<abstract/>
+							<abstract xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="container-template" xxforms:exclude-result-prefixes="#all">
-							<container type=""/>
+							<container type="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="langmaterial-template" xxforms:exclude-result-prefixes="#all">
 							<langmaterial>
-								<language langcode=""/>
+								<language langcode="" xmlns="urn:isbn:1-931666-22-9"/>
 							</langmaterial>
 						</xforms:instance>
 						<xforms:instance id="language-template" xxforms:exclude-result-prefixes="#all">
-							<language langcode=""/>
+							<language langcode="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="materialspec-template" xxforms:exclude-result-prefixes="#all">
-							<materialspec/>
+							<materialspec xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="origination-template" xxforms:exclude-result-prefixes="#all">
-							<origination/>
+							<origination xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="physdesc-template" xxforms:exclude-result-prefixes="#all">
-							<physdesc/>
+							<physdesc xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="physfacet-template" xxforms:exclude-result-prefixes="#all">
-							<physfacet type=""/>
+							<physfacet type="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="dimensions-template" xxforms:exclude-result-prefixes="#all">
-							<dimensions/>
+							<dimensions xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="genreform-template" xxforms:exclude-result-prefixes="#all">
-							<genreform/>
+							<genreform xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="extent-template" xxforms:exclude-result-prefixes="#all">
-							<extent/>
+							<extent xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="physloc-template" xxforms:exclude-result-prefixes="#all">
-							<physloc/>
+							<physloc xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="repository-template" xxforms:exclude-result-prefixes="#all">
-							<repository>
+							<repository xmlns="urn:isbn:1-931666-22-9">
 								<corpname/>
 							</repository>
 						</xforms:instance>
 						<xforms:instance id="unitdate-template" xxforms:exclude-result-prefixes="#all">
-							<unitdate normal="" type="inclusive"/>
+							<unitdate normal="" type="inclusive" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="unitid-template" xxforms:exclude-result-prefixes="#all">
-							<unitid/>
+							<unitid xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- repository templates -->
 						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
-							<address>
+							<address xmlns="urn:isbn:1-931666-22-9">
 								<addressline/>
 							</address>
 						</xforms:instance>
 
 						<xforms:instance id="subarea-template" xxforms:exclude-result-prefixes="#all">
-							<subarea/>
+							<subarea xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<xforms:instance id="extptr-template" xxforms:exclude-result-prefixes="#all">
-							<extptr xlink:type="simple" xlink:href=""/>
+							<extptr xlink:type="simple" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- shared/generic instance -->
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
-							<head/>
+							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
-							<note/>
+							<note xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- origination templates -->
 						<xforms:instance id="corpname-template" xxforms:exclude-result-prefixes="#all">
-							<corpname/>
+							<corpname xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="famname-template" xxforms:exclude-result-prefixes="#all">
-							<famname/>
+							<famname xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="persname-template" xxforms:exclude-result-prefixes="#all">
-							<persname/>
+							<persname xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- controlled instances-->

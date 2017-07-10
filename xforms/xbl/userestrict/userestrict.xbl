@@ -74,8 +74,6 @@
 							</fr:alert-dialog>
 						</div>
 					</xforms:group>
-
-					
 				</xforms:group>
 			</xforms:group>
 		</xbl:template>

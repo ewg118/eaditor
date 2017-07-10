@@ -103,21 +103,21 @@
 						</xforms:repeat>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="list-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="list-model">
 						<xforms:instance id="head-template">
-							<head/>
+							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="listhead-template">
-							<listhead>
+							<listhead xmlns="urn:isbn:1-931666-22-9">
 								<head01/>
 								<head02/>
 							</listhead>
 						</xforms:instance>
 						<xforms:instance id="item-template">
-							<item/>
+							<item xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="defitem-template">
-							<defitem>
+							<defitem xmlns="urn:isbn:1-931666-22-9">
 								<label/>
 								<item/>
 							</defitem>

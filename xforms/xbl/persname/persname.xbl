@@ -6,7 +6,7 @@
 	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:srw="http://www.loc.gov/zing/srw/" xmlns:viaf="http://viaf.org/viaf/terms#">
+	xmlns:srw="http://www.loc.gov/zing/srw/" xmlns:viaf="http://viaf.org/viaf/terms#" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<xbl:binding id="eaditor-persname" element="eaditor|persname">
 		<xbl:template>
@@ -142,7 +142,7 @@
 												<!-- delete @role if it is xeac:enity -->
 												<xforms:delete context="$binding/@role" if="$binding/@role='xeac:entity'"/>
 
-												<xforms:action if="not(string(instance('config')/url))">
+												<xforms:action if="not(string(instance('config')/*:url))">
 													<xforms:send submission="load-config"/>
 												</xforms:action>
 
@@ -219,15 +219,16 @@
 									<xforms:group ref=".[number(instance('snac-response')/@totalDocs) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact">
 											<xforms:label>Name</xforms:label>
-											<xforms:itemset nodeset="instance('snac-response')//docHit">
-												<xforms:label ref="meta/identity[1]"/>
+											<xforms:itemset nodeset="instance('snac-response')//*:docHit">
+												<xforms:label ref="*:meta/*:identity[1]"/>
 												<xforms:value
 													ref="concat('http://socialarchive.iath.virginia.edu/ark:/', substring-after(tokenize(@path, '-')[1], ':'), '/', substring-before(tokenize(@path, '-')[2], '.xml'))"
 												/>
 											</xforms:itemset>
-											<xforms:action ev:event="xforms-value-changed">. <xforms:var name="path"
+											<xforms:action ev:event="xforms-value-changed">
+												<xforms:var name="path"
 													select="concat('default:', tokenize(instance('temp')/@href, '/')[5], '-', tokenize(instance('temp')/@href, '/')[6] , '.xml')"/>
-												<xforms:setvalue ref="instance('temp')" value="instance('snac-response')//docHit[@path=$path]/meta/identity[1]"
+												<xforms:setvalue ref="instance('temp')" value="instance('snac-response')//*:docHit[@path=$path]/*:meta/*:identity[1]"
 												/>
 											</xforms:action>
 										</xforms:select1>
@@ -338,10 +339,10 @@
 											</xforms:action>
 										</xforms:trigger>
 									</div>
-									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
+									<xforms:group ref=".[count(instance('solr-response')/*:lst[@name='terms']//*:int) &gt; 0]">
 										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
 											<xforms:label>Name</xforms:label>
-											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
+											<xforms:itemset nodeset="instance('solr-response')/*:lst[@name='terms']//*:int">
 												<xforms:label ref="@name"/>
 												<xforms:value ref="@name"/>
 											</xforms:itemset>
@@ -353,9 +354,9 @@
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-									<xforms:group ref=".[string-length(instance('control-instance')/local-message) &gt; 0]">
+									<xforms:group ref=".[string-length(instance('control-instance')/*:local-message) &gt; 0]">
 										<p>
-											<xforms:output ref="instance('control-instance')/local-message"/>
+											<xforms:output ref="instance('control-instance')/*:local-message"/>
 										</p>
 									</xforms:group>
 								</xforms:case>
@@ -387,18 +388,19 @@
 						<xforms:instance id="exist-config">
 							<xi:include href="../../../exist-config.xml"/>
 						</xforms:instance>
+						
 						<xforms:instance id="config">
 							<config xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="temp">
-							<temp href="" id=""/>
+							<temp href="" id="" xmlns=""/>
 						</xforms:instance>
 
 
 						<!-- total results -->
 						<xforms:instance id="search-results">
-							<results/>
+							<results xmlns=""/>
 						</xforms:instance>
 
 						<!-- authentication -->
@@ -419,26 +421,26 @@
 
 						<!-- Instances containing the query string -->
 						<xforms:instance id="search-query">
-							<query/>
+							<query xmlns=""/>
 						</xforms:instance>
 
-						<!-- persnames specific instances -->						
+						<!-- persnames specific instances -->
 						<xforms:instance id="viaf-response">
-							<searchRetrieveResponse/>
+							<searchRetrieveResponse xmlns=""/>
 						</xforms:instance>
 
 						<xforms:instance id="lc-response">
-							<feed/>
+							<feed xmlns=""/>
 						</xforms:instance>
 
 						<!-- snac query -->
 						<xforms:instance id="snac-response" exclude-result-prefixed="#all">
-							<crossQueryResult/>
+							<crossQueryResult xmlns=""/>
 						</xforms:instance>
 
 						<!-- xeac query -->
 						<xforms:instance id="xeac-response" exclude-result-prefixed="#all">
-							<feed/>
+							<feed xmlns=""/>
 						</xforms:instance>
 
 						<!-- local vocabulary -->
@@ -457,7 +459,7 @@
 						</xforms:instance>
 
 						<xforms:instance id="interface-type">
-							<interface/>
+							<interface xmlns=""/>
 						</xforms:instance>
 
 						<!-- *********** SUBMISSIONS ************ -->
@@ -466,12 +468,12 @@
 							instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:action if="string-length(instance('config')/xeac) &gt; 0">
+								<xforms:action if="string-length(instance('config')/*:xeac) &gt; 0">
 									<xforms:insert context="instance('interfaces')" at="1" position="after"
 										origin="xforms:element('interface', (xforms:attribute('name', 'xEAC'), 'xeac'))"/>
 									<xforms:setvalue ref="instance('interface-type')">xeac</xforms:setvalue>
 								</xforms:action>
-								<xforms:action if="string-length(instance('config')/xeac) = 0">
+								<xforms:action if="string-length(instance('config')/*:xeac) = 0">
 									<xforms:setvalue ref="instance('interface-type')">lcnaf</xforms:setvalue>
 								</xforms:action>
 							</xforms:action>
@@ -555,10 +557,10 @@
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query Solr.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<!-- set or clear message based on number of results found -->
-								<xforms:setvalue ref="instance('control-instance')/local-message"
-									if="count(instance('solr-response')/lst[@name='terms']//int) = 0">No matching terms found.</xforms:setvalue>
-								<xforms:setvalue ref="instance('control-instance')/local-message"
-									if="count(instance('solr-response')/lst[@name='terms']//int) &gt; 0"/>
+								<xforms:setvalue ref="instance('control-instance')/*:local-message"
+									if="count(instance('solr-response')/*:lst[@name='terms']//*:int) = 0">No matching terms found.</xforms:setvalue>
+								<xforms:setvalue ref="instance('control-instance')/*:local-message"
+									if="count(instance('solr-response')/*:lst[@name='terms']//*:int) &gt; 0"/>
 							</xforms:action>
 						</xforms:submission>
 					</xforms:model>

@@ -135,26 +135,26 @@
 						</xforms:repeat>
 					</div>
 					<!-- ********************************************************************** -->
-					<xforms:model id="chronlist-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="chronlist-model">
 						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
-							<head/>
+							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="listhead-template" xxforms:exclude-result-prefixes="#all">
-							<listhead>
+							<listhead xmlns="urn:isbn:1-931666-22-9">
 								<head01/>
 								<head02/>
 							</listhead>
 						</xforms:instance>
 						<xforms:instance id="chronitem-template" xxforms:exclude-result-prefixes="#all">
-							<chronitem>
+							<chronitem xmlns="urn:isbn:1-931666-22-9">
 								<date normal=""/>
 							</chronitem>
 						</xforms:instance>
 						<xforms:instance id="event-template" xxforms:exclude-result-prefixes="#all">
-							<event/>
+							<event xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 						<xforms:instance id="eventgrp-template" xxforms:exclude-result-prefixes="#all">
-							<eventgrp>
+							<eventgrp xmlns="urn:isbn:1-931666-22-9">
 								<event/>
 								<event/>
 							</eventgrp>

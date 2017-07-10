@@ -1,11 +1,9 @@
 <!-- Ethan Gruber, American Numismatic Society
 	Modification Date: September, 2011
 	Function: query all attributes for a given element in the EAD schema (or any schema) and populate them in an xxforms:dialog -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms"
-	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:ead="urn:isbn:1-931666-22-9">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-attributes" element="eaditor|attributes">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -21,44 +19,37 @@
 							<xforms:action ev:event="DOMActivate">
 								<!-- only query one time -->
 								<xforms:action if="not(instance('has-executed') = 'true')">
-									<xforms:setvalue ref="instance('attributes')/@element-name"
-										value="$binding/local-name()"/>
+									<xforms:setvalue ref="instance('attributes')/@element-name" value="$binding/local-name()"/>
 									<!-- container type implemented directly in form -->
 									<!--<xforms:action if="$binding/local-name()='container'">
 										<xforms:send submission="load-config"/>
 									</xforms:action>-->
 									<xforms:send submission="get-attributes"/>
 									<!-- populate the attributes with values if they already exist, e.g., on form load -->
-									<xforms:action ev:event="xforms-submit-done"
-										xxforms:iterate="instance('attributes')/attribute">
+									<xforms:action ev:event="xforms-submit-done" xxforms:iterate="instance('attributes')/attribute">
 										<xforms:var name="name" select="@name"/>
-										<xforms:setvalue ref="context()"
-											value="$binding/@*[name() = $name]"/>
+										<xforms:setvalue ref="context()" value="$binding/@*[name() = $name]"/>
 									</xforms:action>
-									<xforms:setvalue ref="instance('has-executed')"
-										>true</xforms:setvalue>
+									<xforms:setvalue ref="instance('has-executed')">true</xforms:setvalue>
 								</xforms:action>
 								<xxforms:show dialog="element-attributes"/>
 							</xforms:action>
 						</xforms:trigger>
 						<!-- output current attributes, but not for container -->
 						<xforms:group ref=".[not($binding/local-name() = 'container')]">
-							<xforms:repeat nodeset="$binding/@*[string(.)]">							
+							<xforms:repeat nodeset="$binding/@*[string(.)]">
 								<span class="text-muted">
 									<xforms:output value="concat(name(), ':', .)" class="attr-output"/>
 								</span>
 							</xforms:repeat>
-						</xforms:group>						
+						</xforms:group>
 					</span>
 
-					<xxforms:dialog id="element-attributes" appearance="full" level="modal"
-						close="false" draggable="true" visible="false">
+					<xxforms:dialog id="element-attributes" appearance="full" level="modal" close="false" draggable="true" visible="false">
 						<xforms:label ref="concat('&lt;', $binding/local-name(), '&gt; attributes')"/>
 						<xforms:repeat nodeset="instance('attributes')/attribute">
-							<xforms:group
-								ref=".[@name='type' and $binding/local-name() = 'container']">
+							<xforms:group ref=".[@name='type' and $binding/local-name() = 'container']">
 								<!-- do not show container type here anymore -->
-								
 								<!--<div style="margin-bottom:5px;">
 									<xforms:select1 ref=".">
 										<xforms:label ref="@name"/>
@@ -82,8 +73,7 @@
 											<xforms:label>Select below...</xforms:label>
 											<xforms:value/>
 										</xforms:item>
-										<xforms:itemset
-											nodeset="instance('renders')//xs:enumeration">
+										<xforms:itemset nodeset="instance('renders')//xs:enumeration">
 											<xforms:label ref="@value"/>
 											<xforms:value ref="@value"/>
 										</xforms:itemset>
@@ -115,8 +105,7 @@
 								<div style="margin-bottom:5px;">
 									<xforms:input ref=".">
 										<xforms:label ref="@name"/>
-										<xforms:alert>Error: content type may be disallowed. Refer
-											to EAD 2002 schema.</xforms:alert>
+										<xforms:alert>Error: content type may be disallowed. Refer to EAD 2002 schema.</xforms:alert>
 									</xforms:input>
 								</div>
 							</xforms:group>
@@ -128,11 +117,8 @@
 								<xforms:action xxforms:iterate="instance('attributes')/attribute">
 									<xforms:var name="attribute-name" select="context()/@name"/>
 									<xforms:var name="value" select="context()/text()"/>
-									<xforms:insert context="$binding"
-										origin="xforms:attribute($attribute-name, $value)"
-										if="not(normalize-space($value) = '')"/>
-									<xforms:delete if="normalize-space($value) = ''"
-										context="$binding" nodeset="@*[name() = $attribute-name]"/>
+									<xforms:insert context="$binding" origin="xforms:attribute($attribute-name, $value)" if="not(normalize-space($value) = '')"/>
+									<xforms:delete if="normalize-space($value) = ''" context="$binding" nodeset="@*[name() = $attribute-name]"/>
 								</xforms:action>
 								<xxforms:hide dialog="element-attributes"/>
 							</xforms:action>
@@ -158,8 +144,7 @@
 						</xforms:instance>
 
 						<!-- authentication -->
-						<xforms:instance id="collections-list"
-							xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
 							<collections xmlns=""/>
 						</xforms:instance>
 
@@ -208,19 +193,14 @@
 						</xforms:bind>
 
 						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor2/{xxforms:get-session-attribute('collection-name')}/config.xml"
-							replace="instance" instance="config"
-							xxforms:username="{instance('exist-config')/username}"
-							xxforms:password="{instance('exist-config')/password}">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to
-								load EADitor config.</xforms:message>
+							action="{instance('exist-config')/url}eaditor2/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance"
+							instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EADitor config.</xforms:message>
 						</xforms:submission>
 
 						<xforms:submission id="get-attributes" serialization="none" method="get"
-							action="/eaditor/admin/get_attributes/?element={instance('attributes')/@element-name}"
-							replace="instance" instance="attributes">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to
-								process EAD schema.</xforms:message>
+							action="/eaditor/admin/get_attributes/?element={instance('attributes')/@element-name}" replace="instance" instance="attributes">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to process EAD schema.</xforms:message>
 						</xforms:submission>
 					</xforms:model>
 				</xforms:group>

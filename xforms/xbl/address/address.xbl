@@ -44,10 +44,10 @@
 					</xforms:group>
 					
 					<!-- ********************************************************************** -->
-					<xforms:model id="address-elements-model" xmlns="urn:isbn:1-931666-22-9">
+					<xforms:model id="address-elements-model">
 						<!-- generic instances -->
 						<xforms:instance id="addressline-template" xxforms:exclude-result-prefixes="#all">
-							<addressline/>
+							<addressline xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 					</xforms:model>
 				</xforms:group>
