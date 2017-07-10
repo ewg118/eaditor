@@ -25,7 +25,7 @@
 		<xsl:variable name="lat" select="normalize-space(substring-after($coordinates, ','))"/>
 		
 		<!-- only include features that have valid lat and long -->
-		<xsl:if test="$lat castable as xs:integer and $long castable as xs:integer">
+		<xsl:if test="$lat castable as xs:decimal and $long castable as xs:decimal">
 			<xsl:text>{"type": "Feature","label":"</xsl:text>
 			<xsl:value-of select="$place"/>
 			<xsl:text>",</xsl:text>		
