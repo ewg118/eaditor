@@ -812,6 +812,11 @@
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
+				<xsl:when test="@source='wikidata'">
+					<a href="https://www.wikidata.org/entity/{@authfilenumber}" title="Wikidata" rel="dcterms:subject">
+						<span class="glyphicon glyphicon-new-window"/>
+					</a>
+				</xsl:when>
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="contains(@authfilenumber, 'http://')">

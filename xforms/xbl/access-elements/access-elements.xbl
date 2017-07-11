@@ -86,7 +86,7 @@
 							<persname/>
 						</xforms:instance>
 						<xforms:instance id="subject-template" xxforms:exclude-result-prefixes="#all">
-							<subject/>
+							<subject authfilenumber="" source=""/>
 						</xforms:instance>
 						<xforms:instance id="title-template" xxforms:exclude-result-prefixes="#all">
 							<title/>

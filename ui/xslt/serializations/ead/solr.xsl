@@ -336,6 +336,9 @@
 					<xsl:when test="@source = 'viaf'">
 						<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>
 					</xsl:when>
+					<xsl:when test="@source = 'wikidata'">
+						<xsl:value-of select="concat('https://www.wikidata.org/entity/', @authfilenumber)"/>
+					</xsl:when>
 					<xsl:when test="contains(@authfilenumber, 'http://')">
 						<xsl:value-of select="@authfilenumber"/>
 					</xsl:when>

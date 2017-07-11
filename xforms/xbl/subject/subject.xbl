@@ -2,9 +2,10 @@
 	last modified: June, 2011
 	function: EAD subject component; user taps into LCSH or local vocabulary for subjects
 -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
-	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">
 
 	<xbl:binding id="eaditor-subject" element="eaditor|subject">
@@ -15,9 +16,6 @@
 					<xforms:var name="binding" as="node()?">
 						<xxforms:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
-					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">lcsh</xforms:setvalue>						
-					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
 						<div>
@@ -47,7 +45,8 @@
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Warning:</strong> Element must contain content.</div>
+							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Warning:</strong> Element must contain
+								content.</div>
 
 							<div>
 								<radiogroup>
@@ -58,6 +57,10 @@
 											<xforms:value>lcsh</xforms:value>
 										</xforms:item>
 										<xforms:item>
+											<xforms:label>Wikidata</xforms:label>
+											<xforms:value>wikidata</xforms:value>
+										</xforms:item>
+										<xforms:item>
 											<xforms:label>Local Vocabulary</xforms:label>
 											<xforms:value>local</xforms:value>
 										</xforms:item>
@@ -66,20 +69,39 @@
 												<!-- clear temp -->
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>
+												<xforms:setvalue ref="instance('control-instance')/*:definition"/>
+												
 												<!-- add attributes -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', 'lcsh')"/>
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding"
+													origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', '')"/>
+												<xforms:setvalue ref="$binding/@source">lcsh</xforms:setvalue>
 												<xforms:toggle case="lcsh-search"/>
+											</xforms:action>
+											<xforms:action if=". = 'wikidata'">
+												<!-- clear temp -->
+												<xforms:setvalue ref="instance('temp')"/>
+												<xforms:setvalue ref="instance('temp')/@href"/>
+												<xforms:setvalue ref="instance('control-instance')/*:definition"/>
+												
+												<!-- add attributes -->
+												<xforms:insert if="not($binding/@authfilenumber)" context="$binding"
+													origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', '')"/>
+												<xforms:setvalue ref="$binding/@source">wikidata</xforms:setvalue>
+												<xforms:toggle case="wikidata-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">
 												<!-- clear temp -->
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>
+												<xforms:setvalue ref="instance('control-instance')/*:definition"/>
+												
 												<!-- remove attributes -->
 												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
 												<xforms:delete if="$binding/@source" context="$binding/@source"/>
 												<!-- load config if it hasn't been loaded -->
-												<xforms:action if="not(string(instance('config')/url))">
+												<xforms:action if="not(string(instance('config')/*:url))">
 													<xforms:send submission="load-config"/>
 												</xforms:action>
 												<xforms:toggle case="local-autosuggest"/>
@@ -108,7 +130,7 @@
 											<xforms:output ref="instance('search-results')"/>
 										</p>
 									</xforms:group>
-									
+
 									<xforms:group ref=".[count(instance('lc-response')//atom:entry) &gt; 0]">
 										<xforms:select1 ref="instance('temp')/@href" appearance="compact" size="10">
 											<xforms:label>Term</xforms:label>
@@ -116,8 +138,56 @@
 												<xforms:label ref="atom:title"/>
 												<xforms:value ref="atom:link[@rel='alternate' and not(@type)]/@href"/>
 											</xforms:itemset>
-											<xforms:setvalue ref="instance('temp')" value="instance('lc-response')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href =
-												instance('temp')/@href]/atom:title" ev:event="xforms-value-changed"/>
+											<xforms:setvalue ref="instance('temp')"
+												value="instance('lc-response')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href =
+												instance('temp')/@href]/atom:title"
+												ev:event="xforms-value-changed"/>
+										</xforms:select1>
+										<xforms:trigger>
+											<xforms:label>Select</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
+												<xforms:setvalue ref="$binding" value="instance('temp')"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+								</xforms:case>
+								<xforms:case id="wikidata-search">
+									<div>
+										<xforms:input ref="instance('search-query')">
+											<xforms:label>Search</xforms:label>
+										</xforms:input>
+										<xforms:trigger>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:delete context="instance('wikidata')/*"/>
+												<xforms:send submission="get-wikidata"/>
+											</xforms:action>
+											<xforms:label>Search</xforms:label>
+										</xforms:trigger>
+									</div>
+
+									<xforms:group ref=".[string-length('search-results')] &gt; 0">
+										<p class="text-muted">
+											<xforms:output ref="instance('search-results')"/>
+										</p>
+									</xforms:group>
+
+									<xforms:group ref=".[count(instance('wikidata')//*:entity) &gt; 0]">
+										<xforms:select1 ref="instance('temp')/@href" appearance="compact" size="10">
+											<xforms:label>Term</xforms:label>
+											<xforms:itemset nodeset="instance('wikidata')//*:entity">
+												<xforms:label ref="@label"/>
+												<xforms:value ref="@concepturi"/>
+											</xforms:itemset>
+											<xforms:action ev:event="xforms-value-changed">
+												<xforms:setvalue ref="instance('temp')"
+													value="instance('wikidata')//*:entity[@concepturi =
+													instance('temp')/@href]/@label"/>
+												<xforms:setvalue ref="instance('control-instance')/*:definition"
+													value="instance('wikidata')//*:entity[@concepturi =
+													instance('temp')/@href]/@description"/>
+											</xforms:action>
+											
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
@@ -146,10 +216,10 @@
 											</xforms:action>
 										</xforms:trigger>
 									</div>
-									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
+									<xforms:group ref=".[count(instance('solr-response')/*:lst[@name='terms']//*:int) &gt; 0]">
 										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
 											<xforms:label>Term</xforms:label>
-											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
+											<xforms:itemset nodeset="instance('solr-response')/*:lst[@name='terms']//*:int">
 												<xforms:label ref="@name"/>
 												<xforms:value ref="@name"/>
 											</xforms:itemset>
@@ -161,11 +231,6 @@
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-									<xforms:group ref=".[string-length(instance('control-instance')/local-message) &gt; 0]">
-										<p>
-											<xforms:output ref="instance('control-instance')/local-message"/>
-										</p>
-									</xforms:group>
 								</xforms:case>
 							</xforms:switch>
 
@@ -174,10 +239,15 @@
 									<xforms:output ref=".">
 										<xforms:label>Definition</xforms:label>
 									</xforms:output>
+									<xforms:group ref=".[string-length(instance('control-instance')/*:definition) &gt; 0]">
+										<xforms:output ref="instance('control-instance')/*:definition"/>
+									</xforms:group>
 									<xforms:trigger appearance="minimal">
-										<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
+										<xforms:label>
+											<span class="glyphicon glyphicon-new-window"/>
+										</xforms:label>
 										<xforms:hint ref="@href"/>
-										<xforms:load ev:event= "DOMActivate" resource= "{@href}" show="new"/>										
+										<xforms:load ev:event="DOMActivate" resource="{@href}" show="new"/>
 									</xforms:trigger>
 								</div>
 							</xforms:group>
@@ -190,6 +260,7 @@
 						<xforms:instance id="exist-config">
 							<xi:include href="../../../exist-config.xml"/>
 						</xforms:instance>
+						
 						<xforms:instance id="config">
 							<config xmlns=""/>
 						</xforms:instance>
@@ -206,6 +277,7 @@
 						<xforms:instance id="control-instance">
 							<control xmlns="">
 								<collection-name/>
+								<definition/>
 							</control>
 						</xforms:instance>
 
@@ -228,6 +300,11 @@
 							<feed xmlns=""/>
 						</xforms:instance>
 
+						<!-- Wikidata XML -->
+						<xforms:instance id="wikidata">
+							<api xmlns=""/>
+						</xforms:instance>
+
 						<!-- local vocabulary -->
 						<xforms:instance id="solr-response">
 							<response xmlns=""/>
@@ -235,24 +312,42 @@
 
 						<!-- interface type radio button -->
 						<xforms:instance id="interface-type">
-							<interface/>
+							<interface xmlns="">lcsh</interface>
 						</xforms:instance>
 
-						<xforms:submission id="query-lc" serialization="none" method="get" action="http://id.loc.gov/search/?q={instance('search-query')}
-							memberOf:http://id.loc.gov/authorities/subjects/collection_LCSHAuthorizedHeadings&amp;start=1&amp;format=atom" instance="lc-response" replace="instance">
+						<!-- *** SUBMISSIONS *** -->
+						<!-- query LCSH -->
+						<xforms:submission id="query-lc" serialization="none" method="get"
+							action="http://id.loc.gov/search/?q={instance('search-query')}
+							memberOf:http://id.loc.gov/authorities/subjects/collection_LCSHAuthorizedHeadings&amp;start=1&amp;format=atom"
+							instance="lc-response" replace="instance">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with id.loc.gov Atom feed.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:var name="total" select="number(instance('lc-response')//opensearch:totalResults)"/>
 								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
-								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
-								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')"
+									value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')"
+									value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+							</xforms:action>
+						</xforms:submission>
+
+						<!-- query Wikidata -->
+						<xforms:submission id="get-wikidata" serialization="none" method="get"
+							action="https://www.wikidata.org/w/api.php?action=wbsearchentities&amp;search={encode-for-uri(instance('search-query'))}&amp;language=en&amp;limit=20&amp;format=xml"
+							instance="wikidata" replace="instance">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to get data from Wikidata.</xforms:message>
+							<xforms:action ev:event="xforms-submit-done">
+								<xforms:var name="total" select="count(instance('wikidata')//*:entity)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0" ref="instance('search-results')">Displaying first 20 results.</xforms:setvalue>
 							</xforms:action>
 						</xforms:submission>
 
 						<!-- submissions -->
 						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor2/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
-							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+							action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance"
+							instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
@@ -262,8 +357,9 @@
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query Solr.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<!-- set or clear message based on number of results found -->
-								<xforms:setvalue ref="instance('search-results')" if="count(instance('solr-response')/lst[@name='terms']//int) = 0">No matching terms found.</xforms:setvalue>
-								<xforms:setvalue ref="instance('search-results')" if="count(instance('solr-response')/lst[@name='terms']//int) &gt; 0"/>
+								<xforms:setvalue ref="instance('search-results')" if="count(instance('solr-response')/*:lst[@name='terms']//*:int) = 0">No matching
+									terms found.</xforms:setvalue>
+								<xforms:setvalue ref="instance('search-results')" if="count(instance('solr-response')/*:lst[@name='terms']//*:int) &gt; 0"/>
 							</xforms:action>
 						</xforms:submission>
 					</xforms:model>
