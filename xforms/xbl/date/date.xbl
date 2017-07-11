@@ -50,7 +50,7 @@
 							</xforms:group>
 							<xforms:group ref="instance('control-instance')">
 								<div>
-									<xforms:select1 ref="interface" appearance="full">
+									<xforms:select1 ref="eaditor:interface" appearance="full">
 										<xforms:label>Type</xforms:label>
 										<xforms:item>
 											<xforms:label>Date</xforms:label>
@@ -65,11 +65,11 @@
 											<xforms:value>approximate</xforms:value>
 										</xforms:item>
 										<xforms:action ev:event="xforms-value-changed">
-											<xforms:action if="not(instance('control-instance')/loaded=true())">
+											<xforms:action if="not(instance('control-instance')/eaditor:loaded=true())">
 												<!-- clear inputs -->
-												<xforms:setvalue ref="instance('control-instance')/inputs/date"/>
-												<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/fromDate"/>
-												<xforms:setvalue ref="instance('control-instance')/inputs/dateRange/toDate"/>
+												<xforms:setvalue ref="instance('control-instance')/eaditor:inputs/eaditor:date"/>
+												<xforms:setvalue ref="instance('control-instance')/eaditor:inputs/eaditor:dateRange/eaditor:fromDate"/>
+												<xforms:setvalue ref="instance('control-instance')/eaditor:inputs/eaditor:dateRange/eaditor:toDate"/>
 												<xforms:setvalue ref="$binding"/>
 												<xforms:setvalue ref="$binding/@normal"/>
 											</xforms:action>
@@ -88,15 +88,15 @@
 												<xforms:insert if="not($binding/@certainty)" context="$binding" origin="xforms:attribute('certainty', 'approximate')"/>
 												<xforms:toggle case="approximate"/>										
 											</xforms:action>
-											<xforms:setvalue ref="instance('control-instance')/loaded" value="false()"/>
+											<xforms:setvalue ref="instance('control-instance')/eaditor:loaded" value="false()"/>
 										</xforms:action>
 									</xforms:select1>
 								</div>
-								<xforms:group ref="inputs">								
+								<xforms:group ref="eaditor:inputs">								
 									<xforms:switch>
 										<xforms:case id="date">
 											<div>
-												<xforms:input ref="date">
+												<xforms:input ref="eaditor:date">
 													<xforms:label>Date</xforms:label>
 													<xforms:alert>Must conform to ISO date standard.</xforms:alert>
 													<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
@@ -117,14 +117,14 @@
 										</xforms:case>
 										<xforms:case id="dateRange">
 											<div>
-												<xforms:input ref="dateRange/fromDate">
+												<xforms:input ref="eaditor:dateRange/eaditor:fromDate">
 													<xforms:label>From Date</xforms:label>
 													<xforms:alert>Must conform to ISO date standard.</xforms:alert>
 													<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
 													<xforms:action ev:event="xforms-value-changed">
 														<xforms:action ev:event="xforms-valid" if="xxforms:valid(parent::node()/toDate)">
 															<xforms:var name="fromDate" select="."/>
-															<xforms:var name="toDate" select="parent::node()/toDate"/>
+															<xforms:var name="toDate" select="parent::node()/eaditor:toDate"/>
 															<xforms:var name="fromDateText" select="if ($fromDate castable as xs:date) then format-date(xs:date($fromDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($fromDate castable as xs:gYearMonth) then format-date(xs:date(concat($fromDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $fromDate"/>
 															<xforms:var name="toDateText" select="if ($toDate castable as xs:date) then format-date(xs:date($toDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($toDate castable as xs:gYearMonth) then format-date(xs:date(concat($toDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $toDate"/>
 															<xforms:setvalue ref="$binding/@normal" value="concat($fromDate, '/', $toDate)"/>
@@ -137,13 +137,13 @@
 												</xforms:input>
 											</div>
 											<div>
-												<xforms:input ref="dateRange/toDate">
+												<xforms:input ref="eaditor:dateRange/eaditor:toDate">
 													<xforms:label>To Date</xforms:label>
 													<xforms:alert>Must conform to ISO date standard.</xforms:alert>
 													<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
 													<xforms:action ev:event="xforms-value-changed">
 														<xforms:action ev:event="xforms-valid" if="xxforms:valid(parent::node()/fromDate)">
-															<xforms:var name="fromDate" select="parent::node()/fromDate"/>
+															<xforms:var name="fromDate" select="parent::node()/eaditor:fromDate"/>
 															<xforms:var name="toDate" select="."/>
 															<xforms:var name="fromDateText" select="if ($fromDate castable as xs:date) then format-date(xs:date($fromDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($fromDate castable as xs:gYearMonth) then format-date(xs:date(concat($fromDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $fromDate"/>
 															<xforms:var name="toDateText" select="if ($toDate castable as xs:date) then format-date(xs:date($toDate), '[MNn] [D], [Y]', 'en', (), ()) else if ($toDate castable as xs:gYearMonth) then format-date(xs:date(concat($toDate, '-01')), '[MNn], [Y]', 'en', (), ()) else $toDate"/>
