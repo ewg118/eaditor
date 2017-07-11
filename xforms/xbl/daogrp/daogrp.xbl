@@ -86,7 +86,7 @@
 								<div style="margin:10px 0">
 									<h4>Reference flickr Image</h4>
 									<div>
-										<img src="{ead:daoloc[@xlink:label='Medium']/@xlink:href}" alt="Image" style="width:100%"/>									
+										<img src="{ead:daoloc[@xlink:label='Medium']/@xlink:href}" alt="Image" style="max-width:100%"/>									
 									</div>
 								</div>
 								<xforms:group ref="ead:daodesc">
