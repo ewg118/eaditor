@@ -788,7 +788,7 @@
 					</a>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
-					<a href="http://pleiades.stoa.org/places/{@authfilenumber}" title="Pleiades" rel="dcterms:coverage">
+					<a href="https://pleiades.stoa.org/places/{@authfilenumber}" title="Pleiades" rel="dcterms:coverage">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>

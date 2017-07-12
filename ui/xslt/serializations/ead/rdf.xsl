@@ -125,7 +125,7 @@
 					<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>
 				</xsl:when>
 				<xsl:when test="@source='pleiades'">
-					<xsl:value-of select="concat('http://pleiades.stoa.org/places/', @authfilenumber)"/>
+					<xsl:value-of select="concat('https://pleiades.stoa.org/places/', @authfilenumber)"/>
 				</xsl:when>
 				<xsl:when test="@source='lcsh' or @source='lcgft'">
 					<xsl:value-of select="concat('http://id.loc.gov/authorities/', @authfilenumber)"/>

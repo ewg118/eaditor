@@ -16,7 +16,7 @@
 
 	<xsl:template match="int">
 		<xsl:variable name="tokenized_georef" select="tokenize(@name, '\|')"/>
-		<xsl:variable name="url" select="concat('http://www.geonames.org/', $tokenized_georef[1])"/>
+		<xsl:variable name="uri" select="$tokenized_georef[1]"/>
 		<xsl:variable name="place" select="$tokenized_georef[2]"/>
 		<xsl:variable name="coordinates" select="$tokenized_georef[3]"/>
 		
@@ -42,7 +42,7 @@
 			<xsl:text>","gazetteer_label": "</xsl:text>
 			<xsl:value-of select="$place"/>
 			<xsl:text>", "gazetteer_uri": "</xsl:text>
-			<xsl:value-of select="$url"/>
+			<xsl:value-of select="$uri"/>
 			<xsl:text>","type": "relatedPlace","georef":"</xsl:text>
 			<xsl:value-of select="@name"/>
 			<xsl:text>"</xsl:text>
