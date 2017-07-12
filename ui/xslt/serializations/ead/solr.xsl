@@ -291,7 +291,7 @@
 						<xsl:if test="$upload = true()">
 							<xsl:attribute name="update">set</xsl:attribute>
 						</xsl:if>
-						<xsl:value-of select="$authfilenumber"/>
+						<xsl:value-of select="concat('http://www.geonames.org/', $authfilenumber)"/>
 						<xsl:text>|</xsl:text>
 						<xsl:value-of select="normalize-space(.)"/>
 						<xsl:text>|</xsl:text>
@@ -303,7 +303,7 @@
 						<xsl:if test="$upload = true()">
 							<xsl:attribute name="update">set</xsl:attribute>
 						</xsl:if>
-						<xsl:value-of select="$authfilenumber"/>
+						<xsl:value-of select="concat('https://pleiades.stoa.org/places/', $authfilenumber)"/>
 						<xsl:text>|</xsl:text>
 						<xsl:value-of select="normalize-space(.)"/>
 						<xsl:text>|</xsl:text>
@@ -328,7 +328,7 @@
 						<xsl:value-of select="concat('http://www.geonames.org/', @authfilenumber)"/>
 					</xsl:when>
 					<xsl:when test="@source = 'pleiades'">
-						<xsl:value-of select="concat('http://pleiades.stoa.org/places/', @authfilenumber)"/>
+						<xsl:value-of select="concat('https://pleiades.stoa.org/places/', @authfilenumber)"/>
 					</xsl:when>
 					<xsl:when test="@source = 'lcsh' or @source = 'lcgft'">
 						<xsl:value-of select="concat('http://id.loc.gov/authorities/', @authfilenumber)"/>
