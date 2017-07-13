@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:res="http://www.w3.org/2005/sparql-results#" version="2.0">
 	<xsl:include href="../templates.xsl"/>
 
 	<!-- pipeline variables -->
@@ -9,9 +9,13 @@
 	<xsl:variable name="display_path"/>
 	<xsl:variable name="include_path">
 		<xsl:choose>
-			<xsl:when test="/config/aggregator='true'"/>
+			<xsl:when test="/config/aggregator = 'true'"/>
 			<xsl:otherwise>
-				<xsl:value-of select="if (contains(/config/url, 'localhost')) then '../' else /config/url"/>
+				<xsl:value-of select="
+						if (contains(/config/url, 'localhost')) then
+							'../'
+						else
+							/config/url"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -68,14 +72,15 @@
 						<a href="feed/?q=*:*" style="margin:5px">
 							<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
-						<xsl:if test="/config/export/oai-pmh='true'">
+						<xsl:if test="/config/export/oai-pmh = 'true'">
 							<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead" style="margin:5px">
 								<img src="{$include_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
 							</a>
 						</xsl:if>
-						<xsl:if test="/config/export/pelagios='true'">
+						<xsl:if test="doc('input:sparql-response')//res:boolean = true()">
 							<a href="pelagios.void.rdf" style="margin:5px">
-								<img src="{$include_path}ui/images/pelagios_icon.png" title="Pelagios" alt="Pelagios"/>
+								<img src="http://commons.pelagios.org/wp-content/themes/pelagios/assets/images/Pelagios-logo1.svg" style="max-width:48px"
+									title="Pelagios" alt="Pelagios"/>
 							</a>
 						</xsl:if>
 					</div>
