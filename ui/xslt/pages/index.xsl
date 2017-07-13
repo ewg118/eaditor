@@ -11,7 +11,7 @@
 		<xsl:choose>
 			<xsl:when test="/config/aggregator='true'"/>
 			<xsl:otherwise>
-				<xsl:value-of select="if (contains(/config/url, 'localhost')) then './' else /config/url"/>
+				<xsl:value-of select="if (contains(/config/url, 'localhost')) then '../' else /config/url"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>

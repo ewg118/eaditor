@@ -79,7 +79,9 @@
 				<!-- display components contents -->
 				<xsl:if test="ead:archdesc/ead:dsc/ead:c[@level='series' or @level='subseries' or @level='subgrp' or @level='subcollection']">
 					<li>
-						<a href="#{generate-id(ead:archdesc/ead:dsc)}">Components List</a>
+						<a href="#{generate-id(ead:archdesc/ead:dsc)}">
+							<xsl:value-of select="eaditor:normalize_fields('dsc', $lang)"/>
+						</a>
 					</li>
 					<ul>
 						<xsl:for-each select="ead:archdesc/ead:dsc/ead:c[@level='series' or @level='subseries' or @level='subgrp' or @level='subcollection']">

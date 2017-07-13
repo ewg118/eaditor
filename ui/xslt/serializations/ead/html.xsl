@@ -158,12 +158,8 @@
 								<xsl:otherwise>
 									<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[1]"/>
 								</xsl:otherwise>
-							</xsl:choose>
-							<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper"/>
-						</xsl:when>
-						<xsl:when test="string(ead:did/ead:unittitle)">
-							<xsl:value-of select="ead:did/ead:unittitle"/>
-						</xsl:when>					
+							</xsl:choose>							
+						</xsl:when>				
 					</xsl:choose>
 				</title>
 				<!-- alternates -->
@@ -824,13 +820,10 @@
 				<span class="glyphicon glyphicon-new-window"/>
 			</a>
 		</xsl:if>
-		<xsl:if test="string(normalize-space(@role))">
+		<xsl:if test="string(normalize-space(@role)) and not(@role='xeac:entity')">
 			<xsl:text> (</xsl:text>
 			<xsl:value-of select="@role"/>
 			<xsl:text>)</xsl:text>
-		</xsl:if>
-		<xsl:if test="not(position()=last())">
-			<xsl:text>, </xsl:text>
 		</xsl:if>
 	</xsl:template>
 
@@ -847,14 +840,6 @@
 				<xsl:apply-templates/>
 			</xsl:otherwise>
 		</xsl:choose>
-
-	</xsl:template>
-
-	<xsl:template match="ead:dao | ead:daoloc">
-		<xsl:if test="@xlink:href">
-			<xsl:variable name="title" select="normalize-space(@title)"/>
-			<img src="{@xlink:href}" title="{$title}"/>
-		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="ead:daoloc" mode="flickr-image">
