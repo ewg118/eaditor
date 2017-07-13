@@ -92,7 +92,7 @@
 	<page path="/eaditor/query" view="xpl/views/serializations/sparql/query.xpl"/>
 	<page path="/eaditor/api/get" model="xpl/models/object/public.xpl" view="xpl/views/api/get.xpl"/>
 	<page path="/eaditor/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/views/serializations/config/void.xpl"/>
-	<page path="/eaditor/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/views/serializations/solr/rdf-pelagios.xpl"/>
+	<page path="/eaditor/pelagios.rdf" model="xpl/models/sparql/pelagios.xpl" view="xpl/views/serializations/rdf/rdf-pelagios.xpl"/>
 	<page path="/eaditor/query.kml" model="xpl/models/solr/geo.xpl" view="xpl/views/serializations/solr/kml.xpl"/>
 	<page path="/eaditor/query.geojson" model="xpl/models/solr/geo.xpl" view="xpl/views/serializations/solr/geojson.xpl"/>
 	
@@ -117,7 +117,7 @@
 	<page path-info="/eaditor/[^\/]+/api/get" model="xpl/models/object/public.xpl" view="xpl/views/api/get.xpl"/>
 	<!-- Pelagios -->
 	<page path="/eaditor/[^\/]+/pelagios.void.rdf" model="xpl/models/config.xpl" view="xpl/views/serializations/config/void.xpl"/>
-	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/solr/pelagios.xpl" view="xpl/views/serializations/solr/rdf-pelagios.xpl"/>
+	<page path="/eaditor/[^\/]+/pelagios.rdf" model="xpl/models/sparql/pelagios.xpl" view="xpl/views/serializations/rdf/rdf-pelagios.xpl"/>
 	<!-- Geographic output (KML, geoJSON) -->
 	<page path="/eaditor/[^\/]+/query.kml" model="xpl/models/solr/geo.xpl" view="xpl/views/serializations/solr/kml.xpl"/>
 	<page path="/eaditor/[^\/]+/query.geojson" model="xpl/models/solr/geo.xpl" view="xpl/views/serializations/solr/geojson.xpl"/>

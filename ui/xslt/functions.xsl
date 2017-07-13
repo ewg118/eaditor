@@ -52,13 +52,14 @@
 					<xsl:when test="$elem = 'bioghist'">Biographical/Historical Commentary</xsl:when>
 					<xsl:when test="$elem = 'century'">Century</xsl:when>
 					<xsl:when test="$elem = 'container'">Container</xsl:when>
-					<xsl:when test="$elem = 'controlaccess'">Controlled Access Headings</xsl:when>
+					<xsl:when test="$elem = 'controlaccess'">Related Entities</xsl:when>
 					<xsl:when test="$elem = 'corpname'">Organization</xsl:when>
 					<xsl:when test="$elem = 'custodhist'">Custodial History</xsl:when>
 					<xsl:when test="$elem = 'date'">Date</xsl:when>
 					<xsl:when test="$elem = 'decade'">Decade</xsl:when>
 					<xsl:when test="$elem = 'descgrp'">Descriptive Group</xsl:when>
 					<xsl:when test="$elem = 'dimensions'">Dimensions</xsl:when>
+					<xsl:when test="$elem = 'dsc'">Collection Hierarchy</xsl:when>
 					<xsl:when test="$elem = 'extent'">Extent</xsl:when>
 					<xsl:when test="$elem = 'famname'">Family</xsl:when>
 					<xsl:when test="$elem = 'fileplan'">Fileplan</xsl:when>
