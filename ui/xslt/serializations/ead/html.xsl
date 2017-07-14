@@ -50,7 +50,8 @@
 		</xsl:choose>
 	</xsl:variable>
 
-	<xsl:variable name="include_path" select="concat('../', $display_path)"/>
+	<!-- check to see if the server port is 8080 (vs 80, meaning Apache proxy) -->
+	<xsl:variable name="include_path" select="if (doc('input:request')/server-port = '8080') then $display_path else concat('../', $display_path)"/>
 
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and (@source = 'geonames' or @source = 'pleiades')])"/>
