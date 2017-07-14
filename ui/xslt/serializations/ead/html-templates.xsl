@@ -226,7 +226,7 @@
 	</xsl:template>
 
 	<xsl:template match="ead:daogrp">
-		<xsl:apply-templates select="ead:daoloc[@xlink:label = 'Small']"/>
+		<xsl:apply-templates select="ead:daoloc[@xlink:label = 'Thumbnail']"/>
 	</xsl:template>
 
 	<xsl:template match="ead:dao | ead:daoloc">
