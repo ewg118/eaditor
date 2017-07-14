@@ -7,19 +7,8 @@
 	<!-- path and document params -->
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
-	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
-	<xsl:param name="eadid">
-		<xsl:choose>
-			<xsl:when test="contains($uri, 'ark:/')">
-				<xsl:value-of select="substring-after(substring-after($uri, 'ark:/'), '/')"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="substring-after($uri, 'id/')"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:param>
-	
-	
+	<xsl:variable name="uri" select="doc('input:request')/request/request-url"/>
+	<xsl:variable name="eadid" select="/content/tei:TEI/@xml:id"/>	
 	
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
@@ -86,13 +75,10 @@
 				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
 				
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
-				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				
 				<!-- bootstrap -->
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
-				<!-- include fancybox -->
-				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
+				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>		
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
 				
 				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
@@ -100,8 +86,9 @@
 				<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
 				<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>
 				
-				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
+				<!--<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>-->
 				<!-- include annotation functions for TEI files -->
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_annotation_functions.js"/>
 				
 				<xsl:if test="string(//config/google_analytics)">
