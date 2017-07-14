@@ -4,12 +4,12 @@
 
 	<!-- pipeline variables -->
 	<xsl:variable name="pipeline"/>
-	<xsl:variable name="path"/>
+	<xsl:variable name="eadid"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="display_path"/>
 	<xsl:variable name="include_path">
 		<xsl:choose>
-			<xsl:when test="/config/aggregator='true'"/>
+			<xsl:when test="/config/aggregator = 'true'"/>
 			<xsl:otherwise>
 				<xsl:value-of select="if (contains(/config/url, 'localhost')) then '../' else /config/url"/>
 			</xsl:otherwise>
@@ -90,7 +90,7 @@
 						<a href="feed/?q=*:*" style="margin:5px">
 							<img src="{$include_path}ui/images/atom-large.png" title="Atom" alt="Atom"/>
 						</a>
-						<xsl:if test="/config/export/oai-pmh='true'">
+						<xsl:if test="/config/export/oai-pmh = 'true'">
 							<a href="oai/?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set=ead" style="margin:5px">
 								<img src="{$include_path}ui/images/oai-pmh.png" title="OAI-PMH" alt="OAI-PMH"/>
 							</a>

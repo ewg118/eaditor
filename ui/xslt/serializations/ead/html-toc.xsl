@@ -5,6 +5,8 @@
 	
 	<xsl:template name="toc">
 		<div class="toc">
+			<h2>Contents</h2>
+			
 			<!-- The Table of Contents template performs a series of tests to
 				determine which elements will be included in the table
 				of contents.  Each if statement tests to see if there is

@@ -90,12 +90,10 @@
 			</xsl:choose>
 		</xsl:if>
 
-		<xsl:if test="not(string($id))">
-			<xsl:if test="@level = 'series'">
-				<div class="backtotop">
-					<a href="#top" target="_self">Back to Top</a>
-				</div>
-			</xsl:if>
+		<xsl:if test="@level = 'series'">
+			<div class="backtotop">
+				<a href="#top" target="_self">Back to Top</a>
+			</div>
 		</xsl:if>
 	</xsl:template>
 

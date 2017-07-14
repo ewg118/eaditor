@@ -6,7 +6,7 @@
 
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="mapboxKey" select="/content/config/mapboxKey"/>
-	<xsl:variable name="path"/>
+	<xsl:variable name="eadid"/>
 	<xsl:variable name="display_path">./</xsl:variable>	
 	<xsl:variable name="include_path">
 		<xsl:choose>
@@ -86,7 +86,7 @@
 						<div class="col-md-3">
 							<xsl:apply-templates select="//lst[@name='facet_fields']/lst[descendant::int]"/>
 						</div>
-						<div class="col-md-9">
+						<div class="col-md-9" id="map-page">
 							<div id="mapcontainer"/>
 						</div>
 					</div>

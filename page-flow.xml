@@ -139,12 +139,14 @@
 	<page path="/eaditor/[^\/]+/id/(.*)\.xml" view="xpl/models/object/public.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)\.rdf" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/rdf.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)\.kml" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/kml.xpl"/>
+	<page path="/eaditor/[^\/]+/id/(.*)\.geojson" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/geojson.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)\.solr" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/solr.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/html.xpl"/>
 	
 	<!-- ARK URIs -->
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.xml" view="xpl/models/object/public.xpl"/>
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.kml" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/kml.xpl"/>
+	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.geojson" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/geojson.xpl"/>
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.rdf" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/rdf.xpl"/>
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.solr" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/solr.xpl"/>
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/html.xpl"/>
