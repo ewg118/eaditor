@@ -8,7 +8,7 @@
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
-	<xsl:param name="path">
+	<xsl:param name="eadid">
 		<xsl:choose>
 			<xsl:when test="contains($uri, 'ark:/')">
 				<xsl:value-of select="substring-after(substring-after($uri, 'ark:/'), '/')"/>
@@ -18,49 +18,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
-	<xsl:variable name="doc">
-		<xsl:choose>
-			<xsl:when test="contains($path, '/')">
-				<xsl:value-of select="tokenize($path, '/')[1]"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:choose>
-					<xsl:when test="contains($path, '.')">
-						<xsl:variable name="pieces" select="tokenize($path, '\.')"/>
-						
-						<xsl:for-each select="$pieces[not(position()=last())]">
-							<xsl:value-of select="."/>
-							<xsl:if test="not(position()=last())">
-								<xsl:text>.</xsl:text>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$path"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="id">
-		<xsl:if test="contains($path, '/')">
-			<xsl:variable name="last-piece" select="substring-after($path, '/')"/>
-			<xsl:choose>
-				<xsl:when test="contains($last-piece, '.')">
-					<xsl:variable name="pieces" select="tokenize($last-piece, '\.')"/>
-					<xsl:for-each select="$pieces[not(position()=last())]">
-						<xsl:value-of select="."/>
-						<xsl:if test="not(position()=last())">
-							<xsl:text>.</xsl:text>
-						</xsl:if>
-					</xsl:for-each>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$last-piece"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-	</xsl:variable>
+	
+	
 	
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
@@ -71,55 +30,34 @@
 		<xsl:variable name="default">
 			<xsl:choose>
 				<xsl:when test="$mode='private'">
-					<xsl:choose>
-						<xsl:when test="string($id)">
-							<xsl:text>../../../</xsl:text>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text>../../</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:text>../../</xsl:text>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
 						<xsl:when test="contains($uri, 'ark:/')">
-							<xsl:choose>
-								<xsl:when test="string($id)">
-									<xsl:text>../../../</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>../../</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:text>../../</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:choose>
-								<xsl:when test="string($id)">
-									<xsl:text>../../</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>../</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:text>../</xsl:text>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		
-		<!-- after default path is set, replace ../ when it is an aggregate collection -->		
+		<!-- after default path is set, replace ../ when it is an aggregate collection -->
 		<xsl:choose>
-			<xsl:when test="/content/config/aggregator='true'">
+			<xsl:when test="/content/config/aggregator = 'true'">
 				<xsl:value-of select="concat($default, '../')"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="$default"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:variable>
 	
-	<xsl:variable name="include_path" select="/content/config/url"/>
+	<!-- check to see if the server port is 80, meaning Apache proxypass -->
+	<xsl:variable name="include_path" select="if (doc('input:request')/request/server-port = '80') then $display_path else concat('../', $display_path)"/>
 	
 	<!-- url params -->
 	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
@@ -134,20 +72,18 @@
 		<xsl:apply-templates select="/content/tei:TEI"/>
 	</xsl:template>
 	
-	
-	
 	<xsl:template match="tei:TEI">
 		<html>
 			<head prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
-				<title id="{$path}">
+				<title id="{$eadid}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{$path}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{$path}.rdf"/>
+				<link rel="alternate" type="text/xml" href="{$eadid}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
 				
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
@@ -186,49 +122,32 @@
 	</xsl:template>
 	<!-- ******************** TEI PAGE LAYOUT *********************** -->
 	<xsl:template name="tei-content">
-		<xsl:choose>
-			<xsl:when test="string($id)">
-				<div class="row">
-					<div class="col-md-12">
-						<h1>
-							<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
-						</h1>
-						<h2>
-							<xsl:apply-templates select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author"/>
-						</h2>
-						<xsl:apply-templates/>
-					</div>
+		<div class="row">
+			<div class="col-md-12">
+				<h1>
+					<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
+				</h1>
+				<h2>
+					<xsl:apply-templates select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author"/>
+				</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
+				<xsl:call-template name="index"/>
+			</div>
+			<div class="col-md-8">
+				<xsl:call-template name="facsimiles"/>
+			</div>
+		</div>
+		<xsl:if test="tei:text">
+			<div class="row">
+				<div class="col-md-12">
+					<xsl:apply-templates select="tei:text"/>
 				</div>
-			</xsl:when>
-			<xsl:otherwise>
-				<div class="row">
-					<div class="col-md-12">
-						<h1>
-							<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
-						</h1>
-						<h2>
-							<xsl:apply-templates select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author"/>
-						</h2>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
-						<xsl:call-template name="index"/>
-					</div>
-					<div class="col-md-8">
-						<xsl:call-template name="facsimiles"/>
-					</div>
-				</div>
-				<xsl:if test="tei:text">
-					<div class="row">
-						<div class="col-md-12">
-							<xsl:apply-templates select="tei:text"/>
-						</div>
-					</div>
-				</xsl:if>
-			</xsl:otherwise>
-		</xsl:choose>
+			</div>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- ******************** INDEX TEMPLATE *********************** -->
@@ -384,7 +303,7 @@
 					<xsl:value-of select="$display_path"/>
 				</span>
 				<span id="doc">
-					<xsl:value-of select="$doc"/>
+					<xsl:value-of select="$eadid"/>
 				</span>
 				<span id="first-page">
 					<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
