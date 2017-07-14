@@ -97,7 +97,7 @@
 				
 				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
 				<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
-				<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
+				<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"/>
 				<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>
 				
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
