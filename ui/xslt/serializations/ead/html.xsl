@@ -1,171 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eac="urn:isbn:1-931666-33-4"
-	xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
-	version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:eac="urn:isbn:1-931666-33-4" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
 
 	<xsl:include href="html-toc.xsl"/>
 	<xsl:include href="html-templates.xsl"/>
 	<xsl:include href="../../templates.xsl"/>
 	<xsl:include href="../../functions.xsl"/>
-	
+
 	<!-- path and document params -->
+	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
-	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
-	<xsl:param name="path">
-		<xsl:choose>
-			<xsl:when test="contains($uri, 'ark:/')">
-				<xsl:value-of select="substring-after(substring-after($uri, 'ark:/'), '/')"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="substring-after($uri, 'id/')"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:param>
-	<xsl:variable name="doc">
-		<xsl:choose>
-			<xsl:when test="contains($path, '/')">
-				<xsl:value-of select="tokenize($path, '/')[1]"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:choose>
-					<xsl:when test="contains($path, '.')">
-						<xsl:variable name="pieces" select="tokenize($path, '\.')"/>
-						
-						<xsl:for-each select="$pieces[not(position()=last())]">
-							<xsl:value-of select="."/>
-							<xsl:if test="not(position()=last())">
-								<xsl:text>.</xsl:text>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$path"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="id">
-		<xsl:if test="contains($path, '/')">
-			<xsl:variable name="last-piece" select="substring-after($path, '/')"/>
-			<xsl:choose>
-				<xsl:when test="contains($last-piece, '.')">
-					<xsl:variable name="pieces" select="tokenize($last-piece, '\.')"/>
-					<xsl:for-each select="$pieces[not(position()=last())]">
-						<xsl:value-of select="."/>
-						<xsl:if test="not(position()=last())">
-							<xsl:text>.</xsl:text>
-						</xsl:if>
-					</xsl:for-each>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="$last-piece"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-	</xsl:variable>
 	
+	<xsl:variable name="eadid" select="/content/ead:ead/ead:eadheader/ead:eadid"/>
+
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="url" select="/content/config/url"/>
-	
+
 	<!-- display path -->
 	<xsl:variable name="display_path">
 		<xsl:variable name="default">
 			<xsl:choose>
-				<xsl:when test="$mode='private'">
-					<xsl:choose>
-						<xsl:when test="string($id)">
-							<xsl:text>../../../</xsl:text>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text>../../</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose>
+				<xsl:when test="$mode = 'private'">
+					<xsl:text>../../</xsl:text>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
 						<xsl:when test="contains($uri, 'ark:/')">
-							<xsl:choose>
-								<xsl:when test="string($id)">
-									<xsl:text>../../../</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>../../</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:text>../../</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:choose>
-								<xsl:when test="string($id)">
-									<xsl:text>../../</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>../</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:text>../</xsl:text>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
-		<!-- after default path is set, replace ../ when it is an aggregate collection -->		
+
+		<!-- after default path is set, replace ../ when it is an aggregate collection -->
 		<xsl:choose>
-			<xsl:when test="/content/config/aggregator='true'">
+			<xsl:when test="/content/config/aggregator = 'true'">
 				<xsl:value-of select="concat($default, '../')"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="$default"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:variable>
-	
-	<xsl:variable name="include_path" select="/content/config/url"/>
-	
+
+	<xsl:variable name="include_path" select="concat('../', $display_path)"/>
+
 	<!-- boolean variable as to whether there are mappable points -->
-	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
-	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
-	
+	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and (@source = 'geonames' or @source = 'pleiades')])"/>
+	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type = 'eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
+
 	<!-- url params -->
-	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name = 'lang']/value"/>
 	<xsl:param name="mode">
 		<xsl:choose>
 			<xsl:when test="contains($uri, 'admin/')">private</xsl:when>
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
-	
+
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/ead:ead"/>
 	</xsl:template>
-	
+
 	<xsl:template match="ead:ead">
 		<html>
-			<head prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+			<head
+				prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
-				<title id="{$path}">
+				<title id="{$eadid}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:choose>
 						<xsl:when test="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper">
 							<xsl:choose>
-								<xsl:when test="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[@type='sort']">
-									<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[@type='sort']"/>
+								<xsl:when test="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[@type = 'sort']">
+									<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[@type = 'sort']"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper[1]"/>
 								</xsl:otherwise>
-							</xsl:choose>							
-						</xsl:when>				
+							</xsl:choose>
+						</xsl:when>
 					</xsl:choose>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{$path}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{$path}.rdf"/>
-				
+				<link rel="alternate" type="text/xml" href="{$eadid}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
+
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<!-- bootstrap -->
@@ -175,16 +103,18 @@
 				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				
+
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
 				<xsl:if test="$hasPoints = true()">
-					<!-- mapping -->
-					<!--<link type="text/css" href="{$include_path}ui/css/timeline-2.3.0.css" rel="stylesheet"/>-->
-					<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/mxn.js"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/timeline-2.3.0.js"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/timemap_full.pack.js"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/param.js"/>
+					<!-- css -->
+					<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.css"/>
+					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.Default.css"/>
+
+					<!-- js -->
+					<script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.ajax.min.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.markercluster.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/display_map_functions.js"/>
 				</xsl:if>
 				<xsl:if test="string(//config/google_analytics)">
@@ -198,27 +128,22 @@
 				<div class="container-fluid">
 					<xsl:call-template name="ead-content"/>
 				</div>
-				<div id="path" style="display:none">../</div>
+				<div class="hidden">
+					<span id="path">
+						<xsl:value-of select="$display_path"/>
+					</span>
+					<span id="mapboxKey">
+						<xsl:value-of select="//config/mapboxKey"/>
+					</span>
+				</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
 	</xsl:template>
 
 	<xsl:template name="ead-content">
-		<!-- display component if there's an $id, otherwise whole finding aid -->
-		<xsl:choose>
-			<xsl:when test="string($id)">
-				<div class="row">
-					<div class="col-md-12">
-						<xsl:call-template name="component-template"/>
-					</div>
-				</div>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="head"/>
-				<xsl:call-template name="body"/>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:call-template name="head"/>
+		<xsl:call-template name="body"/>
 	</xsl:template>
 
 	<xsl:template name="head">
@@ -240,19 +165,20 @@
 		<div class="row">
 			<xsl:choose>
 				<!-- render some biographical information from EAC-CPF if the creator a xeac:entity -->
-				<xsl:when test="ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']">
+				<xsl:when test="ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']">
 					<xsl:variable name="eac-cpf" as="element()*">
-						<xsl:copy-of select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
+						<xsl:copy-of
+							select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
 					</xsl:variable>
 
 					<xsl:call-template name="did"/>
-					
+
 					<div class="col-md-12">
 						<h2>Creator</h2>
 						<dl class="dl-horizontal">
 							<dt>Name</dt>
 							<dd>
-								<xsl:apply-templates select="ead:archdesc/ead:did/ead:origination/*[@role='xeac:entity']"/>
+								<xsl:apply-templates select="ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']"/>
 							</dd>
 							<xsl:if test="string($eac-cpf//eac:abstract)">
 								<dt>Abstract</dt>
@@ -270,7 +196,7 @@
 			</xsl:choose>
 		</div>
 	</xsl:template>
-	
+
 	<xsl:template name="did">
 		<xsl:choose>
 			<xsl:when test="ead:archdesc/ead:did/ead:dao/@xlink:href">
@@ -281,12 +207,12 @@
 					<xsl:apply-templates select="ead:archdesc/ead:did/ead:dao"/>
 				</div>
 			</xsl:when>
-			<xsl:when test="contains(ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']/@xlink:href, 'flickr.com')">
+			<xsl:when test="contains(ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label = 'Small']/@xlink:href, 'flickr.com')">
 				<div class="col-md-6">
 					<xsl:apply-templates select="ead:archdesc/ead:did"/>
 				</div>
 				<div class="col-md-6">
-					<xsl:apply-templates select="ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label='Small']" mode="collection-image"/>
+					<xsl:apply-templates select="ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label = 'Small']" mode="collection-image"/>
 				</div>
 			</xsl:when>
 			<xsl:otherwise>
@@ -318,7 +244,7 @@
 						<div class="col-md-9">
 							<div id="archdesc-info">
 								<xsl:call-template name="archdesc-admininfo"/>
-								
+
 								<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
 								<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
 								<xsl:if test="count(ead:archdesc/ead:daogrp[count(ead:daoloc) &gt; 0]) &gt; 0">
@@ -330,7 +256,7 @@
 								<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
 								<xsl:apply-templates select="ead:archdesc/ead:odd"/>
 								<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
-								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>									
+								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>
 								<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
 								<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
 								<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
@@ -343,14 +269,7 @@
 					</div>
 					<xsl:if test="$hasPoints = true()">
 						<div class="tab-pane" id="mapTab">
-							<div id="timemap">
-								<div id="display-mapcontainer">
-									<div id="map"/>
-								</div>
-								<div id="timelinecontainer">
-									<div id="timeline"/>
-								</div>
-							</div>
+							<div id="mapcontainer"/>
 						</div>
 					</xsl:if>
 				</div>
@@ -372,11 +291,11 @@
 					<xsl:otherwise>Descriptive Identification</xsl:otherwise>
 				</xsl:choose>
 			</h2>
-			
+
 			<xsl:choose>
 				<xsl:when test="$upload = true()">
-					<xsl:variable name="content-type" select="parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
-					
+					<xsl:variable name="content-type" select="parent::ead:archdesc/ead:otherfindaid[@type = 'eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
+
 					<div class="col-md-8">
 						<xsl:call-template name="did-dl"/>
 					</div>
@@ -384,9 +303,11 @@
 						<div class="highlight">
 							<h3>Download Container List</h3>
 							<h4>
-								<a href="{$include_path}uploads/{$collection-name}/{parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href}" itemprop="url">
+								<a
+									href="{$include_path}uploads/{$collection-name}/{parent::ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href}"
+									itemprop="url">
 									<xsl:choose>
-										<xsl:when test="$content-type='application/pdf'">
+										<xsl:when test="$content-type = 'application/pdf'">
 											<img src="{$include_path}ui/images/adobe.png" alt="PDF" class="doc-icon"/>
 										</xsl:when>
 										<xsl:when test="contains($content-type, 'oasis') or contains($content-type, 'sun')">
@@ -397,7 +318,7 @@
 										</xsl:when>
 										<xsl:when test="contains($content-type, 'excel') or contains($content-type, 'sheet')">
 											<img src="{$include_path}ui/images/excel.png" alt="Microsoft Excel" class="doc-icon"/>
-										</xsl:when>										
+										</xsl:when>
 										<xsl:otherwise>
 											<xsl:value-of select="$content-type"/>
 										</xsl:otherwise>
@@ -413,7 +334,7 @@
 			</xsl:choose>
 		</div>
 	</xsl:template>
-	
+
 	<xsl:template name="did-dl">
 		<dl class="dl-horizontal">
 			<xsl:apply-templates select="ead:unitid"/>
@@ -423,7 +344,7 @@
 			<xsl:apply-templates select="ead:physdesc/ead:dimensions"/>
 			<xsl:apply-templates select="ead:physdesc/ead:genreform"/>
 			<xsl:apply-templates select="ead:physdesc/ead:physfacet"/>
-			<xsl:apply-templates select="ead:origination[not(child::*[@role='xeac:entity'])]"/>
+			<xsl:apply-templates select="ead:origination[not(child::*[@role = 'xeac:entity'])]"/>
 			<xsl:apply-templates select="ead:physloc"/>
 			<xsl:apply-templates select="ead:langmaterial"/>
 			<xsl:apply-templates select="ead:materialspec"/>
@@ -431,7 +352,7 @@
 			<xsl:apply-templates select="ead:note"/>
 		</dl>
 	</xsl:template>
-	
+
 	<xsl:template name="archdesc-images">
 		<div class="row">
 			<div class="col-md-12">
@@ -440,9 +361,9 @@
 			</div>
 		</div>
 	</xsl:template>
-	
+
 	<!-- suppress odd elements that are injected into the EAD XML model -->
-	<xsl:template match="ead:odd[@type='eaditor:parent']"/>
+	<xsl:template match="ead:odd[@type = 'eaditor:parent']"/>
 
 	<!--This template formats the repostory, origination, physdesc, abstract,
       unitid, physloc and materialspec elements of ead:archdesc/did which share a common presentaiton.
@@ -451,7 +372,7 @@
 		match="ead:repository | ead:origination | ead:physdesc/ead:extent | ead:physdesc/ead:dimensions | ead:physdesc/ead:genreform | ead:physdesc/ead:physfacet | ead:unitid | ead:physloc | ead:abstract | ead:langmaterial | ead:materialspec | ead:container">
 		<dt>
 			<xsl:choose>
-				<xsl:when test="local-name()='container'">
+				<xsl:when test="local-name() = 'container'">
 					<xsl:choose>
 						<xsl:when test="string(@type)">
 							<xsl:value-of select="concat(upper-case(substring(@type, 1, 1)), substring(@type, 2))"/>
@@ -472,16 +393,16 @@
 		<dd>
 			<!-- insert applicable RDFa attributes -->
 			<xsl:choose>
-				<xsl:when test="local-name()='abstract'">
+				<xsl:when test="local-name() = 'abstract'">
 					<xsl:attribute name="property">dcterms:abstract</xsl:attribute>
 				</xsl:when>
-				<xsl:when test="local-name()='extent'">
+				<xsl:when test="local-name() = 'extent'">
 					<xsl:attribute name="property">dcterms:extent</xsl:attribute>
 				</xsl:when>
-				<xsl:when test="local-name()='origination' and not(child::*)">
+				<xsl:when test="local-name() = 'origination' and not(child::*)">
 					<xsl:attribute name="property">dcterms:creator</xsl:attribute>
 				</xsl:when>
-				<xsl:when test="local-name()='unitid'">
+				<xsl:when test="local-name() = 'unitid'">
 					<xsl:attribute name="property">dcterms:identifier</xsl:attribute>
 				</xsl:when>
 			</xsl:choose>
@@ -495,15 +416,19 @@
 	<xsl:template match="ead:archdesc/ead:did/ead:unittitle">
 		<dt>
 			<b>
-				<xsl:value-of select="if (string(@label)) then @label else 'Title'"/>
+				<xsl:value-of select="
+						if (string(@label)) then
+							@label
+						else
+							'Title'"/>
 			</b>
 		</dt>
 		<dd>
 			<!--Inserts the text of unittitle and any children other that unitdate.-->
-			<xsl:apply-templates select="text() |* [not(name() = 'unitdate')]"/>
+			<xsl:apply-templates select="text() | *[not(name() = 'unitdate')]"/>
 			<xsl:for-each select="ead:unitdate">
 				<xsl:value-of select="."/>
-				<xsl:if test="not(position()=last())">
+				<xsl:if test="not(position() = last())">
 					<xsl:text>, </xsl:text>
 				</xsl:if>
 			</xsl:for-each>
@@ -511,7 +436,7 @@
 				<xsl:text>, </xsl:text>
 				<xsl:for-each select="parent::node()/ead:unitdate">
 					<xsl:value-of select="."/>
-					<xsl:if test="not(position()=last())">
+					<xsl:if test="not(position() = last())">
 						<xsl:text>, </xsl:text>
 					</xsl:if>
 				</xsl:for-each>
@@ -543,7 +468,11 @@
 		<div class="{name()}">
 			<a id="{generate-id(.)}"/>
 			<h2>
-				<xsl:value-of select="if (ead:head) then ead:head else eaditor:normalize_fields(local-name(), $lang)"/>
+				<xsl:value-of select="
+						if (ead:head) then
+							ead:head
+						else
+							eaditor:normalize_fields(local-name(), $lang)"/>
 			</h2>
 			<xsl:apply-templates select="*[not(self::ead:head)]"/>
 		</div>
@@ -575,7 +504,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template name="archdesc-admininfo">		
+	<xsl:template name="archdesc-admininfo">
 		<xsl:if
 			test="ead:archdesc/ead:accessrestrict | ead:archdesc/ead:userestrict | ead:archdesc/ead:prefercite | ead:archdesc/ead:altformavail | ead:archdesc/ead:accruals | ead:archdesc/ead:acqinfo | ead:archdesc/ead:appraisal | ead:archdesc/ead:custodhist | ead:archdesc/ead:processinfo">
 			<h2>
@@ -597,9 +526,14 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="ead:accessrestrict | ead:userestrict | ead:prefercite | ead:altformavail | ead:accruals | ead:acqinfo | ead:appraisal | ead:custodhist | ead:processinfo">
+	<xsl:template
+		match="ead:accessrestrict | ead:userestrict | ead:prefercite | ead:altformavail | ead:accruals | ead:acqinfo | ead:appraisal | ead:custodhist | ead:processinfo">
 		<h3>
-			<xsl:value-of select="if (ead:head) then ead:head else eaditor:normalize_fields(local-name(), $lang)"/>
+			<xsl:value-of select="
+					if (ead:head) then
+						ead:head
+					else
+						eaditor:normalize_fields(local-name(), $lang)"/>
 		</h3>
 		<xsl:apply-templates select="ead:p"/>
 	</xsl:template>
@@ -704,19 +638,20 @@
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
-			
-			<xsl:apply-templates select="ead:address | ead:blockquote | ead:chronlist | ead:controlaccess | ead:list | ead:listhead | ead:note | ead:p | ead:table"/>
+
+			<xsl:apply-templates
+				select="ead:address | ead:blockquote | ead:chronlist | ead:controlaccess | ead:list | ead:listhead | ead:note | ead:p | ead:table"/>
 
 			<!-- created unnumbered list for the access terms: this XSLT is simplified from earlier versions -->
 			<xsl:variable name="accessTerms">corpname,famname,function,genreform,geogname,name,occupation,persname,subject,title</xsl:variable>
 
 			<xsl:for-each select="tokenize($accessTerms, ',')">
 				<xsl:variable name="element" select="."/>
-				<xsl:if test="count($controlaccess//*[local-name()=$element]) &gt; 0">
+				<xsl:if test="count($controlaccess//*[local-name() = $element]) &gt; 0">
 					<ul>
 						<li>
 							<xsl:choose>
-								<xsl:when test="$class='clevel'">
+								<xsl:when test="$class = 'clevel'">
 									<b>
 										<xsl:value-of select="eaditor:normalize_fields($element, $lang)"/>
 									</b>
@@ -728,7 +663,7 @@
 								</xsl:otherwise>
 							</xsl:choose>
 							<ul>
-								<xsl:apply-templates select="$controlaccess//*[local-name()=$element]"/>
+								<xsl:apply-templates select="$controlaccess//*[local-name() = $element]"/>
 							</ul>
 						</li>
 					</ul>
@@ -768,47 +703,47 @@
 		</a>
 		<xsl:if test="string(@source) and string(@authfilenumber)">
 			<xsl:choose>
-				<xsl:when test="@source='aat'">
+				<xsl:when test="@source = 'aat'">
 					<a href="http://vocab.getty.edu/aat/{@authfilenumber}" title="Getty AAT" rel="dcterms:format">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='tgn'">
+				<xsl:when test="@source = 'tgn'">
 					<a href="http://vocab.getty.edu/tgn/{@authfilenumber}" title="Getty TGN" rel="dcterms:coverage">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='geonames'">
+				<xsl:when test="@source = 'geonames'">
 					<a href="http://www.geonames.org/{@authfilenumber}" title="Geonames" rel="dcterms:coverage">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='pleiades'">
+				<xsl:when test="@source = 'pleiades'">
 					<a href="https://pleiades.stoa.org/places/{@authfilenumber}" title="Pleiades" rel="dcterms:coverage">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='lcsh'">
+				<xsl:when test="@source = 'lcsh'">
 					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCSH" rel="dcterms:subject">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='lcgft'">
+				<xsl:when test="@source = 'lcgft'">
 					<a href="http://id.loc.gov/authorities/{@authfilenumber}" title="LCGFT" rel="dcterms:format">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='lcnaf'">
+				<xsl:when test="@source = 'lcnaf'">
 					<a href="http://id.loc.gov/authorities/names/{@authfilenumber}" title="LCNAF">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='viaf'">
+				<xsl:when test="@source = 'viaf'">
 					<a href="http://viaf.org/viaf/{@authfilenumber}" title="VIAF" rel="arch:correspondedWith">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
 				</xsl:when>
-				<xsl:when test="@source='wikidata'">
+				<xsl:when test="@source = 'wikidata'">
 					<a href="https://www.wikidata.org/entity/{@authfilenumber}" title="Wikidata" rel="dcterms:subject">
 						<span class="glyphicon glyphicon-new-window"/>
 					</a>
@@ -820,7 +755,7 @@
 				<span class="glyphicon glyphicon-new-window"/>
 			</a>
 		</xsl:if>
-		<xsl:if test="string(normalize-space(@role)) and not(@role='xeac:entity')">
+		<xsl:if test="string(normalize-space(@role)) and not(@role = 'xeac:entity')">
 			<xsl:text> (</xsl:text>
 			<xsl:value-of select="@role"/>
 			<xsl:text>)</xsl:text>
@@ -882,139 +817,139 @@
 
 	<!-- The following general templates format the display of various RENDER
 		attributes.-->
-	<xsl:template match="emph[@render='bold']">
+	<xsl:template match="emph[@render = 'bold']">
 		<b>
 			<xsl:apply-templates/>
 		</b>
 	</xsl:template>
-	<xsl:template match="emph[@render='italic']">
+	<xsl:template match="emph[@render = 'italic']">
 		<i>
 			<xsl:apply-templates/>
 		</i>
 	</xsl:template>
-	<xsl:template match="emph[@render='underline']">
+	<xsl:template match="emph[@render = 'underline']">
 		<u>
 			<xsl:apply-templates/>
 		</u>
 	</xsl:template>
-	<xsl:template match="emph[@render='sub']">
+	<xsl:template match="emph[@render = 'sub']">
 		<sub>
 			<xsl:apply-templates/>
 		</sub>
 	</xsl:template>
-	<xsl:template match="emph[@render='super']">
+	<xsl:template match="emph[@render = 'super']">
 		<super>
 			<xsl:apply-templates/>
 		</super>
 	</xsl:template>
 
-	<xsl:template match="emph[@render='quoted']">
+	<xsl:template match="emph[@render = 'quoted']">
 		<xsl:text>"</xsl:text>
 		<xsl:apply-templates/>
 		<xsl:text>"</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="emph[@render='doublequote']">
+	<xsl:template match="emph[@render = 'doublequote']">
 		<xsl:text>"</xsl:text>
 		<xsl:apply-templates/>
 		<xsl:text>"</xsl:text>
 	</xsl:template>
-	<xsl:template match="emph[@render='singlequote']">
+	<xsl:template match="emph[@render = 'singlequote']">
 		<xsl:text>'</xsl:text>
 		<xsl:apply-templates/>
 		<xsl:text>'</xsl:text>
 	</xsl:template>
-	<xsl:template match="emph[@render='bolddoublequote']">
+	<xsl:template match="emph[@render = 'bolddoublequote']">
 		<b>
 			<xsl:text>"</xsl:text>
 			<xsl:apply-templates/>
 			<xsl:text>"</xsl:text>
 		</b>
 	</xsl:template>
-	<xsl:template match="emph[@render='boldsinglequote']">
+	<xsl:template match="emph[@render = 'boldsinglequote']">
 		<b>
 			<xsl:text>'</xsl:text>
 			<xsl:apply-templates/>
 			<xsl:text>'</xsl:text>
 		</b>
 	</xsl:template>
-	<xsl:template match="emph[@render='boldunderline']">
+	<xsl:template match="emph[@render = 'boldunderline']">
 		<b>
 			<u>
 				<xsl:apply-templates/>
 			</u>
 		</b>
 	</xsl:template>
-	<xsl:template match="emph[@render='bolditalic']">
+	<xsl:template match="emph[@render = 'bolditalic']">
 		<b>
 			<i>
 				<xsl:apply-templates/>
 			</i>
 		</b>
 	</xsl:template>
-	<xsl:template match="emph[@render='boldsmcaps']">
+	<xsl:template match="emph[@render = 'boldsmcaps']">
 		<font style="font-variant: small-caps">
 			<b>
 				<xsl:apply-templates/>
 			</b>
 		</font>
 	</xsl:template>
-	<xsl:template match="emph[@render='smcaps']">
+	<xsl:template match="emph[@render = 'smcaps']">
 		<font style="font-variant: small-caps">
 			<xsl:apply-templates/>
 		</font>
 	</xsl:template>
-	<xsl:template match="title[@render='bold']">
+	<xsl:template match="title[@render = 'bold']">
 		<b>
 			<xsl:apply-templates/>
 		</b>
 	</xsl:template>
-	<xsl:template match="title[@render='italic']">
+	<xsl:template match="title[@render = 'italic']">
 		<i>
 			<xsl:apply-templates/>
 		</i>
 	</xsl:template>
-	<xsl:template match="title[@render='underline']">
+	<xsl:template match="title[@render = 'underline']">
 		<u>
 			<xsl:apply-templates/>
 		</u>
 	</xsl:template>
-	<xsl:template match="title[@render='sub']">
+	<xsl:template match="title[@render = 'sub']">
 		<sub>
 			<xsl:apply-templates/>
 		</sub>
 	</xsl:template>
-	<xsl:template match="title[@render='super']">
+	<xsl:template match="title[@render = 'super']">
 		<super>
 			<xsl:apply-templates/>
 		</super>
 	</xsl:template>
 
-	<xsl:template match="title[@render='quoted']">
+	<xsl:template match="title[@render = 'quoted']">
 		<xsl:text>"</xsl:text>
 		<xsl:apply-templates/>
 		<xsl:text>"</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="title[@render='doublequote']">
+	<xsl:template match="title[@render = 'doublequote']">
 		<xsl:text>"</xsl:text>
 		<xsl:apply-templates/>
 		<xsl:text>"</xsl:text>
 	</xsl:template>
 
-	<xsl:template match="title[@render='singlequote']">
+	<xsl:template match="title[@render = 'singlequote']">
 		<xsl:text>'</xsl:text>
 		<xsl:apply-templates/>
 		<xsl:text>'</xsl:text>
 	</xsl:template>
-	<xsl:template match="title[@render='bolddoublequote']">
+	<xsl:template match="title[@render = 'bolddoublequote']">
 		<b>
 			<xsl:text>"</xsl:text>
 			<xsl:apply-templates/>
 			<xsl:text>"</xsl:text>
 		</b>
 	</xsl:template>
-	<xsl:template match="title[@render='boldsinglequote']">
+	<xsl:template match="title[@render = 'boldsinglequote']">
 		<b>
 			<xsl:text>'</xsl:text>
 			<xsl:apply-templates/>
@@ -1022,28 +957,28 @@
 		</b>
 	</xsl:template>
 
-	<xsl:template match="title[@render='boldunderline']">
+	<xsl:template match="title[@render = 'boldunderline']">
 		<b>
 			<u>
 				<xsl:apply-templates/>
 			</u>
 		</b>
 	</xsl:template>
-	<xsl:template match="title[@render='bolditalic']">
+	<xsl:template match="title[@render = 'bolditalic']">
 		<b>
 			<i>
 				<xsl:apply-templates/>
 			</i>
 		</b>
 	</xsl:template>
-	<xsl:template match="title[@render='boldsmcaps']">
+	<xsl:template match="title[@render = 'boldsmcaps']">
 		<font style="font-variant: small-caps">
 			<b>
 				<xsl:apply-templates/>
 			</b>
 		</font>
 	</xsl:template>
-	<xsl:template match="title[@render='smcaps']">
+	<xsl:template match="title[@render = 'smcaps']">
 		<font style="font-variant: small-caps">
 			<xsl:apply-templates/>
 		</font>
@@ -1167,11 +1102,11 @@
 						<xsl:apply-templates select="date"/>
 					</td>
 					<td valign="top">
-						<xsl:apply-templates select="ead:eventgrp/ead:event[position()=1]"/>
+						<xsl:apply-templates select="ead:eventgrp/ead:event[position() = 1]"/>
 					</td>
 				</tr>
 				<!--Put each successive event on another line.-->
-				<xsl:for-each select="ead:eventgrp/ead:event[not(position()=1)]">
+				<xsl:for-each select="ead:eventgrp/ead:event[not(position() = 1)]">
 					<tr>
 						<td> </td>
 						<td> </td>
@@ -1208,6 +1143,6 @@
 	</xsl:template>
 
 	<!-- suppress eaditor-injected odd for the component parent (used in RDF) -->
-	<xsl:template match="ead:odd[@type='eaditor:parent']" mode="#all"/>
+	<xsl:template match="ead:odd[@type = 'eaditor:parent']" mode="#all"/>
 
 </xsl:stylesheet>

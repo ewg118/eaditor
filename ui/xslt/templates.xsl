@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
 
-	<xsl:template name="header">
+	<xsl:template name="header">		
 		<div class="navbar navbar-default navbar-static-top" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -34,10 +34,10 @@
 					</ul>
 					<xsl:if test="$pipeline='display'">
 						<ul class="nav navbar-nav navbar-right">
-							<li><a href="{tokenize($path, '/')[last()]}.xml">XML</a></li>
-							<li><a href="{tokenize($path, '/')[last()]}.rdf">RDF/XML</a></li>
+							<li><a href="{$eadid}.xml">XML</a></li>
+							<li><a href="{$eadid}.rdf">RDF/XML</a></li>
 							<xsl:if test="$collection-name != 'admin'">
-								<li><a href="{concat('http://', doc('input:request')/request/server-name, ':8080/orbeon/eaditor/admin/', $collection-name, '/id/', $path)}">Staff View</a></li>
+								<li><a href="{concat('http://', doc('input:request')/request/server-name, ':8080/orbeon/eaditor/admin/', $collection-name, '/id/', $eadid)}">Staff View</a></li>
 							</xsl:if>
 						</ul>
 					</xsl:if>
