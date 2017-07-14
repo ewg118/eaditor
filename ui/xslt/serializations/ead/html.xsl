@@ -174,6 +174,7 @@
 					<xsl:call-template name="did"/>
 
 					<div class="col-md-12">
+						<hr/>
 						<h2>Creator</h2>
 						<dl class="dl-horizontal">
 							<dt>Name</dt>
@@ -200,25 +201,40 @@
 	<xsl:template name="did">
 		<xsl:choose>
 			<xsl:when test="ead:archdesc/ead:did/ead:dao/@xlink:href">
-				<div class="col-md-6">
+				<div class="col-md-{if ($hasPoints = true()) then '4' else '6'}">
 					<xsl:apply-templates select="ead:archdesc/ead:did"/>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-{if ($hasPoints = true()) then '4' else '6'}">
 					<xsl:apply-templates select="ead:archdesc/ead:did/ead:dao"/>
 				</div>
+				<xsl:if test="$hasPoints = true()">
+					<div class="col-md-4" id="display-map">
+						<div id="mapcontainer"/>
+					</div>
+				</xsl:if>
 			</xsl:when>
 			<xsl:when test="contains(ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label = 'Small']/@xlink:href, 'flickr.com')">
-				<div class="col-md-6">
+				<div class="col-md-{if ($hasPoints = true()) then '4' else '6'}">
 					<xsl:apply-templates select="ead:archdesc/ead:did"/>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-{if ($hasPoints = true()) then '4' else '6'}">
 					<xsl:apply-templates select="ead:archdesc/ead:did/ead:daogrp/ead:daoloc[@xlink:label = 'Small']" mode="collection-image"/>
 				</div>
+				<xsl:if test="$hasPoints = true()">
+					<div class="col-md-4" id="display-map">
+						<div id="mapcontainer"/>
+					</div>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<div class="col-md-12">
+				<div class="col-md-{if ($hasPoints = true()) then '6' else '12'}">
 					<xsl:apply-templates select="ead:archdesc/ead:did"/>
 				</div>
+				<xsl:if test="$hasPoints = true()">
+					<div class="col-md-6" id="display-map">
+						<div id="mapcontainer"/>
+					</div>
+				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -226,52 +242,34 @@
 	<xsl:template name="body">
 		<div class="row">
 			<div class="col-md-12">
-				<ul class="nav nav-pills" id="tabs">
-					<li class="active">
-						<a href="#summary" data-toggle="pill">Summary</a>
-					</li>
-					<xsl:if test="$hasPoints = true()">
-						<li>
-							<a href="#mapTab" id="mapButton" data-toggle="pill">Map</a>
-						</li>
+				<hr/>
+			</div>
+			<div class="col-md-3">
+				<xsl:call-template name="toc"/>
+			</div>
+			<div class="col-md-9">
+				<div id="archdesc-info">
+					<xsl:call-template name="archdesc-admininfo"/>
+					
+					<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
+					<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
+					<xsl:if test="count(ead:archdesc/ead:daogrp[count(ead:daoloc) &gt; 0]) &gt; 0">
+						<xsl:call-template name="archdesc-images"/>
 					</xsl:if>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="summary">
-						<div class="col-md-3">
-							<xsl:call-template name="toc"/>
-						</div>
-						<div class="col-md-9">
-							<div id="archdesc-info">
-								<xsl:call-template name="archdesc-admininfo"/>
-
-								<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
-								<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
-								<xsl:if test="count(ead:archdesc/ead:daogrp[count(ead:daoloc) &gt; 0]) &gt; 0">
-									<xsl:call-template name="archdesc-images"/>
-								</xsl:if>
-								<xsl:apply-templates select="ead:archdesc/ead:arrangement"/>
-								<xsl:call-template name="archdesc-relatedmaterial"/>
-								<xsl:apply-templates select="ead:archdesc/ead:note"/>
-								<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
-								<xsl:apply-templates select="ead:archdesc/ead:odd"/>
-								<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
-								<xsl:apply-templates select="ead:archdesc/ead:phystech"/>
-								<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
-								<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
-								<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
-								<xsl:apply-templates select="ead:archdesc/ead:index | ead:archdesc/*/ead:index"/>
-							</div>
-							<div id="dsc">
-								<xsl:apply-templates select="ead:archdesc/ead:dsc"/>
-							</div>
-						</div>
-					</div>
-					<xsl:if test="$hasPoints = true()">
-						<div class="tab-pane" id="mapTab">
-							<div id="mapcontainer"/>
-						</div>
-					</xsl:if>
+					<xsl:apply-templates select="ead:archdesc/ead:arrangement"/>
+					<xsl:call-template name="archdesc-relatedmaterial"/>
+					<xsl:apply-templates select="ead:archdesc/ead:note"/>
+					<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
+					<xsl:apply-templates select="ead:archdesc/ead:odd"/>
+					<xsl:apply-templates select="ead:archdesc/ead:originalsloc"/>
+					<xsl:apply-templates select="ead:archdesc/ead:phystech"/>
+					<xsl:apply-templates select="ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid"/>
+					<xsl:apply-templates select="ead:archdesc/ead:fileplan | ead:archdesc/*/ead:fileplan"/>
+					<xsl:apply-templates select="ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography"/>
+					<xsl:apply-templates select="ead:archdesc/ead:index | ead:archdesc/*/ead:index"/>
+				</div>
+				<div id="dsc">
+					<xsl:apply-templates select="ead:archdesc/ead:dsc"/>
 				</div>
 			</div>
 		</div>

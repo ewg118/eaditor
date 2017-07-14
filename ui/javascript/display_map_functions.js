@@ -85,12 +85,15 @@ function initialize_map(id, path) {
  *****/
 function renderPopup(e) {
     var str = "<h4>" + e.layer.feature.properties.toponym + " <a href='" + e.layer.feature.properties.gazetteer_uri + "' target='_blank'><span class='glyphicon glyphicon-new-window'/></a></h4>";
-    str += '<div><b>Related Components</b>';
-    str += '<ul>';
-    $.each(e.layer.feature.properties.relatedComponent, function (key, value) {
-        str += "<li><a href='" + value.uri + "'>" + value.title + '</a></li>';
-    });
-    str += '</ul></div>';
+    
+    if (e.layer.feature.properties.relatedComponent.length > 0) {
+        str += '<div><b>Related Components</b>';
+        str += '<ul>';
+        $.each(e.layer.feature.properties.relatedComponent, function (key, value) {
+            str += "<li><a href='" + value.uri + "'>" + value.title + '</a></li>';
+        });
+        str += '</ul></div>';
+    }
     
     e.layer.bindPopup(str).openPopup();
 }

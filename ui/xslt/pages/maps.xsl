@@ -86,7 +86,7 @@
 						<div class="col-md-3">
 							<xsl:apply-templates select="//lst[@name='facet_fields']/lst[descendant::int]"/>
 						</div>
-						<div class="col-md-9">
+						<div class="col-md-9" id="map-page">
 							<div id="mapcontainer"/>
 						</div>
 					</div>
