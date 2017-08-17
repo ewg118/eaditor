@@ -68,7 +68,7 @@
 			</xforms:instance>
 
 			<!-- load eaditor collection -->
-			<xforms:submission id="load-eaditor-collection" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/" replace="instance" instance="temp">
+			<xforms:submission id="load-eaditor-collection" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='001']/@test">Success</xforms:setvalue>
 					<xforms:send submission="load-guides-collection"/>
@@ -82,7 +82,7 @@
 			</xforms:submission>
 
 			<!-- load config xml file -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/config.xml" replace="instance" instance="config">
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='002']/@test">Success</xforms:setvalue>
 					<xforms:send submission="test-solr-published"/>
@@ -100,7 +100,7 @@
 			</xforms:submission>
 
 			<!-- load eaditor/guides collection -->
-			<xforms:submission id="load-guides-collection" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/guides" replace="instance" instance="temp">
+			<xforms:submission id="load-guides-collection" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/guides" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@test">Success</xforms:setvalue>
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='003']/@count" value="count(instance('temp')//exist:resource)"/>
@@ -113,7 +113,7 @@
 			</xforms:submission>
 
 			<!-- load c template -->
-			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/c-template.xml" replace="instance" instance="temp">
+			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/c-template.xml" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='004']/@test">Success</xforms:setvalue>
 				</xforms:action>
@@ -124,7 +124,7 @@
 			</xforms:submission>
 
 			<!-- load ead template -->
-			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/ead-template.xml" replace="instance" instance="temp">
+			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/ead-template.xml" replace="instance" instance="temp">
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/errors/error[@code='005']/@test">Success</xforms:setvalue>
 				</xforms:action>

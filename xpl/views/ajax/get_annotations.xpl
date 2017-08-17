@@ -30,7 +30,7 @@
 					<xsl:variable name="doc" select="doc('input:request')/request/parameters/parameter[name='doc']/value"/>
 					<xsl:variable name="facsimile" select="doc('input:request')/request/parameters/parameter[name='facsimile']/value"/>
 					
-					<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $doc, '.xml'))/*">
+					<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/*">
 						<xsl:with-param name="doc" select="$doc"/>
 						<xsl:with-param name="facsimile" select="$facsimile"/>
 					</xsl:apply-templates>				

@@ -57,7 +57,7 @@
 							</xsl:variable>
 							<config>
 								<url>
-									<xsl:value-of select="concat(/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $doc, '.xml')"/>
+									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml')"/>
 								</url>
 								<content-type>application/xml</content-type>
 								<encoding>utf-8</encoding>
@@ -68,7 +68,7 @@
 							<xsl:variable name="doc" select="doc('input:request')/request/parameters/parameter[name='guide']/value"/>
 							<config>
 								<url>
-									<xsl:value-of select="concat(/exist-config/url, 'eaditor2/', $collection-name, '/guides/', $doc, '.xml')"/>
+									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml')"/>
 								</url>
 								<content-type>application/xml</content-type>
 								<encoding>utf-8</encoding>

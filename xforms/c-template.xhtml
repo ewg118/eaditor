@@ -75,7 +75,7 @@
 			</xforms:instance>
 
 			<!-- ************** SUBMISSIONS ***************** -->
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/collections-list.xml" replace="instance"
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
 				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
@@ -88,11 +88,11 @@
 			</xforms:submission>
 
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/c-template.xml"
+			<xforms:submission id="load-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
 				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"></xforms:submission>
 
 			<!-- Submission to save the document -->
-			<xforms:submission id="save-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/c-template.xml" method="put"
+			<xforms:submission id="save-template" ref="instance('c-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml" method="put"
 				replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">An error occurred while saving.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Template saved.</xforms:setvalue>

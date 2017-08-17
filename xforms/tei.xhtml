@@ -130,12 +130,12 @@
 
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/config.xml"
+			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
 				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor2/collections-list.xml" replace="instance"
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
 				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
@@ -153,14 +153,14 @@
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" replace="instance" instance="doc"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" replace="instance" instance="doc"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load TEI document</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-submission" ref="instance('doc')"
-				action="{instance('exist-config')/url}eaditor2/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
 				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Document. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
