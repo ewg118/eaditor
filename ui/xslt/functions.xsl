@@ -30,6 +30,44 @@
 		</xsl:if>
 	</xsl:function>	
 
+	<xsl:template name="eaditor:get_date_hierarchy">
+		<xsl:param name="date"/>
+		
+		<xsl:if test="$date castable as xs:gYear">
+			<xsl:variable name="year_string" select="string(abs(number($date)))"/>
+			<xsl:variable name="century"
+				select="
+				if (number($date) &gt; 0) then
+				ceiling(number($date) div 100)
+				else
+				floor(number($date) div 100)"/>
+			<xsl:variable name="decade" select="floor(abs(number($date)) div 10) * 10"/>
+			
+			<xsl:if test="number($century)">
+				<field name="century_num">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="$century"/>
+				</field>
+			</xsl:if>
+			<field name="decade_num">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="$decade"/>
+			</field>
+			<xsl:if test="number($date)">
+				<field name="year_num">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="number($date)"/>
+				</field>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
 	<xsl:function name="eaditor:normalize_fields">
 		<xsl:param name="field"/>
 		<xsl:param name="lang"/>
