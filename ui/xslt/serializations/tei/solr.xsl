@@ -167,6 +167,7 @@
 		<xsl:if test="@when">
 			<xsl:call-template name="eaditor:get_date_hierarchy">
 				<xsl:with-param name="date" select="@when"/>
+				<xsl:with-param name="upload" select="false()"/>
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
