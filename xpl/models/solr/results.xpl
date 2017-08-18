@@ -49,7 +49,7 @@
 					<xsl:text>&amp;facet.field=</xsl:text>
 					<xsl:value-of select="string-join(/config/facets/facet, '&amp;facet.field=')"/>
 				</xsl:variable>
-				<xsl:variable name="fl" select="string-join(('id', 'recordId', 'unittitle_display', 'unitdate_display', 'publisher_display', 'extent_display', 'collection-name'), ',')"/>
+				<xsl:variable name="fl" select="string-join(('id', 'recordId', 'unittitle_display', 'unitdate_display', 'publisher_display', 'extent_display', 'collection-name', 'collection_thumb'), ',')"/>
 
 				<xsl:variable name="service">
 					<xsl:choose>
