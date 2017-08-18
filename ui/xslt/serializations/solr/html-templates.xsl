@@ -301,12 +301,22 @@
 					</xsl:if>
 				</dl>
 			</td>
-			<td class="col-md-4">
-				<xsl:if test="count(arr[@name='collection_thumb']/str) &gt; 0">
-					<div style="float:right">
+			<td class="col-md-4 text-right">
+				<xsl:choose>
+					<xsl:when test="count(arr[@name='collection_thumb']/str) &gt; 0">
 						<xsl:apply-templates select="arr[@name='collection_thumb']/str"/>
-					</div>
-				</xsl:if>
+					</xsl:when>
+					<xsl:when test="string(//config/results_default_image)">
+						<xsl:choose>
+							<xsl:when test="matches(//config/results_default_image, 'https?://')">
+								<img src="{//config/results_default_image}" alt="thumbnail" title="thumbnail"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<img src="{concat($include_path, //config/results_default_image)}" alt="thumbnail" title="thumbnail"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+				</xsl:choose>
 			</td>
 		</tr>
 	</xsl:template>
