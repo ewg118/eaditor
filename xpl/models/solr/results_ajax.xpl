@@ -47,7 +47,7 @@
 				<!-- config variables -->
 				<xsl:variable name="solr-url" select="concat(/config/solr_published, 'select/')"/>
 
-				<xsl:variable name="fl" select="string-join(('id', 'recordId', 'unittitle_display', 'unitdate_display', 'publisher_display', 'extent_display', 'collection-name', 'collection_thumb'), ',')"/>
+				<xsl:variable name="fl" select="string-join(('id', 'recordId', 'unittitle_display', 'unitdate_display', 'publisher_display', 'extent_display', 'collection-name', 'collection_thumb', 'collection_reference'), ',')"/>
 
 				<xsl:variable name="service">
 					<xsl:choose>
