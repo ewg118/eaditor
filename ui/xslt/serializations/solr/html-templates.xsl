@@ -312,7 +312,7 @@
 								<img src="{//config/results_default_image}" alt="thumbnail" title="thumbnail"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<img src="{concat($include_path, //config/results_default_image)}" alt="thumbnail" title="thumbnail"/>
+								<img src="{concat($include_path, 'ui/images/', //config/results_default_image)}" alt="thumbnail" title="thumbnail"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
