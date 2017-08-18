@@ -309,10 +309,10 @@
 					<xsl:when test="string(//config/results_default_image)">
 						<xsl:choose>
 							<xsl:when test="matches(//config/results_default_image, 'https?://')">
-								<img src="{//config/results_default_image}" alt="thumbnail" title="thumbnail"/>
+								<img src="{//config/results_default_image}" alt="thumbnail" title="thumbnail" style="max-height:120px;max-width:120px;"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<img src="{concat($include_path, 'ui/images/', //config/results_default_image)}" alt="thumbnail" title="thumbnail"/>
+								<img src="{concat($include_path, 'ui/images/', //config/results_default_image)}" alt="thumbnail" title="thumbnail" style="max-height:120px;max-width:120px;"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
