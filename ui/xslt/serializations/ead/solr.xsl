@@ -3,6 +3,8 @@
 	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:pleiades="https://pleiades.stoa.org/places/vocab#" exclude-result-prefixes="#all" version="2.0">
 
+	<xsl:include href="../../functions.xsl"/>
+
 	<xsl:variable name="upload" select="boolean(descendant::ead:archdesc/ead:otherfindaid[@type = 'eaditor_upload']/ead:bibref/ead:extptr/@xlink:href)"/>
 
 	<!-- config variables -->
@@ -424,44 +426,4 @@
 			</field>
 		</xsl:if>
 	</xsl:template>
-
-	<!-- functions -->
-	<xsl:template name="eaditor:get_date_hierarchy">
-		<xsl:param name="date"/>
-
-		<xsl:if test="$date castable as xs:gYear">
-			<xsl:variable name="year_string" select="string(abs(number($date)))"/>
-			<xsl:variable name="century"
-				select="
-					if (number($date) &gt; 0) then
-						ceiling(number($date) div 100)
-					else
-						floor(number($date) div 100)"/>
-			<xsl:variable name="decade" select="floor(abs(number($date)) div 10) * 10"/>
-
-			<xsl:if test="number($century)">
-				<field name="century_num">
-					<xsl:if test="$upload = true()">
-						<xsl:attribute name="update">set</xsl:attribute>
-					</xsl:if>
-					<xsl:value-of select="$century"/>
-				</field>
-			</xsl:if>
-			<field name="decade_num">
-				<xsl:if test="$upload = true()">
-					<xsl:attribute name="update">set</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="$decade"/>
-			</field>
-			<xsl:if test="number($date)">
-				<field name="year_num">
-					<xsl:if test="$upload = true()">
-						<xsl:attribute name="update">set</xsl:attribute>
-					</xsl:if>
-					<xsl:value-of select="number($date)"/>
-				</field>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template>
-
 </xsl:stylesheet>
