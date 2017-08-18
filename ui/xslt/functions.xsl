@@ -32,6 +32,7 @@
 
 	<xsl:template name="eaditor:get_date_hierarchy">
 		<xsl:param name="date"/>
+		<xsl:param name="upload"/>
 		
 		<xsl:if test="$date castable as xs:gYear">
 			<xsl:variable name="year_string" select="string(abs(number($date)))"/>

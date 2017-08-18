@@ -404,6 +404,7 @@
 				<xsl:for-each select="tokenize(@normal, '/')">
 					<xsl:call-template name="eaditor:get_date_hierarchy">
 						<xsl:with-param name="date" select="."/>
+						<xsl:with-param name="upload" select="$upload"/>
 					</xsl:call-template>
 
 				</xsl:for-each>
