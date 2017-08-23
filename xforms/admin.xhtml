@@ -1717,7 +1717,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																		
 																		<xforms:send submission="commit"></xforms:send>
 																		<!-- post to SPARQL endpoint, if it exists -->
-																		<!--<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>-->
+																		<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
 																		<xforms:setvalue ref="." value="true()"></xforms:setvalue>
 																	</xforms:action>
 																</xforms:trigger>
