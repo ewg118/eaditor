@@ -62,7 +62,7 @@
 			</xforms:instance>
 
 			<xforms:instance id="config-template" xxforms:exclude-result-prefixes="#all">
-				<config version="0.60" xmlns="">
+				<config version="2017-08-18" xmlns="">
 					<flickr_api_key>6210480b2fb5eb8b0eb1b6770fe921f6</flickr_api_key>
 					<flickr_api_secret>31c3a70be753554e</flickr_api_secret>
 					<geonames_api_key></geonames_api_key>
@@ -74,6 +74,7 @@
 					<publisher_email></publisher_email>
 					<description></description>
 					<language>eng</language>
+					<results_default_image/>
 					<license>http://opendatacommons.org/licenses/odbl/</license>
 					<solr_published>http://localhost:8080/solr/eaditor-published/</solr_published>
 					<url>http://localhost:8080/orbeon/eaditor/</url>
@@ -1681,11 +1682,15 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 																	<xforms:action ev:event="DOMActivate">
 																		<xforms:var name="val" select="." as="xs:boolean"></xforms:var>
 																		<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
+																		
 																		<!-- set URI for object, execute SPARQL/Update query to purge triples -->
-																		<xforms:var name="uri"
-																			select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', $id) else concat(instance('config')/url, 'id/', $id)"></xforms:var>
-																		<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template')/query[@id=$type], 'URI', $uri)"></xforms:setvalue>
-																		<xforms:send submission="delete-graph"></xforms:send>
+																		<xforms:action if="string(instance('config')/sparql/update)">
+																			<xforms:var name="uri"
+																				select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', $id) else concat(instance('config')/url, 'id/', $id)"></xforms:var>
+																			<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template')/query[@id=$type], 'URI', $uri)"></xforms:setvalue>
+																			<xforms:send submission="delete-graph"></xforms:send>
+																		</xforms:action>
+																		
 																		<!-- delete from solr -->
 																		<xforms:setvalue ref="instance('deleteId')/query" value="concat('id:&#x022;', instance('control-instance')/id, '&#x022;')"></xforms:setvalue>
 																		<xforms:send submission="delete-solr-doc"></xforms:send>
