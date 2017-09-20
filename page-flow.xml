@@ -142,6 +142,7 @@
 	<page path="/eaditor/[^\/]+/id/(.*)\.geojson" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/geojson.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)\.solr" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/solr.xpl"/>
 	<page path="/eaditor/[^\/]+/id/(.*)" model="xpl/models/object/public.xpl" view="xpl/views/serializations/object/html.xpl"/>
+	<page path="/eaditor/[^\/]+/manifest/(.*)$" model="xpl/models/object/public.xpl" view="xpl/controllers/iiif-manifest.xpl"/>
 	
 	<!-- ARK URIs -->
 	<page path="/eaditor/[^\/]+/ark:/([0-9]{5})/(.*)\.xml" view="xpl/models/object/public.xpl"/>

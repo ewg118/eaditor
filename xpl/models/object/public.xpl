@@ -45,13 +45,17 @@
 							</xsl:variable>
 							<!-- test to be sure naan in the URI matches that in the config -->
 							<xsl:choose>
-								<xsl:when test="/content/config/ark/naan = $naan">
-									
+								<xsl:when test="/content/config/ark/naan = $naan">									
 									<xsl:variable name="id">
 										<xsl:choose>
 											<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='id']/value)">
 												<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='id']/value"/>
-											</xsl:when>									
+											</xsl:when>		
+											<!-- IIIF manifest generation -->
+											<xsl:when test="contains(doc('input:request')/request/request-url, 'manifest/')">
+												<xsl:variable name="pieces" select="tokenize(substring-after(doc('input:request')/request/request-url, 'manifest/'), '/')"/>
+												<xsl:value-of select="$pieces[1]"/>
+											</xsl:when>
 											<xsl:otherwise>
 												<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
 												
@@ -84,7 +88,7 @@
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:variable>
-									
+
 									<xsl:apply-templates select="document(concat(/content/exist-config/url, 'eaditor/', $collection-name, '/guides/', $id, '.xml'))/*"/>
 								</xsl:when>
 								<xsl:otherwise>
@@ -120,7 +124,12 @@
 								<xsl:choose>
 									<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='id']/value)">
 										<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='id']/value"/>
-									</xsl:when>									
+									</xsl:when>		
+									<!-- IIIF manifest generation -->
+									<xsl:when test="contains(doc('input:request')/request/request-url, 'manifest/')">
+										<xsl:variable name="pieces" select="tokenize(substring-after(doc('input:request')/request/request-url, 'manifest/'), '/')"/>
+										<xsl:value-of select="$pieces[1]"/>
+									</xsl:when>
 									<xsl:otherwise>
 										<xsl:variable name="doc" select="tokenize(doc('input:request')/request/request-url, '/')[last()]"/>
 										
