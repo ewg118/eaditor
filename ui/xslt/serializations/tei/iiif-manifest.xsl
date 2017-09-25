@@ -42,6 +42,12 @@
 				</xsl:variable>
 				<xsl:apply-templates select="$model"/>
 			</xsl:when>
+			<xsl:when test="$pieces[2] = 'list'">
+				<xsl:variable name="model" as="element()*">
+					<xsl:apply-templates select="descendant::tei:facsimile[@xml:id = $pieces[3]]" mode="AnnotationList"/>
+				</xsl:variable>
+				<xsl:apply-templates select="$model"/>
+			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="//tei:TEI"/>
 			</xsl:otherwise>
@@ -59,11 +65,11 @@
 				<__type>sc:Manifest</__type>
 				<attribution>
 					<xsl:value-of select="/content/config/publisher"/>
-				</attribution>				
-				
+				</attribution>
+
 				<!-- metadata from TEI Header -->
 				<xsl:apply-templates select="tei:teiHeader"/>
-				
+
 				<rendering>
 					<_object>
 						<__id>
@@ -112,12 +118,12 @@
 			<xsl:value-of select="tei:fileDesc/tei:titleStmt/tei:title"/>
 		</label>
 		<!-- generate description from obverse and reverse -->
-		<xsl:if test="tei:fileDesc/tei:noteStmt/tei:note[@type='abstract']">
+		<xsl:if test="tei:fileDesc/tei:noteStmt/tei:note[@type = 'abstract']">
 			<description>
-				<xsl:apply-templates select="tei:fileDesc/tei:noteStmt/tei:note[@type='abstract']/tei:p"/>
+				<xsl:apply-templates select="tei:fileDesc/tei:noteStmt/tei:note[@type = 'abstract']/tei:p"/>
 			</description>
 		</xsl:if>
-		
+
 		<!-- extract metadata from descMeta -->
 		<!--<metadata>
 			<_array>
@@ -146,18 +152,22 @@
 			</_array>
 		</sequences>
 	</xsl:template>
-	
+
 	<!-- convert facsimiles into canvases -->
 	<xsl:template match="tei:facsimile">
 		<xsl:variable name="service" select="concat('http://images.numismatics.org/archivesimages%2Farchive%2F', descendant::tei:graphic/@url, '.jpg')"/>
-		
+
 		<_object>
 			<__id>
 				<xsl:value-of select="concat($manifestUri, '/canvas/', @xml:id)"/>
 			</__id>
 			<__type>sc:Canvas</__type>
 			<label>
-				<xsl:value-of select="if (tei:graphic/@n) then tei:graphic/@n else @xml:id"/>
+				<xsl:value-of select="
+						if (tei:graphic/@n) then
+							tei:graphic/@n
+						else
+							@xml:id"/>
 			</label>
 			<thumbnail>
 				<_object>
@@ -171,22 +181,34 @@
 				</_object>
 			</thumbnail>
 			<height>
-				<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/height"/>
+				<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/height"/>
 			</height>
 			<width>
-				<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/width"/>
+				<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/width"/>
 			</width>
 			<images>
 				<_array>
-					<xsl:apply-templates select="tei:graphic"/>					
+					<xsl:apply-templates select="tei:graphic"/>
 				</_array>
 			</images>
+			<xsl:if test="tei:surface">
+				<otherContent>
+					<_array>
+						<_object>
+							<__id>
+								<xsl:value-of select="concat($manifestUri, '/list/', @xml:id)"/>
+							</__id>
+							<__type>sc:AnnotationList</__type>
+						</_object>
+					</_array>
+				</otherContent>
+			</xsl:if>
 		</_object>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:graphic">
 		<xsl:variable name="service" select="concat('http://images.numismatics.org/archivesimages%2Farchive%2F', @url, '.jpg')"/>
-		
+
 		<_object>
 			<__id>
 				<xsl:value-of select="concat($manifestUri, '/annotation/', parent::node()/@xml:id)"/>
@@ -204,10 +226,10 @@
 					<__type>dctypes:Image</__type>
 					<format>image/jpeg</format>
 					<height>
-						<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/height"/>
+						<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/height"/>
 					</height>
 					<width>
-						<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/width"/>
+						<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/width"/>
 					</width>
 					<service>
 						<_object>
@@ -223,5 +245,92 @@
 		</_object>
 	</xsl:template>
 
-	
+	<!-- generate an AnnotationList from tei:facsimile -->
+	<xsl:template match="tei:facsimile" mode="AnnotationList">
+		<xsl:variable name="service" select="concat('http://images.numismatics.org/archivesimages%2Farchive%2F', tei:graphic/@url, '.jpg')"/>
+
+		<_object>
+			<__id>
+				<xsl:value-of select="concat($manifestUri, '/list/', @xml:id)"/>
+			</__id>
+			<__type>sc:AnnotationList</__type>
+			<resources>
+				<_array>
+					<xsl:apply-templates select="tei:surface" mode="AnnotationList">
+						<xsl:with-param name="service" select="$service"/>
+					</xsl:apply-templates>
+				</_array>
+			</resources>
+		</_object>
+	</xsl:template>
+
+	<xsl:template match="tei:surface" mode="AnnotationList">
+		<xsl:param name="service"/>
+		<xsl:variable name="height" select="doc('input:images')//image[@uri = $service]/json/height"/>
+		<xsl:variable name="width" select="doc('input:images')//image[@uri = $service]/json/width"/>
+
+
+		<xsl:variable name="dimensions" as="element()*">
+			<xsl:choose>
+				<xsl:when test="$height &gt;= $width">
+					<xsl:variable name="ratio" select="$height div $width"/>
+
+					<dimensions>
+						<x>
+							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @ulx))"/>
+						</x>
+						<y>
+							<xsl:value-of select="ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2))"/>
+						</y>
+						<w>
+							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @lrx)) - ceiling(($width div 2) + (($width div 2) * @ulx))"/>
+						</w>
+						<h>
+							<xsl:value-of select="ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2)) - ceiling((($height div 2) * (@lry div $ratio)) + ($height div 2))"/>
+						</h>
+					</dimensions>
+
+				</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+
+		<!--(1106 * (1.1317634522842 / 1.367965368)) + 1106
+-->
+		<_object>
+			<__id>
+				<xsl:value-of select="concat('_:', @xml:id)"/>
+			</__id>
+			<__type>oa:Annotation</__type>
+			<motiviation>sc:painting</motiviation>
+			<resource>
+				<_object>
+					<__id>
+						<xsl:value-of select="concat('_:', @xml:id, '#', position())"/>
+					</__id>
+					<__type>cnt:ContentAsText</__type>
+					<chars>
+						<xsl:apply-templates select="tei:desc"/>
+					</chars>
+					<format>text/html</format>
+					<language>en</language>
+				</_object>
+			</resource>
+			<on>
+				<xsl:value-of select="concat($manifestUri, '/list/', parent::node()/@xml:id, '#xywh=', $dimensions/x, ',', $dimensions/y, ',', $dimensions/w, ',', $dimensions/h)"/>
+			</on>
+		</_object>
+	</xsl:template>
+
+	<xsl:template match="tei:desc">
+		<xsl:apply-templates mode="anno"/>
+	</xsl:template>
+
+	<xsl:template match="tei:ref" mode="anno">
+		<xsl:variable name="link">
+			<![CDATA[<a href=']]><xsl:value-of select="@target"/><![CDATA[' target='_blank'>]]><xsl:value-of select="."/><![CDATA[</a>]]>
+		</xsl:variable>
+
+		<xsl:value-of select="normalize-space($link)"/>
+	</xsl:template>
+
 </xsl:stylesheet>
