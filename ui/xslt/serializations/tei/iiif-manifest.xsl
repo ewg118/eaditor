@@ -274,19 +274,27 @@
 			<xsl:choose>
 				<xsl:when test="$height &gt;= $width">
 					<xsl:variable name="ratio" select="$height div $width"/>
+					<xsl:variable name="h" select="ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2)) - ceiling((($height div 2) * (@lry div $ratio)) + ($height div 2))"/>
 
 					<dimensions>
 						<x>
 							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @ulx))"/>
 						</x>
 						<y>
-							<xsl:value-of select="$height - ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2))"/>
+							<xsl:choose>
+								<xsl:when test="@uly &lt; 0">
+									<xsl:value-of select="abs(ceiling((-($height div 2) * (@uly div -$ratio)) - ($height div 2))) - $h"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$height - ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2)) - $h"/>
+								</xsl:otherwise>
+							</xsl:choose>							
 						</y>
 						<w>
 							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @lrx)) - ceiling(($width div 2) + (($width div 2) * @ulx))"/>
 						</w>
 						<h>
-							<xsl:value-of select="ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2)) - ceiling((($height div 2) * (@lry div $ratio)) + ($height div 2))"/>
+							<xsl:value-of select="$h"/>
 						</h>
 					</dimensions>
 
