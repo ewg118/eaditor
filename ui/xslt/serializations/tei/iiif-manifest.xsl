@@ -280,7 +280,7 @@
 							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @ulx))"/>
 						</x>
 						<y>
-							<xsl:value-of select="ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2))"/>
+							<xsl:value-of select="$height - ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2))"/>
 						</y>
 						<w>
 							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @lrx)) - ceiling(($width div 2) + (($width div 2) * @ulx))"/>
