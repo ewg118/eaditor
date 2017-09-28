@@ -144,7 +144,7 @@
 					<label>Default sequence</label>
 					<canvases>
 						<_array>
-							<xsl:apply-templates select="descendant::tei:facsimile[position() &lt;= 10]"/>
+							<xsl:apply-templates select="descendant::tei:facsimile"/>
 						</_array>
 					</canvases>
 					<viewingHint>individuals</viewingHint>
@@ -164,8 +164,8 @@
 			<__type>sc:Canvas</__type>
 			<label>
 				<xsl:value-of select="
-						if (tei:graphic/@n) then
-							tei:graphic/@n
+						if (tei:media/@n) then
+						tei:media/@n
 						else
 							@xml:id"/>
 			</label>
@@ -263,8 +263,6 @@
 	</xsl:template>
 
 	<xsl:template match="tei:surface" mode="AnnotationList">
-		<!--(1106 * (1.1317634522842 / 1.367965368)) + 1106
--->
 		<_object>
 			<__id>
 				<xsl:value-of select="concat('_:', @xml:id)"/>
