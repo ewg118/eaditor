@@ -144,7 +144,7 @@
 					<label>Default sequence</label>
 					<canvases>
 						<_array>
-							<xsl:apply-templates select="descendant::tei:facsimile[1]"/>
+							<xsl:apply-templates select="descendant::tei:facsimile[position() &lt;= 10]"/>
 						</_array>
 					</canvases>
 					<viewingHint>individuals</viewingHint>
