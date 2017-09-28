@@ -155,7 +155,7 @@
 
 	<!-- convert facsimiles into canvases -->
 	<xsl:template match="tei:facsimile">
-		<xsl:variable name="service" select="concat('http://images.numismatics.org/archivesimages%2Farchive%2F', descendant::tei:graphic/@url, '.jpg')"/>
+		<xsl:variable name="service" select="tei:media/@url"/>
 
 		<_object>
 			<__id>
@@ -181,14 +181,14 @@
 				</_object>
 			</thumbnail>
 			<height>
-				<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/height"/>
+				<xsl:value-of select="substring-before(tei:media/@height, 'px')"/>
 			</height>
 			<width>
-				<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/width"/>
+				<xsl:value-of select="substring-before(tei:media/@width, 'px')"/>
 			</width>
 			<images>
 				<_array>
-					<xsl:apply-templates select="tei:graphic"/>
+					<xsl:apply-templates select="tei:media"/>
 				</_array>
 			</images>
 			<xsl:if test="tei:surface">
@@ -206,8 +206,8 @@
 		</_object>
 	</xsl:template>
 
-	<xsl:template match="tei:graphic">
-		<xsl:variable name="service" select="concat('http://images.numismatics.org/archivesimages%2Farchive%2F', @url, '.jpg')"/>
+	<xsl:template match="tei:media">
+		<xsl:variable name="service" select="@url"/>
 
 		<_object>
 			<__id>
@@ -226,10 +226,10 @@
 					<__type>dctypes:Image</__type>
 					<format>image/jpeg</format>
 					<height>
-						<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/height"/>
+						<xsl:value-of select="substring-before(@height, 'px')"/>
 					</height>
 					<width>
-						<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/width"/>
+						<xsl:value-of select="substring-before(@width, 'px')"/>
 					</width>
 					<service>
 						<_object>
@@ -247,7 +247,7 @@
 
 	<!-- generate an AnnotationList from tei:facsimile -->
 	<xsl:template match="tei:facsimile" mode="AnnotationList">
-		<xsl:variable name="service" select="concat('http://images.numismatics.org/archivesimages%2Farchive%2F', tei:graphic/@url, '.jpg')"/>
+		<xsl:variable name="service" select="tei:media/@url"/>
 
 		<_object>
 			<__id>
@@ -256,52 +256,13 @@
 			<__type>sc:AnnotationList</__type>
 			<resources>
 				<_array>
-					<xsl:apply-templates select="tei:surface" mode="AnnotationList">
-						<xsl:with-param name="service" select="$service"/>
-					</xsl:apply-templates>
+					<xsl:apply-templates select="tei:surface" mode="AnnotationList"/>
 				</_array>
 			</resources>
 		</_object>
 	</xsl:template>
 
 	<xsl:template match="tei:surface" mode="AnnotationList">
-		<xsl:param name="service"/>
-		<xsl:variable name="height" select="doc('input:images')//image[@uri = $service]/json/height"/>
-		<xsl:variable name="width" select="doc('input:images')//image[@uri = $service]/json/width"/>
-
-
-		<xsl:variable name="dimensions" as="element()*">
-			<xsl:choose>
-				<xsl:when test="$height &gt;= $width">
-					<xsl:variable name="ratio" select="$height div $width"/>
-					<xsl:variable name="h" select="ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2)) - ceiling((($height div 2) * (@lry div $ratio)) + ($height div 2))"/>
-
-					<dimensions>
-						<x>
-							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @ulx))"/>
-						</x>
-						<y>
-							<xsl:choose>
-								<xsl:when test="@uly &lt; 0">
-									<xsl:value-of select="abs(ceiling((-($height div 2) * (@uly div -$ratio)) - ($height div 2))) - $h"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$height - ceiling((($height div 2) * (@uly div $ratio)) + ($height div 2)) - $h"/>
-								</xsl:otherwise>
-							</xsl:choose>							
-						</y>
-						<w>
-							<xsl:value-of select="ceiling(($width div 2) + (($width div 2) * @lrx)) - ceiling(($width div 2) + (($width div 2) * @ulx))"/>
-						</w>
-						<h>
-							<xsl:value-of select="$h"/>
-						</h>
-					</dimensions>
-
-				</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-
 		<!--(1106 * (1.1317634522842 / 1.367965368)) + 1106
 -->
 		<_object>
@@ -324,7 +285,7 @@
 				</_object>
 			</resource>
 			<on>
-				<xsl:value-of select="concat($manifestUri, '/list/', parent::node()/@xml:id, '#xywh=', $dimensions/x, ',', $dimensions/y, ',', $dimensions/w, ',', $dimensions/h)"/>
+				<xsl:value-of select="concat($manifestUri, '/list/', parent::node()/@xml:id, '#xywh=', @ulx, ',', @uly, ',', @lrx - @ulx, ',', @lry - @uly)"/>
 			</on>
 		</_object>
 	</xsl:template>

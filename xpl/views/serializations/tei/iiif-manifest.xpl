@@ -26,9 +26,9 @@
 
 
 	<!-- iterate through the SPARQL results and request the info.json for each IIIF service -->
-	<p:for-each href="#data" select="descendant::tei:facsimile[1]" root="images" id="images">
+	<!--<p:for-each href="#data" select="descendant::tei:facsimile[1]" root="images" id="images">
 
-		<!-- generate an XForms processor to request JSON -->
+		<!-\- generate an XForms processor to request JSON -\->
 		<p:processor name="oxf:xslt">
 			<p:input name="data" href="current()"/>
 			<p:input name="config">
@@ -55,7 +55,7 @@
 			<p:output name="response" id="json"/>
 		</p:processor>
 
-		<!-- wrap the JSON response into an XML element so that the URI can be passed through; the URI in the JSON may be escaped, whereas the URI stored in SPARQL may not be -->
+		<!-\- wrap the JSON response into an XML element so that the URI can be passed through; the URI in the JSON may be escaped, whereas the URI stored in SPARQL may not be -\->
 		<p:processor name="oxf:xslt">
 			<p:input name="data" href="current()"/>
 			<p:input name="json" href="#json"/>
@@ -73,11 +73,11 @@
 			</p:input>
 			<p:output name="data" ref="images"/>
 		</p:processor>		
-	</p:for-each>
+	</p:for-each>-->
 
 	<p:processor name="oxf:unsafe-xslt">
 		<p:input name="request" href="#request"/>
-		<p:input name="images" href="#images"/>
+		<!--<p:input name="images" href="#images"/>-->
 		<p:input name="data" href="aggregate('content', #data, #config)"/>
 		<p:input name="config" href="../../../../ui/xslt/serializations/tei/iiif-manifest.xsl"/>
 		<p:output name="data" id="model"/>
