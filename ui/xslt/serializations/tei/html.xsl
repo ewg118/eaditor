@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="../../templates.xsl"/>
 	<xsl:include href="../../functions.xsl"/>
-	
+
 	<!-- path and document params -->
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
 	<xsl:variable name="uri" select="doc('input:request')/request/request-url"/>
-	<xsl:variable name="eadid" select="/content/tei:TEI/@xml:id"/>	
-	
+	<xsl:variable name="eadid" select="/content/tei:TEI/@xml:id"/>
+
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="url" select="/content/config/url"/>
-	
+
+	<xsl:variable name="objectUri">
+		<xsl:choose>
+			<xsl:when test="//config/ark[@enabled = 'true']">
+				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $eadid)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="concat($url, 'id/', $eadid)"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
 	<!-- display path -->
 	<xsl:variable name="display_path">
 		<xsl:variable name="default">
 			<xsl:choose>
-				<xsl:when test="$mode='private'">
+				<xsl:when test="$mode = 'private'">
 					<xsl:text>../../</xsl:text>
 				</xsl:when>
 				<xsl:otherwise>
@@ -33,7 +44,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
+
 		<!-- after default path is set, replace ../ when it is an aggregate collection -->
 		<xsl:choose>
 			<xsl:when test="/content/config/aggregator = 'true'">
@@ -44,26 +55,32 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
+
 	<!-- check to see if the server port is 80, meaning Apache proxypass -->
-	<xsl:variable name="include_path" select="if (doc('input:request')/request/server-port = '80') then $display_path else concat('../', $display_path)"/>
-	
+	<xsl:variable name="include_path"
+		select="
+			if (doc('input:request')/request/server-port = '80') then
+				$display_path
+			else
+				concat('../', $display_path)"/>
+
 	<!-- url params -->
-	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name = 'lang']/value"/>
 	<xsl:param name="mode">
 		<xsl:choose>
 			<xsl:when test="contains($uri, 'admin/')">private</xsl:when>
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
-	
+
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/tei:TEI"/>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:TEI">
 		<html>
-			<head prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+			<head
+				prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
 				<title id="{$eadid}">
 					<xsl:value-of select="/content/config/title"/>
@@ -71,26 +88,31 @@
 					<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{$eadid}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
-				
+				<link rel="alternate" type="text/xml" href="{$objectUri}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$objectUri}.rdf"/>
+
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
-				
+
 				<!-- bootstrap -->
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>		
+				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				
-				<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
-				<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
-				<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
-				<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>
-				
-				<!--<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>-->
-				<!-- include annotation functions for TEI files -->
-				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
-				<script type="text/javascript" src="{$include_path}ui/javascript/display_annotation_functions.js"/>
-				
+
+				<!-- if there are IIIF Services, then use mirador, otherwise render Annotorious -->
+
+				<xsl:choose>
+					<xsl:when test="descendant::tei:media[@type = 'IIIFService']"> </xsl:when>
+					<xsl:otherwise>
+						<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
+						<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
+						<script src="{$include_path}ui/javascript/OpenLayers.js" type="text/javascript"/>
+						<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>
+
+						<!-- include annotation functions for TEI files -->
+						<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+						<script type="text/javascript" src="{$include_path}ui/javascript/display_annotation_functions.js"/>
+					</xsl:otherwise>
+				</xsl:choose>
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="//config/google_analytics"/>
@@ -139,7 +161,7 @@
 
 	<!-- ******************** INDEX TEMPLATE *********************** -->
 	<xsl:template name="index">
-		<xsl:variable name="references" select="distinct-values(descendant::tei:term)"/>
+		<xsl:variable name="references" select="distinct-values(descendant::tei:ref)"/>
 		<xsl:variable name="facs" as="element()*">
 			<xsl:element name="facsimiles" namespace="http://www.tei-c.org/ns/1.0">
 				<xsl:copy-of select="descendant::tei:facsimile"/>
@@ -148,12 +170,12 @@
 
 		<!-- get nomisma RDF -->
 		<xsl:variable name="nomisma-rdf" as="element()*">
-			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/ns/rdfa#"
-				xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 				<xsl:variable name="id-param">
-					<xsl:for-each select="distinct-values(descendant::tei:term[contains(@target, 'nomisma.org')]/@target)">
+					<xsl:for-each select="distinct-values(descendant::tei:ref[contains(@target, 'nomisma.org')]/@target)">
 						<xsl:value-of select="substring-after(., 'id/')"/>
-						<xsl:if test="not(position()=last())">
+						<xsl:if test="not(position() = last())">
 							<xsl:text>|</xsl:text>
 						</xsl:if>
 					</xsl:for-each>
@@ -165,18 +187,18 @@
 				</xsl:if>
 			</rdf:RDF>
 		</xsl:variable>
-		
+
 		<xsl:variable name="viaf-rdf" as="element()*">
-			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/ns/rdfa#"
-				xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
-				
-				<xsl:for-each select="distinct-values(descendant::tei:term[contains(@target, 'viaf.org')]/@target)">
+			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+
+				<xsl:for-each select="distinct-values(descendant::tei:ref[contains(@target, 'viaf.org')]/@target)">
 					<xsl:variable name="pieces" select="tokenize(., '/')"/>
 					<xsl:variable name="uri" select="concat('http://viaf.org/viaf/', $pieces[5])"/>
 					<xsl:if test="doc-available(concat($uri, '/rdf'))">
-						<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about=$uri]"/>
-					</xsl:if>					
-				</xsl:for-each>				
+						<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about = $uri]"/>
+					</xsl:if>
+				</xsl:for-each>
 			</rdf:RDF>
 		</xsl:variable>
 
@@ -190,18 +212,20 @@
 					<xsl:variable name="facet">
 						<xsl:choose>
 							<xsl:when test="contains($uri, 'nomisma.org')">
-								<xsl:variable name="type" select="$nomisma-rdf//*[@rdf:about=$uri]/name()"/>
+								<xsl:variable name="type" select="$nomisma-rdf//*[@rdf:about = $uri]/name()"/>
 								<xsl:choose>
-									<xsl:when test="$type='nmo:Region' or $type='nmo:Mint'">geogname</xsl:when>
+									<xsl:when test="$type = 'nmo:Region' or $type = 'nmo:Mint'">geogname</xsl:when>
 									<xsl:otherwise>subject</xsl:otherwise>
 								</xsl:choose>
 							</xsl:when>
 							<xsl:when test="contains($uri, 'geonames.org')">geogname</xsl:when>
 							<xsl:when test="contains($uri, 'viaf.org')">
 								<xsl:choose>
-									<xsl:when test="$viaf-rdf//*[@rdf:about=$uri]/rdf:type/@rdf:resource='http://xmlns.com/foaf/0.1/Organization'">corpname</xsl:when>
-									<xsl:when test="$viaf-rdf//*[@rdf:about=$uri]/rdf:type/@rdf:resource='http://xmlns.com/foaf/0.1/Person'">persname</xsl:when>
-								</xsl:choose>								
+									<xsl:when test="$viaf-rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Organization'"
+										>corpname</xsl:when>
+									<xsl:when test="$viaf-rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Person'"
+										>persname</xsl:when>
+								</xsl:choose>
 							</xsl:when>
 							<!-- wikipedia links cannot easily be parsed, ignore indexing -->
 							<xsl:when test="contains($uri, 'wikipedia')"/>
@@ -232,7 +256,7 @@
 								</strong>
 							</xsl:otherwise>
 						</xsl:choose>
-						<p> Appears on: <xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target=$uri]]">
+						<p> Appears on: <xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]]">
 								<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" facs="{@xml:id}">
 									<xsl:choose>
 										<xsl:when test="string(tei:graphic/@n)">
@@ -243,7 +267,7 @@
 										</xsl:otherwise>
 									</xsl:choose>
 								</a>
-								<xsl:if test="not(position()=last())">
+								<xsl:if test="not(position() = last())">
 									<xsl:text>, </xsl:text>
 								</xsl:if>
 							</xsl:for-each>
@@ -256,57 +280,68 @@
 
 	<!-- ******************** FACSIMILE TEMPLATES *********************** -->
 	<xsl:template name="facsimiles">
-		<div>
-			<xsl:call-template name="page-navigation"/>
-			<div>
-				<div id="annot"/>
-			</div>
-			<table id="slider">
-				<tr>
-					<td id="left-scroll">
-						<span class="glyphicon glyphicon-arrow-left"/>
-					</td>
-					<td>
-						<div id="slider-thumbs">
-							<xsl:apply-templates select="tei:facsimile" mode="slider"/>
-						</div>
-					</td>
-					<td id="right-scroll">
-						<span class="glyphicon glyphicon-arrow-right"/>
-					</td>
-				</tr>
 
-			</table>
 
-			<!-- controls -->
-			<div style="display:none">
-				<span id="image-path">
-					<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
-				</span>
-				<span id="image-id">
-					<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-				</span>
-				<span id="display_path">
-					<xsl:value-of select="$display_path"/>
-				</span>
-				<span id="doc">
-					<xsl:value-of select="$eadid"/>
-				</span>
-				<span id="first-page">
-					<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-				</span>
-				<span id="last-page">
-					<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
-				</span>
-				<span id="image-container"/>
-			</div>
-		</div>
+
+		<xsl:choose>
+			<xsl:when test="descendant::tei:media[@type = 'IIIFService'] and string(//config/mirador)">
+				<iframe title="Mirador" src="{//config/mirador}?manifest={concat($url, 'manifest/', $eadid)}&amp;publisher={encode-for-uri(//config/publisher)}"
+					allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" width="100%" height="800px"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<div>
+					<xsl:call-template name="page-navigation"/>
+					<div>
+						<div id="annot"/>
+					</div>
+					<table id="slider">
+						<tr>
+							<td id="left-scroll">
+								<span class="glyphicon glyphicon-arrow-left"/>
+							</td>
+							<td>
+								<div id="slider-thumbs">
+									<xsl:apply-templates select="tei:facsimile" mode="slider"/>
+								</div>
+							</td>
+							<td id="right-scroll">
+								<span class="glyphicon glyphicon-arrow-right"/>
+							</td>
+						</tr>
+						
+					</table>
+					
+					<!-- controls -->
+					<div style="display:none">
+						<span id="image-path">
+							<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
+						</span>
+						<span id="image-id">
+							<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+						</span>
+						<span id="display_path">
+							<xsl:value-of select="$display_path"/>
+						</span>
+						<span id="doc">
+							<xsl:value-of select="$eadid"/>
+						</span>
+						<span id="first-page">
+							<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+						</span>
+						<span id="last-page">
+							<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
+						</span>
+						<span id="image-container"/>
+					</div>
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="slider">
 		<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" title="{tei:graphic/@n}" class="page-image" id="{@xml:id}">
 			<img src="{$include_path}ui/media/thumbnail/{tei:graphic/@url}.jpg" alt="{tei:graphic/@n}">
-				<xsl:if test="position()=1">
+				<xsl:if test="position() = 1">
 					<xsl:attribute name="class">selected</xsl:attribute>
 				</xsl:if>
 			</img>
@@ -340,7 +375,7 @@
 	<!-- ******************** TEI TEMPLATES *********************** -->
 	<xsl:template match="tei:fileDesc">
 		<xsl:apply-templates select="tei:publicationStmt"/>
-		<xsl:apply-templates select="tei:notesStmt/tei:note[@type='abstract']"/>
+		<xsl:apply-templates select="tei:notesStmt/tei:note[@type = 'abstract']"/>
 	</xsl:template>
 
 	<xsl:template match="tei:author">
@@ -370,12 +405,12 @@
 						<xsl:value-of select="tei:pubPlace"/>
 					</dd>
 				</xsl:if>
-				<xsl:if test="tei:idno[@type='donum']">
+				<xsl:if test="tei:idno[@type = 'donum']">
 					<dt>Donum</dt>
 					<dd>
 						<a href="http://numismatics.org/library/{tei:idno[@type='donum']}">
 							<xsl:text>http://numismatics.org/library/</xsl:text>
-							<xsl:value-of select="tei:idno[@type='donum']"/>
+							<xsl:value-of select="tei:idno[@type = 'donum']"/>
 						</a>
 					</dd>
 				</xsl:if>
@@ -383,7 +418,7 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template match="tei:note[@type='abstract']">
+	<xsl:template match="tei:note[@type = 'abstract']">
 		<div>
 			<h3>Abstract</h3>
 			<xsl:apply-templates/>
