@@ -1,38 +1,39 @@
 $(document).ready(function () {
-    //initiate
+    //get necessary variables
     var publisher = encodeURI($('#publisher').text());
     var miradorURI = $('#miradorURI').text();
     var manifestURI = $('#manifestURI').text();
-    initiateMirador(miradorURI, manifestURI, canvas='', publisher);
     
+    if (window.location.hash) {
+        var id = window.location.hash.substring(1);
+        var canvasID = manifestURI + '/canvas/' + id;
+    } else {
+        var canvasID = '';
+    }
     
+    myMiradorInstance = initialize(miradorURI, manifestURI, canvasID, publisher);
+    
+    //pagination for index
     $('.page-image').click(function () {
-        
-        var manifestURI = $('#manifestURI').text();
-        var canvas = $(this).attr('canvas');
-        //var src = miradorURI + '?manifest=' + manifestURI + '&canvas=' + canvas + '&publisher=' + publisher;
-        
-        //$('#iiif-iframe').attr('src', src);
-        
-        
-        
+        if (myMiradorInstance.saveController.slots[0].window.id) {
+            var windowID = myMiradorInstance.saveController.slots[0].window.id;
+            var canvasID = $(this).attr('canvas');
+            myMiradorInstance.eventEmitter.publish('SET_CURRENT_CANVAS_ID.' + windowID, canvasID);
+        }
         return false;
     });
 });
 
-function initiateMirador(miradorURI, manifest, canvas, publisher) {
-
+function initialize (miradorURI, manifestURI, canvasID, publisher) {
     var windowObjects =[];
     var windowOptions = {
     };
     
-    if (manifest) {
-        windowOptions[ "loadedManifest"] = manifest;
-    }
-    if (canvas) {
-        windowOptions[ "canvasID"] = canvas;
-    }
     
+    if (canvasID) {
+        windowOptions[ "canvasID"] = canvasID;
+    }
+    windowOptions[ "loadedManifest"] = manifestURI;
     windowOptions[ "viewType"] = "ImageView";
     windowOptions[ "annotationLayer"] = true;
     windowOptions[ "annotationCreation"] = false;
@@ -42,12 +43,12 @@ function initiateMirador(miradorURI, manifest, canvas, publisher) {
     
     windowObjects.push(windowOptions);
     
-    Mirador({
+    return Mirador({
         "id": "mirador-div",
         "buildPath": miradorURI + 'build/mirador/',
         "layout": "1x1",
         "data":[ {
-            "manifestUri": manifest, "location": publisher
+            "manifestUri": manifestURI, "location": publisher
         }],
         "windowObjects": windowObjects,
         "sidePanelVisible": false

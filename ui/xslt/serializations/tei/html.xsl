@@ -99,10 +99,11 @@
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 				<!-- bootstrap -->
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
+				
 
 				<!-- if there are IIIF Services, then use mirador, otherwise render Annotorious -->
 				<xsl:choose>
@@ -135,7 +136,46 @@
 				<div class="container-fluid">
 					<xsl:call-template name="tei-content"/>
 				</div>
-				<div id="path" style="display:none">../</div>
+				
+				<!-- controls -->
+				<div class="hidden">
+					<span id="display_path">
+						<xsl:value-of select="$display_path"/>
+					</span>
+					<span id="doc">
+						<xsl:value-of select="$eadid"/>
+					</span>
+					<div id="path">../</div>
+					<xsl:choose>
+						<xsl:when test="$mirador = true()">
+							<span id="miradorURI">
+								<xsl:value-of select="//config/mirador"/>
+							</span>
+							<span id="manifestURI">
+								<xsl:value-of select="$manifestURI"/>
+							</span>
+							<span id="publisher">
+								<xsl:value-of select="//config/publisher"/>
+							</span>
+						</xsl:when>
+						<xsl:otherwise>
+							<span id="image-path">
+								<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
+							</span>
+							<span id="image-id">
+								<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+							</span>
+							<span id="first-page">
+								<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+							</span>
+							<span id="last-page">
+								<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
+							</span>
+							<span id="image-container"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</div>
+				
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -339,45 +379,6 @@
 				</div>
 			</xsl:otherwise>
 		</xsl:choose>
-
-		<!-- controls -->
-		<div class="hidden">
-			<span id="display_path">
-				<xsl:value-of select="$display_path"/>
-			</span>
-			<span id="doc">
-				<xsl:value-of select="$eadid"/>
-			</span>
-
-			<xsl:choose>
-				<xsl:when test="$mirador = true()">
-					<span id="miradorURI">
-						<xsl:value-of select="//config/mirador"/>
-					</span>
-					<span id="manifestURI">
-						<xsl:value-of select="$manifestURI"/>
-					</span>
-					<span id="publisher">
-						<xsl:value-of select="//config/publisher"/>
-					</span>
-				</xsl:when>
-				<xsl:otherwise>
-					<span id="image-path">
-						<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
-					</span>
-					<span id="image-id">
-						<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-					</span>
-					<span id="first-page">
-						<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-					</span>
-					<span id="last-page">
-						<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
-					</span>
-					<span id="image-container"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</div>
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="slider">
