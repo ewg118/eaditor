@@ -283,7 +283,7 @@
 				</_object>
 			</resource>
 			<on>
-				<xsl:value-of select="concat($manifestUri, '/list/', parent::node()/@xml:id, '#xywh=', @ulx, ',', @uly, ',', @lrx - @ulx, ',', @lry - @uly)"/>
+				<xsl:value-of select="concat($manifestUri, '/canvas/', parent::node()/@xml:id, '#xywh=', @ulx, ',', @uly, ',', @lrx - @ulx, ',', @lry - @uly)"/>
 			</on>
 		</_object>
 	</xsl:template>

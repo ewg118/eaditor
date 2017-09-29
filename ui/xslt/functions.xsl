@@ -186,7 +186,7 @@
 		
 		<xsl:choose>
 			<!-- metadata fields must be a string -->
-			<xsl:when test="ancestor::metadata">
+			<xsl:when test="ancestor::metadata or self::label">
 				<xsl:value-of select="concat('&#x022;', replace($val, '&#x022;', '\\&#x022;'), '&#x022;')"/>
 			</xsl:when>
 			<xsl:when test="number($val)">
