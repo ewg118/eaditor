@@ -73,6 +73,9 @@
 		</xsl:choose>
 	</xsl:param>
 
+	<xsl:variable name="mirador" as="xs:boolean" select="descendant::tei:media[@type = 'IIIFService'] and string(//config/mirador)"/>
+	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $eadid)"/>
+
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/tei:TEI"/>
 	</xsl:template>
@@ -88,6 +91,8 @@
 					<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
 				</title>
 				<!-- alternates -->
+				<meta charset="utf-8"/>
+				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 				<link rel="alternate" type="text/xml" href="{$objectUri}.xml"/>
 				<link rel="alternate" type="application/rdf+xml" href="{$objectUri}.rdf"/>
 
@@ -97,11 +102,17 @@
 				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
+				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 
 				<!-- if there are IIIF Services, then use mirador, otherwise render Annotorious -->
-
 				<xsl:choose>
-					<xsl:when test="descendant::tei:media[@type = 'IIIFService']"> </xsl:when>
+					<xsl:when test="$mirador = true()">
+						<script type="text/javascript" src="{concat(//config/mirador, 'build/mirador/mirador.min.js')}"/>
+						<link type="text/css" rel="stylesheet" href="{concat(//config/mirador, 'build/mirador/css/mirador-combined.css')}"/>
+
+						<!-- mirador -->
+						<script type="text/javascript" src="{$include_path}ui/javascript/display_mirador_functions.js"/>
+					</xsl:when>
 					<xsl:otherwise>
 						<!-- add annotorious for TEI files: must be added before jquery to resolve conflicts -->
 						<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css"/>
@@ -257,16 +268,33 @@
 							</xsl:otherwise>
 						</xsl:choose>
 						<p> Appears on: <xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]]">
-								<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" facs="{@xml:id}">
-									<xsl:choose>
-										<xsl:when test="string(tei:graphic/@n)">
-											<xsl:value-of select="tei:graphic/@n"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="tei:graphic/@url"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</a>
+								<xsl:choose>
+									<xsl:when test="$mirador = true()">
+										<xsl:variable name="canvas" select="concat($url, 'manifest/', $eadid, '/canvas/', @xml:id)"/>
+										<a href="#{@xml:id}" class="page-image" canvas="{$canvas}">
+											<xsl:choose>
+												<xsl:when test="string(tei:media/@n)">
+													<xsl:value-of select="tei:media/@n"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="tei:media/@url"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</a>
+									</xsl:when>
+									<xsl:otherwise>
+										<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" facs="{@xml:id}">
+											<xsl:choose>
+												<xsl:when test="string(tei:graphic/@n)">
+													<xsl:value-of select="tei:graphic/@n"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="tei:graphic/@url"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</a>
+									</xsl:otherwise>
+								</xsl:choose>
 								<xsl:if test="not(position() = last())">
 									<xsl:text>, </xsl:text>
 								</xsl:if>
@@ -280,13 +308,12 @@
 
 	<!-- ******************** FACSIMILE TEMPLATES *********************** -->
 	<xsl:template name="facsimiles">
-
-
-
 		<xsl:choose>
-			<xsl:when test="descendant::tei:media[@type = 'IIIFService'] and string(//config/mirador)">
-				<iframe title="Mirador" src="{//config/mirador}?manifest={concat($url, 'manifest/', $eadid)}&amp;publisher={encode-for-uri(//config/publisher)}"
-					allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" width="100%" height="800px"/>
+			<xsl:when test="$mirador = true()">
+				<!--<iframe title="Mirador" id="iiif-iframe" src="{//config/mirador}?manifest={$manifestURI}&amp;publisher={encode-for-uri(//config/publisher)}"
+					allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" width="100%" height="800px"/>-->
+
+				<div style="width:100%;height:800px" id="mirador-div"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<div>
@@ -308,34 +335,49 @@
 								<span class="glyphicon glyphicon-arrow-right"/>
 							</td>
 						</tr>
-						
 					</table>
-					
-					<!-- controls -->
-					<div style="display:none">
-						<span id="image-path">
-							<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
-						</span>
-						<span id="image-id">
-							<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-						</span>
-						<span id="display_path">
-							<xsl:value-of select="$display_path"/>
-						</span>
-						<span id="doc">
-							<xsl:value-of select="$eadid"/>
-						</span>
-						<span id="first-page">
-							<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
-						</span>
-						<span id="last-page">
-							<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
-						</span>
-						<span id="image-container"/>
-					</div>
 				</div>
 			</xsl:otherwise>
 		</xsl:choose>
+
+		<!-- controls -->
+		<div class="hidden">
+			<span id="display_path">
+				<xsl:value-of select="$display_path"/>
+			</span>
+			<span id="doc">
+				<xsl:value-of select="$eadid"/>
+			</span>
+
+			<xsl:choose>
+				<xsl:when test="$mirador = true()">
+					<span id="miradorURI">
+						<xsl:value-of select="//config/mirador"/>
+					</span>
+					<span id="manifestURI">
+						<xsl:value-of select="$manifestURI"/>
+					</span>
+					<span id="publisher">
+						<xsl:value-of select="//config/publisher"/>
+					</span>
+				</xsl:when>
+				<xsl:otherwise>
+					<span id="image-path">
+						<xsl:value-of select="concat($include_path, 'ui/media/archive/', tei:facsimile[1]/tei:graphic/@url, '.jpg')"/>
+					</span>
+					<span id="image-id">
+						<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+					</span>
+					<span id="first-page">
+						<xsl:value-of select="tei:facsimile[1]/@xml:id"/>
+					</span>
+					<span id="last-page">
+						<xsl:value-of select="tei:facsimile[last()]/@xml:id"/>
+					</span>
+					<span id="image-container"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</div>
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="slider">
