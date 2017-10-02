@@ -3,6 +3,8 @@
 	exclude-result-prefixes="#all" version="2.0">
 
 	<xsl:template name="header">
+		<xsl:param name="manifestURI"/>
+		
 		<div class="navbar navbar-default navbar-static-top" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -35,12 +37,15 @@
 					</ul>
 					<xsl:if test="$pipeline = 'display'">
 						<ul class="nav navbar-nav navbar-right">
-							<li>
-								<a href="{$manifestURI}" title="IIIF Manifest">
-									<img src="{$include_path}ui/images/logo-iiif-34x30.png" alt="IIIF Manifest" style="max-height:16px;"/>
-									<xsl:text> Manifest</xsl:text>
-								</a>
-							</li>
+							<xsl:if test="string($manifestURI)">
+								<li>
+									<a href="{$manifestURI}" title="IIIF Manifest">
+										<img src="{$include_path}ui/images/logo-iiif-34x30.png" alt="IIIF Manifest" style="max-height:16px;"/>
+										<xsl:text> Manifest</xsl:text>
+									</a>
+								</li>
+							</xsl:if>
+														
 							<li>
 								<a href="{$eadid}.xml">XML</a>
 							</li>

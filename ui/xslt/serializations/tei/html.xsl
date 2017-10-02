@@ -132,7 +132,9 @@
 				</xsl:if>
 			</head>
 			<body>
-				<xsl:call-template name="header"/>
+				<xsl:call-template name="header">
+					<xsl:with-param name="manifestURI" select="$manifestURI"/>
+				</xsl:call-template>
 				<div class="container-fluid">
 					<xsl:call-template name="tei-content"/>
 				</div>
