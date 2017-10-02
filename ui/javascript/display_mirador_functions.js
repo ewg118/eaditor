@@ -29,18 +29,12 @@ function initialize (miradorURI, manifestURI, canvasID, publisher) {
     var windowOptions = {
     };
     
-    
     if (canvasID) {
         windowOptions[ "canvasID"] = canvasID;
     }
     windowOptions[ "loadedManifest"] = manifestURI;
     windowOptions[ "viewType"] = "ImageView";
-/*    windowOptions[ "annotationLayer"] = true;
-    windowOptions[ "annotationCreation"] = false;
-    windowOptions[ "annotationState"] = "on";*/
     windowOptions[ "displayLayout"] = false;
-    
-    
     windowObjects.push(windowOptions);
     
     return Mirador({
@@ -51,11 +45,12 @@ function initialize (miradorURI, manifestURI, canvasID, publisher) {
         "data":[ {
             "manifestUri": manifestURI, "location": publisher
         }],
-        "canvasControls": {
-            "annotations": {
-                "annotationLayer": true,
-                "annotationCreation": false,
-                "annotationState": "on"
+        "windowSettings": {
+            "canvasControls": {
+                "annotations": {
+                    "annotationLayer": true,
+                    "annotationState": "on"
+                }
             }
         },
         "windowObjects": windowObjects,
