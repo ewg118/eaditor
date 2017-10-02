@@ -35,9 +35,9 @@ function initialize (miradorURI, manifestURI, canvasID, publisher) {
     }
     windowOptions[ "loadedManifest"] = manifestURI;
     windowOptions[ "viewType"] = "ImageView";
-    windowOptions[ "annotationLayer"] = true;
+/*    windowOptions[ "annotationLayer"] = true;
     windowOptions[ "annotationCreation"] = false;
-    windowOptions[ "annotationState"] = "annoOnCreateOff";
+    windowOptions[ "annotationState"] = "on";*/
     windowOptions[ "displayLayout"] = false;
     
     
@@ -47,9 +47,17 @@ function initialize (miradorURI, manifestURI, canvasID, publisher) {
         "id": "mirador-div",
         "buildPath": miradorURI + 'build/mirador/',
         "layout": "1x1",
+        "mainMenuSettings.show": false,
         "data":[ {
             "manifestUri": manifestURI, "location": publisher
         }],
+        "canvasControls": {
+            "annotations": {
+                "annotationLayer": true,
+                "annotationCreation": false,
+                "annotationState": "on"
+            }
+        },
         "windowObjects": windowObjects,
         "sidePanelVisible": false
     });
