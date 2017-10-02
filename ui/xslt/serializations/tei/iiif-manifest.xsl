@@ -100,6 +100,13 @@
 							</__id>
 							<format>application/ld+json</format>
 						</_object>
+						<_object>
+							<__id>
+								<xsl:value-of select="concat($objectUri, '.xml')"/>
+							</__id>
+							<format>application/xml</format>
+							<profile>http://www.tei-c.org/ns/1.0</profile>
+						</_object>
 					</_array>
 				</seeAlso>
 				<xsl:call-template name="sequences"/>
@@ -114,22 +121,51 @@
 	</xsl:template>
 
 	<xsl:template match="tei:teiHeader">
-		<label>
-			<xsl:value-of select="tei:fileDesc/tei:titleStmt/tei:title"/>
-		</label>
-		<!-- generate description from obverse and reverse -->
-		<xsl:if test="tei:fileDesc/tei:noteStmt/tei:note[@type = 'abstract']">
-			<description>
-				<xsl:apply-templates select="tei:fileDesc/tei:noteStmt/tei:note[@type = 'abstract']/tei:p"/>
-			</description>
-		</xsl:if>
-
-		<!-- extract metadata from descMeta -->
-		<!--<metadata>
+		<xsl:apply-templates select="tei:fileDesc"/>
+	</xsl:template>
+	
+	<xsl:template match="tei:fileDesc">
+		<!-- title and description -->
+		<xsl:apply-templates select="tei:titleStmt/tei:title|tei:notesStmt/tei:note[@type='abstract']"/>
+		
+		<!-- metadata -->
+		<metadata>
 			<_array>
-				<xsl:apply-templates select="$nudsGroup//nuds:typeDesc | nuds:descMeta/nuds:physDesc | nuds:descMeta/nuds:adminDesc"/>
+				<xsl:apply-templates select="tei:titleStmt/tei:author|tei:titleStmt/tei:subtitle|tei:titleStmt/tei:editor|tei:publicationStmt"/>
 			</_array>
-		</metadata>-->
+		</metadata>
+	</xsl:template>
+	
+	<xsl:template match="tei:title">
+		<label>
+			<xsl:value-of select="."/>
+		</label>
+	</xsl:template>
+	
+	<xsl:template match="tei:note[@type='abstract']">
+		<description>
+			<xsl:apply-templates select="tei:p" mode="abstract"/>
+		</description>
+	</xsl:template>
+	
+	<xsl:template match="tei:p" mode="abstract">
+		<xsl:value-of select="normalize-space(.)"/>
+		<xsl:if test="not(position() = last())">
+			<xsl:text>\n</xsl:text>
+		</xsl:if>
+	</xsl:template>
+	
+	<!-- metadata elements -->
+	<xsl:template match="tei:author|tei:editor|tei:subtitle|tei:publisher|tei:pubPlace">
+		<_object>
+			<xsl:element name="{concat(upper-case(substring(local-name(), 1, 1)), substring(local-name(), 2))}">
+				<xsl:value-of select="normalize-space(.)"/>
+			</xsl:element>
+		</_object>				
+	</xsl:template>
+	
+	<xsl:template match="tei:publicationStmt">
+		<xsl:apply-templates select="tei:publisher|tei:pubPlace|tei:date"/>
 	</xsl:template>
 
 	<!-- generate sequence -->
