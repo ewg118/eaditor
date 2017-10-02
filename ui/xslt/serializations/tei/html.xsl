@@ -350,10 +350,7 @@
 	<xsl:template name="facsimiles">
 		<xsl:choose>
 			<xsl:when test="$mirador = true()">
-				<!--<iframe title="Mirador" id="iiif-iframe" src="{//config/mirador}?manifest={$manifestURI}&amp;publisher={encode-for-uri(//config/publisher)}"
-					allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" width="100%" height="800px"/>-->
-
-				<div style="width:100%;height:800px" id="mirador-div"/>
+				<div style="width:100%;height:800px" id="mirador-div"/>				
 			</xsl:when>
 			<xsl:otherwise>
 				<div>

@@ -32,15 +32,15 @@
 								<a href="{$display_path}sparql">SPARQL</a>
 							</li>
 						</xsl:if>
-						<li>
-							<a href="http://numismatics.org/authorities/">Biographies</a>
-						</li>
-						<li>
-							<a href="http://numismatics.org">ANS Home</a>
-						</li>
 					</ul>
 					<xsl:if test="$pipeline = 'display'">
 						<ul class="nav navbar-nav navbar-right">
+							<li>
+								<a href="{$manifestURI}" title="IIIF Manifest">
+									<img src="{$include_path}ui/images/logo-iiif-34x30.png" alt="IIIF Manifest" style="max-height:16px;"/>
+									<xsl:text> Manifest</xsl:text>
+								</a>
+							</li>
 							<li>
 								<a href="{$eadid}.xml">XML</a>
 							</li>
