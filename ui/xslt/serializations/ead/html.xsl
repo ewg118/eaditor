@@ -70,6 +70,9 @@
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
+	
+	<xsl:variable name="iiif-available" select="boolean(descendant::ead:daoloc[@xlink:role = 'IIIFService'])" as="xs:boolean"/>
+	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $eadid)"/>
 
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/ead:ead"/>
@@ -126,7 +129,7 @@
 					<script type="text/javascript" src="{$include_path}ui/javascript/display_map_functions.js"/>
 				</xsl:if>
 				<!-- include IIIF Leaflet plugin if applicable -->
-				<xsl:if test="//ead:daoloc[@xlink:role = 'IIIFService']">
+				<xsl:if test="$iiif-available = true()">
 					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet-iiif.js"/>
 				</xsl:if>
 				<xsl:if test="string(//config/google_analytics)">
@@ -136,7 +139,17 @@
 				</xsl:if>
 			</head>
 			<body>
-				<xsl:call-template name="header"/>
+				<xsl:choose>
+					<xsl:when test="$iiif-available = true()">
+						<xsl:call-template name="header">
+							<xsl:with-param name="manifestURI" select="$manifestURI"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="header"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 				<div class="container-fluid">
 					<xsl:call-template name="ead-content"/>
 				</div>

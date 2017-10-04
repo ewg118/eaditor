@@ -24,6 +24,7 @@
                         <xsl:choose>
                             <xsl:when test="*/namespace-uri()='http://www.tei-c.org/ns/1.0'">TEI</xsl:when>
                             <xsl:when test="*/namespace-uri()='urn:isbn:1-931666-22-9'">EAD</xsl:when>
+                            <xsl:when test="*/namespace-uri()='http://www.loc.gov/mods/v3'">MODS</xsl:when>
                             <xsl:otherwise/>
                         </xsl:choose>
                     </recordType>
@@ -45,6 +46,13 @@
             <p:processor name="oxf:pipeline">
                 <p:input name="data" href="#data"/>
                 <p:input name="config" href="../views/serializations/ead/iiif-manifest.xpl"/>
+                <p:output name="data" ref="data"/>
+            </p:processor>
+        </p:when>
+        <p:when test="recordType='MODS'">
+            <p:processor name="oxf:pipeline">
+                <p:input name="data" href="#data"/>
+                <p:input name="config" href="../views/serializations/mods/iiif-manifest.xpl"/>
                 <p:output name="data" ref="data"/>
             </p:processor>
         </p:when>

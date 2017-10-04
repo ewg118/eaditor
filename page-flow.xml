@@ -45,19 +45,19 @@
 	<page path="/eaditor/admin/test/" view="xforms/test.xhtml"/>
 
 	<!-- an ajax call to display the toc in the admin page -->
-	<page path="/eaditor/admin/navigation/" model="xpl/models/object/private.xpl" view="xpl/xforms/navigation.xpl"/>
+	<page path="/eaditor/admin/navigation/" model="xpl/models/object/get-id.xpl" view="xpl/xforms/navigation.xpl"/>
 
 	<!-- generate toc in core or component form -->
-	<page path="/eaditor/admin/toc/" model="xpl/models/object/private.xpl" view="xpl/xforms/toc.xpl"/>
+	<page path="/eaditor/admin/toc/" model="xpl/models/object/get-id.xpl" view="xpl/xforms/toc.xpl"/>
 
 	<!-- get attributes for given element from xsd -->
 	<page path="/eaditor/admin/get_attributes/" model="xforms/schema/ead.xsd" view="xpl/xforms/xsd-get-attributes.xpl"/>
 
 	<!-- private xml (all elements shown) -->
-	<page path="/eaditor/admin/[^\/]+/id/(.*)\.xml" view="xpl/models/object/private.xpl"/>
+	<page path="/eaditor/admin/[^\/]+/id/(.*)\.xml" view="xpl/models/object/get-id.xpl"/>
 
 	<!-- private html view -->
-	<page path="/eaditor/admin/[^\/]+/id/(.*)" model="xpl/models/object/private.xpl" view="xpl/views/serializations/object/html.xpl"/>
+	<page path="/eaditor/admin/[^\/]+/id/(.*)" model="xpl/models/object/get-id.xpl" view="xpl/views/serializations/object/html.xpl"/>
 
 	<!-- authentication -->
 	<page path="/eaditor/login" view="xforms/login.html" id="login"/>
