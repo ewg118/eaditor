@@ -97,8 +97,15 @@
 			<xforms:instance id="sparqlUpdate-template">
 				<query>
 					<![CDATA[PREFIX dcterms:	<http://purl.org/dc/terms/>
+PREFIX edm:	<http://www.europeana.eu/schemas/edm/>
+PREFIX svcs:	<http://rdfs.org/sioc/services#>
 DELETE {?s ?p ?o} WHERE {
-{?s dcterms:isPartOf+ <URI> . ?s ?p ?o}
+{?c dcterms:isPartOf+ <URI> .
+?c edm:isShownBy ?image .
+?image svcs:has_service ?s . ?s ?p ?o}
+UNION {?c dcterms:isPartOf+ <URI> .
+?c edm:isShownBy ?s . ?s ?p ?o}
+UNION {?s dcterms:isPartOf+ <URI> . ?s ?p ?o}
 UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</query>
 			</xforms:instance>

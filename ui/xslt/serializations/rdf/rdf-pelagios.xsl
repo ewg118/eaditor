@@ -3,6 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
     xmlns:schema="http://schema.org/" xmlns:oa="http://www.w3.org/ns/oa#" xmlns:pelagios="http://pelagios.github.io/vocab/terms#"
+    xmlns:edm="http://www.europeana.eu/schemas/edm/" xmlns:svcs="http://rdfs.org/sioc/services#" xmlns:doap="http://usefulinc.com/ns/doap#"
     xmlns:relations="http://pelagios.github.io/vocab/relations#" exclude-result-prefixes="xs xsl digest" version="2.0">
 
     <xsl:variable name="url" select="/content/config/url"/>
@@ -23,10 +24,24 @@
 
         <pelagios:AnnotatedThing rdf:about="{$url}pelagios.rdf#{$id}">
             <xsl:copy-of select="dcterms:title | dcterms:type | dcterms:isPartOf | foaf:thumbnail | foaf:depiction"/>
+            
+            <!-- determine whether IIIF services should be attached -->
+            <xsl:choose>
+                <xsl:when test="edm:isShownBy/edm:WebResource">
+                    <edm:isShownBy rdf:resource="{edm:isShownBy/edm:WebResource/@rdf:about}"/>
+                </xsl:when>
+                <xsl:when test="edm:isShownBy/@rdf:resource">
+                    <edm:isShownBy rdf:resource="{edm:isShownBy/@rdf:resource}"/>
+                </xsl:when>
+            </xsl:choose>
+            
             <xsl:apply-templates select="dcterms:date[@rdf:datatype]"/>
 
             <foaf:homepage rdf:resource="{@rdf:about}"/>
         </pelagios:AnnotatedThing>
+        
+        <!-- determine whether IIIF services should be attached -->
+        <xsl:apply-templates select="edm:isShownBy"/>
 
         <xsl:for-each select="dcterms:coverage[starts-with(@rdf:resource, 'https://pleiades.stoa.org')]">
             <oa:Annotation rdf:about="{$url}pelagios.rdf#{$id}/annotations/{format-number(position(), '000')}">
@@ -39,6 +54,60 @@
                 </oa:annotatedAt>
             </oa:Annotation>
         </xsl:for-each>
+    </xsl:template>
+
+    <!-- 'flatten' out the IIIF service metadata by applying templates under different conditions of nested RDF/XML -->
+    <xsl:template match="edm:isShownBy">
+        <xsl:choose>
+            <xsl:when test="edm:WebResource">
+                <xsl:apply-templates select="edm:WebResource"/>
+            </xsl:when>
+            <xsl:when test="@rdf:resource">
+                <xsl:variable name="uri" select="@rdf:resource"/>
+                
+                <xsl:if test="//edm:WebResource[@rdf:about=$uri]">
+                    <xsl:apply-templates select="//edm:WebResource[@rdf:about=$uri]"/>
+                </xsl:if>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="edm:WebResource">
+        <xsl:element name="{name()}">
+            <xsl:attribute name="rdf:about" select="@rdf:about"/>
+            <xsl:copy-of select="dcterms:isReferencedBy"/>
+            <xsl:choose>
+                <xsl:when test="svcs:has_service/svcs:Service">
+                    <svcs:has_service rdf:resource="{svcs:has_service/svcs:Service/@rdf:about}"/>
+                </xsl:when>
+                <xsl:when test="svcs:has_service/@rdf:resource">
+                    <svcs:has_service rdf:resource="{svcs:has_service/@rdf:resource}"/>
+                </xsl:when>
+            </xsl:choose>
+        </xsl:element>
+        <xsl:apply-templates select="svcs:has_service"/>
+    </xsl:template>
+    
+    <xsl:template match="svcs:has_service">
+        <xsl:choose>
+            <xsl:when test="svcs:Service">
+                <xsl:apply-templates select="svcs:Service"/>
+            </xsl:when>
+            <xsl:when test="@rdf:resource">
+                <xsl:variable name="uri" select="@rdf:resource"/>
+                
+                <xsl:if test="//svcs:Service[@rdf:about=$uri]">
+                    <xsl:apply-templates select="//svcs:Service[@rdf:about=$uri]"/>
+                </xsl:if>
+            </xsl:when>
+        </xsl:choose>        
+    </xsl:template>
+    
+    <xsl:template match="svcs:Service">
+        <xsl:element name="{name()}">
+            <xsl:attribute name="rdf:about" select="@rdf:about"/>
+            <xsl:copy-of select="*"/>
+        </xsl:element>
     </xsl:template>
 
     <xsl:template match="dcterms:date">

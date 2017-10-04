@@ -23,6 +23,7 @@
                     <recordType>
                         <xsl:choose>
                             <xsl:when test="*/namespace-uri()='http://www.tei-c.org/ns/1.0'">TEI</xsl:when>
+                            <xsl:when test="*/namespace-uri()='urn:isbn:1-931666-22-9'">EAD</xsl:when>
                             <xsl:otherwise/>
                         </xsl:choose>
                     </recordType>
@@ -40,6 +41,13 @@
                 <p:output name="data" ref="data"/>
             </p:processor>
         </p:when>
+        <p:when test="recordType='EAD'">
+            <p:processor name="oxf:pipeline">
+                <p:input name="data" href="#data"/>
+                <p:input name="config" href="../views/serializations/ead/iiif-manifest.xpl"/>
+                <p:output name="data" ref="data"/>
+            </p:processor>
+        </p:when>
         <p:otherwise>
             <p:processor name="oxf:identity">
                 <p:input name="data">
@@ -48,6 +56,5 @@
                 <p:output name="data" ref="data"/>
             </p:processor>
         </p:otherwise>
-
     </p:choose>
 </p:config>

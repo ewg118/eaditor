@@ -106,6 +106,7 @@
 							</__id>
 							<format>application/xml</format>
 							<profile>http://www.tei-c.org/ns/1.0</profile>
+							<label>TEI</label>
 						</_object>
 					</_array>
 				</seeAlso>

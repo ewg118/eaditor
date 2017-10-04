@@ -2,7 +2,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/"
 	xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:schema="http://schema.org/" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:schema="http://schema.org/" xmlns:edm="http://www.europeana.eu/schemas/edm/"
+	xmlns:svcs="http://rdfs.org/sioc/services#" xmlns:doap="http://usefulinc.com/ns/doap#" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	exclude-result-prefixes="xs ead xlink eaditor" version="2.0">
 	<!-- ***************** EAD-TO-RDF ******************-->
 	<!-- config variables -->
@@ -67,6 +68,11 @@
 				<schema:ArchiveItem rdf:about="{$objectUri}#{@id}">
 					<xsl:call-template name="c-content"/>
 				</schema:ArchiveItem>
+				
+				<!-- insert IIIF Service information -->
+				<xsl:if test="descendant::ead:daoloc[@xlink:role='IIIFService']">
+					<xsl:apply-templates select="descendant::ead:daoloc[@xlink:role='IIIFService']" mode="WebResource"/>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
 				<schema:ArchiveCollection rdf:about="{$objectUri}#{@id}">
@@ -90,10 +96,10 @@
 
 		<!-- basic metadata -->
 		<xsl:apply-templates select="ead:did"/>
-		
+
 		<!-- images, if applicable -->
 		<xsl:apply-templates select="ead:daogrp"/>
-		
+
 		<!-- parent compontent -->
 		<dcterms:isPartOf>
 			<xsl:attribute name="rdf:resource">
@@ -237,19 +243,35 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- images -->
 	<xsl:template match="ead:daogrp">
-		<xsl:if test="string(ead:daoloc[@xlink:label = 'Thumbnail']/@xlink:href)">
-			<foaf:thumbnail rdf:resource="{ead:daoloc[@xlink:label='Thumbnail']/@xlink:href}"/>
-		</xsl:if>
-		<xsl:choose>
-			<!-- display Original primarily, Medium secondarily -->
-			<xsl:when test="string(ead:daoloc[@xlink:label = 'Original']/@xlink:href)">
-				<foaf:depiction rdf:resource="{ead:daoloc[@xlink:label='Original']/@xlink:href}"/>
-			</xsl:when>
-			<xsl:when test="ead:daoloc[@xlink:label = 'Medium']/@xlink:href">
-				<foaf:depiction rdf:resource="{ead:daoloc[@xlink:label='Medium']/@xlink:href}"/>
-			</xsl:when>
-		</xsl:choose>
+		<xsl:apply-templates
+			select="ead:daoloc[@xlink:label = 'Thumbnail'] | ead:daoloc[@xlink:role = 'thumbnail'] | ead:daoloc[@xlink:label = 'Medium'] | ead:daoloc[@xlink:role = 'reference'] | ead:daoloc[@xlink:label = 'Original'] | ead:daoloc[@xlink:role = 'IIIFService']"
+		/>
+	</xsl:template>
+
+	<xsl:template match="ead:daoloc[@xlink:label = 'Thumbnail'] | ead:daoloc[@xlink:role = 'thumbnail']">
+		<foaf:thumbnail rdf:resource="{@xlink:href}"/>
+	</xsl:template>
+
+	<xsl:template match="ead:daoloc[@xlink:label = 'Medium'] | ead:daoloc[@xlink:role = 'reference']">
+		<foaf:depiction rdf:resource="{@xlink:href}"/>
+	</xsl:template>
+
+	<xsl:template match="ead:daoloc[@xlink:label = 'Original'] | ead:daoloc[@xlink:role = 'IIIFService']">
+		<edm:isShownBy rdf:resource="{@xlink:href}{if (@xlink:role='IIIFService') then '/full/full/0/default.jpg' else ''}"/>
+	</xsl:template>
+	
+	<!-- IIIF Services -->
+	<xsl:template match="ead:daoloc[@xlink:role = 'IIIFService']" mode="WebResource">
+		<edm:WebResource rdf:about="{concat(@xlink:href, '/full/full/0/default.jpg')}">
+			<svcs:has_service rdf:resource="{@xlink:href}"/>
+			<dcterms:isReferencedBy rdf:resource="{@xlink:href}/info.json"/>
+		</edm:WebResource>
+		<svcs:Service rdf:about="{@xlink:href}">
+			<dcterms:conformsTo rdf:resource="http://iiif.io/api/image"/>
+			<doap:implements rdf:resource="http://iiif.io/api/image/2/level1.json"/>
+		</svcs:Service>
 	</xsl:template>
 
 	<!-- only process unitdates that have a @normal attribute -->
@@ -259,12 +281,12 @@
 				<xsl:choose>
 					<xsl:when test="contains(@normal, '/')">
 						<xsl:variable name="type" select="
-							if (@type = 'bulk') then
-							'bulk'
-							else
-							'inclusive'"/>
+								if (@type = 'bulk') then
+									'bulk'
+								else
+									'inclusive'"/>
 						<xsl:variable name="datePieces" select="tokenize(@normal, '/')"/>
-						
+
 						<xsl:choose>
 							<xsl:when test="count($datePieces) = 2">
 								<xsl:element name="arch:{$type}Start">
