@@ -47,15 +47,17 @@
 	<xsl:template name="body">
 		<xsl:variable name="default-query"><![CDATA[PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dcterms:	<http://purl.org/dc/terms/>
+PREFIX edm:	<http://www.europeana.eu/schemas/edm/>
 PREFIX skos:	<http://www.w3.org/2004/02/skos/core#>
 PREFIX foaf:	<http://xmlns.com/foaf/0.1/>
 PREFIX ecrm:	<http://erlangen-crm.org/current/>
 PREFIX geo:	<http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX arch:	<http://purl.org/archival/vocab/arch#>
 PREFIX oa:	<http://www.w3.org/ns/oa#>
+PREFIX schema:	<http://schema.org/>
 
 SELECT * WHERE {
-?s ?p ?o
+  ?s ?p ?o
 } LIMIT 100]]></xsl:variable>
 
 		<div class="container-fluid">

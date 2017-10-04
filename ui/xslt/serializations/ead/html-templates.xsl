@@ -226,7 +226,7 @@
 	</xsl:template>
 
 	<xsl:template match="ead:daogrp">
-		<xsl:apply-templates select="ead:daoloc[@xlink:label = 'Small']"/>
+		<xsl:apply-templates select="ead:daoloc[@xlink:label = 'Small']|ead:daoloc[@xlink:role='thumbnail']"/>
 	</xsl:template>
 
 	<xsl:template match="ead:dao | ead:daoloc">
@@ -266,6 +266,17 @@
 					<img class="ci" src="{@xlink:href}"/>
 				</a>
 			</xsl:when>
+			<xsl:when test="parent::node()/ead:daoloc[@xlink:role='IIIFService']">
+				<a>
+					<xsl:attribute name="href">#iiif-window</xsl:attribute>
+					<xsl:attribute name="class">iiif-image</xsl:attribute>
+					<xsl:attribute name="manifest" select="concat(parent::node()/ead:daoloc[@xlink:role='IIIFService']/@xlink:href, '/info.json')"/>
+					<xsl:if test="string($title)">
+						<xsl:attribute name="title" select="$title"/>
+					</xsl:if>
+					<img src="{@xlink:href}"/>
+				</a>
+			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="href">
 					<xsl:choose>
@@ -279,11 +290,11 @@
 				</xsl:variable>
 				<xsl:variable name="medium-href">
 					<xsl:choose>
-						<xsl:when test="contains(parent::node()/ead:daoloc[@xlink:label = 'Medium']/@xlink:href, 'http://')">
-							<xsl:value-of select="parent::node()/ead:daoloc[@xlink:label = 'Medium']/@xlink:href"/>
+						<xsl:when test="contains(parent::node()/ead:daoloc[@xlink:role = 'reference']/@xlink:href, 'http://')">
+							<xsl:value-of select="parent::node()/ead:daoloc[@xlink:role = 'reference']/@xlink:href"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="concat($display_path, parent::node()/ead:daoloc[@xlink:label = 'Medium']/@xlink:href)"/>
+							<xsl:value-of select="concat($display_path, parent::node()/ead:daoloc[@xlink:role = 'reference']/@xlink:href)"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>

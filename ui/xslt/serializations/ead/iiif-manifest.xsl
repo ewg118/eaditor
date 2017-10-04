@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:tei="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="#all" version="2.0">
+	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="../../functions.xsl"/>
 	<xsl:include href="../../json_metamodel.xsl"/>
 
 	<!-- variables -->
-	<xsl:variable name="id" select="/content/tei:TEI/@xml:id"/>
+	<xsl:variable name="eadid" select="/content/ead:ead/ead:eadheader/ead:eadid"/>
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="objectUri">
 		<xsl:choose>
 			<xsl:when test="//config/ark[@enabled = 'true']">
-				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $id)"/>
+				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $eadid)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="concat($url, 'id/', $id)"/>
+				<xsl:value-of select="concat($url, 'id/', $eadid)"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<!-- read other manifest URI patterns -->
-	<xsl:variable name="pieces" select="tokenize(substring-after(doc('input:request')/request/request-url, $id), '/')"/>
+	<xsl:variable name="pieces" select="tokenize(substring-after(doc('input:request')/request/request-url, $eadid), '/')"/>
 
 	<xsl:variable name="manifestUri">
-		<xsl:variable name="before" select="tokenize(substring-before(doc('input:request')/request/request-url, concat('/', $id)), '/')"/>
+		<xsl:variable name="before" select="tokenize(substring-before(doc('input:request')/request/request-url, concat('/', $eadid)), '/')"/>
 
 		<xsl:choose>
 			<xsl:when test="$before[last()] = 'manifest'">
-				<xsl:value-of select="concat($url, 'manifest/', $id)"/>
+				<xsl:value-of select="concat($url, 'manifest/', $eadid)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="concat($url, 'manifest/', $before[last()], '/', $id)"/>
+				<xsl:value-of select="concat($url, 'manifest/', $before[last()], '/', $eadid)"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -42,19 +42,19 @@
 				</xsl:variable>
 				<xsl:apply-templates select="$model"/>
 			</xsl:when>
-			<xsl:when test="$pieces[2] = 'list'">
+			<!--<xsl:when test="$pieces[2] = 'list'">
 				<xsl:variable name="model" as="element()*">
 					<xsl:apply-templates select="descendant::tei:facsimile[@xml:id = $pieces[3]]" mode="AnnotationList"/>
 				</xsl:variable>
 				<xsl:apply-templates select="$model"/>
-			</xsl:when>
+			</xsl:when>-->
 			<xsl:otherwise>
-				<xsl:apply-templates select="//tei:TEI"/>
+				<xsl:apply-templates select="//ead:ead"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="tei:TEI">
+	<xsl:template match="ead:ead">
 		<!-- construct XML-JSON metamodel inspired by the XForms JSON-XML serialization -->
 		<xsl:variable name="model" as="element()*">
 			<_object>
@@ -68,7 +68,7 @@
 				</attribution>
 
 				<!-- metadata from TEI Header -->
-				<xsl:apply-templates select="tei:teiHeader"/>
+				<xsl:apply-templates select="ead:archdesc"/>
 
 				<rendering>
 					<_object>
@@ -88,7 +88,7 @@
 							</__id>
 							<format>application/rdf+xml</format>
 						</_object>
-						<_object>
+						<!--<_object>
 							<__id>
 								<xsl:value-of select="concat($objectUri, '.ttl')"/>
 							</__id>
@@ -99,14 +99,14 @@
 								<xsl:value-of select="concat($objectUri, '.jsonld')"/>
 							</__id>
 							<format>application/ld+json</format>
-						</_object>
+						</_object>-->
 						<_object>
 							<__id>
 								<xsl:value-of select="concat($objectUri, '.xml')"/>
 							</__id>
 							<format>application/xml</format>
-							<profile>http://www.tei-c.org/ns/1.0</profile>
-							<label>TEI</label>
+							<profile>urn:isbn:1-931666-22-9</profile>
+							<label>EAD</label>
 						</_object>
 					</_array>
 				</seeAlso>
@@ -118,55 +118,43 @@
 		</xsl:variable>
 
 		<xsl:apply-templates select="$model"/>
-
 	</xsl:template>
 
-	<xsl:template match="tei:teiHeader">
-		<xsl:apply-templates select="tei:fileDesc"/>
+	<xsl:template match="ead:archdesc">
+		<xsl:apply-templates select="ead:did"/>
 	</xsl:template>
 	
-	<xsl:template match="tei:fileDesc">
+	<xsl:template match="ead:did">
 		<!-- title and description -->
-		<xsl:apply-templates select="tei:titleStmt/tei:title|tei:notesStmt/tei:note[@type='abstract']"/>
+		<xsl:apply-templates select="ead:unittitle|ead:abstract"/>
 		
 		<!-- metadata -->
 		<metadata>
 			<_array>
-				<xsl:apply-templates select="tei:titleStmt/tei:author|tei:titleStmt/tei:subtitle|tei:titleStmt/tei:editor|tei:publicationStmt"/>
+				<xsl:apply-templates select="ead:unitdate|ead:repository|ead:physdesc/ead:extent|ead:origination"/>
 			</_array>
 		</metadata>
 	</xsl:template>
 	
-	<xsl:template match="tei:title">
+	<xsl:template match="ead:unittitle">
 		<label>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="normalize-space(.)"/>
 		</label>
 	</xsl:template>
 	
-	<xsl:template match="tei:note[@type='abstract']">
+	<xsl:template match="ead:abstract">
 		<description>
-			<xsl:apply-templates select="tei:p" mode="abstract"/>
+			<xsl:value-of select="normalize-space(.)"/>
 		</description>
 	</xsl:template>
 	
-	<xsl:template match="tei:p" mode="abstract">
-		<xsl:value-of select="normalize-space(.)"/>
-		<xsl:if test="not(position() = last())">
-			<xsl:text>\n</xsl:text>
-		</xsl:if>
-	</xsl:template>
-	
 	<!-- metadata elements -->
-	<xsl:template match="tei:author|tei:editor|tei:subtitle|tei:publisher|tei:pubPlace">
+	<xsl:template match="ead:unitdate|ead:repository|ead:extent|ead:origination">
 		<_object>
-			<xsl:element name="{concat(upper-case(substring(local-name(), 1, 1)), substring(local-name(), 2))}">
+			<xsl:element name="{eaditor:normalize_fields(local-name(), 'en')}">
 				<xsl:value-of select="normalize-space(.)"/>
 			</xsl:element>
 		</_object>				
-	</xsl:template>
-	
-	<xsl:template match="tei:publicationStmt">
-		<xsl:apply-templates select="tei:publisher|tei:pubPlace|tei:date"/>
 	</xsl:template>
 
 	<!-- generate sequence -->
@@ -181,7 +169,7 @@
 					<label>Default sequence</label>
 					<canvases>
 						<_array>
-							<xsl:apply-templates select="descendant::tei:facsimile"/>
+							<xsl:apply-templates select="descendant::ead:c[@level='item'][descendant::ead:daoloc[@xlink:role='IIIFService']]"/>
 						</_array>
 					</canvases>
 					<viewingHint>individuals</viewingHint>
@@ -191,25 +179,21 @@
 	</xsl:template>
 
 	<!-- convert facsimiles into canvases -->
-	<xsl:template match="tei:facsimile">
-		<xsl:variable name="service" select="tei:media/@url"/>
+	<xsl:template match="ead:c[@level='item']">
+		<xsl:variable name="service" select="ead:daogrp/ead:daoloc[@xlink:role='IIIFService']/@xlink:href"/>
 
 		<_object>
 			<__id>
-				<xsl:value-of select="concat($manifestUri, '/canvas/', @xml:id)"/>
+				<xsl:value-of select="concat($manifestUri, '/canvas/', @id)"/>
 			</__id>
 			<__type>sc:Canvas</__type>
 			<label>
-				<xsl:value-of select="
-						if (tei:media/@n) then
-						tei:media/@n
-						else
-							@xml:id"/>
+				<xsl:value-of select="ead:did/ead:unittitle"/>
 			</label>
 			<thumbnail>
 				<_object>
 					<__id>
-						<xsl:value-of select="concat($service, '/full/!120,120/0/default.jpg')"/>
+						<xsl:value-of select="ead:daogrp/ead:daoloc[@xlink:role='thumbnail']/@xlink:href"/>
 					</__id>
 					<__type>dctypes:Image</__type>
 					<format>image/jpeg</format>
@@ -218,42 +202,33 @@
 				</_object>
 			</thumbnail>
 			<height>
-				<xsl:value-of select="substring-before(tei:media/@height, 'px')"/>
+				<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/height"/>
 			</height>
 			<width>
-				<xsl:value-of select="substring-before(tei:media/@width, 'px')"/>
+				<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/width"/>
 			</width>
 			<images>
 				<_array>
-					<xsl:apply-templates select="tei:media"/>
+					<xsl:apply-templates select="ead:daogrp/ead:daoloc[@xlink:role='IIIFService']">
+						<xsl:with-param name="id" select="@id"/>
+					</xsl:apply-templates>
 				</_array>
-			</images>
-			<xsl:if test="tei:surface">
-				<otherContent>
-					<_array>
-						<_object>
-							<__id>
-								<xsl:value-of select="concat($manifestUri, '/list/', @xml:id)"/>
-							</__id>
-							<__type>sc:AnnotationList</__type>
-						</_object>
-					</_array>
-				</otherContent>
-			</xsl:if>
+			</images>			
 		</_object>
 	</xsl:template>
 
-	<xsl:template match="tei:media">
-		<xsl:variable name="service" select="@url"/>
+	<xsl:template match="ead:daoloc[@xlink:role='IIIFService']">
+		<xsl:param name="id"/>
+		<xsl:variable name="service" select="@xlink:href"/>
 
 		<_object>
 			<__id>
-				<xsl:value-of select="concat($manifestUri, '/annotation/', parent::node()/@xml:id)"/>
+				<xsl:value-of select="concat($manifestUri, '/annotation/', $id)"/>
 			</__id>
 			<__type>oa:Annotation</__type>
 			<motivation>sc:painting</motivation>
 			<on>
-				<xsl:value-of select="concat($manifestUri, '/canvas/', parent::node()/@xml:id)"/>
+				<xsl:value-of select="concat($manifestUri, '/canvas/', $id)"/>
 			</on>
 			<resource>
 				<_object>
@@ -263,10 +238,10 @@
 					<__type>dctypes:Image</__type>
 					<format>image/jpeg</format>
 					<height>
-						<xsl:value-of select="substring-before(@height, 'px')"/>
+						<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/height"/>
 					</height>
 					<width>
-						<xsl:value-of select="substring-before(@width, 'px')"/>
+						<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/width"/>
 					</width>
 					<service>
 						<_object>
@@ -281,60 +256,4 @@
 			</resource>
 		</_object>
 	</xsl:template>
-
-	<!-- generate an AnnotationList from tei:facsimile -->
-	<xsl:template match="tei:facsimile" mode="AnnotationList">
-		<xsl:variable name="service" select="tei:media/@url"/>
-
-		<_object>
-			<__id>
-				<xsl:value-of select="concat($manifestUri, '/list/', @xml:id)"/>
-			</__id>
-			<__type>sc:AnnotationList</__type>
-			<resources>
-				<_array>
-					<xsl:apply-templates select="tei:surface" mode="AnnotationList"/>
-				</_array>
-			</resources>
-		</_object>
-	</xsl:template>
-
-	<xsl:template match="tei:surface" mode="AnnotationList">
-		<_object>
-			<__id>
-				<xsl:value-of select="concat('_:', @xml:id)"/>
-			</__id>
-			<__type>oa:Annotation</__type>
-			<motiviation>sc:painting</motiviation>
-			<resource>
-				<_object>
-					<__id>
-						<xsl:value-of select="concat('_:', @xml:id, '#', position())"/>
-					</__id>
-					<__type>cnt:ContentAsText</__type>
-					<chars>
-						<xsl:apply-templates select="tei:desc"/>
-					</chars>
-					<format>text/html</format>
-					<language>en</language>
-				</_object>
-			</resource>
-			<on>
-				<xsl:value-of select="concat($manifestUri, '/canvas/', parent::node()/@xml:id, '#xywh=', @ulx, ',', @uly, ',', @lrx - @ulx, ',', @lry - @uly)"/>
-			</on>
-		</_object>
-	</xsl:template>
-
-	<xsl:template match="tei:desc">
-		<xsl:apply-templates mode="anno"/>
-	</xsl:template>
-
-	<xsl:template match="tei:ref" mode="anno">
-		<xsl:variable name="link">
-			<![CDATA[<a href=']]><xsl:value-of select="@target"/><![CDATA[' target='_blank'>]]><xsl:value-of select="."/><![CDATA[</a>]]>
-		</xsl:variable>
-
-		<xsl:value-of select="normalize-space($link)"/>
-	</xsl:template>
-
 </xsl:stylesheet>

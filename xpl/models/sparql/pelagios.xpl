@@ -24,6 +24,7 @@
 
 				<xsl:variable name="query"><![CDATA[
 PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX edm:	<http://www.europeana.eu/schemas/edm/>
 PREFIX dcterms:	<http://purl.org/dc/terms/>
 PREFIX skos:	<http://www.w3.org/2004/02/skos/core#>
 PREFIX foaf:	<http://xmlns.com/foaf/0.1/>
@@ -31,9 +32,13 @@ PREFIX ecrm:	<http://erlangen-crm.org/current/>
 PREFIX geo:	<http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX arch:	<http://purl.org/archival/vocab/arch#>
 PREFIX oa:	<http://www.w3.org/ns/oa#>
+PREFIX doap:	<http://usefulinc.com/ns/doap#>
+PREFIX svcs:	<http://rdfs.org/sioc/services#>
 
-DESCRIBE ?s WHERE {
+DESCRIBE * WHERE {
  ?s dcterms:coverage ?place FILTER (strStarts(str(?place), 'https://pleiades.stoa.org'))  
+  OPTIONAL {?s edm:isShownBy ?full .
+  	?full svcs:has_service ?service}
 }]]></xsl:variable>
 
 				<xsl:variable name="service" select="concat($sparql_endpoint, '?query=', encode-for-uri($query), '&amp;output=xml')"/>

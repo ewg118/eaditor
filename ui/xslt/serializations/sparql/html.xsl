@@ -35,6 +35,7 @@
 			<namespace prefix="oa" uri="http://www.w3.org/ns/oa#"/>
 			<namespace prefix="org" uri="http://www.w3.org/ns/org#"/>
 			<namespace prefix="rel" uri="http://purl.org/vocab/relationship/"/>
+			<namespace prefix="schema" uri="http://schema.org/"/>
 			<namespace prefix="skos" uri="http://www.w3.org/2004/02/skos/core#"/>
 			<namespace prefix="xeac" uri="https://github.com/ewg118/xEAC#"/>
 			<namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>

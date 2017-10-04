@@ -158,8 +158,9 @@
 					<xsl:when test="$elem = 'subject'">Subject</xsl:when>
 					<xsl:when test="$elem = 'timestamp'">Record publication date</xsl:when>
 					<xsl:when test="$elem = 'title'">Title</xsl:when>
+					<xsl:when test="$elem = 'unitdate'">Date</xsl:when>
 					<xsl:when test="$elem = 'unittitle'">Title</xsl:when>
-					<xsl:when test="$elem = 'unitid'">Unit ID</xsl:when>
+					<xsl:when test="$elem = 'unitid'">Unit ID</xsl:when>					
 					<xsl:when test="$elem = 'userestrict'">Use Restriction</xsl:when>
 					<xsl:when test="$elem = 'year'">Year</xsl:when>
 					<xsl:otherwise>

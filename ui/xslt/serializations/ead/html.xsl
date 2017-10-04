@@ -12,7 +12,7 @@
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
-	
+
 	<xsl:variable name="eadid" select="/content/ead:ead/ead:eadheader/ead:eadid"/>
 
 	<!-- config variables -->
@@ -51,7 +51,12 @@
 	</xsl:variable>
 
 	<!-- check to see if the server port is 80, meaning Apache proxypass -->
-	<xsl:variable name="include_path" select="if (doc('input:request')/request/server-port = '80') then $display_path else concat('../', $display_path)"/>
+	<xsl:variable name="include_path"
+		select="
+			if (doc('input:request')/request/server-port = '80') then
+				$display_path
+			else
+				concat('../', $display_path)"/>
 
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and (@source = 'geonames' or @source = 'pleiades')])"/>
@@ -105,18 +110,24 @@
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
 
+				<!-- always include Leaflet-->
+				<script type="text/javascript" src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.ajax.min.js"/>
+				<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css"/>
+
 				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
 				<xsl:if test="$hasPoints = true()">
 					<!-- css -->
-					<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css"/>
 					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.css"/>
 					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.Default.css"/>
 
 					<!-- js -->
-					<script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>
-					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.ajax.min.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.markercluster.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/display_map_functions.js"/>
+				</xsl:if>
+				<!-- include IIIF Leaflet plugin if applicable -->
+				<xsl:if test="//ead:daoloc[@xlink:role = 'IIIFService']">
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet-iiif.js"/>
 				</xsl:if>
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
@@ -136,6 +147,9 @@
 					<span id="mapboxKey">
 						<xsl:value-of select="//config/mapboxKey"/>
 					</span>
+					<span id="manifest"/>
+					<div class="iiif-container-template" style="width:100%;height:100%"/>
+					<div id="iiif-window" style="width:600px;height:600px;display:none"/>
 				</div>
 				<xsl:call-template name="footer"/>
 			</body>
@@ -251,7 +265,7 @@
 			<div class="col-md-9">
 				<div id="archdesc-info">
 					<xsl:call-template name="archdesc-admininfo"/>
-					
+
 					<xsl:apply-templates select="ead:archdesc/ead:bioghist"/>
 					<xsl:apply-templates select="ead:archdesc/ead:scopecontent"/>
 					<xsl:if test="count(ead:archdesc/ead:daogrp[count(ead:daoloc) &gt; 0]) &gt; 0">
@@ -463,7 +477,7 @@
 	<!--This template formats various head elements and makes them targets for
       links from the Table of Contents.-->
 	<xsl:template
-		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:note | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note |ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid | ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography | ead:archdesc/ead:phystech | ead:archdesc/ead:originalsloc">
+		match="ead:archdesc/ead:bioghist | ead:archdesc/ead:note | ead:archdesc/ead:scopecontent | ead:archdesc/ead:arrangement | ead:archdesc/ead:phystech | ead:archdesc/ead:odd | ead:archdesc/ead:bioghist/ead:note | ead:archdesc/ead:scopecontent/ead:note | ead:archdesc/ead:phystech/ead:note | ead:archdesc/ead:controlaccess/ead:note | ead:archdesc/ead:odd/ead:note | ead:archdesc/ead:otherfindaid | ead:archdesc/*/ead:otherfindaid | ead:archdesc/ead:bibliography | ead:archdesc/*/ead:bibliography | ead:archdesc/ead:phystech | ead:archdesc/ead:originalsloc">
 		<div class="{name()}">
 			<a id="{generate-id(.)}"/>
 			<h2>

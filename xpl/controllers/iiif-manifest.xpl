@@ -56,6 +56,5 @@
                 <p:output name="data" ref="data"/>
             </p:processor>
         </p:otherwise>
-
     </p:choose>
 </p:config>
