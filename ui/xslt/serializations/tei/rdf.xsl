@@ -116,8 +116,17 @@
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile[@style='depiction']" mode="depiction">
-		<foaf:thumbnail rdf:resource="{concat($url, 'ui/media/thumbnail/', tei:graphic/@url, '.jpg')}"/>
-		<foaf:depiction rdf:resource="{concat($url, 'ui/media/reference/', tei:graphic/@url, '.jpg')}"/>
+		<xsl:apply-templates select="tei:graphic|tei:media[@type='IIIFService']"/>
+	</xsl:template>
+	
+	<xsl:template match="tei:graphic" mode="depiction">
+		<foaf:thumbnail rdf:resource="{concat($url, 'ui/media/thumbnail/', @url, '.jpg')}"/>
+		<foaf:depiction rdf:resource="{concat($url, 'ui/media/reference/', @url, '.jpg')}"/>
+	</xsl:template>
+	
+	<xsl:template match="tei:media[@type='IIIFService']">
+		<foaf:thumbnail rdf:resource="{concat(@url, '/full/120,/0/default.jpg')}"/>
+		<foaf:depiction rdf:resource="{concat(@url, '/full/!600,600/0/default.jpg')}"/>
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="structure">		
@@ -126,13 +135,27 @@
 		<dcmitype:Text rdf:about="{$itemUri}">
 			<dcterms:title>
 				<xsl:choose>
-					<xsl:when test="string(tei:graphic/@n)">
-						<xsl:value-of select="tei:graphic/@n"/>
+					<xsl:when test="tei:graphic">
+						<xsl:choose>
+							<xsl:when test="string(tei:graphic/@n)">
+								<xsl:value-of select="tei:graphic/@n"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="tei:graphic/@url"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="tei:graphic/@url"/>
-					</xsl:otherwise>
-				</xsl:choose>
+					<xsl:when test="tei:media">
+						<xsl:choose>
+							<xsl:when test="string(tei:media/@n)">
+								<xsl:value-of select="tei:media/@n"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="tei:media/@url"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+				</xsl:choose>				
 			</dcterms:title>
 			<dcterms:type rdf:resource="http://vocab.getty.edu/aat/300194222"/>
 			<dcterms:isPartOf rdf:resource="{$objectUri}"/>		

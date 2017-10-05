@@ -92,7 +92,22 @@
 	</xsl:template>
 
 	<!-- MODS -->
-	<!-- suppress images -->
-	<xsl:template match="mods:location[mods:url]"/>
+	<!-- suppress images, depending on rights statements -->	
+	<xsl:template match="mods:url[parent::mods:location]">
+		<xsl:variable name="rights" select="ancestor::mods:mods/mods:accessCondition[@type='rights']/mods:url"/>
+		
+		<xsl:choose>
+			<xsl:when test="@access='preview'">
+				<xsl:copy-of select="self::node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="$rights = 'http://rightsstatements.org/vocab/InC-NC/1.0/' or $rights = 'http://rightsstatements.org/vocab/NoC-US/1.0/'">
+						<xsl:copy-of select="self::node()"/>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 </xsl:stylesheet>

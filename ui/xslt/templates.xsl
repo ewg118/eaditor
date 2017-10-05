@@ -47,15 +47,15 @@
 							</xsl:if>
 														
 							<li>
-								<a href="{$eadid}.xml">XML</a>
+								<a href="{$recordId}.xml">XML</a>
 							</li>
 							<li>
-								<a href="{$eadid}.rdf">RDF/XML</a>
+								<a href="{$recordId}.rdf">RDF/XML</a>
 							</li>
 							<xsl:if test="$collection-name != 'admin'">
 								<li>
 									<a
-										href="{concat('http://', doc('input:request')/request/server-name, ':8080/orbeon/eaditor/admin/', $collection-name, '/id/', $eadid)}"
+										href="{concat('http://', doc('input:request')/request/server-name, ':8080/orbeon/eaditor/admin/', $collection-name, '/id/', $recordId)}"
 										>Staff View</a>
 								</li>
 							</xsl:if>

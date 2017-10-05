@@ -106,7 +106,22 @@
 						<xsl:text> </xsl:text>
 					</xsl:for-each>
 				</field>
+				
+				<xsl:apply-templates select="mods:location/mods:url[not(@note='IIIFService')]"/>
 			</doc>
 		</add>
+	</xsl:template>
+	
+	<!-- images -->
+	<xsl:template match="mods:url">
+		<field>
+			<xsl:attribute name="name">
+				<xsl:choose>
+					<xsl:when test="@access='preview'">collection_thumb</xsl:when>
+					<xsl:when test="@usage = 'primary display'">collection_reference</xsl:when>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:value-of select="."/>
+		</field>
 	</xsl:template>
 </xsl:stylesheet>

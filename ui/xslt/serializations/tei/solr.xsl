@@ -179,11 +179,25 @@
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile[@style='depiction']">
+		<xsl:apply-templates select="tei:graphic|tei:media[@type='IIIFService']"/>
+		
+	</xsl:template>
+	
+	<xsl:template match="tei:graphic">
 		<field name="collection_thumb">
-			<xsl:value-of select="concat($url, 'ui/media/thumbnail/', tei:graphic/@url, '.jpg')"/>
+			<xsl:value-of select="concat($url, 'ui/media/thumbnail/', @url, '.jpg')"/>
 		</field>
 		<field name="collection_reference">
-			<xsl:value-of select="concat($url, 'ui/media/reference/', tei:graphic/@url, '.jpg')"/>
+			<xsl:value-of select="concat($url, 'ui/media/reference/', @url, '.jpg')"/>
+		</field>
+	</xsl:template>
+	
+	<xsl:template match="tei:media[@type='IIIFService']">
+		<field name="collection_thumb">
+			<xsl:value-of select="concat(@url, '/full/120,/0/default.jpg')"/>
+		</field>
+		<field name="collection_reference">
+			<xsl:value-of select="concat(@url, '/full/!600,600/0/default.jpg')"/>
 		</field>
 	</xsl:template>
 

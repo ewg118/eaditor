@@ -1,39 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9"
-	xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
-	version="2.0">
-	
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
+
 	<xsl:include href="../../templates.xsl"/>
 	<xsl:include href="../../functions.xsl"/>
-	
+
 	<!-- path and document params -->
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
-	
-	<xsl:variable name="eadid">
-		<xsl:choose>
-			<xsl:when test="contains($uri, 'ark:/')">
-				<xsl:value-of select="substring-after(substring-after($uri, 'ark:/'), '/')"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="substring-after($uri, 'id/')"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>	
-	
+
+	<xsl:variable name="recordId" select="//mods:recordIdentifier"/>
 	
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="url" select="/content/config/url"/>
-	
+
 	<!-- display path -->
 	<xsl:variable name="display_path">
 		<xsl:variable name="default">
 			<xsl:choose>
-				<xsl:when test="$mode='private'">
+				<xsl:when test="$mode = 'private'">
 					<xsl:text>../../</xsl:text>
 				</xsl:when>
 				<xsl:otherwise>
@@ -48,7 +36,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
+
 		<!-- after default path is set, replace ../ when it is an aggregate collection -->
 		<xsl:choose>
 			<xsl:when test="/content/config/aggregator = 'true'">
@@ -59,29 +47,35 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
+
 	<!-- check to see if the server port is 80, meaning Apache proxypass -->
-	<xsl:variable name="include_path" select="if (doc('input:request')/request/server-port = '80') then $display_path else concat('../', $display_path)"/>
-	
+	<xsl:variable name="include_path"
+		select="
+			if (doc('input:request')/request/server-port = '80') then
+				$display_path
+			else
+				concat('../', $display_path)"/>
+
 	<!-- boolean variable as to whether there are mappable points -->
 	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
-	
+
 	<!-- url params -->
-	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name = 'lang']/value"/>
 	<xsl:param name="mode">
 		<xsl:choose>
 			<xsl:when test="contains($uri, 'admin/')">private</xsl:when>
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
-	
+
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content//mods:mods"/>
 	</xsl:template>
-	
+
 	<xsl:template match="mods:mods">
 		<html>
-			<head prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+			<head
+				prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
 				<title id="{$eadid}">
 					<xsl:value-of select="/content/config/title"/>
@@ -91,7 +85,7 @@
 				<!-- alternates -->
 				<link rel="alternate" type="text/xml" href="{$eadid}.xml"/>
 				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
-				
+
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
 				<!-- bootstrap -->
@@ -101,7 +95,7 @@
 				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				
+
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="//config/google_analytics"/>
@@ -122,9 +116,9 @@
 	<xsl:template name="mods-content">
 		<div class="row">
 			<div class="col-md-12">
-				<h1>
+				<h2>
 					<xsl:value-of select="mods:titleInfo/mods:title"/>
-				</h1>
+				</h2>
 			</div>
 			<div class="col-md-6">
 				<xsl:apply-templates select="mods:name"/>
@@ -133,82 +127,82 @@
 						<xsl:value-of select="mods:abstract"/>
 					</p>
 				</xsl:if>
-				<h2>Description of Digital Image</h2>
+				<h3>Description of Digital Image</h3>
 				<dl class="dl-horizontal">
 					<dt>Image Number</dt>
 					<dd>
 						<xsl:value-of select="mods:identifier"/>
 					</dd>
-					<xsl:apply-templates select="mods:physicalDescription/mods:form"/>					
+					<xsl:apply-templates select="mods:physicalDescription/mods:form"/>
 				</dl>
 
-				<h2>Description of Original Item</h2>
+				<h3>Description of Original Item</h3>
 				<dl class="dl-horizontal">
 					<xsl:if test="string(mods:relatedItem/mods:originInfo/mods:dateCreated)">
 						<dt>Date Created</dt>
 						<dd>
-							<xsl:value-of select="mods:relatedItem/mods:originInfo/mods:dateCreated"
-							/>
+							<xsl:value-of select="mods:relatedItem/mods:originInfo/mods:dateCreated"/>
 						</dd>
 					</xsl:if>
-					<xsl:apply-templates select="mods:relatedItem/mods:physicalDescription/mods:form"/>					
+					<xsl:apply-templates select="mods:relatedItem/mods:physicalDescription/mods:form"/>
 					<xsl:if test="string(mods:relatedItem/mods:physicalDescription/mods:extent)">
 						<dt>Extent</dt>
 						<dd>
-							<xsl:value-of
-								select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
+							<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
 						</dd>
 					</xsl:if>
 					<xsl:if test="string(mods:relatedItem/mods:location/mods:physicalLocation)">
 						<dt>Physical Location</dt>
 						<dd>
-							<xsl:value-of
-								select="mods:relatedItem/mods:location/mods:physicalLocation"/>
+							<xsl:value-of select="mods:relatedItem/mods:location/mods:physicalLocation"/>
 						</dd>
 					</xsl:if>
 					<xsl:if test="string(mods:relatedItem/mods:physicalDescription/mods:note)">
 						<dt>Note</dt>
 						<dd>
-							<xsl:value-of
-								select="mods:relatedItem/mods:physicalDescription/mods:note"/>
+							<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:note"/>
 						</dd>
 					</xsl:if>
 				</dl>
 				<xsl:if test="count(mods:subject/mods:topic) &gt; 0">
-					<h2>Subjects</h2>
+					<h3>Subjects</h3>
 					<dl class="dl-horizontal">
 						<xsl:for-each select="mods:subject/*">
 							<dt>
 								<xsl:choose>
-									<xsl:when test="local-name()='genre'">Genre</xsl:when>	
-									<xsl:when test="local-name()='geographic'">Geographic</xsl:when>									
-									<xsl:when test="local-name()='name'">
+									<xsl:when test="local-name() = 'genre'">Genre</xsl:when>
+									<xsl:when test="local-name() = 'geographic'">Geographic</xsl:when>
+									<xsl:when test="local-name() = 'name'">
 										<xsl:choose>
-											<xsl:when test="@type='personal'">Person</xsl:when>
-											<xsl:when test="@type='corporate'">Corporate</xsl:when>
+											<xsl:when test="@type = 'personal'">Person</xsl:when>
+											<xsl:when test="@type = 'corporate'">Corporate</xsl:when>
 										</xsl:choose>
 									</xsl:when>
-									<xsl:when test="local-name()='occupation'">Occupation</xsl:when>
-									<xsl:when test="local-name()='topic'">Subject</xsl:when>									
+									<xsl:when test="local-name() = 'occupation'">Occupation</xsl:when>
+									<xsl:when test="local-name() = 'topic'">Subject</xsl:when>
 								</xsl:choose>
 							</dt>
 							<dd>
 								<xsl:variable name="facet">
 									<xsl:choose>
-										<xsl:when test="local-name()='genre'">genreform</xsl:when>	
-										<xsl:when test="local-name()='geographic'">geogname</xsl:when>									
-										<xsl:when test="local-name()='name'">
+										<xsl:when test="local-name() = 'genre'">genreform</xsl:when>
+										<xsl:when test="local-name() = 'geographic'">geogname</xsl:when>
+										<xsl:when test="local-name() = 'name'">
 											<xsl:choose>
-												<xsl:when test="@type='personal'">persname</xsl:when>
-												<xsl:when test="@type='corporate'">corpname</xsl:when>
+												<xsl:when test="@type = 'personal'">persname</xsl:when>
+												<xsl:when test="@type = 'corporate'">corpname</xsl:when>
 											</xsl:choose>
 										</xsl:when>
-										<xsl:when test="local-name()='occupation'">occupation</xsl:when>
-										<xsl:when test="local-name()='topic'">subject</xsl:when>									
+										<xsl:when test="local-name() = 'occupation'">occupation</xsl:when>
+										<xsl:when test="local-name() = 'topic'">subject</xsl:when>
 									</xsl:choose>
 								</xsl:variable>
 								<a href="{$display_path}results/?q={$facet}_facet:&#x022;{.}&#x022;">
-									<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
+									<xsl:value-of select="
+											if (mods:namePart) then
+												mods:namePart
+											else
+												."/>
 								</a>
 								<xsl:if test="string(@valueURI)">
 									<a href="{@valueURI}" rel="dcterms:subject">
@@ -220,33 +214,53 @@
 					</dl>
 				</xsl:if>
 				<xsl:if test="mods:accessCondition">
-					<p>
-						<b>Access Condition: </b>
-						<xsl:value-of select="mods:accessCondition"/>
-					</p>
+					<div>
+						<h3>Access Condition</h3>
+						<xsl:apply-templates select="mods:accessCondition"/>
+					</div>
 				</xsl:if>
-				<xsl:if test="mods:note[@type='preferred_citation']">
-					<p>
-						<b>Preferred Citation: </b>
-						<xsl:value-of select="mods:note[@type='preferred_citation']"/>
-					</p>
+				<xsl:if test="mods:note[@type = 'preferred_citation']">
+					<div>
+						<h3>Preferred Citation</h3>
+						<p>
+							<xsl:value-of select="mods:note[@type = 'preferred_citation']"/>
+						</p>
+					</div>
 				</xsl:if>
-				<p><b>Photo Access: </b>ANS staff can log in to Staff View to see the image. Outside
-					researchers please contact the ANS Archivist.</p>
 			</div>
 			<div class="col-md-6">
-				<xsl:apply-templates select="mods:location/mods:url[@usage='primary display']"/>
+				<xsl:apply-templates select="mods:location/mods:url[@usage = 'primary display']"/>
 			</div>
 		</div>
 	</xsl:template>
-	
+
+	<xsl:template match="mods:accessCondition">
+		<p>
+			<xsl:choose>
+				<xsl:when test="mods:url">
+					<strong>Rights Statement: </strong>
+					<a href="{mods:url}" title="{mods:url}">
+						<xsl:choose>
+							<xsl:when test="mods:url = 'http://rightsstatements.org/vocab/InC/1.0/'">In Copyright</xsl:when>
+							<xsl:when test="mods:url = 'http://rightsstatements.org/vocab/InC-NC/1.0/'">In Copyright - Non-Commercial Use Permitted</xsl:when>
+							<xsl:when test="mods:url = 'http://rightsstatements.org/vocab/NoC-CR/1.0/'">No Copyright - Contractual Restrictions</xsl:when>
+							<xsl:when test="mods:url = 'http://rightsstatements.org/vocab/NoC-US/1.0/'">No Copyright - United States</xsl:when>
+							<xsl:when test="mods:url = 'http://rightsstatements.org/vocab/UND/1.0/'">Copyright Undetermined</xsl:when>
+						</xsl:choose>
+					</a>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</p>
+	</xsl:template>
+
 	<xsl:template match="mods:form">
 		<dt>Form</dt>
 		<dd>
-			<a
-				href="{$display_path}results/?q=genreform_facet:&#x022;{.}&#x022;">
-				<xsl:value-of
-					select="."/>
+			<a href="{$display_path}results/?q=genreform_facet:&#x022;{.}&#x022;">
+				<xsl:value-of select="."/>
 			</a>
 			<xsl:if test="string(@valueURI)">
 				<a href="{@valueURI}" rel="dcterms:format">
@@ -258,11 +272,10 @@
 
 	<xsl:template match="mods:name">
 		<span>
-			<b><xsl:value-of
-					select="concat(upper-case(substring(@type, 1, 1)), substring(@type, 2))"/> Name: </b>
+			<b><xsl:value-of select="concat(upper-case(substring(@type, 1, 1)), substring(@type, 2))"/> Name: </b>
 			<xsl:value-of select="mods:namePart[1]"/>
-			<xsl:if test="mods:namePart[@type='date']">
-				<xsl:value-of select="mods:namePart[@type='date']"/>
+			<xsl:if test="mods:namePart[@type = 'date']">
+				<xsl:value-of select="mods:namePart[@type = 'date']"/>
 			</xsl:if>
 		</span>
 	</xsl:template>

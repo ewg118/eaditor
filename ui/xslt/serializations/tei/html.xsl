@@ -8,7 +8,7 @@
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
 	<xsl:variable name="uri" select="doc('input:request')/request/request-url"/>
-	<xsl:variable name="teiID" select="/content/tei:TEI/@xml:id"/>
+	<xsl:variable name="recordId" select="/content/tei:TEI/@xml:id"/>
 
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
@@ -17,10 +17,10 @@
 	<xsl:variable name="objectUri">
 		<xsl:choose>
 			<xsl:when test="//config/ark[@enabled = 'true']">
-				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $teiID)"/>
+				<xsl:value-of select="concat($url, 'ark:/', //config/ark/naan, '/', $recordId)"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="concat($url, 'id/', $teiID)"/>
+				<xsl:value-of select="concat($url, 'id/', $recordId)"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -74,7 +74,7 @@
 	</xsl:param>
 
 	<xsl:variable name="mirador" as="xs:boolean" select="descendant::tei:media[@type = 'IIIFService'] and string(//config/mirador)"/>
-	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $teiID)"/>
+	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $recordId)"/>
 
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/tei:TEI"/>
@@ -85,7 +85,7 @@
 			<head
 				prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
-				<title id="{$teiID}">
+				<title id="{$recordId}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
@@ -145,7 +145,7 @@
 						<xsl:value-of select="$display_path"/>
 					</span>
 					<span id="doc">
-						<xsl:value-of select="$teiID"/>
+						<xsl:value-of select="$recordId"/>
 					</span>
 					<div id="path">../</div>
 					<xsl:choose>
@@ -312,7 +312,7 @@
 						<p> Appears on: <xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]]">
 								<xsl:choose>
 									<xsl:when test="$mirador = true()">
-										<xsl:variable name="canvas" select="concat($url, 'manifest/', $teiID, '/canvas/', @xml:id)"/>
+										<xsl:variable name="canvas" select="concat($url, 'manifest/', $recordId, '/canvas/', @xml:id)"/>
 										<a href="#{@xml:id}" class="page-image" canvas="{$canvas}">
 											<xsl:choose>
 												<xsl:when test="string(tei:media/@n)">

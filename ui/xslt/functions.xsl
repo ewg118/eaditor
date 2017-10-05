@@ -28,6 +28,16 @@
 			<xsl:text> B.C.</xsl:text>
 		</xsl:if>
 	</xsl:function>
+	
+	<xsl:function name="eaditor:date_dataType">
+		<xsl:param name="val"/>
+		
+		<xsl:choose>
+			<xsl:when test="$val castable as xs:date">http://www.w3.org/2001/XMLSchema#date</xsl:when>
+			<xsl:when test="$val castable as xs:gYearMonth">http://www.w3.org/2001/XMLSchema#gYearMonth</xsl:when>
+			<xsl:when test="$val castable as xs:gYear">http://www.w3.org/2001/XMLSchema#gYear</xsl:when>
+		</xsl:choose>
+	</xsl:function>
 
 	<!-- data normalization -->
 	<xsl:function name="eaditor:normalize_century">
