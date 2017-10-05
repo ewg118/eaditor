@@ -1,11 +1,13 @@
 $(document).ready(function () {
-    if ($('#mapcontainer').html().length == 0) {
+    //initialize map, if applicable
+    if ($('#mapcontainer').length) {
         var id = $('title').attr('id');
         var path = $('#path').text();
         //initialize_timemap(id, path);
         initialize_map(id, path);
     }
     
+    //popup non-IIIF images on EAD pages
     $(".thumbImage").fancybox({ helpers: {
             title: {
                 type: 'inside'
@@ -13,6 +15,7 @@ $(document).ready(function () {
         }
     });
     
+    //IIIF in popup on EAD pages
     $('.iiif-image').fancybox({
         beforeShow: function () {
             var manifest = this.element.attr('manifest');
@@ -30,6 +33,11 @@ $(document).ready(function () {
             }
         }
     });
+    //initialize Leaflet IIIF for MODS record pages
+     if ($('#info-json').length) {
+        var manifest = $('#info-json').text();
+        render_image(manifest);
+     }
     
     function render_image(manifest) {
         var iiifImage = L.map('iiif-container', {

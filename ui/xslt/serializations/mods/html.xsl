@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ead="urn:isbn:1-931666-22-9"
-	xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink" version="2.0">
 
 	<xsl:include href="../../templates.xsl"/>
 	<xsl:include href="../../functions.xsl"/>
@@ -12,7 +11,7 @@
 	<xsl:param name="uri" select="doc('input:request')/request/request-url"/>
 
 	<xsl:variable name="recordId" select="//mods:recordIdentifier"/>
-	
+
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="url" select="/content/config/url"/>
@@ -56,9 +55,6 @@
 			else
 				concat('../', $display_path)"/>
 
-	<!-- boolean variable as to whether there are mappable points -->
-	<xsl:variable name="hasPoints" select="boolean(descendant::ead:geogname[string(@authfilenumber) and string(@source)])"/>
-
 	<!-- url params -->
 	<xsl:param name="lang" select="doc('input:request')/request/parameters/parameter[name = 'lang']/value"/>
 	<xsl:param name="mode">
@@ -67,6 +63,9 @@
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
+
+	<xsl:variable name="iiif-available" select="boolean(descendant::mods:url[@note = 'IIIFService'])" as="xs:boolean"/>
+	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $recordId)"/>
 
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content//mods:mods"/>
@@ -77,14 +76,14 @@
 			<head
 				prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
-				<title id="{$eadid}">
+				<title id="{$recordId}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:value-of select="mods:titleInfo/mods:title"/>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{$eadid}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
+				<link rel="alternate" type="text/xml" href="{$recordId}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$recordId}.rdf"/>
 
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
@@ -95,7 +94,13 @@
 				<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
 				<script type="text/javascript" src="{$include_path}ui/javascript/jquery.fancybox.pack.js?v=2.1.5"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-
+				<xsl:if test="$iiif-available = true()">
+					<script type="text/javascript" src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.ajax.min.js"/>
+					<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet-iiif.js"/>
+					<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
+				</xsl:if>
 				<xsl:if test="string(//config/google_analytics)">
 					<script type="text/javascript">
 						<xsl:value-of select="//config/google_analytics"/>
@@ -107,7 +112,16 @@
 				<div class="container-fluid">
 					<xsl:call-template name="mods-content"/>
 				</div>
-				<div id="path" style="display:none">../</div>
+				<div class="hidden">
+					<span id="path">
+						<xsl:value-of select="$display_path"/>
+					</span>
+					<xsl:if test="$iiif-available">
+						<span id="info-json">
+							<xsl:value-of select="concat(descendant::mods:url[@note = 'IIIFService'], '/info.json')"/>
+						</span>
+					</xsl:if>
+				</div>
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -213,12 +227,6 @@
 						</xsl:for-each>
 					</dl>
 				</xsl:if>
-				<xsl:if test="mods:accessCondition">
-					<div>
-						<h3>Access Condition</h3>
-						<xsl:apply-templates select="mods:accessCondition"/>
-					</div>
-				</xsl:if>
 				<xsl:if test="mods:note[@type = 'preferred_citation']">
 					<div>
 						<h3>Preferred Citation</h3>
@@ -229,7 +237,20 @@
 				</xsl:if>
 			</div>
 			<div class="col-md-6">
-				<xsl:apply-templates select="mods:location/mods:url[@usage = 'primary display']"/>
+				<xsl:choose>
+					<xsl:when test="$iiif-available = true()">
+						<div id="iiif-container" style="width:100%;height:600px"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="mods:location/mods:url[@access = 'preview']"/>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:if test="mods:accessCondition">
+					<div>
+						<h3>Access Condition</h3>
+						<xsl:apply-templates select="mods:accessCondition"/>
+					</div>
+				</xsl:if>
 			</div>
 		</div>
 	</xsl:template>

@@ -23,6 +23,11 @@ ul li,
 ol li{
 	list-style-type:none;
 }
+#iiif-container {
+    background-color:white;
+    width:100%;
+    height:600px;
+}
 /*
   ***************************************
   FOOTER
