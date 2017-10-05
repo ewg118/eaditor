@@ -53,6 +53,11 @@ a:focus{
 	color:#535e70;
 	text-decoration:underline
 }
+#iiif-container {
+    background-color:white;
+    width:100%;
+    height:600px;
+}
 /*
   ***************************************
   FOOTER
