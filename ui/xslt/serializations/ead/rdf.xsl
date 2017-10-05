@@ -5,6 +5,8 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:schema="http://schema.org/" xmlns:edm="http://www.europeana.eu/schemas/edm/"
 	xmlns:svcs="http://rdfs.org/sioc/services#" xmlns:doap="http://usefulinc.com/ns/doap#" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	exclude-result-prefixes="xs ead xlink eaditor" version="2.0">
+	<xsl:include href="../../functions.xsl"/>
+	
 	<!-- ***************** EAD-TO-RDF ******************-->
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
@@ -325,14 +327,4 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
-	<xsl:function name="eaditor:date_dataType">
-		<xsl:param name="val"/>
-
-		<xsl:choose>
-			<xsl:when test="$val castable as xs:date">http://www.w3.org/2001/XMLSchema#date</xsl:when>
-			<xsl:when test="$val castable as xs:gYearMonth">http://www.w3.org/2001/XMLSchema#gYearMonth</xsl:when>
-			<xsl:when test="$val castable as xs:gYear">http://www.w3.org/2001/XMLSchema#gYear</xsl:when>
-		</xsl:choose>
-	</xsl:function>
 </xsl:stylesheet>

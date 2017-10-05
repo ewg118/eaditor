@@ -13,7 +13,7 @@
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="pipeline">display</xsl:variable>
 
-	<xsl:variable name="eadid" select="/content/ead:ead/ead:eadheader/ead:eadid"/>
+	<xsl:variable name="recordId" select="/content/ead:ead/ead:eadheader/ead:eadid"/>
 
 	<!-- config variables -->
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
@@ -72,7 +72,7 @@
 	</xsl:param>
 	
 	<xsl:variable name="iiif-available" select="boolean(descendant::ead:daoloc[@xlink:role = 'IIIFService'])" as="xs:boolean"/>
-	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $eadid)"/>
+	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $recordId)"/>
 
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/ead:ead"/>
@@ -83,7 +83,7 @@
 			<head
 				prefix="dcterms: http://purl.org/dc/terms/     foaf: http://xmlns.com/foaf/0.1/     owl:  http://www.w3.org/2002/07/owl#     rdf:  http://www.w3.org/1999/02/22-rdf-syntax-ns#
 				skos: http://www.w3.org/2004/02/skos/core#     dcterms: http://purl.org/dc/terms/     arch: http://purl.org/archival/vocab/arch#     xsd: http://www.w3.org/2001/XMLSchema#">
-				<title id="{$eadid}">
+				<title id="{$recordId}">
 					<xsl:value-of select="/content/config/title"/>
 					<xsl:text>: </xsl:text>
 					<xsl:choose>
@@ -100,8 +100,8 @@
 					</xsl:choose>
 				</title>
 				<!-- alternates -->
-				<link rel="alternate" type="text/xml" href="{$eadid}.xml"/>
-				<link rel="alternate" type="application/rdf+xml" href="{$eadid}.rdf"/>
+				<link rel="alternate" type="text/xml" href="{$recordId}.xml"/>
+				<link rel="alternate" type="application/rdf+xml" href="{$recordId}.rdf"/>
 
 				<meta name="viewport" content="width=device-width, initial-scale=1"/>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
