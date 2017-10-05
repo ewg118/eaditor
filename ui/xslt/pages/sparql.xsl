@@ -4,7 +4,7 @@
 
 	<xsl:variable name="pipeline"/>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
-	<xsl:variable name="eadid"/>
+	
 	<xsl:variable name="display_path"/>
 	<xsl:variable name="include_path">
 		<xsl:choose>
