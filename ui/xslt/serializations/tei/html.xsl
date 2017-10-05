@@ -134,6 +134,7 @@
 			<body>
 				<xsl:call-template name="header">
 					<xsl:with-param name="manifestURI" select="$manifestURI"/>
+					<xsl:with-param name="recordId" select="$recordId"/>
 				</xsl:call-template>
 				<div class="container-fluid">
 					<xsl:call-template name="tei-content"/>

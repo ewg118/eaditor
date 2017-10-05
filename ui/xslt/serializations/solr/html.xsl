@@ -18,7 +18,7 @@
 	<!-- paths and pipelines -->
 	<xsl:variable name="request-uri" select="concat('http://localhost:8080', substring-before(doc('input:request')/request/request-uri, 'results'))"/>
 	<xsl:variable name="pipeline">results</xsl:variable>
-	<xsl:variable name="eadid"/>
+	
 	<xsl:variable name="display_path">./</xsl:variable>
 	<xsl:variable name="include_path">
 		<xsl:choose>

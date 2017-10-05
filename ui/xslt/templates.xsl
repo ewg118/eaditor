@@ -3,6 +3,7 @@
 	exclude-result-prefixes="#all" version="2.0">
 
 	<xsl:template name="header">
+		<xsl:param name="recordId"/>
 		<xsl:param name="manifestURI"/>
 		
 		<div class="navbar navbar-default navbar-static-top" role="navigation">
