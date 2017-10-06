@@ -123,38 +123,81 @@
 	<xsl:template match="ead:archdesc">
 		<xsl:apply-templates select="ead:did"/>
 	</xsl:template>
-	
+
 	<xsl:template match="ead:did">
 		<!-- title and description -->
-		<xsl:apply-templates select="ead:unittitle|ead:abstract"/>
-		
+		<xsl:apply-templates select="ead:unittitle"/>
+
+		<xsl:choose>
+			<xsl:when test="parent::ead:archdesc">
+				<xsl:choose>
+					<xsl:when test="ead:abstract">
+						<xsl:apply-templates select="ead:abstract"/>
+					</xsl:when>
+					<xsl:when test="parent::node()/ead:scopecontent">
+						<xsl:apply-templates select="parent::node()/ead:scopecontent"/>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="ead:abstract">
+						<xsl:apply-templates select="ead:abstract"/>
+					</xsl:when>
+					<xsl:when test="parent::node()/ead:daogrp/ead:daodesc">
+						<xsl:apply-templates select="parent::node()/ead:daogrp/ead:daodesc"/>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+
 		<!-- metadata -->
 		<metadata>
 			<_array>
-				<xsl:apply-templates select="ead:unitdate|ead:repository|ead:physdesc/ead:extent|ead:origination"/>
+				<xsl:apply-templates select="ead:unitdate | ead:unitid | ead:repository | ead:physdesc/ead:extent | ead:origination" mode="metadata"/>
+				<xsl:if test="parent::ead:c">
+					<xsl:apply-templates select="parent::node()/ead:controlaccess/*" mode="metadata"/>
+				</xsl:if>
 			</_array>
 		</metadata>
 	</xsl:template>
-	
+
 	<xsl:template match="ead:unittitle">
 		<label>
 			<xsl:value-of select="normalize-space(.)"/>
 		</label>
 	</xsl:template>
-	
-	<xsl:template match="ead:abstract">
+
+	<xsl:template match="ead:abstract | ead:scopecontent | ead:daodesc">
 		<description>
-			<xsl:value-of select="normalize-space(.)"/>
+			<xsl:choose>
+				<xsl:when test="ead:p">
+					<xsl:apply-templates select="ead:p"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(.)"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</description>
 	</xsl:template>
-	
+
+	<xsl:template match="ead:p">
+		<xsl:value-of select="normalize-space(.)"/>
+		<xsl:if test="not(position() = last())">
+			<xsl:text>\n</xsl:text>
+		</xsl:if>
+	</xsl:template>
+
 	<!-- metadata elements -->
-	<xsl:template match="ead:unitdate|ead:repository|ead:extent|ead:origination">
+	<xsl:template match="*" mode="metadata">
 		<_object>
-			<xsl:element name="{eaditor:normalize_fields(local-name(), 'en')}">
+			<label>
+				<xsl:value-of select="eaditor:normalize_fields(local-name(), 'en')"/>
+			</label>
+			<value>
 				<xsl:value-of select="normalize-space(.)"/>
-			</xsl:element>
-		</_object>				
+			</value>
+		</_object>
 	</xsl:template>
 
 	<!-- generate sequence -->
@@ -169,7 +212,7 @@
 					<label>Default sequence</label>
 					<canvases>
 						<_array>
-							<xsl:apply-templates select="descendant::ead:c[@level='item'][descendant::ead:daoloc[@xlink:role='IIIFService']]"/>
+							<xsl:apply-templates select="descendant::ead:c[@level = 'item'][descendant::ead:daoloc[@xlink:role = 'IIIFService']]"/>
 						</_array>
 					</canvases>
 					<viewingHint>individuals</viewingHint>
@@ -179,45 +222,49 @@
 	</xsl:template>
 
 	<!-- convert facsimiles into canvases -->
-	<xsl:template match="ead:c[@level='item']">
-		<xsl:variable name="service" select="ead:daogrp/ead:daoloc[@xlink:role='IIIFService']/@xlink:href"/>
+	<xsl:template match="ead:c[@level = 'item']">
+		<xsl:variable name="service" select="ead:daogrp/ead:daoloc[@xlink:role = 'IIIFService']/@xlink:href"/>
 
 		<_object>
 			<__id>
 				<xsl:value-of select="concat($manifestUri, '/canvas/', @id)"/>
 			</__id>
 			<__type>sc:Canvas</__type>
-			<label>
-				<xsl:value-of select="ead:did/ead:unittitle"/>
-			</label>
-			<thumbnail>
-				<_object>
-					<__id>
-						<xsl:value-of select="ead:daogrp/ead:daoloc[@xlink:role='thumbnail']/@xlink:href"/>
-					</__id>
-					<__type>dctypes:Image</__type>
-					<format>image/jpeg</format>
-					<height>120</height>
-					<width>120</width>
-				</_object>
-			</thumbnail>
+
+			<!-- metadata -->
+			<xsl:apply-templates select="ead:did"/>
+
+			<xsl:if test="ead:daogrp/ead:daoloc[@xlink:role = 'thumbnail']">
+				<thumbnail>
+					<_object>
+						<__id>
+							<xsl:value-of select="ead:daogrp/ead:daoloc[@xlink:role = 'thumbnail']/@xlink:href"/>
+						</__id>
+						<__type>dctypes:Image</__type>
+						<format>image/jpeg</format>
+						<height>120</height>
+						<width>120</width>
+					</_object>
+				</thumbnail>
+			</xsl:if>
+
 			<height>
-				<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/height"/>
+				<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/height"/>
 			</height>
 			<width>
-				<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/width"/>
+				<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/width"/>
 			</width>
 			<images>
 				<_array>
-					<xsl:apply-templates select="ead:daogrp/ead:daoloc[@xlink:role='IIIFService']">
+					<xsl:apply-templates select="ead:daogrp/ead:daoloc[@xlink:role = 'IIIFService']">
 						<xsl:with-param name="id" select="@id"/>
 					</xsl:apply-templates>
 				</_array>
-			</images>			
+			</images>
 		</_object>
 	</xsl:template>
 
-	<xsl:template match="ead:daoloc[@xlink:role='IIIFService']">
+	<xsl:template match="ead:daoloc[@xlink:role = 'IIIFService']">
 		<xsl:param name="id"/>
 		<xsl:variable name="service" select="@xlink:href"/>
 
@@ -238,10 +285,10 @@
 					<__type>dctypes:Image</__type>
 					<format>image/jpeg</format>
 					<height>
-						<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/height"/>
+						<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/height"/>
 					</height>
 					<width>
-						<xsl:value-of select="doc('input:images')//image[@uri=$service]/json/width"/>
+						<xsl:value-of select="doc('input:images')//image[@uri = $service]/json/width"/>
 					</width>
 					<service>
 						<_object>
