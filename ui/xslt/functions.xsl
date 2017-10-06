@@ -140,8 +140,8 @@
 					<xsl:when test="$elem = 'fileplan'">Fileplan</xsl:when>
 					<xsl:when test="$elem = 'text'">Keyword</xsl:when>
 					<xsl:when test="$elem = 'function'">Function</xsl:when>
-					<xsl:when test="$elem = 'genreform'">Genre/Format</xsl:when>
-					<xsl:when test="$elem = 'geogname'">Place</xsl:when>
+					<xsl:when test="$elem = 'genreform' or $elem = 'form' or $elem = 'genre'">Genre/Format</xsl:when>
+					<xsl:when test="$elem = 'geogname' or $elem = 'geographic'">Place</xsl:when>
 					<xsl:when test="$elem = 'langmaterial'">Language</xsl:when>
 					<xsl:when test="$elem = 'language'">Language</xsl:when>
 					<xsl:when test="$elem = 'level'">Level</xsl:when>
@@ -165,12 +165,13 @@
 					<xsl:when test="$elem = 'repository'">Repository</xsl:when>
 					<xsl:when test="$elem = 'scopecontent'">Scope and Content</xsl:when>
 					<xsl:when test="$elem = 'separatedmaterial'">Separated Material</xsl:when>
-					<xsl:when test="$elem = 'subject'">Subject</xsl:when>
+					<xsl:when test="$elem = 'subject' or $elem = 'topic'">Subject</xsl:when>
+					<xsl:when test="$elem = 'temporal'">Period</xsl:when>
 					<xsl:when test="$elem = 'timestamp'">Record publication date</xsl:when>
 					<xsl:when test="$elem = 'title'">Title</xsl:when>
-					<xsl:when test="$elem = 'unitdate'">Date</xsl:when>
+					<xsl:when test="$elem = 'unitdate' or $elem = 'dateCreated'">Date</xsl:when>
 					<xsl:when test="$elem = 'unittitle'">Title</xsl:when>
-					<xsl:when test="$elem = 'unitid'">Identifier</xsl:when>					
+					<xsl:when test="$elem = 'unitid' or $elem = 'identifier'">Identifier</xsl:when>					
 					<xsl:when test="$elem = 'userestrict'">Use Restriction</xsl:when>
 					<xsl:when test="$elem = 'year'">Year</xsl:when>
 					<xsl:otherwise>
