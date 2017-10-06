@@ -124,49 +124,52 @@
 	<xsl:template match="tei:teiHeader">
 		<xsl:apply-templates select="tei:fileDesc"/>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:fileDesc">
 		<!-- title and description -->
-		<xsl:apply-templates select="tei:titleStmt/tei:title|tei:notesStmt/tei:note[@type='abstract']"/>
-		
+		<xsl:apply-templates select="tei:titleStmt/tei:title | tei:notesStmt/tei:note[@type = 'abstract']"/>
+
 		<!-- metadata -->
 		<metadata>
 			<_array>
-				<xsl:apply-templates select="tei:titleStmt/tei:author|tei:titleStmt/tei:subtitle|tei:titleStmt/tei:editor|tei:publicationStmt"/>
+				<xsl:apply-templates select="tei:titleStmt/tei:author | tei:titleStmt/tei:subtitle | tei:titleStmt/tei:editor | tei:publicationStmt"/>
 			</_array>
 		</metadata>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:title">
 		<label>
 			<xsl:value-of select="."/>
 		</label>
 	</xsl:template>
-	
-	<xsl:template match="tei:note[@type='abstract']">
+
+	<xsl:template match="tei:note[@type = 'abstract']">
 		<description>
 			<xsl:apply-templates select="tei:p" mode="abstract"/>
 		</description>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:p" mode="abstract">
 		<xsl:value-of select="normalize-space(.)"/>
 		<xsl:if test="not(position() = last())">
 			<xsl:text>\n</xsl:text>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<!-- metadata elements -->
-	<xsl:template match="tei:author|tei:editor|tei:subtitle|tei:publisher|tei:pubPlace">
+	<xsl:template match="tei:author | tei:editor | tei:subtitle | tei:publisher | tei:pubPlace">
 		<_object>
-			<xsl:element name="{concat(upper-case(substring(local-name(), 1, 1)), substring(local-name(), 2))}">
+			<label>
+				<xsl:value-of select="concat(upper-case(substring(local-name(), 1, 1)), substring(local-name(), 2))"/>
+			</label>
+			<value>
 				<xsl:value-of select="normalize-space(.)"/>
-			</xsl:element>
-		</_object>				
+			</value>
+		</_object>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:publicationStmt">
-		<xsl:apply-templates select="tei:publisher|tei:pubPlace|tei:date"/>
+		<xsl:apply-templates select="tei:publisher | tei:pubPlace | tei:date"/>
 	</xsl:template>
 
 	<!-- generate sequence -->
@@ -202,7 +205,7 @@
 			<label>
 				<xsl:value-of select="
 						if (tei:media/@n) then
-						tei:media/@n
+							tei:media/@n
 						else
 							@xml:id"/>
 			</label>
