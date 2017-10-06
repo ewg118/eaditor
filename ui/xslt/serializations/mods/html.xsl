@@ -108,9 +108,20 @@
 				</xsl:if>
 			</head>
 			<body>
-				<xsl:call-template name="header">
-					<xsl:with-param name="recordId" select="$recordId"/>
-				</xsl:call-template>
+				<xsl:choose>
+					<xsl:when test="$iiif-available = true()">
+						<xsl:call-template name="header">
+							<xsl:with-param name="manifestURI" select="$manifestURI"/>
+							<xsl:with-param name="recordId" select="$recordId"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="header">
+							<xsl:with-param name="recordId" select="$recordId"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 				<div class="container-fluid">
 					<xsl:call-template name="mods-content"/>
 				</div>
