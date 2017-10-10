@@ -9,7 +9,10 @@
     <xsl:variable name="url" select="/content/config/url"/>
 
     <xsl:template match="/">
-        <rdf:RDF>
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:schema="http://schema.org/"
+            xmlns:oa="http://www.w3.org/ns/oa#" xmlns:pelagios="http://pelagios.github.io/vocab/terms#" xmlns:edm="http://www.europeana.eu/schemas/edm/"
+            xmlns:svcs="http://rdfs.org/sioc/services#" xmlns:doap="http://usefulinc.com/ns/doap#" xmlns:relations="http://pelagios.github.io/vocab/relations#">
             <foaf:Organization rdf:about="{$url}pelagios.rdf#agents/me">
                 <foaf:name>
                     <xsl:value-of select="/content/config/publisher"/>
@@ -24,7 +27,7 @@
 
         <pelagios:AnnotatedThing rdf:about="{$url}pelagios.rdf#{$id}">
             <xsl:copy-of select="dcterms:title | dcterms:type | dcterms:isPartOf | foaf:thumbnail | foaf:depiction"/>
-            
+
             <!-- determine whether IIIF services should be attached -->
             <xsl:choose>
                 <xsl:when test="edm:isShownBy/edm:WebResource">
@@ -34,12 +37,12 @@
                     <edm:isShownBy rdf:resource="{edm:isShownBy/@rdf:resource}"/>
                 </xsl:when>
             </xsl:choose>
-            
+
             <xsl:apply-templates select="dcterms:date[@rdf:datatype]"/>
 
             <foaf:homepage rdf:resource="{@rdf:about}"/>
         </pelagios:AnnotatedThing>
-        
+
         <!-- determine whether IIIF services should be attached -->
         <xsl:apply-templates select="edm:isShownBy"/>
 
@@ -64,14 +67,14 @@
             </xsl:when>
             <xsl:when test="@rdf:resource">
                 <xsl:variable name="uri" select="@rdf:resource"/>
-                
-                <xsl:if test="//edm:WebResource[@rdf:about=$uri]">
-                    <xsl:apply-templates select="//edm:WebResource[@rdf:about=$uri]"/>
+
+                <xsl:if test="//edm:WebResource[@rdf:about = $uri]">
+                    <xsl:apply-templates select="//edm:WebResource[@rdf:about = $uri]"/>
                 </xsl:if>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template match="edm:WebResource">
         <xsl:element name="{name()}">
             <xsl:attribute name="rdf:about" select="@rdf:about"/>
@@ -87,7 +90,7 @@
         </xsl:element>
         <xsl:apply-templates select="svcs:has_service"/>
     </xsl:template>
-    
+
     <xsl:template match="svcs:has_service">
         <xsl:choose>
             <xsl:when test="svcs:Service">
@@ -95,14 +98,14 @@
             </xsl:when>
             <xsl:when test="@rdf:resource">
                 <xsl:variable name="uri" select="@rdf:resource"/>
-                
-                <xsl:if test="//svcs:Service[@rdf:about=$uri]">
-                    <xsl:apply-templates select="//svcs:Service[@rdf:about=$uri]"/>
+
+                <xsl:if test="//svcs:Service[@rdf:about = $uri]">
+                    <xsl:apply-templates select="//svcs:Service[@rdf:about = $uri]"/>
                 </xsl:if>
             </xsl:when>
-        </xsl:choose>        
+        </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template match="svcs:Service">
         <xsl:element name="{name()}">
             <xsl:attribute name="rdf:about" select="@rdf:about"/>
