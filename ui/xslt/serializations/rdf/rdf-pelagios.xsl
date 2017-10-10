@@ -26,7 +26,9 @@
         <xsl:variable name="id" select="digest:md5Hex(string(@rdf:about))"/>
 
         <pelagios:AnnotatedThing rdf:about="{$url}pelagios.rdf#{$id}">
-            <xsl:copy-of select="dcterms:title | dcterms:type | dcterms:isPartOf | foaf:thumbnail | foaf:depiction"/>
+            
+            
+            <xsl:apply-templates select="dcterms:title | dcterms:type | dcterms:isPartOf | foaf:thumbnail | foaf:depiction" />
 
             <!-- determine whether IIIF services should be attached -->
             <xsl:choose>
@@ -57,6 +59,15 @@
                 </oa:annotatedAt>
             </oa:Annotation>
         </xsl:for-each>
+    </xsl:template>    
+    
+    <xsl:template match="dcterms:title | dcterms:type | dcterms:isPartOf | foaf:thumbnail | foaf:depiction | dcterms:isReferencedBy | dcterms:conformsTo | doap:implements">
+        <xsl:element name="{name()}" namespace="{namespace-uri()}">
+            <xsl:if test="@rdf:resource">
+                <xsl:attribute name="rdf:resource" select="@rdf:resource"/>                
+            </xsl:if>
+            <xsl:value-of select="."/>
+        </xsl:element>
     </xsl:template>
 
     <!-- 'flatten' out the IIIF service metadata by applying templates under different conditions of nested RDF/XML -->
@@ -78,7 +89,7 @@
     <xsl:template match="edm:WebResource">
         <xsl:element name="{name()}">
             <xsl:attribute name="rdf:about" select="@rdf:about"/>
-            <xsl:copy-of select="dcterms:isReferencedBy"/>
+            <xsl:apply-templates select="dcterms:isReferencedBy"/>
             <xsl:choose>
                 <xsl:when test="svcs:has_service/svcs:Service">
                     <svcs:has_service rdf:resource="{svcs:has_service/svcs:Service/@rdf:about}"/>
@@ -107,9 +118,9 @@
     </xsl:template>
 
     <xsl:template match="svcs:Service">
-        <xsl:element name="{name()}">
+        <xsl:element name="{name()}" namespace="http://rdfs.org/sioc/services#">
             <xsl:attribute name="rdf:about" select="@rdf:about"/>
-            <xsl:copy-of select="*"/>
+            <xsl:apply-templates select="*"/>
         </xsl:element>
     </xsl:template>
 
