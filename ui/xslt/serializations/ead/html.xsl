@@ -70,7 +70,7 @@
 			<xsl:otherwise>public</xsl:otherwise>
 		</xsl:choose>
 	</xsl:param>
-	
+
 	<xsl:variable name="iiif-available" select="boolean(descendant::ead:daoloc[@xlink:role = 'IIIFService'])" as="xs:boolean"/>
 	<xsl:variable name="manifestURI" select="concat($url, 'manifest/', $recordId)"/>
 
@@ -152,7 +152,7 @@
 						</xsl:call-template>
 					</xsl:otherwise>
 				</xsl:choose>
-				
+
 				<div class="container-fluid">
 					<xsl:call-template name="ead-content"/>
 				</div>
@@ -379,6 +379,14 @@
 			<xsl:apply-templates select="ead:materialspec"/>
 			<xsl:apply-templates select="ead:abstract"/>
 			<xsl:apply-templates select="ead:note"/>
+
+			<!-- insert link to view image collection when IIIF is available -->
+			<xsl:if test="$iiif-available = true()">
+				<dt>Images</dt>
+				<dd>
+					<a href="{//config/mirador}?manifest={$manifestURI}">View image collection</a>
+				</dd>
+			</xsl:if>
 		</dl>
 	</xsl:template>
 
