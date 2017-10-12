@@ -183,7 +183,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="ead:abstract | ead:extent | ead:origination | ead:unitid | ead:unittitle">
+	<xsl:template match="ead:abstract | ead:extent | ead:unitid | ead:unittitle">
 		<xsl:variable name="element">
 			<xsl:choose>
 				<xsl:when test="local-name() = 'origination'">dcterms:creator</xsl:when>
@@ -224,7 +224,7 @@
 										<xsl:when test="@source = 'viaf'">
 											<xsl:value-of select="concat('http://viaf.org/viaf/', @authfilenumber)"/>
 										</xsl:when>
-										<xsl:when test="contains(@authfilenumber, 'http://')">
+										<xsl:when test="matches(@authfilenumber, '^https?://')">
 											<xsl:value-of select="@authfilenumber"/>
 										</xsl:when>
 									</xsl:choose>
