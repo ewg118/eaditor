@@ -426,8 +426,14 @@ DELETE {?s ?p ?o} WHERE {
 {?parts dcterms:isPartOf+ <URI> . ?s oa:hasTarget ?parts . ?s ?p ?o}
 UNION {?s dcterms:isPartOf+ <URI> . ?s ?p ?o}
 UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
-					<query id="mods">
-						<![CDATA[DELETE {?s ?p ?o} WHERE { <URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>) }]]>
+					<query id="mods"><![CDATA[PREFIX dcterms:	<http://purl.org/dc/terms/>
+PREFIX edm:	<http://www.europeana.eu/schemas/edm/>
+PREFIX svcs:	<http://rdfs.org/sioc/services#>
+DELETE {?s ?p ?o} WHERE {
+{<URI> edm:isShownBy ?image .
+?image svcs:has_service ?s . ?s ?p ?o}
+UNION {<URI> edm:isShownBy ?s . ?s ?p ?o}
+UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 					</query>
 				</queries>
 			</xforms:instance>
@@ -835,9 +841,26 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 						<xforms:var name="id" select="str[@name='id']"></xforms:var>
 						<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
+						
+						<!-- delete and repost RDF -->
+						<xforms:action if="string(instance('config')/sparql/update)">
+							<xforms:var name="uri"
+								select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', $id) else concat(instance('config')/url, 'id/', $id)"></xforms:var>
+							<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template')/query[@id=$type], 'URI', $uri)"></xforms:setvalue>
+							<xforms:send submission="delete-graph"></xforms:send>
+							<xforms:send submission="get-rdf" ev:event="xforms-submit-done"></xforms:send>
+						</xforms:action>
 					</xforms:action>
+					
+					<!-- commit index after iteration -->
+					<xforms:send submission="commit"></xforms:send>
+					
+					<!-- reload table -->
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
+					<xforms:send submission="xquery-pagination"></xforms:send>
 				</xforms:action>
 			</xforms:submission>
+			
 			<!-- post instance to Solr -->
 			<xforms:submission id="post-to-solr" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
@@ -1761,7 +1784,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					</xforms:switch>
 				</div>
 				<!-- instance inspector -->
-				<!--<fr:xforms-inspector></fr:xforms-inspector>-->
+				<fr:xforms-inspector></fr:xforms-inspector>
 			</div>
 			<!-- variables for js usage -->
 			<div class="hidden">
@@ -1822,9 +1845,13 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
+						
+						<!-- publish RDF if applicable -->
+						<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
 					</xforms:action>
 					<!-- commit index -->
 					<xforms:send submission="commit"></xforms:send>
+					
 					<!-- reload table -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
 					<xforms:send submission="xquery-pagination"></xforms:send>
@@ -1845,10 +1872,14 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]></query>
 					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()/*[local-name()='recordIdentifier']"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
+						
+						<!-- publish RDF if applicable -->
+						<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
 					</xforms:action>
 
 					<!-- commit index -->
 					<xforms:send submission="commit"></xforms:send>
+					
 					<!-- reload table -->
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
 					<xforms:send submission="xquery-pagination"></xforms:send>

@@ -121,7 +121,7 @@
 						</xsl:call-template>
 					</xsl:otherwise>
 				</xsl:choose>
-				
+
 				<div class="container-fluid">
 					<xsl:call-template name="mods-content"/>
 				</div>
@@ -149,48 +149,9 @@
 			</div>
 			<div class="col-md-6">
 				<xsl:apply-templates select="mods:name"/>
-				<xsl:if test="string(mods:abstract)">
-					<p>
-						<xsl:value-of select="mods:abstract"/>
-					</p>
-				</xsl:if>
-				<h3>Description of Digital Image</h3>
-				<dl class="dl-horizontal">
-					<dt>Image Number</dt>
-					<dd>
-						<xsl:value-of select="mods:identifier"/>
-					</dd>
-					<xsl:apply-templates select="mods:physicalDescription/mods:form"/>
-				</dl>
+				<xsl:apply-templates select="mods:abstract"/>
+				<xsl:apply-templates select="mods:relatedItem[@type = 'original']"/>
 
-				<h3>Description of Original Item</h3>
-				<dl class="dl-horizontal">
-					<xsl:if test="string(mods:relatedItem/mods:originInfo/mods:dateCreated)">
-						<dt>Date Created</dt>
-						<dd>
-							<xsl:value-of select="mods:relatedItem/mods:originInfo/mods:dateCreated"/>
-						</dd>
-					</xsl:if>
-					<xsl:apply-templates select="mods:relatedItem/mods:physicalDescription/mods:form"/>
-					<xsl:if test="string(mods:relatedItem/mods:physicalDescription/mods:extent)">
-						<dt>Extent</dt>
-						<dd>
-							<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
-						</dd>
-					</xsl:if>
-					<xsl:if test="string(mods:relatedItem/mods:location/mods:physicalLocation)">
-						<dt>Physical Location</dt>
-						<dd>
-							<xsl:value-of select="mods:relatedItem/mods:location/mods:physicalLocation"/>
-						</dd>
-					</xsl:if>
-					<xsl:if test="string(mods:relatedItem/mods:physicalDescription/mods:note)">
-						<dt>Note</dt>
-						<dd>
-							<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:note"/>
-						</dd>
-					</xsl:if>
-				</dl>
 				<xsl:if test="count(mods:subject/mods:topic) &gt; 0">
 					<h3>Subjects</h3>
 					<dl class="dl-horizontal">
@@ -232,6 +193,7 @@
 												."/>
 								</a>
 								<xsl:if test="string(@valueURI)">
+									<xsl:text> </xsl:text>
 									<a href="{@valueURI}" rel="dcterms:subject">
 										<span class="glyphicon glyphicon-new-window"/>
 									</a>
@@ -268,6 +230,70 @@
 		</div>
 	</xsl:template>
 
+	<xsl:template match="mods:relatedItem[@type = 'original']">
+		<h3>Description</h3>
+		<dl class="dl-horizontal">
+			<xsl:if test="parent::node()/mods:identifier">
+				<dt>Image Number</dt>
+				<dd>
+					<xsl:value-of select="parent::node()/mods:identifier"/>
+				</dd>
+			</xsl:if>
+			<xsl:if test="string(mods:originInfo/mods:dateCreated)">
+				<dt>Date Created</dt>
+				<dd>
+					<xsl:value-of select="mods:originInfo/mods:dateCreated"/>
+				</dd>
+			</xsl:if>
+			
+			<xsl:if test="string(mods:location/mods:physicalLocation)">
+				<dt>Physical Location</dt>
+				<dd>
+					<xsl:value-of select="mods:location/mods:physicalLocation"/>
+				</dd>
+			</xsl:if>
+			
+			<xsl:apply-templates select="mods:physicalDescription"/>
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="mods:physicalDescription">
+		<xsl:apply-templates/>
+	</xsl:template>
+
+	<xsl:template match="mods:form | mods:extent | mods:note">
+		<dt>
+			<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
+		</dt>
+		<dd>
+			<xsl:choose>
+				<xsl:when test="self::mods:form">
+					<a href="{$display_path}results/?q=genreform_facet:&#x022;{.}&#x022;">
+						<xsl:value-of select="."/>
+					</a>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:if test="@valueURI">
+				<xsl:if test="string(@valueURI)">
+					<xsl:text> </xsl:text>
+					<a href="{@valueURI}" rel="dcterms:type">
+						<span class="glyphicon glyphicon-new-window"/>
+					</a>
+				</xsl:if>
+			</xsl:if>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="mods:abstract">
+		<p property="dcterms:abstract">
+			<xsl:value-of select="."/>
+		</p>
+	</xsl:template>
+
 	<xsl:template match="mods:accessCondition">
 		<p>
 			<xsl:choose>
@@ -288,20 +314,6 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</p>
-	</xsl:template>
-
-	<xsl:template match="mods:form">
-		<dt>Form</dt>
-		<dd>
-			<a href="{$display_path}results/?q=genreform_facet:&#x022;{.}&#x022;">
-				<xsl:value-of select="."/>
-			</a>
-			<xsl:if test="string(@valueURI)">
-				<a href="{@valueURI}" rel="dcterms:format">
-					<span class="glyphicon glyphicon-new-window"/>
-				</a>
-			</xsl:if>
-		</dd>
 	</xsl:template>
 
 	<xsl:template match="mods:name">
