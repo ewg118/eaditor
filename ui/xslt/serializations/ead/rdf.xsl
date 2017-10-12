@@ -3,10 +3,10 @@
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/"
 	xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:schema="http://schema.org/" xmlns:edm="http://www.europeana.eu/schemas/edm/"
-	xmlns:svcs="http://rdfs.org/sioc/services#" xmlns:doap="http://usefulinc.com/ns/doap#" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	exclude-result-prefixes="xs ead xlink eaditor" version="2.0">
+	xmlns:void="http://rdfs.org/ns/void#" xmlns:svcs="http://rdfs.org/sioc/services#" xmlns:doap="http://usefulinc.com/ns/doap#"
+	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="xs ead xlink eaditor" version="2.0">
 	<xsl:include href="../../functions.xsl"/>
-	
+
 	<!-- ***************** EAD-TO-RDF ******************-->
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
@@ -57,6 +57,7 @@
 					<!-- controlled vocabulary -->
 
 					<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
+					<void:inDataset rdf:resource="{$url}"/>
 				</arch:Collection>
 
 				<xsl:apply-templates select="ead:archdesc/ead:dsc//ead:c"/>
@@ -69,16 +70,18 @@
 			<xsl:when test="@level = 'item'">
 				<schema:ArchiveItem rdf:about="{$objectUri}#{@id}">
 					<xsl:call-template name="c-content"/>
+					<void:inDataset rdf:resource="{$url}"/>
 				</schema:ArchiveItem>
-				
+
 				<!-- insert IIIF Service information -->
-				<xsl:if test="descendant::ead:daoloc[@xlink:role='IIIFService']">
-					<xsl:apply-templates select="descendant::ead:daoloc[@xlink:role='IIIFService']" mode="WebResource"/>
+				<xsl:if test="descendant::ead:daoloc[@xlink:role = 'IIIFService']">
+					<xsl:apply-templates select="descendant::ead:daoloc[@xlink:role = 'IIIFService']" mode="WebResource"/>
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
 				<schema:ArchiveCollection rdf:about="{$objectUri}#{@id}">
 					<xsl:call-template name="c-content"/>
+					<void:inDataset rdf:resource="{$url}"/>
 				</schema:ArchiveCollection>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -263,7 +266,7 @@
 	<xsl:template match="ead:daoloc[@xlink:label = 'Original'] | ead:daoloc[@xlink:role = 'IIIFService']">
 		<edm:isShownBy rdf:resource="{@xlink:href}{if (@xlink:role='IIIFService') then '/full/full/0/default.jpg' else ''}"/>
 	</xsl:template>
-	
+
 	<!-- IIIF Services -->
 	<xsl:template match="ead:daoloc[@xlink:role = 'IIIFService']" mode="WebResource">
 		<edm:WebResource rdf:about="{concat(@xlink:href, '/full/full/0/default.jpg')}">
