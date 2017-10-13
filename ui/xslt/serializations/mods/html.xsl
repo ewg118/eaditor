@@ -215,6 +215,10 @@
 				<xsl:choose>
 					<xsl:when test="$iiif-available = true()">
 						<div id="iiif-container" style="width:100%;height:600px"/>
+						<div>
+							<a href="{mods:location/mods:url[@note='IIIFService']}/full/full/0/default.jpg" title="Full resolution image" rel="nofollow"><span
+								class="glyphicon glyphicon-download-alt"/> Download full resolution image</a>
+						</div>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:apply-templates select="mods:location/mods:url[@access = 'preview']"/>
@@ -245,14 +249,14 @@
 					<xsl:value-of select="mods:originInfo/mods:dateCreated"/>
 				</dd>
 			</xsl:if>
-			
+
 			<xsl:if test="string(mods:location/mods:physicalLocation)">
 				<dt>Physical Location</dt>
 				<dd>
 					<xsl:value-of select="mods:location/mods:physicalLocation"/>
 				</dd>
 			</xsl:if>
-			
+
 			<xsl:apply-templates select="mods:physicalDescription"/>
 		</dl>
 	</xsl:template>
@@ -276,7 +280,7 @@
 					<xsl:value-of select="."/>
 				</xsl:otherwise>
 			</xsl:choose>
-			
+
 			<xsl:if test="@valueURI">
 				<xsl:if test="string(@valueURI)">
 					<xsl:text> </xsl:text>
