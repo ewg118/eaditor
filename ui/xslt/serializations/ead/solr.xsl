@@ -401,12 +401,15 @@
 			</field>
 
 			<xsl:for-each select="ead:unitdate">
-				<xsl:for-each select="tokenize(@normal, '/')">
+				<xsl:variable name="multiDate" select="contains(@normal, '/')"/>
+				
+				<xsl:for-each select="tokenize(@normal, '/')">					
 					<xsl:call-template name="eaditor:get_date_hierarchy">
 						<xsl:with-param name="date" select="."/>
 						<xsl:with-param name="upload" select="$upload"/>
-					</xsl:call-template>
-
+						<xsl:with-param name="multiDate" select="$multiDate"/>
+						<xsl:with-param name="position" select="position()"/>
+					</xsl:call-template>					
 				</xsl:for-each>
 			</xsl:for-each>
 		</xsl:if>

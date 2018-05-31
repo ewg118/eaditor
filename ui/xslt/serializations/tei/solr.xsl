@@ -164,12 +164,30 @@
 		<field name="unitdate_display">
 			<xsl:value-of select="."/>
 		</field>
-		<xsl:if test="@when">
-			<xsl:call-template name="eaditor:get_date_hierarchy">
-				<xsl:with-param name="date" select="@when"/>
-				<xsl:with-param name="upload" select="false()"/>
-			</xsl:call-template>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="@when">
+				<xsl:call-template name="eaditor:get_date_hierarchy">
+					<xsl:with-param name="date" select="@when"/>
+					<xsl:with-param name="upload" select="false()"/>
+					<xsl:with-param name="multiDate" select="false()"/>
+					<xsl:with-param name="position" select="1"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@from and @to">
+				<xsl:call-template name="eaditor:get_date_hierarchy">
+					<xsl:with-param name="date" select="@from"/>
+					<xsl:with-param name="upload" select="false()"/>
+					<xsl:with-param name="multiDate" select="true()"/>
+					<xsl:with-param name="position" select="1"/>
+				</xsl:call-template>
+				<xsl:call-template name="eaditor:get_date_hierarchy">
+					<xsl:with-param name="date" select="@to"/>
+					<xsl:with-param name="upload" select="false()"/>
+					<xsl:with-param name="multiDate" select="true()"/>
+					<xsl:with-param name="position" select="2"/>
+				</xsl:call-template>
+			</xsl:when>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="tei:publisher">

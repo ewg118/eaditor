@@ -20,9 +20,13 @@
 
 		<!-- annotation js and css -->
 		<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css" />
+		<!--<link type="text/css" rel="stylesheet" href="/apps/eaditor/xforms/css/imgannot.css" /> -->	
+		<!--<script type="text/javascript" src="/apps/eaditor/xforms/javascript/openseadragonmk.min.js"></script>-->
 		<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>-->
 		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotorious.min.js"></script>
+		<!--<script type="text/javascript" src="/apps/eaditor/xforms/javascript/webannotorious.js"></script>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotext.js"></script>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/imgannot.js"></script>-->
 		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotation_functions.js"></script>
 
 		<xforms:model xmlns="http://www.tei-c.org/ns/1.0">
@@ -56,6 +60,8 @@
 					<status></status>
 					<image-url></image-url>
 					<image-id></image-id>
+					<height/>
+					<width/>
 					<key></key>
 					<annotation-action></annotation-action>
 					<annotation-id></annotation-id>
@@ -304,12 +310,12 @@
 								<xforms:alert>The id is required</xforms:alert>
 							</xforms:input>
 						</div>
-						<fr:tabview>
+						<fr:tabbable>
 							<!--**************************************** EADHEADER **********************************-->
-							<fr:tab bind="teiHeader-tab">
+							<!--<fr:tab bind="teiHeader-tab">
 								<fr:label>TEI Header</fr:label>
 								<h1>TEI Header</h1>
-							</fr:tab>
+							</fr:tab>-->
 							<!--**************************************** BODY **********************************-->
 							<fr:tab bind="facsimile-tab">
 								<fr:label>Facsimiles</fr:label>
@@ -321,20 +327,22 @@
 												<h1>Facsimiles</h1>
 												<xforms:repeat nodeset="tei:facsimile">
 													<xforms:var name="id" select="@xml:id"></xforms:var>
-													<xforms:var name="url" select="tei:graphic/@url"></xforms:var>
+													<xforms:var name="url" select="tei:media/@url"></xforms:var>
+													<xforms:var name="height" select="substring-before(tei:media/@height, 'px')"></xforms:var>
+													<xforms:var name="width" select="substring-before(tei:media/@width, 'px')"></xforms:var>
 													<table>
 														<tr>
 															<td>
 																<xforms:trigger appearance="minimal">
 																	<xforms:label>
-																		<img src="{$image-path}ui/media/thumbnail/{$url}.jpg" alt="{tei:graphic/@n}" />
+																		<img src="{$url}/full/!160,160/0/default.jpg"/>
 																	</xforms:label>
 																	<xforms:action ev:event="DOMActivate">
 																		<!-- reprocess keywords, save file before loading image -->
-																		<xforms:action if="instance('control-instance')/modified=true()">
-																			<!-- delete keywords -->
+																		<!--<xforms:action if="instance('control-instance')/modified=true()">
+																			<!-\- delete keywords -\->
 																			<xforms:delete nodeset="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords"></xforms:delete>
-																			<!-- reprocess keywords -->
+																			<!-\- reprocess keywords -\->
 																			<xforms:action xxforms:iterate="instance('doc')//tei:facsimile">
 																				<xforms:var name="id" select="context()/@xml:id"></xforms:var>
 																				<xforms:insert context="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass" nodeset="./child::node()[last()]"
@@ -354,20 +362,22 @@
 																				</xforms:action>
 																			</xforms:action>
 																			<xforms:send submission="save-submission"></xforms:send>
-																			<!-- handle publication of entire set of RDF triples on Save button click -->
+																			<!-\- handle publication of entire set of RDF triples on Save button click -\->
 																			<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
-																				<!-- post to SPARQL, if the URLs are available in the config -->
+																				<!-\- post to SPARQL, if the URLs are available in the config -\->
 																				<xforms:setvalue ref="instance('control-instance')/id-path"
 																					value="concat(instance('doc')/@xml:id, '/', instance('control-instance')/image-id)"></xforms:setvalue>
 																				<xforms:send submission="get-rdf"
 																					if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)"></xforms:send>
 																			</xforms:action>
-																		</xforms:action>
+																		</xforms:action>-->
 																		<!-- load image -->
-																		<xforms:setvalue ref="instance('control-instance')/image-url" value="concat($display_path, 'ui/media/archive/', $url, '.jpg')"></xforms:setvalue>
+																		<xforms:setvalue ref="instance('control-instance')/image-url" value="concat($url, '/full/full/0/default.jpg')"></xforms:setvalue>
 																		<xforms:setvalue ref="instance('control-instance')/image-id" value="$id"></xforms:setvalue>
-																		<xxforms:script> $('#image-container').html(''); $('.annot').html(''); anno.destroy(); var id =
-																			ORBEON.xforms.Document.getValue("image-id"); var image = ORBEON.xforms.Document.getValue("image-url"); load_image(id,
+																		<xforms:setvalue ref="instance('control-instance')/height" value="$height"/>
+																		<xforms:setvalue ref="instance('control-instance')/width" value="$width"/>
+																		<xxforms:script>ORBEON.jQuery('#image-container').html(''); ORBEON.jQuery('.annot').html(''); anno.destroy(); var id =
+																			ORBEON.xforms.Document.getValue("image-id"); var image = ORBEON.xforms.Document.getValue("image-url"); render_map(id,
 																			image); </xxforms:script>
 																		<!-- set modification to false after load -->
 																		<xforms:setvalue ref="instance('control-instance')/modified">false</xforms:setvalue>
@@ -423,22 +433,21 @@
 										</div>
 									</div>
 								</xforms:group>
-							</fr:tab>
-							<!--**************************************** BODY **********************************-->
-							<fr:tab bind="text-tab">
-								<fr:label>Text</fr:label>
+								<fr:xforms-inspector></fr:xforms-inspector>
 							</fr:tab>
 							<!--<fr:tab id="preview">
 								<fr:label>XML Preview</fr:label>
 								<h1>XML Preview</h1>
-								<fr:xforms-inspector/>
+								<fr:xforms-inspector></fr:xforms-inspector>
 							</fr:tab>-->
-						</fr:tabview>
+						</fr:tabbable>
 						<!-- dummy controls for javascript hooks -->
 						<div style="visibility:hidden">
 							<!-- used for getting images and annotations -->
 							<xforms:output ref="instance('control-instance')/image-url" id="image-url"></xforms:output>
 							<xforms:output ref="instance('control-instance')/image-id" id="image-id"></xforms:output>
+							<xforms:output ref="instance('control-instance')/height" id="height"></xforms:output>
+							<xforms:output ref="instance('control-instance')/width" id="width"></xforms:output>
 							<xforms:output ref="instance('control-instance')/collection-name" id="collection-name"></xforms:output>
 							<xforms:output ref="instance('doc')/@xml:id" id="doc-id"></xforms:output>
 							<xforms:input ref="instance('control-instance')/modified" id="doc-modified" />

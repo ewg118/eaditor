@@ -1,52 +1,56 @@
-function load_image(id, image) {
+/*function load_image(id, image) {
 	var dimensions = new Array();
-	$('<img/>').on("load", function () {
+	ORBEON.jQuery('<img/>').on("load", function () {
 		dimensions[ "height"] = this.naturalHeight;
 		dimensions[ "width"] = this.naturalWidth;
+		alert(dimensions["width"]);
 		render_map(id, image, dimensions);
 	}).attr('src', image).appendTo('#image-container');
-}
+}*/
 
-function render_map(id, image, dimensions) {
-	var height = + dimensions[ "height"];
-	var width = + dimensions[ "width"];
-	var div_id = $('.annot').attr('id');
+function render_map(id, image) {
+	var height = ORBEON.xforms.Document.getValue("height");
+	var width = ORBEON.xforms.Document.getValue("width");
+	var div_id = ORBEON.jQuery('.annot').attr('id');
+	alert(div_id);
 	
 	//get ratio between height and width and set bounds
 	if (height > width) {
 		var ratio = height / width;
-		var bounds = new Array(- 1, - Math.abs(ratio), 1, ratio);
+		var bounds = new Array(-1, -Math.abs(ratio), 1, ratio);
 	} else {
 		var ratio = width / height;
-		var bounds = new Array(- Math.abs(ratio), - 1, ratio, 1);
+		var bounds = new Array(-Math.abs(ratio), -1, ratio, 1);
 	}
+	
+	alert(ratio);
 	
 	//instantiate map
 	var map = new OpenLayers.Map(div_id, {
 		numZoomLevels: 3, units: "pixels", isBaseLayer: true
 	});
-	var baseLayer = new OpenLayers.Layer.Image('image', image, new OpenLayers.Bounds(bounds), new OpenLayers.Size(600 * ratio, 600));
+	var baseLayer = new OpenLayers.Layer.Image('image', "http://numismatics.org/archivesimages/archive/0-187715_X006.jpg", new OpenLayers.Bounds(bounds), new OpenLayers.Size(600 * ratio, 600));
 	
 	//add baseLayer, zoom to extent
 	map.addLayer(baseLayer);
 	map.zoomToMaxExtent();
 	
 	//handle annotations
-	anno.makeAnnotatable(map);
+	//anno.makeAnnotatable(map);
 	
 	//import annotations
-	import_annotations(id);
+	//import_annotations(id);
 }
 
 function import_annotations(id) {
 	var path = '../../../' + ORBEON.xforms.Document.getValue('collection-name') + '/';
 	var doc = ORBEON.xforms.Document.getValue('doc-id');
-	$.get(path + 'get_annotations/', {
+	ORBEON.jQuery.get(path + 'get_annotations/', {
 		facsimile: id, doc: doc, mode: 'admin'
 	},
 	function (data) {
-		var obj = $.parseJSON(data);
-		$.each(obj, function (index, value) {
+		var obj = ORBEON.jQuery.parseJSON(data);
+		ORBEON.jQuery.each(obj, function (index, value) {
 			anno.addAnnotation(value);
 		});
 	});
@@ -139,10 +143,10 @@ function constructLink(match, p1, offset, string) {
 function getLabel(uri) {
 	var label;
 	var path = '../../../' + ORBEON.xforms.Document.getValue('collection-name') + '/';
-	$.ajaxSetup({
+	ORBEON.jQuery.ajaxSetup({
 		async: false
 	});
-	$.getJSON(path + 'get_label/', {
+	ORBEON.jQuery.getJSON(path + 'get_label/', {
 		uri: uri
 	},
 	function (data) {

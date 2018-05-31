@@ -69,6 +69,8 @@
 	<xsl:template name="eaditor:get_date_hierarchy">
 		<xsl:param name="date"/>
 		<xsl:param name="upload"/>
+		<xsl:param name="multiDate"/>
+		<xsl:param name="position"/>
 		
 		<xsl:if test="$date castable as xs:gYear">
 			<xsl:variable name="year_string" select="string(abs(number($date)))"/>
@@ -101,7 +103,45 @@
 					</xsl:if>
 					<xsl:value-of select="number($date)"/>
 				</field>
+				
+				<xsl:choose>
+					<xsl:when test="$multiDate = true()">
+						<xsl:choose>
+							<xsl:when test="$position = 1">
+								<field name="year_minint">
+									<xsl:if test="$upload = true()">
+										<xsl:attribute name="update">set</xsl:attribute>
+									</xsl:if>
+									<xsl:value-of select="number($date)"/>
+								</field>
+							</xsl:when>
+							<xsl:when test="$position = 2">
+								<field name="year_maxint">
+									<xsl:if test="$upload = true()">
+										<xsl:attribute name="update">set</xsl:attribute>
+									</xsl:if>
+									<xsl:value-of select="number($date)"/>
+								</field>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<field name="year_minint">
+							<xsl:if test="$upload = true()">
+								<xsl:attribute name="update">set</xsl:attribute>
+							</xsl:if>
+							<xsl:value-of select="number($date)"/>
+						</field>
+						<field name="year_maxint">
+							<xsl:if test="$upload = true()">
+								<xsl:attribute name="update">set</xsl:attribute>
+							</xsl:if>
+							<xsl:value-of select="number($date)"/>
+						</field>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:if>
+			
 		</xsl:if>
 	</xsl:template>
 
