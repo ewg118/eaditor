@@ -60,9 +60,10 @@
 				<field name="unitid_display">
 					<xsl:value-of select="mods:identifier"/>
 				</field>
-				<field name="unitdate_display">
-					<xsl:value-of select="mods:originInfo/mods:dateCreated"/>
-				</field>
+				
+				<!-- process dates -->
+				<xsl:apply-templates select="mods:relatedItem[@type='original']/mods:originInfo/mods:dateCreated"/>
+				
 				<field name="physdesc_display">
 					<xsl:if test="mods:relatedItem/mods:physicalDescription/mods:form">
 						<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:form"/>
@@ -110,6 +111,18 @@
 				<xsl:apply-templates select="mods:location/mods:url[not(@note='IIIFService')]"/>
 			</doc>
 		</add>
+	</xsl:template>
+	
+	<xsl:template match="mods:dateCreated">
+		<field name="unitdate_display">
+			<xsl:value-of select="."/>
+		</field>
+		<xsl:call-template name="eaditor:get_date_hierarchy">
+			<xsl:with-param name="date" select="."/>
+			<xsl:with-param name="upload" select="false()"/>
+			<xsl:with-param name="multiDate" select="false()"/>
+			<xsl:with-param name="position" select="1"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<!-- images -->
