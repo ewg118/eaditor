@@ -143,7 +143,7 @@
 
 	<xsl:template name="sort">
 		<xsl:variable name="sort_categories_string">
-			<xsl:text>agency,genreform,language,timestamp,unittitle_display,year_num</xsl:text>
+			<xsl:text>agency,genreform,language,timestamp,unittitle_display,year</xsl:text>
 		</xsl:variable>
 		<xsl:variable name="sort_categories" select="tokenize(normalize-space($sort_categories_string), ',')"/>
 
