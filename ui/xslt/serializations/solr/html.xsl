@@ -551,9 +551,9 @@
 							<xsl:text>, </xsl:text>
 							<xsl:value-of select="$order"/>
 						</span>
-					</div>
+					</div>					
 					<div class="col-md-2">
-						<a class="remove_filter" href="?q={$q}">
+						<a class="remove_filter" href="{$display_path}results?q={$q}{if (string($lang)) then concat('&amp;lang=', $lang) else ''}">
 							<span class="glyphicon glyphicon-remove"/>
 						</a>
 					</div>
