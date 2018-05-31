@@ -4,14 +4,18 @@
 
 	<!-- pipeline variables -->
 	<xsl:variable name="pipeline"/>
-	
+
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 	<xsl:variable name="display_path"/>
 	<xsl:variable name="include_path">
 		<xsl:choose>
 			<xsl:when test="/config/aggregator = 'true'"/>
 			<xsl:otherwise>
-				<xsl:value-of select="if (contains(/config/url, 'localhost')) then '../' else /config/url"/>
+				<xsl:value-of select="
+						if (contains(/config/url, 'localhost')) then
+							'../'
+						else
+							/config/url"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -50,22 +54,28 @@
 					<h3>Navigation</h3>
 					<ul>
 						<li>
-							<a href="http://numismatics.org/archive/research/">Conducting Research</a>
-						</li>
-						<li>
-							<a href="http://numismatics.org/archive/citationformat/">Citation Format</a>
-						</li>
-						<li>
-							<a href="http://numismatics.org/pastofficers/">Officers</a>
+							<a href="http://numismatics.org/archive/">Archive Overview</a>
 						</li>
 						<li>
 							<a href="http://numismatics.org/archive/awards/">Awards</a>
 						</li>
 						<li>
+							<a href="http://numismatics.org/archive/citationformat/">Citation Format</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/archive/research/">Conducting Research</a>
+						</li>
+						<li>
 							<a href="http://numismatics.org/seminar/">Graduate Seminar</a>
 						</li>
 						<li>
+							<a href="http://numismatics.org/pastofficers/">Past Officers</a>
+						</li>
+						<li>
 							<a href="http://numismatics.org/publications/history/">Publications Program</a>
+						</li>
+						<li>
+							<a href="http://numismatics.org/archive/visitingscholarhistory/">Visiting Scholar </a>
 						</li>
 					</ul>
 				</div>
