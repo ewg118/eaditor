@@ -198,6 +198,7 @@
 		<div class="row">
 			<div class="col-md-4">
 				<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
+				<xsl:apply-templates select="tei:teiHeader/tei:profileDesc"/>
 				<xsl:call-template name="index"/>
 			</div>
 			<div class="col-md-8">
@@ -417,8 +418,11 @@
 
 	<!-- ******************** TEI TEMPLATES *********************** -->
 	<xsl:template match="tei:fileDesc">
-		<xsl:apply-templates select="tei:publicationStmt"/>
-		<xsl:apply-templates select="tei:notesStmt/tei:note[@type = 'abstract']"/>
+		<xsl:apply-templates select="tei:publicationStmt"/>		
+	</xsl:template>
+	
+	<xsl:template match="tei:profileDesc">
+		<xsl:apply-templates select="tei:abstract"/>		
 	</xsl:template>
 
 	<xsl:template match="tei:author">
@@ -461,7 +465,7 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template match="tei:note[@type = 'abstract']">
+	<xsl:template match="tei:abstract">
 		<div>
 			<h3>Abstract</h3>
 			<xsl:apply-templates/>

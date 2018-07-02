@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:datetime="http://exslt.org/dates-and-times" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	exclude-result-prefixes="#all" version="2.0">
+	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:datetime="http://exslt.org/dates-and-times" xmlns:tei="http://www.tei-c.org/ns/1.0"
+	xmlns:res="http://www.w3.org/2005/sparql-results#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" exclude-result-prefixes="#all" version="2.0">
 
 	<xsl:include href="../../functions.xsl"/>
 
@@ -15,18 +15,18 @@
 	</xsl:variable>
 
 	<xsl:template match="/">
-		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+		<xsl:apply-templates select="/content/*[not(local-name() = 'config')]"/>
 	</xsl:template>
 
 	<xsl:template match="tei:TEI">
 		<!-- get nomisma RDF -->
 		<xsl:variable name="nomisma-rdf" as="element()*">
-			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/ns/rdfa#"
-				xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 				<xsl:variable name="id-param">
 					<xsl:for-each select="distinct-values(descendant::tei:term[contains(@target, 'nomisma.org')]/@target)">
 						<xsl:value-of select="substring-after(., 'id/')"/>
-						<xsl:if test="not(position()=last())">
+						<xsl:if test="not(position() = last())">
 							<xsl:text>|</xsl:text>
 						</xsl:if>
 					</xsl:for-each>
@@ -40,13 +40,13 @@
 		</xsl:variable>
 
 		<xsl:variable name="viaf-rdf" as="element()*">
-			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/ns/rdfa#"
-				xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+				xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 
 				<xsl:for-each select="distinct-values(descendant::tei:term[contains(@target, 'viaf.org')]/@target)">
 					<xsl:variable name="pieces" select="tokenize(., '/')"/>
 					<xsl:variable name="uri" select="concat('http://viaf.org/viaf/', $pieces[5])"/>
-					<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about=$uri]"/>
+					<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about = $uri]"/>
 				</xsl:for-each>
 			</rdf:RDF>
 		</xsl:variable>
@@ -83,9 +83,10 @@
 
 				<!-- fileDesc metadata -->
 				<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
+				<xsl:apply-templates select="tei:teiHeader/tei:profileDesc"/>
 
 				<!-- depiction -->
-				<xsl:apply-templates select="descendant::tei:facsimile[@style='depiction']"/>
+				<xsl:apply-templates select="descendant::tei:facsimile[@style = 'depiction']"/>
 
 				<!-- facet terms -->
 				<xsl:for-each select="descendant::tei:term[@target]">
@@ -104,10 +105,10 @@
 					<xsl:variable name="fragment" as="element()*">
 						<xsl:choose>
 							<xsl:when test="contains($uri, 'nomisma.org')">
-								<xsl:copy-of select="$nomisma-rdf//*[@rdf:about=$uri]"/>
+								<xsl:copy-of select="$nomisma-rdf//*[@rdf:about = $uri]"/>
 							</xsl:when>
 							<xsl:when test="contains($uri, 'viaf.org')">
-								<xsl:copy-of select="$viaf-rdf//*[@rdf:about=$uri]"/>
+								<xsl:copy-of select="$viaf-rdf//*[@rdf:about = $uri]"/>
 							</xsl:when>
 						</xsl:choose>
 					</xsl:variable>
@@ -123,7 +124,7 @@
 					<xsl:for-each select="descendant-or-self::node()">
 						<xsl:value-of select="text()"/>
 						<xsl:text> </xsl:text>
-						<xsl:for-each select="@target|@ref|@xml:id">
+						<xsl:for-each select="@target | @ref | @xml:id">
 							<xsl:value-of select="."/>
 							<xsl:text> </xsl:text>
 						</xsl:for-each>
@@ -138,6 +139,10 @@
 		<xsl:apply-templates select="tei:sourceDesc//tei:author"/>
 		<xsl:apply-templates select="tei:publicationStmt/tei:publisher"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date"/>
+	</xsl:template>
+
+	<xsl:template match="tei:profileDesc">
+		<xsl:apply-templates select="descendant::tei:classCode"/>
 	</xsl:template>
 
 	<xsl:template match="tei:title">
@@ -196,11 +201,11 @@
 		</field>
 	</xsl:template>
 
-	<xsl:template match="tei:facsimile[@style='depiction']">
-		<xsl:apply-templates select="tei:graphic|tei:media[@type='IIIFService']"/>
-		
+	<xsl:template match="tei:facsimile[@style = 'depiction']">
+		<xsl:apply-templates select="tei:graphic | tei:media[@type = 'IIIFService']"/>
+
 	</xsl:template>
-	
+
 	<xsl:template match="tei:graphic">
 		<field name="collection_thumb">
 			<xsl:value-of select="concat($url, 'ui/media/thumbnail/', @url, '.jpg')"/>
@@ -209,8 +214,8 @@
 			<xsl:value-of select="concat($url, 'ui/media/reference/', @url, '.jpg')"/>
 		</field>
 	</xsl:template>
-	
-	<xsl:template match="tei:media[@type='IIIFService']">
+
+	<xsl:template match="tei:media[@type = 'IIIFService']">
 		<field name="collection_thumb">
 			<xsl:value-of select="concat(@url, '/full/120,/0/default.jpg')"/>
 		</field>
@@ -227,15 +232,16 @@
 				<xsl:when test="contains($uri, 'nomisma.org')">
 					<xsl:variable name="type" select="$fragment/name()"/>
 					<xsl:choose>
-						<xsl:when test="$type='nm:head_1911_region' or $type='nm:region' or $type = 'nm:nomisma_region' or $type='nm:mint'">geogname</xsl:when>
+						<xsl:when test="$type = 'nm:head_1911_region' or $type = 'nm:region' or $type = 'nm:nomisma_region' or $type = 'nm:mint'"
+							>geogname</xsl:when>
 						<xsl:otherwise>subject</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="contains($uri, 'geonames.org')">geogname</xsl:when>
 				<xsl:when test="contains($uri, 'viaf.org')">
 					<xsl:choose>
-						<xsl:when test="$fragment/rdf:type/@rdf:resource='http://xmlns.com/foaf/0.1/Organization'">corpname</xsl:when>
-						<xsl:when test="$fragment/rdf:type/@rdf:resource='http://xmlns.com/foaf/0.1/Person'">persname</xsl:when>
+						<xsl:when test="$fragment/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Organization'">corpname</xsl:when>
+						<xsl:when test="$fragment/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Person'">persname</xsl:when>
 					</xsl:choose>
 				</xsl:when>
 				<!-- wikipedia links cannot easily be parsed, ignore indexing -->
@@ -260,5 +266,37 @@
 				<xsl:value-of select="$uri"/>
 			</field>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="tei:classCode[matches(@scheme, 'https?://')]">
+		<xsl:variable name="uri" select="concat(@scheme, .)"/>
+		<xsl:variable name="file" select="concat('http://vocab.getty.edu/download/rdf?uri=', $uri, '.rdf')"/>
+		
+		<!--<field name="genreform_facet">
+			<xsl:value-of select="document($file)//skos:prefLabel[@xml:lang = 'en']"/>
+		</field>-->
+		
+		<!-- submit SPARQL query to getty -->
+		<!--<xsl:if test="contains($uri, 'getty.edu')">
+			<xsl:variable name="sparqlQuery"><![CDATA[PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+SELECT * WHERE {
+  <URI> skos:prefLabel ?label FILTER langMatches(lang(?label), "en")
+}]]></xsl:variable>
+			
+			<xsl:variable name="service" select="concat('http://vocab.getty.edu/sparql.xml?query=', encode-for-uri(replace($sparqlQuery, 'URI', $uri)))"/>
+			<xsl:variable name="label">
+				<xsl:value-of select="document($service)//res:binding[@name='label']"/>
+			</xsl:variable>
+			
+			<field name="genre_facet">
+				<xsl:value-of select="$service"/>
+			</field>
+		</xsl:if>-->
+		
+		<field name="genre_facet">notebooks</field>
+
+		<field name="genreform_uri">
+			<xsl:value-of select="$uri"/>
+		</field>
 	</xsl:template>
 </xsl:stylesheet>

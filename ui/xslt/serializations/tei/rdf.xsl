@@ -49,6 +49,7 @@
 			<xsl:otherwise>
 				<schema:Book rdf:about="{$objectUri}">
 					<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
+					<xsl:apply-templates select="tei:teiHeader/tei:profileDesc"/>
 					<xsl:apply-templates select="descendant::tei:facsimile[@style = 'depiction']" mode="depiction"/>
 					<void:inDataset rdf:resource="{$url}"/>
 				</schema:Book>
@@ -64,7 +65,13 @@
 		<xsl:apply-templates select="tei:sourceDesc//tei:author"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:extent"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date[@when]"/>
-		<xsl:apply-templates select="descendant::tei:note[@type = 'abstract']"/>
+	</xsl:template>
+	
+	<xsl:template match="tei:profileDesc">
+		<xsl:apply-templates select="tei:abstract"/>
+		
+		<!-- genres -->
+		<xsl:apply-templates select="tei:textClass/tei:classCode"/>
 	</xsl:template>
 
 	<xsl:template match="tei:title">
@@ -92,10 +99,16 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="tei:note[@type = 'abstract']">
+	<xsl:template match="tei:abstract">
 		<dcterms:abstract>
-			<xsl:value-of select="normalize-space(.)"/>
+			<xsl:value-of select="normalize-space(string-join(tei:p, ' '))"/>
 		</dcterms:abstract>
+	</xsl:template>
+	
+	<xsl:template match="tei:classCode">
+		<xsl:if test="matches(@scheme, '^https?://')">
+			<dcterms:type rdf:resource="{concat(@scheme, .)}"/>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="tei:date">
