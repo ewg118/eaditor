@@ -127,7 +127,7 @@
 
 	<xsl:template match="tei:fileDesc">
 		<!-- title and description -->
-		<xsl:apply-templates select="tei:titleStmt/tei:title | tei:notesStmt/tei:note[@type = 'abstract']"/>
+		<xsl:apply-templates select="tei:titleStmt/tei:title"/>
 
 		<!-- metadata -->
 		<metadata>
@@ -136,6 +136,10 @@
 			</_array>
 		</metadata>
 	</xsl:template>
+	
+	<xsl:template match="tei:profileDesc">
+		<xsl:apply-templates select="tei:abstract"/>
+	</xsl:template>
 
 	<xsl:template match="tei:title">
 		<label>
@@ -143,7 +147,7 @@
 		</label>
 	</xsl:template>
 
-	<xsl:template match="tei:note[@type = 'abstract']">
+	<xsl:template match="tei:abstract">
 		<description>
 			<xsl:apply-templates select="tei:p" mode="abstract"/>
 		</description>

@@ -420,7 +420,7 @@
 							<query xmlns=""/>
 						</xforms:instance>
 
-						<xforms:instance id="query-json" exclude-result-prefixed="#all">
+						<xforms:instance id="query-json" xxforms:exclude-result-prefixes="#all">
 							<json type="object" xmlns="">
 								<command>search</command>
 								<term/>
@@ -440,12 +440,12 @@
 						</xforms:instance>
 
 						<!-- snac query -->
-						<xforms:instance id="snac-response" exclude-result-prefixed="#all">
+						<xforms:instance id="snac-response" xxforms:exclude-result-prefixes="#all">
 							<crossQueryResult xmlns=""/>
 						</xforms:instance>
 
 						<!-- xeac query -->
-						<xforms:instance id="xeac-response" exclude-result-prefixed="#all">
+						<xforms:instance id="xeac-response" xxforms:exclude-result-prefixes="#all">
 							<feed xmlns=""/>
 						</xforms:instance>
 

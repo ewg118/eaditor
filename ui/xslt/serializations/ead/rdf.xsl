@@ -48,17 +48,20 @@
 				<xsl:call-template name="c-content"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<arch:Collection rdf:about="{$objectUri}">
-					<arch:heldBy>
+				<schema:ArchiveCollection rdf:about="{$objectUri}">
+					<schema:holdingArchive>
 						<xsl:value-of select="//ead:publisher"/>
-					</arch:heldBy>
+					</schema:holdingArchive>
 					<!-- title, creator, abstract, etc. -->
 					<xsl:apply-templates select="ead:archdesc/ead:did"/>
+					
+					<!-- the type/genre of this URI is a finding aid -->
+					<dcterms:type rdf:resource="http://vocab.getty.edu/aat/300026539"/>
+					
 					<!-- controlled vocabulary -->
-
 					<xsl:apply-templates select="ead:archdesc/ead:controlaccess"/>
 					<void:inDataset rdf:resource="{$url}"/>
-				</arch:Collection>
+				</schema:ArchiveCollection>
 
 				<xsl:apply-templates select="ead:archdesc/ead:dsc//ead:c"/>
 			</xsl:otherwise>
@@ -136,7 +139,7 @@
 		<xsl:variable name="element">
 			<xsl:choose>
 				<xsl:when test="local-name() = 'subject'">dcterms:subject</xsl:when>
-				<xsl:when test="local-name() = 'genreform'">dcterms:type</xsl:when>
+				<xsl:when test="local-name() = 'genreform'">dcterms:subject</xsl:when>
 				<xsl:when test="local-name() = 'persname'">dcterms:subject</xsl:when>
 				<xsl:when test="local-name() = 'geogname'">dcterms:coverage</xsl:when>
 				<xsl:when test="local-name() = 'corpname'">dcterms:subject</xsl:when>
@@ -167,10 +170,13 @@
 				<xsl:when test="@source = 'tgn'">
 					<xsl:value-of select="concat('http://vocab.getty.edu/tgn/', @authfilenumber)"/>
 				</xsl:when>
+				<xsl:when test="@source = 'ulan'">
+					<xsl:value-of select="concat('http://vocab.getty.edu/ulan/', @authfilenumber)"/>
+				</xsl:when>
 				<xsl:when test="@source = 'wikidata'">
 					<xsl:value-of select="concat('https://www.wikidata.org/entity/', @authfilenumber)"/>
 				</xsl:when>
-				<xsl:when test="contains(@authfilenumber, 'http://')">
+				<xsl:when test="matches(@authfilenumber, '^https?://')">
 					<xsl:value-of select="@authfilenumber"/>
 				</xsl:when>
 			</xsl:choose>
