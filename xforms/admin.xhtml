@@ -833,12 +833,13 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 			</xforms:submission>
 
 			<!-- query Solr for the id of all currently published documents and repost them to solr -->
-			<xforms:submission id="republish" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=*:*&amp;rows=10000&amp;start=0&amp;fl=id" replace="instance"
+			<xforms:submission id="republish" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=collection-name:{instance('control-instance')/collection-name}&amp;rows=10000&amp;start=0&amp;fl=recordId,oai_set" replace="instance"
 				instance="list-published-response">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Solr is inaccessible. Please check Solr configuration. [ADM001]</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:action xxforms:iterate="instance('list-published-response')//doc">
-						<xforms:var name="id" select="str[@name='id']"></xforms:var>
+						<xforms:var name="id" select="context()/str[@name='recordId']"></xforms:var>
+						<xforms:var name="type" select="context()/str[@name='oai_set']"/>
 						<xforms:setvalue ref="instance('control-instance')/id" value="$id"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
 						
