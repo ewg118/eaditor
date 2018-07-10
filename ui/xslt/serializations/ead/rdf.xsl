@@ -182,17 +182,19 @@
 			</xsl:choose>
 		</xsl:variable>
 
-		<xsl:if test="string($resource)">
-			<xsl:element name="{$element}">
-				<xsl:attribute name="rdf:resource" select="$resource"/>
-			</xsl:element>
+		<xsl:if test="string($resource)">			
+			<!-- if the URI doesn't exist in origination (we don't want the creator coming through as a subject/referencedIn in SNAC -->			
+			<xsl:if test="not(parent::ead:controlaccess/parent::node()/ead:did/ead:origination/*[@authfilenumber = $resource])">
+				<xsl:element name="{$element}">
+					<xsl:attribute name="rdf:resource" select="$resource"/>
+				</xsl:element>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="ead:abstract | ead:extent | ead:unitid | ead:unittitle">
 		<xsl:variable name="element">
 			<xsl:choose>
-				<xsl:when test="local-name() = 'origination'">dcterms:creator</xsl:when>
 				<xsl:when test="local-name() = 'unitid'">dcterms:identifier</xsl:when>
 				<xsl:when test="local-name() = 'unittitle'">dcterms:title</xsl:when>
 				<xsl:otherwise>
@@ -218,7 +220,7 @@
 							<xsl:attribute name="xml:lang" select="@xml:lang"/>
 						</xsl:if>
 						<xsl:choose>
-							<xsl:when test="matches(@authfilenumber, 'https?://')">
+							<xsl:when test="matches(@authfilenumber, '^https?://')">
 								<xsl:attribute name="rdf:resource" select="@authfilenumber"/>
 							</xsl:when>
 							<xsl:when test="@authfilenumber and @source">
