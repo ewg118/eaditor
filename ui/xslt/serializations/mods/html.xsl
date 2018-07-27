@@ -185,7 +185,7 @@
 										<xsl:when test="local-name() = 'topic'">subject</xsl:when>
 									</xsl:choose>
 								</xsl:variable>
-								<a href="{$display_path}results/?q={$facet}_facet:&#x022;{.}&#x022;">
+								<a href="{$display_path}results?q={$facet}_facet:&#x022;{.}&#x022;">
 									<xsl:value-of select="
 											if (mods:namePart) then
 												mods:namePart
@@ -272,7 +272,7 @@
 		<dd>
 			<xsl:choose>
 				<xsl:when test="self::mods:form">
-					<a href="{$display_path}results/?q=genreform_facet:&#x022;{.}&#x022;">
+					<a href="{$display_path}results?q=genreform_facet:&#x022;{.}&#x022;">
 						<xsl:value-of select="."/>
 					</a>
 				</xsl:when>
