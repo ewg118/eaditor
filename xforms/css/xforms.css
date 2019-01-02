@@ -116,7 +116,7 @@
 .xforms-output {
 	margin:0;
 }
-.xforms-output output[role=textbox] {
+.orbeon .xforms-output output[role=textbox] {
 	padding:0;
 	line-height:inherit;
 	display:inline;
