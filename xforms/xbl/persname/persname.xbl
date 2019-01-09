@@ -51,7 +51,7 @@
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Warning:</strong> Element must contain
+							<div class="alert-warning alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Warning:</strong> Element must contain
 								content.</div>
 							<div>
 								<radiogroup>

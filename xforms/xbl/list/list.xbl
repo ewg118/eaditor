@@ -55,7 +55,7 @@
 						
 						<xforms:group
 							ref="$binding[count(child::ead:item) &lt; 1 and count(child::ead:defitem) &lt; 1]">
-							<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> List must contain either at least one Item or Definition Item.</div>
+							<div class="alert-warning alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> List must contain either at least one Item or Definition Item.</div>
 							
 						</xforms:group>
 

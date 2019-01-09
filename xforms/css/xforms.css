@@ -70,8 +70,7 @@
 	width:50%;
 	margin:20px auto;
 	padding:5px;
-	border-radius: 4px;
-	border: 1px solid gray;
+	border-radius: 10px;
 }
 /*
   ****************************************
@@ -116,13 +115,14 @@
 .xforms-output {
 	margin:0;
 }
-.xforms-output-output {
+.orbeon .xforms-output output[role=textbox] {
 	padding:0;
 	line-height:inherit;
 	display:inline;
 	font-size:inherit;
 	color:black
 }
+
 .xforms-trigger {
 	text-decoration:none;
 }

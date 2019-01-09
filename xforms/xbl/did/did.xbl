@@ -88,7 +88,7 @@
 								</xforms:group>
 
 								<xforms:group ref=".[count(child::node()) &lt; 1]">
-									<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> A collection
+									<div class="alert-danger alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> A collection
 										creator must be defined.</div>
 								</xforms:group>
 

@@ -2,9 +2,9 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:arch="http://purl.org/archival/vocab/arch#" xmlns:dcterms="http://purl.org/dc/terms/"
 	xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xhv="http://www.w3.org/1999/xhtml/vocab#" xmlns:void="http://rdfs.org/ns/void#"
-	xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:schema="https://schema.org/" xmlns:dcmitype="http://purl.org/dc/dcmitype/"
-	xmlns:oa="http://www.w3.org/ns/oa#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" exclude-result-prefixes="#all" version="2.0">
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:void="http://rdfs.org/ns/void#" xmlns:schema="https://schema.org/"
+	xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:oa="http://www.w3.org/ns/oa#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	exclude-result-prefixes="xsl xs tei xlink" version="2.0">
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
 
@@ -66,10 +66,10 @@
 		<xsl:apply-templates select="tei:sourceDesc//tei:extent"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date[@when]"/>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:profileDesc">
 		<xsl:apply-templates select="tei:abstract"/>
-		
+
 		<!-- genres -->
 		<xsl:apply-templates select="tei:textClass/tei:classCode"/>
 	</xsl:template>
@@ -104,7 +104,7 @@
 			<xsl:value-of select="normalize-space(string-join(tei:p, ' '))"/>
 		</dcterms:abstract>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:classCode">
 		<xsl:if test="matches(@scheme, '^https?://')">
 			<dcterms:type rdf:resource="{concat(@scheme, .)}"/>
@@ -181,12 +181,11 @@
 
 	<xsl:template match="tei:facsimile" mode="annotation">
 		<xsl:variable name="id" select="@xml:id"/>
-		<xsl:variable name="itemUri" select="concat($objectUri, '#', $id)"/>	
+		<xsl:variable name="itemUri" select="concat($objectUri, '#', $id)"/>
 
 		<xsl:for-each select="tei:surface/tei:desc/tei:ref[@target]">
 			<xsl:element name="oa:Annotation" namespace="http://www.w3.org/ns/oa#">
-				<xsl:attribute name="rdf:about"
-					select="concat($objectUri, '.rdf#', $id, '/annotations/', format-number(position(), '0000'))"/>
+				<xsl:attribute name="rdf:about" select="concat($objectUri, '.rdf#', $id, '/annotations/', format-number(position(), '0000'))"/>
 
 				<oa:hasBody rdf:resource="{@target}"/>
 				<oa:hasTarget rdf:resource="{$itemUri}"/>

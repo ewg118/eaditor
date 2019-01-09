@@ -1001,12 +1001,12 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 						<xforms:case id="eaditor-admin">
 							<div id="form">
 								<xforms:group ref=".[count(distinct-values(instance('collections-list')/collection/@name)) != count(instance('collections-list')/collection/@name)]">
-									<div class="bg-danger alert-box">
+									<div class="alert-danger alert alert-box">
 										<span class="glyphicon glyphicon-exclamation-sign"></span>
 										<strong>Alert:</strong> Collection of this name already exists.</div>
 								</xforms:group>
 								<xforms:group ref=".[count(distinct-values(instance('collections-list')/collection/@role)) != count(instance('collections-list')/collection/@role)]">
-									<div class="bg-danger alert-box">
+									<div class="alert-danger alert alert-box">
 										<span class="glyphicon glyphicon-exclamation-sign"></span>
 										<strong>Alert:</strong>A role cannot be bound to more than one collection.</div>
 								</xforms:group>
@@ -1408,7 +1408,7 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 									</div>
 								</xforms:group>
 								<xforms:group ref="instance('control-instance')/status/text()">
-									<div class="bg-success alert-box">
+									<div class="alert-success alert alert-box">
 										<span class="glyphicon glyphicon-info-sign"></span>
 										<strong>Status:</strong>
 										<xforms:output ref="instance('control-instance')/status"></xforms:output>

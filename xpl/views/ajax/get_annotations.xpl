@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Copyright (C) 2010 Ethan Gruber
-	EADitor: https://github.com/ewg118/eaditor
-	Apache License 2.0: https://github.com/ewg118/eaditor
-	
+	Author: Ethan Gruber
+	Date Modified: January 2019
+	Function: initiate an XSLT transformation to generate Annotorious/OpenSeaDragon compliant JSON annotations from the source TEI	
 -->
 <p:config xmlns:p="http://www.orbeon.com/oxf/pipeline" xmlns:oxf="http://www.orbeon.com/oxf/processors">
 
@@ -20,30 +19,19 @@
 	</p:processor>
 
 	<p:processor name="oxf:unsafe-xslt">
+		<p:input name="data" href="#data"/>
 		<p:input name="request" href="#request"/>
-		<p:input name="data" href="../../../exist-config.xml"/>
-		<p:input name="config">
-			<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-				<xsl:include href="../../../ui/xslt/ajax/get_annotations.xsl"/>
-				<xsl:template match="/">					
-					<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
-					<xsl:variable name="doc" select="doc('input:request')/request/parameters/parameter[name='doc']/value"/>
-					<xsl:variable name="facsimile" select="doc('input:request')/request/parameters/parameter[name='facsimile']/value"/>
-					
-					<xsl:apply-templates select="document(concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml'))/*">
-						<xsl:with-param name="doc" select="$doc"/>
-						<xsl:with-param name="facsimile" select="$facsimile"/>
-					</xsl:apply-templates>				
-				</xsl:template>
-			</xsl:stylesheet>
-		</p:input>
+		<p:input name="config" href="../../../ui/xslt/ajax/get_annotations.xsl"/>
 		<p:output name="data" id="model"/>
 	</p:processor>
 	
 	<p:processor name="oxf:text-serializer">
 		<p:input name="data" href="#model"/>
 		<p:input name="config">
-			<config/>
+			<config>
+				<content-type>application/json</content-type>
+				<encoding>utf-8</encoding>
+			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>
 	</p:processor>

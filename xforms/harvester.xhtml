@@ -380,13 +380,13 @@
 			<div class="row">
 				<div class="col-md-12">
 					<xforms:group ref="instance('control-instance')/error/text()">
-						<div class="bg-danger alert-box">
+						<div class="alert-danger alert alert-box">
 							<span class="glyphicon glyphicon-info-sign"></span>
 							<xforms:output ref="instance('control-instance')/error"></xforms:output>
 						</div>
 					</xforms:group>
 					<xforms:group ref="instance('control-instance')/status/text()">
-						<div class="bg-warning alert-box">
+						<div class="alert-warning alert alert-box">
 							<span class="glyphicon glyphicon-info-sign"></span>
 							<xforms:output ref="instance('control-instance')/status"></xforms:output>
 						</div>
@@ -508,7 +508,7 @@
 									<xforms:group ref="instance('files')">
 										<!-- if there are no errors, simply display a success message -->
 										<xforms:group ref=".[count(file[error]) = 0 and count(file[warning]) = 0]">
-											<div class="bg-success alert-box">
+											<div class="alert-success alert alert-box">
 												<span class="glyphicon glyphicon-info-sign"></span> Files successfully imported into EADitor.</div>
 											<div>												
 												<xforms:output ref="instance('csv-download')" appearance="xxforms:download">
@@ -520,7 +520,7 @@
 										</xforms:group>
 										<!-- otherwise display results -->
 										<xforms:group ref=".[count(file[error]) &gt; 0 or count(file[warning]) &gt; 0]">
-											<div class="bg-danger alert-box">
+											<div class="alert-danger alert alert-box">
 												<span class="glyphicon glyphicon-info-sign"></span> Validation errors or Solr indexing warnings have been reported.</div>
 											<div>
 												<xforms:output value="count(file[error])">

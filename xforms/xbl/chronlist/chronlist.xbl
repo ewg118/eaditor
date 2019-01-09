@@ -84,7 +84,7 @@
 								
 								<xforms:group
 									ref=".[count(child::ead:event) &lt; 1 and count(child::ead:eventgrp) &lt; 1]">									
-									<div class="bg-warning alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> Chronology Item must contain either an Event or Event Group.</div>
+									<div class="alert-warning alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Warning:</strong> Chronology Item must contain either an Event or Event Group.</div>
 								</xforms:group>
 
 
