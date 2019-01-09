@@ -1,150 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2010 Ethan Gruber
-    EADitor: https://github.com/ewg118/eaditor
-    Apache License 2.0: https://github.com/ewg118/eaditor    
+	Author: Ethan Gruber
+    Function:  Hooks the XForms engine to a IIIF annotation app
+    Date last modified: January 2019
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<head>
 		<title>EADitor: Edit TEI Document</title>
 		<link rel="stylesheet" href="/fr/style/bootstrap/css/bootstrap.css" type="text/css" />
 		<link rel="stylesheet" href="/fr/style/form-runner-bootstrap-override.css" type="text/css" />
-		<link rel="stylesheet" href="/config/theme/examples.css" type="text/css" media="all" />
 		<link rel="shortcut icon" href="/ops/images/orbeon-icon-16.ico" />
 		<link rel="icon" href="/ops/images/orbeon-icon-16.png" type="image/png" />
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
 		<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+		<!-- annotation CSS -->
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/annotorious.css" />
+		<link rel="stylesheet" href="/apps/eaditor/xforms/css/imgannot.css" />
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css" />
 
-		<!-- annotation js and css -->
-		<link type="text/css" rel="stylesheet" href="http://annotorious.github.com/latest/annotorious.css" />
-		<script src="http://openlayers.org/api/2.12/OpenLayers.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="http://annotorious.github.com/latest/annotorious.min.js"/>-->
+		<!-- annotation Javascript -->
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/openseadragonmk.min.js"></script>
 		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotorious.min.js"></script>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/webannotorious.js"></script>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotext.js"></script>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/imgannot.js"></script>
+		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/openseadragon-svg-overlay.js"></script>
+
 		<script type="text/javascript" src="/apps/eaditor/xforms/javascript/annotation_functions.js"></script>
 
 		<xforms:model xmlns="http://www.tei-c.org/ns/1.0">
-			<xforms:instance id="doc">
-				<TEI xml:id="" xmlns="http://www.tei-c.org/ns/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-					xsi:schemaLocation="http://www.tei-c.org/ns/1.0 http://www.tei-c.org/release/xml/tei/custom/schema/xsd/tei_all.xsd"></TEI>
-			</xforms:instance>
-
-			<!-- exist URL is stored in an XML file -->
-			<xforms:instance id="exist-config">
-				<xi:include href="../exist-config.xml"></xi:include>
-			</xforms:instance>
-
-			<xforms:instance id="config">
-				<config xmlns=""></config>
-			</xforms:instance>
-
-			<!-- authentication -->
-			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
-				<collections xmlns=""></collections>
-			</xforms:instance>
-
-			<xforms:instance id="dump">
-				<dump xmlns=""></dump>
-			</xforms:instance>
-
 			<xforms:instance id="control-instance">
 				<control xmlns="">
-					<collection-name></collection-name>
-					<id-path></id-path>
-					<status></status>
-					<image-url></image-url>
-					<image-id></image-id>
-					<key></key>
-					<annotation-action></annotation-action>
-					<annotation-id></annotation-id>
+					<collection-name/>
+					<id/>
+					<manifest/>
+					<canvas/>
+					<status/>
+					<image>
+						<id/>
+						<url/>
+					</image>
+					<key/>
+					<annotation-action/>
 					<modified>false</modified>
 				</control>
 			</xforms:instance>
 
 			<xforms:instance id="annotation">
 				<annotation xmlns="">
-					<id></id>
-					<text></text>
-					<ulx></ulx>
-					<uly></uly>
-					<lrx></lrx>
-					<lry></lry>
+					<id/>
+					<text/>
+					<ulx/>
+					<uly/>
+					<lrx/>
+					<lry/>
 				</annotation>
+			</xforms:instance>
+
+			<xforms:instance id="doc">
+				<TEI xml:id="" xmlns="http://www.tei-c.org/ns/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xsi:schemaLocation="http://www.tei-c.org/ns/1.0 http://www.tei-c.org/release/xml/tei/custom/schema/xsd/tei_all.xsd"/>
+			</xforms:instance>
+
+			<xforms:instance id="manifest" xxforms:exclude-result-prefixes="#all">
+				<json/>
+			</xforms:instance>
+
+			<!-- exist URL is stored in an XML file -->
+			<xforms:instance id="exist-config">
+				<xi:include href="../exist-config.xml"/>
+			</xforms:instance>
+
+			<xforms:instance id="config">
+				<config xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="master-config" xxforms:exclude-result-prefixes="#all">
+				<config/>
+			</xforms:instance>
+
+			<!-- authentication -->
+			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+				<collections xmlns=""/>
+			</xforms:instance>
+
+			<xforms:instance id="dump">
+				<dump xmlns=""/>
 			</xforms:instance>
 
 			<!-- TEI templates -->
 			<xforms:instance id="surface-template" xxforms:exclude-result-prefixes="#all">
-				<surface xml:id="" ulx="" uly="" lrx="" lry=""></surface>
+				<surface xml:id="" ulx="" uly="" lrx="" lry=""/>
 			</xforms:instance>
 
 			<xforms:instance id="keywords-template" xxforms:exclude-result-prefixes="#all">
-				<keywords corresp=""></keywords>
+				<keywords corresp=""/>
 			</xforms:instance>
 
 			<xforms:instance id="term-template" xxforms:exclude-result-prefixes="#all">
-				<term target=""></term>
+				<term target=""/>
 			</xforms:instance>
 
 			<!-- solr response for id query -->
 			<xforms:instance id="is-published">
-				<response xmlns=""></response>
+				<response xmlns=""/>
 			</xforms:instance>
 			<!-- send to Solr -->
 			<xforms:instance id="addIndex">
-				<add xmlns=""></add>
+				<add xmlns=""/>
 			</xforms:instance>
 			<!-- Instance for Solr commit-->
 			<xforms:instance id="sendCommit">
-				<commit></commit>
+				<commit/>
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
 			<xforms:instance id="rdf" xxforms:exclude-result-prefixes="#all">
-				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>
+				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
 			</xforms:instance>
 
 			<xforms:instance id="sparqlUpdate-template">
-				<query>
-					<![CDATA[DELETE {?s ?p ?o} WHERE { <URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>) }]]>
+				<query><![CDATA[PREFIX oa:	<http://www.w3.org/ns/oa#>
+PREFIX dcterms:	<http://purl.org/dc/terms/>
+DELETE {?s ?p ?o} WHERE {
+{?parts dcterms:isPartOf+ <URI> . ?s oa:hasTarget ?parts . ?s ?p ?o}
+UNION {?s dcterms:isPartOf+ <URI> . ?s ?p ?o}
+UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</query>
 			</xforms:instance>
 
-			<xforms:instance id="sparqlUpdate">
-				<query></query>
+			<xforms:instance id="sparqlUpdate" xxforms:exclude-result-prefixes="#all">
+				<query xmlns=""/>
 			</xforms:instance>
 
 
 			<!-- ********** BINDINGS *********** -->
 			<xforms:bind nodeset="instance('control-instance')">
-				<!-- bind Add Annotation button -->
-				<xforms:bind id="annotation-activated" nodeset="image-id" relevant="string(.)"></xforms:bind>
-				<xforms:bind nodeset="modified" type="xs:boolean"></xforms:bind>
+				<xforms:bind nodeset="modified" type="xs:boolean"/>
 			</xforms:bind>
-
-			<!-- bind tabs -->
-			<xforms:bind id="teiHeader-tab" nodeset="instance('doc')/tei:teiHeader"></xforms:bind>
-			<xforms:bind id="facsimile-tab" constraint="count(instance('doc')/tei:facsimile) &gt; 0"></xforms:bind>
-			<xforms:bind id="text-tab" nodeset="instance('doc')/tei:text"></xforms:bind>
 
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
-			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-master-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml"
+				replace="instance" instance="master-config" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
+				<xforms:message level="modal" ev:event="xforms-submit-error">Unabled to load master config.</xforms:message>
+			</xforms:submission>
+
+			<xforms:submission id="load-config" serialization="none" method="get"
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
+				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
-			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
-				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml"
+				replace="instance" instance="collections-list" xxforms:username="{instance('exist-config')/username}"
+				xxforms:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"></xforms:setvalue>
-					<xforms:send submission="load-config"></xforms:send>
+					<xforms:setvalue ref="instance('control-instance')/collection-name"
+						value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"/>
+					<xforms:send submission="load-master-config"/>
+					<xforms:send submission="load-config"/>
 					<!-- if there is an id parameter, load existing document -->
 					<xforms:action if="string(xxforms:get-request-parameter('id'))">
-						<xforms:setvalue ref="instance('doc')/@xml:id" value="xxforms:get-request-parameter('id')"></xforms:setvalue>
-						<xforms:send submission="load-submission"></xforms:send>
+						<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('id')"/>
+						<xforms:send submission="load-submission"/>
 					</xforms:action>
 				</xforms:action>
 				<!-- if the config has not been created (given that the URL in exist-url.xml is correct), create it -->
@@ -153,71 +179,89 @@
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" replace="instance" instance="doc"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml"
+				replace="instance" instance="doc" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load TEI document</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-submission" ref="instance('doc')"
-				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('doc')/@xml:id}.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml"
+				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Document. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">TEI Document saved.</xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/modified" value="false()"/>
 					<!-- check to see if the document is already published to Solr -->
-					<xforms:send submission="query-solr-for-publication"></xforms:send>
+					<xforms:send submission="query-solr-for-publication"/>
 				</xforms:action>
+			</xforms:submission>
+
+			<!-- ******************* LOAD IIIF MANIFEST JSON ************************ -->
+			<xforms:submission id="load-manifest" serialization="application/json" method="get" action="{instance('control-instance')/manifest}"
+				replace="instance" instance="manifest">
+				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load the JSON IIIF Manifest</xforms:message>
 			</xforms:submission>
 
 			<!-- ******************* SOLR PUBLICATION ************************ -->
 			<!-- submission to query solr to see if the document is published -->
-			<xforms:submission id="query-solr-for-publication" serialization="none" method="get" action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('doc')/@xml:id}&#x022;"
-				replace="instance" instance="is-published">
+			<xforms:submission id="query-solr-for-publication" serialization="none" method="get"
+				action="{instance('config')/solr_published}select/?q=id:&#x022;{instance('control-instance')/id}&#x022;" replace="instance"
+				instance="is-published">
 				<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
 					<!-- post doc to solr -->
-					<xforms:send submission="doc-to-solr"></xforms:send>
+					<xforms:send submission="doc-to-solr"/>
 				</xforms:action>
 			</xforms:submission>
+
 			<!-- access service to read in pre-transformed solr doc -->
 			<xforms:submission id="doc-to-solr" method="get" replace="instance" instance="addIndex" serialization="none"
-				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('doc')/@xml:id}.solr">
+				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id}.solr">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error transforming TEI Document to Solr document.</xforms:message>
-				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"></xforms:send>
+				<xforms:send ev:event="xforms-submit-done" submission="publish-submission"/>
 			</xforms:submission>
+
 			<!-- post instance to Solr -->
-			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex" replace="instance" method="post">
-				<xforms:send ev:event="xforms-submit-done" submission="submit-commit"></xforms:send>
-				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">TEI Document saved and updated to search index.</xforms:setvalue>
-				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is incorrect.</xforms:message>
+			<xforms:submission id="publish-submission" action="{instance('config')/solr_published}update" ref="instance('addIndex')" instance="addIndex"
+				replace="instance" method="post">
+				<xforms:send ev:event="xforms-submit-done" submission="submit-commit"/>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">TEI Document saved and updated to search
+					index.</xforms:setvalue>
+				<xforms:message ev:event="xforms-submit-error" level="modal">Data Failed to POST to Solr. Index may be offline or URL is
+					incorrect.</xforms:message>
 			</xforms:submission>
 			<!-- send commit -->
-			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit" replace="none" method="post"></xforms:submission>
+			<xforms:submission id="submit-commit" action="{instance('config')/solr_published}update" ref="instance('sendCommit')" instance="sendCommit"
+				replace="none" method="post"/>
 
 			<!-- ************** POST RDF TO TRIPLESTORE ***************** -->
 			<xforms:submission id="get-rdf" method="get" replace="instance" instance="rdf" serialization="none"
-				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id-path}.rdf">
+				resource="/eaditor/{instance('control-instance')/collection-name}/id/{instance('control-instance')/id}.rdf">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to get RDF/XML serialization.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
-					<!-- first remove existing graphs -->
-					<xforms:action xxforms:iterate="instance('rdf')//@rdf:about">
-						<xforms:var name="uri" select="."></xforms:var>
-						<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"></xforms:setvalue>
-						<xforms:send submission="delete-graph"></xforms:send>
-					</xforms:action>
+					<!-- delete graph first -->
+					<xforms:var name="id" select="instance('control-instance')/id"/>
+					<xforms:var name="uri"
+						select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', $id) else concat(instance('config')/url, 'id/', $id)"/>
+					<xforms:setvalue ref="instance('sparqlUpdate')" value="replace(instance('sparqlUpdate-template'), 'URI', $uri)"/>
+					<xforms:send submission="delete-graph"/>
+
 					<!-- then post RDF -->
-					<xforms:send submission="post-rdf"></xforms:send>
+					<xforms:send submission="post-rdf" ev:event="xforms-submit-done"/>
 				</xforms:action>
 			</xforms:submission>
 
-			<xforms:submission id="post-rdf" action="{instance('config')/sparql/store}?default" ref="instance('rdf')" replace="none" method="post" mediatype="application/rdf+xml">
+			<xforms:submission id="post-rdf" action="{instance('config')/sparql/store}?default" ref="instance('rdf')" replace="none" method="post"
+				mediatype="application/rdf+xml">
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:message level="modal">Post to endpoint failed.</xforms:message>
 				</xforms:action>
+				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('control-instance')/status">Graph successfully updated in the SPARQL
+					endpont.</xforms:setvalue>
 			</xforms:submission>
 
-			<xforms:submission id="delete-graph" action="{instance('config')/sparql/update}" ref="instance('sparqlUpdate')" serialization="text/plain" replace="none" method="post"
-				mediatype="application/sparql-update">
+			<xforms:submission id="delete-graph" action="{instance('config')/sparql/update}" ref="instance('sparqlUpdate')" serialization="text/plain"
+				replace="none" method="post" mediatype="application/sparql-update">
 				<xforms:action ev:event="xforms-submit-error">
 					<xforms:message level="modal">SPARQL update failed.</xforms:message>
 				</xforms:action>
@@ -226,274 +270,249 @@
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"></xforms:setvalue>
-					<xforms:send submission="load-config"></xforms:send>
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+					<xforms:send submission="load-master-config"/>
+					<xforms:send submission="load-config"/>
 					<!-- if there is an id parameter, load existing document -->
 					<xforms:action if="string(xxforms:get-request-parameter('id'))">
-						<xforms:setvalue ref="instance('doc')/@xml:id" value="xxforms:get-request-parameter('id')"></xforms:setvalue>
-						<xforms:send submission="load-submission"></xforms:send>
+						<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('id')"/>
+						<xforms:send submission="load-submission"/>
 					</xforms:action>
 				</xforms:action>
 				<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
 					<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
-					<xforms:send submission="load-collections"></xforms:send>
+						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+					<xforms:send submission="load-collections"/>
 				</xforms:action>
+
+				<!-- set manifest URL and load it into an XForms instance -->
+				<xforms:setvalue ref="instance('control-instance')/manifest"
+					value="concat('../../../', instance('control-instance')/collection-name, '/manifest/', instance('control-instance')/id)"/>
+				<xforms:send submission="load-manifest"/>
+			</xforms:action>
+
+			<!-- iniatialize Webanno on xforms-ready -->
+			<xforms:action ev:event="xforms-ready" if="string(instance('control-instance')/id)">
+				<xxforms:script> var manifest = ORBEON.xforms.Document.getValue("manifestURL"); Mia.setup(manifest, "", "");</xxforms:script>
 			</xforms:action>
 		</xforms:model>
 	</head>
 	<body>
 		<xforms:var name="display_path">../../</xforms:var>
-		<xi:include href="header.xml"></xi:include>
+		<xi:include href="header.xml"/>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-md-12">					
-					<xforms:group ref="instance('control-instance')/status/text()">
-						<div class="bg-success alert-box">
+				<div class="col-md-12">
+					<xforms:group ref=".[string-length(instance('control-instance')/status) &gt; 0]">
+						<div class="alert-success alert alert-box">
 							<span class="glyphicon glyphicon-info-sign"></span>
 							<strong>Status:</strong>
-							<xforms:output ref="instance('control-instance')/status"></xforms:output>
+							<xforms:output ref="instance('control-instance')/status"/>
 						</div>
 					</xforms:group>
-					<p>
-						<a href="{$display_path}"><span class="glyphicon glyphicon-arrow-left"/> Return</a>
-					</p>
+
+					<xforms:trigger appearance="minimal">
+						<xforms:label><span class="glyphicon glyphicon-arrow-left"></span> Return</xforms:label>
+						<xforms:action ev:event="DOMActivate">
+							<!-- if the TEI document has been modified, then launch the dialog -->
+							<xforms:action if="instance('control-instance')/modified = true()">
+								<xforms:dispatch target="return-dialog" name="fr-show"/>
+							</xforms:action>
+							<xforms:action if="instance('control-instance')/modified = false()">
+								<xforms:load show="replace" resource="{$display_path}"/>
+							</xforms:action>
+						</xforms:action>
+					</xforms:trigger>
+
 					<div class="section">
-						<h1>Edit TEI Document</h1>
 						<div class="submission">
 							<xforms:trigger appearance="minimal">
 								<xforms:label><span class="glyphicon glyphicon-floppy-disk"></span>Save</xforms:label>
 								<xforms:action ev:event="DOMActivate">
-									<!-- delete keywords -->
-									<xforms:delete nodeset="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords"></xforms:delete>
-									<!-- reprocess keywords -->
-									<xforms:action xxforms:iterate="instance('doc')//tei:facsimile">
-										<xforms:var name="id" select="context()/@xml:id"></xforms:var>
-										<xforms:insert context="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass" nodeset="./child::node()[last()]" origin="instance('keywords-template')"></xforms:insert>
-										<xforms:setvalue ref="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]/@corresp" value="$id"></xforms:setvalue>
-										<xforms:action xxforms:iterate="distinct-values(descendant::tei:ref/@target)">
-											<xforms:var name="target" select="."></xforms:var>
-											<xforms:insert context="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]" nodeset="./child::node()[last()]"
-												origin="instance('term-template')"></xforms:insert>
-											<xforms:setvalue ref="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]/tei:term[last()]"
-												value="instance('doc')//tei:facsimile[@xml:id=$id]/descendant::tei:ref[@target=$target]"></xforms:setvalue>
-											<xforms:setvalue ref="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]/tei:term[last()]/@target" value="$target"
-											></xforms:setvalue>
-										</xforms:action>
-									</xforms:action>
 									<!-- save TEI file -->
-									<xforms:send submission="save-submission"></xforms:send>
+									<xforms:send submission="save-submission"/>
 									<!-- handle publication of entire set of RDF triples on Save button click -->
 									<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
 										<!-- post to SPARQL, if the URLs are available in the config -->
-										<xforms:setvalue ref="instance('control-instance')/id-path" value="instance('doc')/@xml:id"></xforms:setvalue>
-										<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)"></xforms:send>
+										<xforms:send submission="get-rdf"
+											if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)"/>
 									</xforms:action>
 								</xforms:action>
-							</xforms:trigger>							
+							</xforms:trigger>
 						</div>
+
+						<!-- Web Annotations from https://www.kanzaki.com/ -->
+						<div class="main" role="main" id="main">
+							<h1 id="annotitle">Image Annotator</h1>
+
+							<div id="openseadragon"></div>
+						</div>
+						<hr />
+
+						<!-- editing document metadata -->
+						<xforms:group ref="instance('doc')">
+							<div class="section">
+								<xforms:group ref="descendant::tei:facsimile[@xml:id = instance('control-instance')/canvas]">
+									<h4>Page Metadata</h4>
+									<xforms:group ref=".[not(tei:media/@n)]">
+										<xforms:trigger appearance="minimal">
+											<xforms:label><span class="glyphicon glyphicon-plus"></span> Add Label</xforms:label>
+											<xforms:action ev:event="DOMActivate">
+												<xforms:insert context="tei:media" origin="xforms:attribute('n', '')"/>
+												<xforms:setvalue ref="instance('control-instance')/modified" value="true()"/>
+											</xforms:action>
+										</xforms:trigger>
+									</xforms:group>
+
+									<xforms:group ref="tei:media/@n">
+										<div>
+											<xforms:input ref=".">
+												<xforms:label>Label</xforms:label>
+												<xforms:alert>Required</xforms:alert>
+												<xforms:setvalue ref="instance('control-instance')/modified" value="true()" ev:event="xforms-value-changed"/>
+											</xforms:input>
+											<xforms:trigger appearance="minimal">
+												<xforms:label>
+													<span class="glyphicon glyphicon-remove"></span>
+												</xforms:label>
+												<xforms:action ev:event="DOMActivate">
+													<xforms:delete nodeset="."/>
+													<xforms:setvalue ref="instance('control-instance')/modified" value="true()"/>
+												</xforms:action>
+											</xforms:trigger>
+										</div>
+									</xforms:group>
+								</xforms:group>
+							</div>
+						</xforms:group>
+
+
+						<!--<fr:xforms-inspector/>-->
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div id="form">
-						<div>
-							<xforms:input ref="instance('doc')/@xml:id">
-								<xforms:label>Document ID</xforms:label>
-								<xforms:alert>The id is required</xforms:alert>
-							</xforms:input>
-						</div>
-						<fr:tabview>
-							<!--**************************************** EADHEADER **********************************-->
-							<fr:tab bind="teiHeader-tab">
-								<fr:label>TEI Header</fr:label>
-								<h1>TEI Header</h1>
-							</fr:tab>
-							<!--**************************************** BODY **********************************-->
-							<fr:tab bind="facsimile-tab">
-								<fr:label>Facsimiles</fr:label>
-								<xforms:group ref="instance('doc')">
-									<xforms:var name="image-path">../../../</xforms:var>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="content">
-												<h1>Facsimiles</h1>
-												<xforms:repeat nodeset="tei:facsimile">
-													<xforms:var name="id" select="@xml:id"></xforms:var>
-													<xforms:var name="url" select="tei:graphic/@url"></xforms:var>
-													<table>
-														<tr>
-															<td>
-																<xforms:trigger appearance="minimal">
-																	<xforms:label>
-																		<img src="{$image-path}ui/media/thumbnail/{$url}.jpg" alt="{tei:graphic/@n}" />
-																	</xforms:label>
-																	<xforms:action ev:event="DOMActivate">
-																		<!-- reprocess keywords, save file before loading image -->
-																		<xforms:action if="instance('control-instance')/modified=true()">
-																			<!-- delete keywords -->
-																			<xforms:delete nodeset="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords"></xforms:delete>
-																			<!-- reprocess keywords -->
-																			<xforms:action xxforms:iterate="instance('doc')//tei:facsimile">
-																				<xforms:var name="id" select="context()/@xml:id"></xforms:var>
-																				<xforms:insert context="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass" nodeset="./child::node()[last()]"
-																					origin="instance('keywords-template')"></xforms:insert>
-																				<xforms:setvalue ref="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]/@corresp"
-																					value="$id"></xforms:setvalue>
-																				<xforms:action xxforms:iterate="distinct-values(descendant::tei:ref/@target)">
-																					<xforms:var name="target" select="."></xforms:var>
-																					<xforms:insert context="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]"
-																						nodeset="./child::node()[last()]" origin="instance('term-template')"></xforms:insert>
-																					<xforms:setvalue
-																						ref="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]/tei:term[last()]"
-																						value="instance('doc')//tei:facsimile[@xml:id=$id]/descendant::tei:ref[@target=$target]"></xforms:setvalue>
-																					<xforms:setvalue
-																						ref="instance('doc')/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[last()]/tei:term[last()]/@target"
-																						value="$target"></xforms:setvalue>
-																				</xforms:action>
-																			</xforms:action>
-																			<xforms:send submission="save-submission"></xforms:send>
-																			<!-- handle publication of entire set of RDF triples on Save button click -->
-																			<xforms:action ev:event="xforms-submit-done" if="instance('is-published')/result[@name='response']/@numFound = '1'">
-																				<!-- post to SPARQL, if the URLs are available in the config -->
-																				<xforms:setvalue ref="instance('control-instance')/id-path"
-																					value="concat(instance('doc')/@xml:id, '/', instance('control-instance')/image-id)"></xforms:setvalue>
-																				<xforms:send submission="get-rdf"
-																					if="string(instance('config')/sparql/update) and string(instance('config')/sparql/store)"></xforms:send>
-																			</xforms:action>
-																		</xforms:action>
-																		<!-- load image -->
-																		<xforms:setvalue ref="instance('control-instance')/image-url" value="concat($display_path, 'ui/media/archive/', $url, '.jpg')"></xforms:setvalue>
-																		<xforms:setvalue ref="instance('control-instance')/image-id" value="$id"></xforms:setvalue>
-																		<xxforms:script> $('#image-container').html(''); $('.annot').html(''); anno.destroy(); var id =
-																			ORBEON.xforms.Document.getValue("image-id"); var image = ORBEON.xforms.Document.getValue("image-url"); load_image(id,
-																			image); </xxforms:script>
-																		<!-- set modification to false after load -->
-																		<xforms:setvalue ref="instance('control-instance')/modified">false</xforms:setvalue>
-																	</xforms:action>
-																</xforms:trigger>
-															</td>
-															<td>
-																<xforms:group ref=".[not(tei:graphic/@n)]">
-																	<xforms:trigger appearance="minimal">
-																		<xforms:label><span class="glyphicon glyphicon-plus"></span>Page Number</xforms:label>
-																		<xforms:insert ev:event="DOMActivate" context="tei:graphic" origin="xforms:attribute('n', '')"></xforms:insert>
-																	</xforms:trigger>
-																</xforms:group>
-																<div>
-																	<xforms:output ref="@xml:id">
-																		<xforms:label>ID</xforms:label>
-																	</xforms:output>
-																</div>
-																<xforms:group ref="tei:graphic/@n">
-																	<div>
-																		<xforms:input ref=".">
-																			<xforms:label>Page Number</xforms:label>
-																		</xforms:input>
-																		<xforms:trigger appearance="minimal">
-																			<xforms:delete ev:event="DOMActivate" context="."></xforms:delete>
-																			<xforms:label>
-																				<span class="glyphicon glyphicon-remove"></span>
-																			</xforms:label>
-																		</xforms:trigger>
-																	</div>
-																</xforms:group>
-																<div>
-																	<xforms:output value="count(tei:surface)">
-																		<xforms:label>Annotations</xforms:label>
-																	</xforms:output>
-																</div>
-															</td>
-														</tr>
-													</table>
-												</xforms:repeat>
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="content">
-												<xforms:trigger bind="annotation-activated">
-													<xforms:label>Add Annotation</xforms:label>
-													<xxforms:script ev:event="DOMActivate">annotate();</xxforms:script>
-												</xforms:trigger>
-												<div>
-													<div class="annot" id="annot"></div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</xforms:group>
-							</fr:tab>
-							<!--**************************************** BODY **********************************-->
-							<fr:tab bind="text-tab">
-								<fr:label>Text</fr:label>
-							</fr:tab>
-							<!--<fr:tab id="preview">
-								<fr:label>XML Preview</fr:label>
-								<h1>XML Preview</h1>
-								<fr:xforms-inspector/>
-							</fr:tab>-->
-						</fr:tabview>
-						<!-- dummy controls for javascript hooks -->
-						<div style="visibility:hidden">
-							<!-- used for getting images and annotations -->
-							<xforms:output ref="instance('control-instance')/image-url" id="image-url"></xforms:output>
-							<xforms:output ref="instance('control-instance')/image-id" id="image-id"></xforms:output>
-							<xforms:output ref="instance('control-instance')/collection-name" id="collection-name"></xforms:output>
-							<xforms:output ref="instance('doc')/@xml:id" id="doc-id"></xforms:output>
-							<xforms:input ref="instance('control-instance')/modified" id="doc-modified" />
-							<!-- used for writing annotations from annotorious into TEI -->
-							<xforms:input ref="instance('annotation')/id" id="annotation-id" />
-							<xforms:input ref="instance('annotation')/text" id="annotation-text" />
-							<xforms:input ref="instance('annotation')/ulx" id="annotation-ulx" />
-							<xforms:input ref="instance('annotation')/uly" id="annotation-uly" />
-							<xforms:input ref="instance('annotation')/lrx" id="annotation-lrx" />
-							<xforms:input ref="instance('annotation')/lry" id="annotation-lry" />
-							<!-- CRUD instances -->
-							<xforms:input ref="instance('control-instance')/key" id="key">
-								<xforms:action ev:event="xforms-value-changed">
-									<!-- CREATE -->
-									<xforms:action if="instance('control-instance')/annotation-action = 'create'">
-										<!-- insert surface template -->
-										<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]" nodeset="./child::node()[last()]"
-											origin="instance('surface-template')"></xforms:insert>
-										<!-- set values -->
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@xml:id"
-											value="instance('annotation')/id"></xforms:setvalue>
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@ulx" value="instance('annotation')/ulx"></xforms:setvalue>
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@uly" value="instance('annotation')/uly"></xforms:setvalue>
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@lrx" value="instance('annotation')/lrx"></xforms:setvalue>
-										<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]/@lry" value="instance('annotation')/lry"></xforms:setvalue>
-										<!-- process the HTML from instance('annotation')/text into TEI XML -->
-										<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"></xforms:setvalue>
-										<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[last()]"
-											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"></xforms:insert>
-									</xforms:action>
-									<!-- DELETE -->
-									<xforms:action if="instance('control-instance')/annotation-action = 'delete'">
-										<xforms:delete
-											nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]"
-										></xforms:delete>
-									</xforms:action>
-									<xforms:action if="instance('control-instance')/annotation-action = 'update'">
-										<!-- delete desc before reprocessing into TEI and inserting a new one -->
-										<xforms:delete
-											nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]/tei:desc"></xforms:delete>
-										<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"></xforms:setvalue>
-										<xforms:insert
-											context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image-id]/tei:surface[@xml:id=instance('control-instance')/annotation-id]"
-											origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"></xforms:insert>
-									</xforms:action>
-								</xforms:action>
-							</xforms:input>
-							<xforms:input ref="instance('control-instance')/annotation-action" id="an-action" />
-							<xforms:input ref="instance('control-instance')/annotation-id" id="an-id" />
-							<!-- contains jpg image: dimensions used to dynamically generate the bounds -->
-							<span id="image-container"></span>
-						</div>
-					</div>
-				</div>
+
+
+
+			<!-- hidden controls must not be in a tab -->
+			<div class="hidden">
+				<!-- used for getting images and annotations -->
+				<xforms:output ref="instance('control-instance')/collection-name" id="collection-name"/>
+				<xforms:output ref="instance('control-instance')/manifest" id="manifestURL"/>
+				<xforms:output ref="instance('doc')/@xml:id" id="doc-id"/>
+
+				<xforms:output ref="instance('config')/publisher" id="publisher"/>
+
+				<!-- image metadata -->
+				<!-- image/url is the URL of the full default.jpg. image/id is the @xml:id of the tei:facsimile (IIIF canvas ID) -->
+				<xforms:input ref="instance('control-instance')/image/url" id="image-url"/>
+				<xforms:input ref="instance('control-instance')/image/id" id="image-id"/>
+
+				<!-- the canvas-id control is set whenever the image is changed in the viewer -->
+				<xforms:input ref="instance('control-instance')/canvas" id="canvas-id"/>
+
+				<xforms:input ref="instance('control-instance')/modified" id="doc-modified"/>
+
+				<!-- used for writing annotations from annotorious into TEI -->
+				<xforms:input ref="instance('annotation')/id" id="annotation-id"/>
+				<xforms:input ref="instance('annotation')/text" id="annotation-text"/>
+				<xforms:input ref="instance('annotation')/ulx" id="annotation-ulx"/>
+				<xforms:input ref="instance('annotation')/uly" id="annotation-uly"/>
+				<xforms:input ref="instance('annotation')/lrx" id="annotation-lrx"/>
+				<xforms:input ref="instance('annotation')/lry" id="annotation-lry"/>
+
+				<!-- CRUD instances -->
+				<xforms:input ref="instance('control-instance')/key" id="key">
+					<xforms:action ev:event="xforms-value-changed">
+						<!-- CREATE -->
+						<xforms:action if="instance('control-instance')/annotation-action = 'create'">
+							<!-- read the IIIF Manifest JSON and extract the Canvas ID given the Image URL -->
+							<xforms:var name="url" select="instance('control-instance')/image/url"/>
+							<xforms:setvalue ref="instance('control-instance')/image/id"
+								value="tokenize(instance('manifest')//canvases/_[images/_/resource/_id = $url]/_id, '/')[last()]"/>
+
+							<!-- insert surface template -->
+							<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]"
+								nodeset="./child::node()[last()]" origin="instance('surface-template')"/>
+							<!-- set values -->
+							<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]/@xml:id"
+								value="instance('annotation')/id"/>
+							<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]/@ulx"
+								value="instance('annotation')/ulx"/>
+							<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]/@uly"
+								value="instance('annotation')/uly"/>
+							<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]/@lrx"
+								value="instance('annotation')/lrx"/>
+							<xforms:setvalue ref="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]/@lry"
+								value="instance('annotation')/lry"/>
+
+							<!-- process the HTML from instance('annotation')/text into TEI XML -->
+							<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
+							<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]"
+								origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"
+							/>
+						</xforms:action>
+
+						<!-- DELETE -->
+						<xforms:action if="instance('control-instance')/annotation-action = 'delete'">
+							<!-- evaluate whether the image URL contains .jpg; if yes, then parse the manifest JSON to look for the canvas ID. If no, then the URL is the canvas URL -->
+							<xforms:var name="url" select="instance('control-instance')/image/url"/>
+
+							<xforms:action if="contains($url, '.jpg')">
+								<xforms:setvalue ref="instance('control-instance')/image/id"
+									value="tokenize(instance('manifest')//canvases/_[images/_/resource/_id = $url]/_id, '/')[last()]"/>
+							</xforms:action>
+							<xforms:action if="not(contains($url, '.jpg'))">
+								<xforms:setvalue ref="instance('control-instance')/image/id" value="tokenize($url, '/')[last()]"/>
+							</xforms:action>
+
+							<!-- delete the tei:surface element -->
+							<xforms:delete
+								nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[@xml:id = instance('annotation')/id]"
+							/>
+						</xforms:action>
+
+						<!-- UPDATE -->
+						<xforms:action if="instance('control-instance')/annotation-action = 'update'">
+							<!-- evaluate whether the image URL contains .jpg; if yes, then parse the manifest JSON to look for the canvas ID. If no, then the URL is the canvas URL -->
+							<xforms:var name="url" select="instance('control-instance')/image/url"/>
+
+							<xforms:action if="contains($url, '.jpg')">
+								<xforms:setvalue ref="instance('control-instance')/image/id"
+									value="tokenize(instance('manifest')//canvases/_[images/_/resource/_id = $url]/_id, '/')[last()]"/>
+							</xforms:action>
+							<xforms:action if="not(contains($url, '.jpg'))">
+								<xforms:setvalue ref="instance('control-instance')/image/id" value="tokenize($url, '/')[last()]"/>
+							</xforms:action>
+
+							<!-- delete desc before reprocessing into TEI and inserting a new one -->
+							<xforms:delete
+								nodeset="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[@xml:id = instance('annotation')/id]/tei:desc"/>
+							<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
+							<xforms:insert
+								context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[@xml:id = instance('annotation')/id]"
+								origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"
+							/>
+						</xforms:action>
+					</xforms:action>
+				</xforms:input>
+
+				<xforms:input ref="instance('control-instance')/annotation-action" id="an-action"/>
 			</div>
 		</div>
+		<!-- dialog for returning to admin panel -->
+		<fr:alert-dialog id="return-dialog">
+			<fr:label>Return to Admin</fr:label>
+			<fr:message>This document has been modified since the last save. You will lose any changes if you return to the Admin panel.</fr:message>
+			<fr:negative-choice>
+				<fr:label>Cancel</fr:label>
+			</fr:negative-choice>
+			<fr:positive-choice>
+				<fr:label>OK</fr:label>
+				<xforms:action ev:event="DOMActivate">
+					<xforms:load show="replace" resource="{$display_path}"/>
+				</xforms:action>
+			</fr:positive-choice>
+		</fr:alert-dialog>
 	</body>
 </html>

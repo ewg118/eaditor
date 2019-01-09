@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"
-	version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	exclude-result-prefixes="xs eaditor" version="2.0">
 	<!-- ********************************** FUNCTIONS ************************************ -->
 
 	<!-- create a human readable date -->
 	<xsl:function name="eaditor:normalizeDate">
 		<xsl:param name="date"/>
-		
+
 		<xsl:if test="substring($date, 1, 1) != '-' and number(substring($date, 1, 4)) &lt; 500">
 			<xsl:text>A.D. </xsl:text>
 		</xsl:if>
-		
+
 		<xsl:choose>
 			<xsl:when test="$date castable as xs:date">
 				<xsl:value-of select="format-date($date, '[D] [MNn] [Y]')"/>
@@ -23,15 +23,15 @@
 				<xsl:value-of select="abs(number($date))"/>
 			</xsl:when>
 		</xsl:choose>
-		
+
 		<xsl:if test="substring($date, 1, 1) = '-'">
 			<xsl:text> B.C.</xsl:text>
 		</xsl:if>
 	</xsl:function>
-	
+
 	<xsl:function name="eaditor:date_dataType">
 		<xsl:param name="val"/>
-		
+
 		<xsl:choose>
 			<xsl:when test="$val castable as xs:date">http://www.w3.org/2001/XMLSchema#date</xsl:when>
 			<xsl:when test="$val castable as xs:gYearMonth">http://www.w3.org/2001/XMLSchema#gYearMonth</xsl:when>
@@ -64,24 +64,24 @@
 		<xsl:if test="$cleaned &lt; 0">
 			<xsl:text> B.C.</xsl:text>
 		</xsl:if>
-	</xsl:function>	
+	</xsl:function>
 
 	<xsl:template name="eaditor:get_date_hierarchy">
 		<xsl:param name="date"/>
 		<xsl:param name="upload"/>
 		<xsl:param name="multiDate"/>
 		<xsl:param name="position"/>
-		
+
 		<xsl:if test="$date castable as xs:gYear">
 			<xsl:variable name="year_string" select="string(abs(number($date)))"/>
 			<xsl:variable name="century"
 				select="
-				if (number($date) &gt; 0) then
-				ceiling(number($date) div 100)
-				else
-				floor(number($date) div 100)"/>
+					if (number($date) &gt; 0) then
+						ceiling(number($date) div 100)
+					else
+						floor(number($date) div 100)"/>
 			<xsl:variable name="decade" select="floor(abs(number($date)) div 10) * 10"/>
-			
+
 			<xsl:if test="number($century)">
 				<field name="century_num">
 					<xsl:if test="$upload = true()">
@@ -103,7 +103,7 @@
 					</xsl:if>
 					<xsl:value-of select="number($date)"/>
 				</field>
-				
+
 				<xsl:choose>
 					<xsl:when test="$multiDate = true()">
 						<xsl:choose>
@@ -141,7 +141,7 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
-			
+
 		</xsl:if>
 	</xsl:template>
 
@@ -149,10 +149,14 @@
 		<xsl:param name="field"/>
 		<xsl:param name="lang"/>
 
-		<xsl:variable name="elem" select="if (contains($field, '_')) then substring-before($field, '_') else $field"/>
+		<xsl:variable name="elem" select="
+				if (contains($field, '_')) then
+					substring-before($field, '_')
+				else
+					$field"/>
 
 		<xsl:choose>
-			<xsl:when test="$lang='fr'"> </xsl:when>
+			<xsl:when test="$lang = 'fr'"> </xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
 					<xsl:when test="$elem = 'abstract'">Abstract</xsl:when>
@@ -211,7 +215,7 @@
 					<xsl:when test="$elem = 'title'">Title</xsl:when>
 					<xsl:when test="$elem = 'unitdate' or $elem = 'dateCreated'">Date</xsl:when>
 					<xsl:when test="$elem = 'unittitle'">Title</xsl:when>
-					<xsl:when test="$elem = 'unitid' or $elem = 'identifier'">Identifier</xsl:when>					
+					<xsl:when test="$elem = 'unitid' or $elem = 'identifier'">Identifier</xsl:when>
 					<xsl:when test="$elem = 'userestrict'">Use Restriction</xsl:when>
 					<xsl:when test="$elem = 'year'">Year</xsl:when>
 					<xsl:otherwise>
@@ -231,11 +235,11 @@
 			select="document(concat('https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key=', //config/flickr_api_key, '&amp;photo_id=', $photo_id, '&amp;format=rest'))/rsp/photo/urls/url[@type='photopage']"
 		/>-->
 	</xsl:function>
-	
+
 	<!-- ********************************** TEMPLATES ************************************ -->
 	<xsl:template name="eaditor:evaluateDatatype">
 		<xsl:param name="val"/>
-		
+
 		<xsl:choose>
 			<!-- metadata fields must be a string -->
 			<xsl:when test="ancestor::metadata or self::label">
@@ -249,7 +253,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template name="multifields">
 		<xsl:param name="field"/>
 		<xsl:param name="position"/>

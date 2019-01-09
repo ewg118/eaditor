@@ -31,16 +31,18 @@
 					<xsl:choose>						
 						<xsl:when test="contains(doc('input:request')/request/request-url, 'navigation/') or contains(doc('input:request')/request/request-url, 'toc/')">							
 							<xsl:variable name="collection-name" select="doc('input:request')/request/parameters/parameter[name='collection']/value"/>
-							<xsl:variable name="doc" select="doc('input:request')/request/parameters/parameter[name='guide']/value"/>
+							<xsl:variable name="recordId" select="doc('input:request')/request/parameters/parameter[name='guide']/value"/>
+							
 							<config>
 								<url>
-									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $doc, '.xml')"/>
+									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $recordId, '.xml')"/>
 								</url>
 								<content-type>application/xml</content-type>
 								<encoding>utf-8</encoding>
 							</config>
 						</xsl:when>
 						<xsl:otherwise>
+							
 							<xsl:variable name="collection-name">
 								<xsl:choose>
 									<xsl:when test="contains(doc('input:request')/request/request-url, 'eaditor/admin/')">
@@ -51,11 +53,16 @@
 									</xsl:otherwise>
 								</xsl:choose>
 							</xsl:variable>
-							<xsl:variable name="id">
+							
+							<xsl:variable name="recordId">
 								<xsl:choose>
+									<!-- favor the doc request parameter first, before id, since the get_annotations API uses it -->
+									<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='doc']/value)">
+										<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='doc']/value"/>
+									</xsl:when>
 									<xsl:when test="string(doc('input:request')/request/parameters/parameter[name='id']/value)">
 										<xsl:value-of select="doc('input:request')/request/parameters/parameter[name='id']/value"/>
-									</xsl:when>		
+									</xsl:when>
 									<!-- IIIF manifest generation -->
 									<xsl:when test="contains(doc('input:request')/request/request-url, 'manifest/')">
 										<xsl:variable name="pieces" select="tokenize(substring-after(doc('input:request')/request/request-url, 'manifest/'), '/')"/>
@@ -96,7 +103,7 @@
 							
 							<config>
 								<url>
-									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $id, '.xml')"/>
+									<xsl:value-of select="concat(/exist-config/url, 'eaditor/', $collection-name, '/guides/', $recordId, '.xml')"/>
 								</url>
 								<content-type>application/xml</content-type>
 								<encoding>utf-8</encoding>

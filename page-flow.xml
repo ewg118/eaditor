@@ -38,6 +38,7 @@
 	<page path="/eaditor/admin/edit/c-template/" view="xforms/c-template.xhtml"/>	
 	<page path="/eaditor/admin/edit/core/" view="xforms/ead.xhtml"/>
 	<page path="/eaditor/admin/edit/component/" view="xforms/component.xhtml"/>
+	
 	<!-- TEI -->
 	<page path="/eaditor/admin/edit/tei/" view="xforms/tei.xhtml"/>
 
@@ -129,10 +130,9 @@
 	<page path="/eaditor/[^\/]+/get_decades" model="xpl/models/solr/get_decades.xpl" view="xpl/views/ajax/get_decades.xpl"/>
 	<page path="/eaditor/[^\/]+/get_hier" model="xpl/models/solr/get_hier.xpl" view="xpl/views/ajax/get_hier.xpl"/>
 	<page path="/eaditor/[^\/]+/results_ajax/" model="xpl/models/solr/results_ajax.xpl" view="xpl/views/ajax/results_ajax.xpl"/>
-	<!-- generate Annotorious annotations from TEI, using doc and facsimile ids -->
-	<page path="/eaditor/[^\/]+/get_annotations/" view="xpl/views/ajax/get_annotations.xpl"/>
+	
 	<!-- generate JSON output for labels of URIs from nomisma, Mantis, etc. to power links in annotations -->
-	<page path="/eaditor/[^\/]+/get_label/" model="xpl/models/get_model.xpl" view="xpl/views/ajax/get_label.xpl"/>
+	<page path="/eaditor/[^\/]+/get_label" model="xpl/models/get_model.xpl" view="xpl/views/ajax/get_label.xpl"/>
 	
 	<!-- ***** RECORD SERIALIZATIONS ***** -->
 	<!-- public xml view (internal elements supressed) -->

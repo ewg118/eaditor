@@ -37,7 +37,7 @@
 							</div>
 
 							<xforms:group ref=".[count(child::node()) &lt; 1]">
-								<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> Element must
+								<div class="alert-danger alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Alert:</strong> Element must
 									contain content.</div>
 							</xforms:group>
 

@@ -24,7 +24,7 @@
 							
 							<xforms:group
 								ref="$binding[count(child::node()) &lt; 1]">
-								<div class="bg-danger alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
+								<div class="alert-danger alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"></span><strong>Alert:</strong> Element must contain content.</div>
 							</xforms:group>
 							
 							<!-- ACCESS ELEMENTS -->
