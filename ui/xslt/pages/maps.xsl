@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all"
-	version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	exclude-result-prefixes="#all" version="2.0">
 	<xsl:include href="../templates.xsl"/>
 	<xsl:include href="../functions.xsl"/>
 
 	<xsl:variable name="flickr-api-key" select="/content/config/flickr_api_key"/>
 	<xsl:variable name="mapboxKey" select="/content/config/mapboxKey"/>
-	
-	<xsl:variable name="display_path">./</xsl:variable>	
+
+	<xsl:variable name="display_path">./</xsl:variable>
 	<xsl:variable name="include_path">
 		<xsl:choose>
-			<xsl:when test="/content/config/aggregator='true'">./</xsl:when>
+			<xsl:when test="/content/config/aggregator = 'true'">./</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="if (contains(/content/config/url, 'localhost')) then '../' else /content/config/url"/>
+				<xsl:value-of select="
+						if (contains(/content/config/url, 'localhost')) then
+							'../'
+						else
+							/content/config/url"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
+
 	<xsl:variable name="pipeline">maps</xsl:variable>
 	<xsl:variable name="collection-name" select="substring-before(substring-after(doc('input:request')/request/request-url, 'eaditor/'), '/')"/>
 
-	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name='q']/value"/>
-	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name='lang']/value"/>
+	<xsl:param name="q" select="doc('input:params')/request/parameters/parameter[name = 'q']/value"/>
+	<xsl:param name="lang" select="doc('input:params')/request/parameters/parameter[name = 'lang']/value"/>
 	<xsl:variable name="tokenized_q" select="tokenize($q, ' AND ')"/>
 
 	<xsl:template match="/">
@@ -44,7 +48,7 @@
 				</xsl:if>
 
 				<!-- map functions -->
-				<xsl:if test="/content//result[@name='response']/@numFound &gt; 0">
+				<xsl:if test="/content//result[@name = 'response']/@numFound &gt; 0">
 					<script type="text/javascript" src="{$include_path}ui/javascript/bootstrap-multiselect.js"/>
 					<link rel="stylesheet" href="{$include_path}ui/css/bootstrap-multiselect.css" type="text/css"/>
 					<link rel="stylesheet" href="{$include_path}ui/css/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen"/>
@@ -54,9 +58,9 @@
 					<link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css"/>
 					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.css"/>
 					<link rel="stylesheet" href="{$include_path}ui/css/MarkerCluster.Default.css"/>
-					
+
 					<!-- js -->
-					<script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>					
+					<script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.ajax.min.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/leaflet.markercluster.js"/>
 					<script type="text/javascript" src="{$include_path}ui/javascript/maps_functions.js"/>
@@ -75,7 +79,7 @@
 		<div id="backgroundPopup"/>
 		<div class="container-fluid">
 			<xsl:choose>
-				<xsl:when test="/content//result[@name='response']/@numFound &gt; 0">
+				<xsl:when test="/content//result[@name = 'response']/@numFound &gt; 0">
 					<div class="row">
 						<div class="col-md-12">
 							<h1>Maps</h1>
@@ -84,7 +88,7 @@
 					</div>
 					<div class="row">
 						<div class="col-md-3">
-							<xsl:apply-templates select="//lst[@name='facet_fields']/lst[descendant::int]"/>
+							<xsl:apply-templates select="//lst[@name = 'facet_fields']/lst[descendant::int]"/>
 						</div>
 						<div class="col-md-9" id="map-page">
 							<div id="mapcontainer"/>
@@ -165,7 +169,7 @@
 					<ul class="{substring-before(@name, '_hier')}-multiselect-checkboxes ui-helper-reset hierarchical-list" id="{@name}-list" style="height: 195px;" title="{$title}"/>
 				</div>-->
 			</xsl:when>
-			<xsl:when test="@name='century_num'">
+			<xsl:when test="@name = 'century_num'">
 				<!--<div class="btn-group"> </div>
 				<button class="dropdown-toggle btn btn-default" data-toggle="dropdown" type="button" title="Date" aria-haspopup="true" style="width: 250px;" id="{@name}_link" label="{$q}"> Date <b
 						class="caret"/>
@@ -202,7 +206,8 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
-				<select id="{@name}-select" multiple="multiple" class="multiselect" title="{$title}" q="{$q}" new_query="{if (contains($q, @name)) then $select_new_query else ''}"/>
+				<select id="{@name}-select" multiple="multiple" class="multiselect" title="{$title}" q="{$q}"
+					new_query="{if (contains($q, @name)) then $select_new_query else ''}"/>
 			</xsl:otherwise>
 		</xsl:choose>
 
