@@ -36,6 +36,7 @@
 					<parser>
 						<xsl:choose>
 							<xsl:when test="contains($uri, 'http://nomisma.org/')">true</xsl:when>
+							<xsl:when test="contains($uri, 'http://coinhoards.org/')">true</xsl:when>
 							<xsl:when test="contains($uri, 'http://numismatics.org/collection/')">true</xsl:when>
 							<xsl:when test="contains($uri, 'http://numismatics.org/library/')">true</xsl:when>
 							<xsl:when test="contains($uri, 'geonames.org')">true</xsl:when>
@@ -65,6 +66,9 @@
 							<xsl:variable name="service">
 								<xsl:choose>
 									<xsl:when test="contains($uri, 'http://nomisma.org/')">
+										<xsl:value-of select="concat($uri, '.rdf')"/>
+									</xsl:when>
+									<xsl:when test="contains($uri, 'http://coinhoards.org/')">
 										<xsl:value-of select="concat($uri, '.rdf')"/>
 									</xsl:when>
 									<xsl:when test="contains($uri, 'http://numismatics.org/collection/')">
