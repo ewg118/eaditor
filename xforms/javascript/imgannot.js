@@ -528,11 +528,13 @@ var Mia = {
             var height = dim.y;
             var width = dim.x;
             
+            var frags = annot.fragid.replace("xywh=percent:", "").split(',');
+            
             //coordinates
-            var ulx = Math.round(annot.shapes[0].geometry.x * width);
-            var lrx = Math.round((annot.shapes[0].geometry.x + annot.shapes[0].geometry.width) * width);
-            var uly = Math.round(annot.shapes[0].geometry.y * height);
-            var lry = Math.round((annot.shapes[0].geometry.y + annot.shapes[0].geometry.height) * height);
+            var ulx = Math.round((frags[0] / 100) * width);
+            var uly = Math.round((frags[1] / 100) * height);            
+            var lrx = Math.round(ulx + ((frags[2] / 100) * width));            
+            var lry = Math.round(uly + ((frags[3] / 100) * height));
             
             //write values to instances
             ORBEON.xforms.Document.setValue('annotation-text', desc);
