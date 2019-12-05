@@ -21,7 +21,7 @@ function constructLink(match, p1, offset, string) {
     } else if (p1.indexOf('geonames.org') > 0) {
         var pieces = p1.split('/');
         var normalized = 'http://www.geonames.org/' + pieces[3];
-    } else if (p1.indexOf('wikipedia.org') > 0 || p1.indexOf('dbpedia.org') > 0) {
+    } else if (p1.indexOf('wikipedia.org') > 0) {
         var pieces = p1.split('/');
         var normalized = 'http://dbpedia.org/resource/' + pieces[pieces.length - 1];
     } else {
