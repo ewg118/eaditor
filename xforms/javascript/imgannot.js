@@ -521,6 +521,10 @@ var Mia = {
             //reset annotation.text
             annot.text = desc;
             
+            //the key needs to change with every possible manipulation. Annotation ID does not change if editing the same annotation consecutively
+            var date = new Date();
+            var key = date.toISOString();
+            
             Manno.set_new(annot);
             
             //get dimensions of image
@@ -528,11 +532,13 @@ var Mia = {
             var height = dim.y;
             var width = dim.x;
             
+            var frags = annot.fragid.replace("xywh=percent:", "").split(',');
+            
             //coordinates
-            var ulx = Math.round(annot.shapes[0].geometry.x * width);
-            var lrx = Math.round((annot.shapes[0].geometry.x + annot.shapes[0].geometry.width) * width);
-            var uly = Math.round(annot.shapes[0].geometry.y * height);
-            var lry = Math.round((annot.shapes[0].geometry.y + annot.shapes[0].geometry.height) * height);
+            var ulx = Math.round((frags[0] / 100) * width);
+            var uly = Math.round((frags[1] / 100) * height);
+            var lrx = Math.round(ulx + ((frags[2] / 100) * width));
+            var lry = Math.round(uly + ((frags[3] / 100) * height));
             
             //write values to instances
             ORBEON.xforms.Document.setValue('annotation-text', desc);
@@ -547,7 +553,7 @@ var Mia = {
             
             //set action and change the key to initiate XForms engine
             ORBEON.xforms.Document.setValue('an-action', 'create');
-            ORBEON.xforms.Document.setValue('key', annot.id);
+            ORBEON.xforms.Document.setValue('key', key);
             
             //set modified to true
             ORBEON.xforms.Document.setValue('doc-modified', 'true');
@@ -560,14 +566,17 @@ var Mia = {
             //reset annotation.text
             annot.text = at.md2link(desc);
             
+            var date = new Date();
+            var key = date.toISOString();
+            
             //set the imgurl in the XForms engine to get the canvas ID
             ORBEON.xforms.Document.setValue('image-url', annot.imgurl);
             
-            //set values and trigger the XForms engine            
+            //set values and trigger the XForms engine
             ORBEON.xforms.Document.setValue('annotation-text', annot.text);
             ORBEON.xforms.Document.setValue('annotation-id', annot.id);
             ORBEON.xforms.Document.setValue('an-action', 'update');
-            ORBEON.xforms.Document.setValue('key', annot.id);
+            ORBEON.xforms.Document.setValue('key', key);
             
             //set modified to true
             ORBEON.xforms.Document.setValue('doc-modified', 'true');
@@ -575,17 +584,20 @@ var Mia = {
             Manno.set_changed(0, annot);
         });
         Mwa.antrs.addHandler("onAnnotationRemoved", function (annot) {
+            var date = new Date();
+            var key = date.toISOString();
+            
             //set the imgurl in the XForms engine to get the canvas ID
             ORBEON.xforms.Document.setValue('image-url', annot.imgurl);
             
             //initiate tei:surface deletion
             ORBEON.xforms.Document.setValue('annotation-id', annot.id);
             ORBEON.xforms.Document.setValue('an-action', 'delete');
-            ORBEON.xforms.Document.setValue('key', annot.id);
+            ORBEON.xforms.Document.setValue('key', key);
             
             //set modified to true
             ORBEON.xforms.Document.setValue('doc-modified', 'true');
-        
+            
             Manno.set_changed(-1, annot);
         });
         if (Mia.env.type === "image") {
@@ -1028,7 +1040,7 @@ var Mpj = {
         }
         Mia.tindex.labels.acc += labellen;
     },
-    set_ent_meta: function (def) {        
+    set_ent_meta: function (def) {
         Muib.meta.lang.watch = true;
         Mia.ent.label = Mut.str.lang_val(def.label) || null;
         Mia.ent.description = Mut.html.safe_text(def.description || def.summary, "\\n") || null;
@@ -6785,7 +6797,7 @@ var Muib = {
             if ((pa = Mut.dom.get(pid, "id"))) {
                 Mia.elt.maindiv.removeChild(pa);
                 pa.innerHTML = "";
-            } else {                
+            } else {
                 pa = Mut.dom.elt("div", "",[[ "class", "metainfo"],[ "id", pid]]);
             }
             for (var key in this.div) {
@@ -7040,31 +7052,31 @@ var Muib = {
         imgdesc: function (uri, disp, stepfade) {
             //Edited by EG (January 2019): set the canvas ID in the XForms engine to trigger a control to edit the tei:media/@n
             var pieces = uri.split('/');
-            ORBEON.xforms.Document.setValue('canvas-id', pieces[pieces.length-1]);
+            ORBEON.xforms.Document.setValue('canvas-id', pieces[pieces.length -1]);
             
             //EG: suppress output
             /*var info, ci = Mia.cinfo[uri],
             label = "<em title=\"" + ci.urisig + "\"" +
-            (Mav.type ? ">Media": " onclick=\"Mia.ask_image(event);\">Image") + " info</em>: ";            
+            (Mav.type ? ">Media": " onclick=\"Mia.ask_image(event);\">Image") + " info</em>: ";
             if (disp) {
-                if (stepfade) disp = "<span id=\"stepfade\">" + disp + "</span>";
-                info = label + disp;
+            if (stepfade) disp = "<span id=\"stepfade\">" + disp + "</span>";
+            info = label + disp;
             } else if (ci) {
-                if (ci.description && ci.description !== undefined) {
-                    info = label +
-                    disp_desc(ci.description + Miiif.cview.append_paged_val(uri, "description")).
-                    replace(/^✍/, "<span class=\"otherCont\">✍</span>");
-                } else if (Mia.env.numTiles > 1) {
-                    info = label;
-                }
-                if (ci.metadata) info += ci.metadata;
+            if (ci.description && ci.description !== undefined) {
+            info = label +
+            disp_desc(ci.description + Miiif.cview.append_paged_val(uri, "description")).
+            replace(/^✍/, "<span class=\"otherCont\">✍</span>");
+            } else if (Mia.env.numTiles > 1) {
+            info = label;
+            }
+            if (ci.metadata) info += ci.metadata;
             }
             if (info) Mia.elt.imgdsc.innerHTML = info;
             if (stepfade) Muib.tool.step_bgcolor(Mut.dom.get("#stepfade"), 500,[253, 246, 222], "transparent", 10);
             
             
             function disp_desc(text) {
-                if (text.match(/</)) return text; else return Mut.html.fold_text(text, "long");
+            if (text.match(/</)) return text; else return Mut.html.fold_text(text, "long");
             }*/
         },
         
