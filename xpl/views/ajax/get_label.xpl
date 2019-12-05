@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Copyright (C) 2010 Ethan Gruber
-	EADitor: https://github.com/ewg118/eaditor
-	Apache License 2.0: https://github.com/ewg118/eaditor
-	
+	Author: Ethan Gruber
+	Date: December 2019
+	Function: Serialize the source data model for an entity URI lookup into JSON that will be turned into an HTML link
 -->
 <p:config xmlns:p="http://www.orbeon.com/oxf/pipeline"
 	xmlns:oxf="http://www.orbeon.com/oxf/processors">
@@ -30,7 +29,10 @@
 	<p:processor name="oxf:text-serializer">
 		<p:input name="data" href="#model"/>
 		<p:input name="config">
-			<config/>
+			<config>
+				<content-type>application/json</content-type>
+				<encoding>utf-8</encoding>
+			</config>
 		</p:input>
 		<p:output name="data" ref="data"/>
 	</p:processor>

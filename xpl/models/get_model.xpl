@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Copyright (C) 2010 Ethan Gruber
-	EADitor: https://github.com/ewg118/eaditor
-	Apache License 2.0: https://github.com/ewg118/eaditor
-	Function: Get the appropriate data model given URL parameter 'uri',
-	to be passed to get_label XPL for XSL processing into JSON.
-	JSON is used by backend Annotorious annotations containing html links.
+	Author: Ethan Gruber
+	Date: December 2019
+	Function: Parse the URI inputted into TEI/IIIF Web Annotations in order to extract preferred labels
+	from various sources.
 -->
 <p:config xmlns:p="http://www.orbeon.com/oxf/pipeline" xmlns:oxf="http://www.orbeon.com/oxf/processors">
 
@@ -36,9 +34,9 @@
 					<parser>
 						<xsl:choose>
 							<xsl:when test="contains($uri, 'http://nomisma.org/')">true</xsl:when>
-							<xsl:when test="contains($uri, 'http://coinhoards.org/')">true</xsl:when>
-							<xsl:when test="contains($uri, 'http://numismatics.org/collection/')">true</xsl:when>
+							<xsl:when test="contains($uri, 'http://coinhoards.org/')">true</xsl:when>							
 							<xsl:when test="contains($uri, 'http://numismatics.org/library/')">true</xsl:when>
+							<xsl:when test="matches($uri, 'http://numismatics.org/(pella|sco|pco|ocre|crro|aod|chrr|digitallibrary|archives|authority|collection)')">true</xsl:when>
 							<xsl:when test="contains($uri, 'geonames.org')">true</xsl:when>
 							<xsl:when test="contains($uri, 'viaf.org')">true</xsl:when>
 							<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">true</xsl:when>
@@ -71,9 +69,9 @@
 									<xsl:when test="contains($uri, 'http://coinhoards.org/')">
 										<xsl:value-of select="concat($uri, '.rdf')"/>
 									</xsl:when>
-									<xsl:when test="contains($uri, 'http://numismatics.org/collection/')">
+									<xsl:when test="matches($uri, 'http://numismatics.org/(pella|sco|pco|ocre|crro|aod|chrr|digitallibrary|archives|authority|collection)')">
 										<xsl:value-of select="concat($uri, '.rdf')"/>
-									</xsl:when>
+									</xsl:when>									
 									<xsl:when test="contains($uri, 'http://numismatics.org/library/')">
 										<xsl:value-of select="concat('http://donum.numismatics.org/cgi-bin/koha/opac-export.pl?format=dc&amp;op=export&amp;bib=', substring-after($uri, 'library/'))"/>
 									</xsl:when>
@@ -85,9 +83,13 @@
 										<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
 										<xsl:value-of select="concat('http://viaf.org/viaf/', $pieces[5], '/rdf')"/>
 									</xsl:when>
-									<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">
+									<xsl:when test="contains($uri, 'wikipedia.org')">
 										<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-										<xsl:value-of select="concat('http://dbpedia.org/data/', $pieces[last()], '.rdf')"/>
+										<xsl:variable name="title" select="$pieces[last()]"/>
+										<xsl:variable name="lang" select="tokenize($pieces[3], '\.')[1]"/>
+										
+										<!-- parse the wikipedia URL and convert it into a Wikidata API call -->
+										<xsl:value-of select="concat('https://www.wikidata.org/w/api.php?action=wbgetentities&amp;titles=', $title, '&amp;sites=', $lang, 'wiki&amp;format=xml')"/>	
 									</xsl:when>
 								</xsl:choose>
 							</xsl:variable>
@@ -125,28 +127,10 @@
 						<p:input name="config">
 							<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 								<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
-								<xsl:variable name="normalized">
-									<xsl:choose>
-										<xsl:when test="contains($uri, 'geonames.org')">
-											<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-											<xsl:value-of select="concat('http://www.geonames.org/', $pieces[4])"/>
-										</xsl:when>
-										<xsl:when test="contains($uri, 'viaf.org')">
-											<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-											<xsl:value-of select="concat('http://viaf.org/viaf/', $pieces[5])"/>
-										</xsl:when>
-										<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">
-											<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-											<xsl:value-of select="concat('http://dbpedia.org/resource/', $pieces[last()])"/>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:value-of select="$uri"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:variable>
+								
 								<xsl:template match="/">
 									<response>
-										<xsl:value-of select="$normalized"/>
+										<xsl:value-of select="$uri"/>
 									</response>
 								</xsl:template>
 							</xsl:stylesheet>
@@ -169,29 +153,10 @@
 				<p:input name="data" href="../../exist-config.xml"/>
 				<p:input name="config">
 					<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-						<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>
-						<xsl:variable name="normalized">
-							<xsl:choose>
-								<xsl:when test="contains($uri, 'geonames.org')">
-									<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-									<xsl:value-of select="concat('http://www.geonames.org/', $pieces[4])"/>
-								</xsl:when>
-								<xsl:when test="contains($uri, 'viaf.org')">
-									<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-									<xsl:value-of select="concat('http://viaf.org/viaf/', $pieces[5])"/>
-								</xsl:when>
-								<xsl:when test="contains($uri, 'wikipedia.org') or contains($uri, 'dbpedia.org')">
-									<xsl:variable name="pieces" select="tokenize($uri, '/')"/>
-									<xsl:value-of select="concat('http://dbpedia.org/resource/', $pieces[last()])"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:value-of select="$uri"/>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
+						<xsl:param name="uri" select="doc('input:request')/request/parameters/parameter[name='uri']/value"/>						
 						<xsl:template match="/">
 							<response>
-								<xsl:value-of select="$normalized"/>
+								<xsl:value-of select="$uri"/>
 							</response>
 						</xsl:template>
 					</xsl:stylesheet>
