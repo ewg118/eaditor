@@ -32,8 +32,10 @@
 									</xforms:itemset>
 									<xforms:alert>Required</xforms:alert>
 									<xforms:action ev:event="xforms-value-changed">
-										<xforms:insert context="." origin="xforms:attribute('otherlevel', '')" if="@level='otherlevel'"/>
-										<xforms:delete if="@level != 'otherlevel'" context="." nodeset="@otherlevel"/>
+										<xforms:var name="level" select="."/>
+										
+										<xforms:insert context="parent::node()" origin="xforms:attribute('otherlevel', '')" if="$level = 'otherlevel'"/>
+										<xforms:delete context="parent::node()" nodeset="@otherlevel" if="$level != 'otherlevel'"/>
 									</xforms:action>
 								</xforms:select1>
 							</div>	
