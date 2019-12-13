@@ -1,43 +1,66 @@
 $(document).ready(function () {
     //initialize map, if applicable
-    if ($('#mapcontainer').length) {
+    if ($('#mapcontainer').length > 0) {
         var id = $('title').attr('id');
         var path = $('#path').text();
         //initialize_timemap(id, path);
         initialize_map(id, path);
+    }    
+    
+    if ($(".thumbImage").length > 0) {
+        //popup non-IIIF images on EAD pages
+        $(".thumbImage").fancybox({ helpers: {
+                title: {
+                    type: 'inside'
+                }
+            }
+        });
     }
     
-    //popup non-IIIF images on EAD pages
-    $(".thumbImage").fancybox({ helpers: {
-            title: {
-                type: 'inside'
-            }
+    //show/hide sections
+    $('.toggle-button').click(function () {
+        var div = $(this).attr('id').split('-')[1];
+        $('#' + div).toggle();
+        
+        //replace minus with plus and vice versa
+        var span = $(this).children('span');
+        if (span.attr('class').indexOf('right') > 0) {
+            span.removeClass('glyphicon-triangle-right');
+            span.addClass('glyphicon-triangle-bottom');
+        } else {
+            span.removeClass('glyphicon-triangle-bottom');
+            span.addClass('glyphicon-triangle-right');
         }
+        return false;
     });
     
     //IIIF in popup on EAD pages
-    $('.iiif-image').fancybox({
-        beforeShow: function () {
-            var manifest = this.element.attr('manifest');
-            //remove and replace #iiif-container, if different or new
-            if (manifest != $('#manifest').text()) {
-                $('#iiif-container').remove();
-                $(".iiif-container-template").clone().removeAttr('class').attr('id', 'iiif-container').appendTo("#iiif-window");
-                $('#manifest').text(manifest);
-                render_image(manifest);
+    if ($('.iiif-image').length > 0) {
+        $('.iiif-image').fancybox({
+            beforeShow: function () {
+                var manifest = this.element.attr('manifest');
+                //remove and replace #iiif-container, if different or new
+                if (manifest != $('#manifest').text()) {
+                    $('#iiif-container').remove();
+                    $(".iiif-container-template").clone().removeAttr('class').attr('id', 'iiif-container').appendTo("#iiif-window");
+                    $('#manifest').text(manifest);
+                    render_image(manifest);
+                }
+            },
+            helpers: {
+                title: {
+                    type: 'inside'
+                }
             }
-        },
-        helpers: {
-            title: {
-                type: 'inside'
-            }
-        }
-    });
+        });
+    }
+    
+    
     //initialize Leaflet IIIF for MODS record pages
-     if ($('#info-json').length) {
+    if ($('#info-json').length > 0) {
         var manifest = $('#info-json').text();
         render_image(manifest);
-     }
+    }
     
     function render_image(manifest) {
         var iiifImage = L.map('iiif-container', {

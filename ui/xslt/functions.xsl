@@ -145,6 +145,7 @@
 		</xsl:if>
 	</xsl:template>
 
+	<!-- this function normalizes the local-name() from EAD, MODS, and TEI into a human-readable label -->
 	<xsl:function name="eaditor:normalize_fields">
 		<xsl:param name="field"/>
 		<xsl:param name="lang"/>
@@ -164,6 +165,7 @@
 					<xsl:when test="$elem = 'accruals'">Accruals</xsl:when>
 					<xsl:when test="$elem = 'acqinfo'">Acquisition Information</xsl:when>
 					<xsl:when test="$elem = 'agency'">Agency</xsl:when>
+					<xsl:when test="$elem = 'author'">Author</xsl:when>
 					<xsl:when test="$elem = 'altformavail'">Alternate Form Available</xsl:when>
 					<xsl:when test="$elem = 'appraisal'">Appraisal</xsl:when>
 					<xsl:when test="$elem = 'arrangement'">Arrangement</xsl:when>
@@ -205,6 +207,7 @@
 					<xsl:when test="$elem = 'prefercite'">Preferred Citation</xsl:when>
 					<xsl:when test="$elem = 'processinfo'">Processing Information</xsl:when>
 					<xsl:when test="$elem = 'publisher'">Publisher</xsl:when>
+					<xsl:when test="$elem = 'pubPlace'">Publication Place</xsl:when>
 					<xsl:when test="$elem = 'relatedmaterial'">Related Material</xsl:when>
 					<xsl:when test="$elem = 'repository'">Repository</xsl:when>
 					<xsl:when test="$elem = 'scopecontent'">Scope and Content</xsl:when>
