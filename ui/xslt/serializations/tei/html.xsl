@@ -100,10 +100,11 @@
 
 				<!-- bootstrap -->
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"/>
-				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"/>
+				<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+				<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/>
+				<script type="text/javascript" src="{$include_path}ui/javascript/display_functions.js"/>
 				<link rel="stylesheet" href="{$include_path}ui/css/style.css"/>
-				
+
 
 				<!-- if there are IIIF Services, then use mirador, otherwise render Annotorious -->
 				<xsl:choose>
@@ -139,7 +140,7 @@
 				<div class="container-fluid">
 					<xsl:call-template name="tei-content"/>
 				</div>
-				
+
 				<!-- controls -->
 				<div class="hidden">
 					<span id="display_path">
@@ -178,7 +179,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</div>
-				
+
 				<xsl:call-template name="footer"/>
 			</body>
 		</html>
@@ -190,21 +191,21 @@
 				<h1>
 					<xsl:value-of select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title"/>
 				</h1>
-				<h2>
-					<xsl:apply-templates select="tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author"/>
-				</h2>
+				<xsl:apply-templates select="tei:teiHeader"/>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-4">
-				<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
-				<xsl:apply-templates select="tei:teiHeader/tei:profileDesc"/>
-				<xsl:call-template name="index"/>
-			</div>
-			<div class="col-md-8">
+			<div class="col-md-12">
 				<xsl:call-template name="facsimiles"/>
 			</div>
 		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<xsl:call-template name="index"/>
+			</div>
+		</div>
+
 		<xsl:if test="tei:text">
 			<div class="row">
 				<div class="col-md-12">
@@ -216,7 +217,24 @@
 
 	<!-- ******************** INDEX TEMPLATE *********************** -->
 	<xsl:template name="index">
-		<xsl:variable name="references" select="distinct-values(descendant::tei:ref)"/>
+		<xsl:variable name="references" as="node()*">
+			<references>
+				<xsl:for-each select="descendant::tei:ref">
+					<xsl:variable name="val" select="normalize-space(.)"/>
+
+					<xsl:if test="not(preceding::node()/text() = $val)">
+						<ref>
+							<xsl:if test="@target">
+								<xsl:attribute name="uri" select="@target"/>
+							</xsl:if>
+							<xsl:value-of select="."/>
+						</ref>
+					</xsl:if>
+
+				</xsl:for-each>
+			</references>
+		</xsl:variable>
+
 		<xsl:variable name="facs" as="element()*">
 			<xsl:element name="facsimiles" namespace="http://www.tei-c.org/ns/1.0">
 				<xsl:copy-of select="descendant::tei:facsimile"/>
@@ -224,9 +242,11 @@
 		</xsl:variable>
 
 		<!-- get nomisma RDF -->
-		<xsl:variable name="nomisma-rdf" as="element()*">
+		<xsl:variable name="rdf" as="element()*">
 			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 				xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+
+				<!-- get nomisma RDF -->
 				<xsl:variable name="id-param">
 					<xsl:for-each select="distinct-values(descendant::tei:ref[contains(@target, 'nomisma.org')]/@target)">
 						<xsl:value-of select="substring-after(., 'id/')"/>
@@ -240,13 +260,8 @@
 				<xsl:if test="string-length($id-param) &gt; 0">
 					<xsl:copy-of select="document($rdf_url)/rdf:RDF/*"/>
 				</xsl:if>
-			</rdf:RDF>
-		</xsl:variable>
 
-		<xsl:variable name="viaf-rdf" as="element()*">
-			<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-				xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
-
+				<!-- get viaf RDF -->
 				<xsl:for-each select="distinct-values(descendant::tei:ref[contains(@target, 'viaf.org')]/@target)">
 					<xsl:variable name="pieces" select="tokenize(., '/')"/>
 					<xsl:variable name="uri" select="concat('http://viaf.org/viaf/', $pieces[5])"/>
@@ -257,104 +272,248 @@
 			</rdf:RDF>
 		</xsl:variable>
 
-		<xsl:if test="count($references) &gt; 0">
+		<xsl:if test="count($references//ref) &gt; 0">
 			<h3>Index</h3>
-			<ul>
-				<xsl:for-each select="$references">
-					<xsl:sort/>
-					<xsl:variable name="label" select="."/>
-					<xsl:variable name="uri" select="$facs/descendant::tei:ref[. = $label][1]/@target"/>
-					<xsl:variable name="facet">
-						<xsl:choose>
-							<xsl:when test="contains($uri, 'nomisma.org')">
-								<xsl:variable name="type" select="$nomisma-rdf//*[@rdf:about = $uri]/name()"/>
-								<xsl:choose>
-									<xsl:when test="$type = 'nmo:Region' or $type = 'nmo:Mint'">geogname</xsl:when>
-									<xsl:otherwise>subject</xsl:otherwise>
-								</xsl:choose>
-							</xsl:when>
-							<xsl:when test="contains($uri, 'geonames.org')">geogname</xsl:when>
-							<xsl:when test="contains($uri, 'viaf.org')">
-								<xsl:choose>
-									<xsl:when test="$viaf-rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Organization'"
-										>corpname</xsl:when>
-									<xsl:when test="$viaf-rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Person'"
-										>persname</xsl:when>
-								</xsl:choose>
-							</xsl:when>
-							<!-- wikipedia links cannot easily be parsed, ignore indexing -->
-							<xsl:when test="contains($uri, 'wikipedia')"/>
-							<!-- ignore ANS coins; not useful as subject terms -->
-							<xsl:when test="contains($uri, 'numismatics.org/collection')"/>
-							<xsl:otherwise>subject</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
+			<p>The index terms annotated in this document are arranged in the following categories. The numbers that appear in parentheses refer to the page
+				number of the document.</p>
 
-					<li>
-						<xsl:choose>
-							<xsl:when test="string-length($facet) &gt; 0">
-								<strong>
-									<a href="{$display_path}results?q={$facet}_facet:&#x022;{$label}&#x022;">
-										<xsl:value-of select="$label"/>
-									</a>
-									<a href="{$uri}" target="_blank">
-										<span class="glyphicon glyphicon-new-window"/>
-									</a>
-								</strong>
-							</xsl:when>
-							<xsl:otherwise>
-								<strong>
-									<xsl:value-of select="$label"/>
-									<a href="{$uri}" target="_blank">
-										<span class="glyphicon glyphicon-new-window"/>
-									</a>
-								</strong>
-							</xsl:otherwise>
-						</xsl:choose>
-						<p> Appears on: <xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]]">
-								<xsl:choose>
-									<xsl:when test="$mirador = true()">
-										<xsl:variable name="canvas" select="concat($url, 'manifest/', $recordId, '/canvas/', @xml:id)"/>
-										<a href="#{@xml:id}" class="page-image" canvas="{$canvas}">
-											<xsl:choose>
-												<xsl:when test="string(tei:media/@n)">
-													<xsl:value-of select="tei:media/@n"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="tei:media/@url"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</a>
-									</xsl:when>
-									<xsl:otherwise>
-										<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" facs="{@xml:id}">
-											<xsl:choose>
-												<xsl:when test="string(tei:graphic/@n)">
-													<xsl:value-of select="tei:graphic/@n"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="tei:graphic/@url"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</a>
-									</xsl:otherwise>
-								</xsl:choose>
-								<xsl:if test="not(position() = last())">
-									<xsl:text>, </xsl:text>
-								</xsl:if>
-							</xsl:for-each>
-						</p>
-					</li>
-				</xsl:for-each>
-			</ul>
+			<xsl:if test="$references//ref[contains(@uri, 'coinhoards.org')]">
+				<div>
+					<h4>Hoards <small>
+							<a href="#" class="toggle-button" id="toggle-hoards" title="Click to hide or show the section">
+								<span class="glyphicon glyphicon-triangle-bottom"/>
+							</a>
+						</small></h4>
+					<div id="hoards">
+						<ul>
+							<xsl:apply-templates select="$references//ref[contains(@uri, 'coinhoards.org')]">
+								<xsl:sort/>
+
+								<xsl:with-param name="facs" select="$facs"/>
+								<xsl:with-param name="rdf" select="$rdf"/>
+							</xsl:apply-templates>
+						</ul>
+					</div>
+
+				</div>
+			</xsl:if>
+
+			<xsl:if
+				test="$references//ref[contains(@uri, 'numismatics.org/pella/id') or contains(@uri, 'numismatics.org/sco/id') or contains(@uri, 'numismatics.org/pco/id') or contains(@uri, 'numismatics.org/ocre/id') or contains(@uri, 'numismatics.org/crro/id')]">
+				<div>
+					<h4>Coin Types <small>
+							<a href="#" class="toggle-button" id="toggle-types" title="Click to hide or show the section">
+								<span class="glyphicon glyphicon-triangle-bottom"/>
+							</a>
+						</small></h4>
+					<div id="types">
+						<ul>
+							<xsl:apply-templates
+								select="$references//ref[contains(@uri, 'numismatics.org/pella/id') or contains(@uri, 'numismatics.org/sco/id') or contains(@uri, 'numismatics.org/pco/id') or contains(@uri, 'numismatics.org/ocre/id') or contains(@uri, 'numismatics.org/crro/id')]">
+								<xsl:sort/>
+
+								<xsl:with-param name="facs" select="$facs"/>
+								<xsl:with-param name="rdf" select="$rdf"/>
+							</xsl:apply-templates>
+						</ul>
+					</div>
+
+				</div>
+			</xsl:if>
+			
+			<xsl:if
+				test="$references//ref[contains(@uri, '/symbol/')]">
+				<div>
+					<h4>Symbols and Monograms <small>
+						<a href="#" class="toggle-button" id="toggle-library" title="Click to hide or show the section">
+							<span class="glyphicon glyphicon-triangle-bottom"/>
+						</a>
+					</small></h4>
+					<div id="library">
+						<ul>
+							<xsl:apply-templates
+								select="$references//ref[contains(@uri, '/symbol/')]">
+								<xsl:sort/>
+								
+								<xsl:with-param name="facs" select="$facs"/>
+								<xsl:with-param name="rdf" select="$rdf"/>
+							</xsl:apply-templates>
+						</ul>
+					</div>
+				</div>
+			</xsl:if>
+
+			<xsl:if
+				test="$references//ref[contains(@uri, 'nomisma.org/id') or contains(@uri, 'viaf.org') or contains(@uri, 'geonames.org') or contains(@uri, 'wikidata.org') or contains(@uri, 'numismatics.org/authority')]">
+				<div>
+					<h4>Subjects (People, Places, etc.) <small>
+							<a href="#" class="toggle-button" id="toggle-subjects" title="Click to hide or show the section">
+								<span class="glyphicon glyphicon-triangle-bottom"/>
+							</a>
+						</small></h4>
+					<div id="subjects">
+						<ul>
+							<xsl:apply-templates
+								select="$references//ref[contains(@uri, 'nomisma.org/id') or contains(@uri, 'viaf.org') or contains(@uri, 'geonames.org') or contains(@uri, 'wikidata.org') or contains(@uri, 'numismatics.org/authority')]">
+								<xsl:sort/>
+
+								<xsl:with-param name="facs" select="$facs"/>
+								<xsl:with-param name="rdf" select="$rdf"/>
+							</xsl:apply-templates>
+						</ul>
+					</div>
+
+				</div>
+			</xsl:if>			
+			
+			<xsl:if
+				test="$references//ref[contains(@uri, 'numismatics.org/library') or contains(@uri, 'numismatics.org/digitallibrary') or contains(@uri, 'numismatics.org/archives')]">
+				<div>
+					<h4>ANS Library and Archives <small>
+						<a href="#" class="toggle-button" id="toggle-library" title="Click to hide or show the section">
+							<span class="glyphicon glyphicon-triangle-bottom"/>
+						</a>
+					</small></h4>
+					<div id="library">
+						<ul>
+							<xsl:apply-templates
+								select="$references//ref[contains(@uri, 'numismatics.org/library') or contains(@uri, 'numismatics.org/digitallibrary') or contains(@uri, 'numismatics.org/archives')]">
+								<xsl:sort/>
+								
+								<xsl:with-param name="facs" select="$facs"/>
+								<xsl:with-param name="rdf" select="$rdf"/>
+							</xsl:apply-templates>
+						</ul>
+					</div>
+				</div>
+			</xsl:if>
+
+			<xsl:if test="$references//ref[contains(@uri, 'numismatics.org/collection')]">
+				<div>
+					<h4>ANS Collection <small>
+							<a href="#" class="toggle-button" id="toggle-collection" title="Click to hide or show the section">
+								<span class="glyphicon glyphicon-triangle-right"/>
+							</a>
+						</small></h4>
+					<div id="collection" style="display:none">
+						<ul>
+							<xsl:apply-templates select="$references//ref[contains(@uri, 'numismatics.org/collection')]">
+								<xsl:sort/>
+
+								<xsl:with-param name="facs" select="$facs"/>
+								<xsl:with-param name="rdf" select="$rdf"/>
+							</xsl:apply-templates>
+						</ul>
+					</div>
+				</div>
+			</xsl:if>
 		</xsl:if>
+	</xsl:template>
+
+	<!-- ******************** INDEX TERM TEMPLATES *********************** -->
+	<xsl:template match="ref">
+		<xsl:param name="facs"/>
+		<xsl:param name="rdf"/>
+
+		<xsl:variable name="label" select="."/>
+		<xsl:variable name="uri" select="@uri"/>
+		<xsl:variable name="facet">
+			<xsl:choose>
+				<xsl:when test="contains($uri, 'nomisma.org')">
+					<xsl:variable name="type" select="$rdf//*[@rdf:about = $uri]/name()"/>
+					<xsl:choose>
+						<xsl:when test="$type = 'nmo:Region' or $type = 'nmo:Mint'">geogname</xsl:when>
+						<xsl:when test="$type = 'foaf:Person'">persname</xsl:when>
+						<xsl:when test="$type = 'foaf:Organization'">corpname</xsl:when>
+						<xsl:otherwise>subject</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="contains($uri, 'geonames.org')">geogname</xsl:when>
+				<xsl:when test="contains($uri, 'viaf.org')">
+					<xsl:choose>
+						<xsl:when test="$rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Organization'">corpname</xsl:when>
+						<xsl:when test="$rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Person'">persname</xsl:when>
+					</xsl:choose>
+				</xsl:when>
+				<!-- wikipedia links cannot easily be parsed, ignore indexing -->
+				<xsl:when test="contains($uri, 'wikipedia') or contains($uri, 'wikidata.org')"/>
+				<!-- ignore ANS coins; not useful as subject terms -->
+				<xsl:when test="contains($uri, 'numismatics.org/collection')"/>
+				<xsl:otherwise>subject</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<li>
+			<xsl:choose>
+				<xsl:when test="string-length($facet) &gt; 0">
+					<strong>
+						<a href="{$display_path}results?q={$facet}_facet:&#x022;{$label}&#x022;">
+							<xsl:value-of select="$label"/>
+						</a>
+						<xsl:text> </xsl:text>
+						<small>
+							<a href="{$uri}" target="_blank">
+								<span class="glyphicon glyphicon-new-window"/>
+							</a>
+						</small>
+					</strong>
+				</xsl:when>
+				<xsl:otherwise>
+					<strong>
+						<xsl:value-of select="$label"/>
+						<xsl:text> </xsl:text>
+						<small>
+							<a href="{$uri}" target="_blank">
+								<span class="glyphicon glyphicon-new-window"/>
+							</a>
+						</small>
+					</strong>
+				</xsl:otherwise>
+			</xsl:choose>
+
+			<!-- list of page numbers for the entity -->
+			<xsl:text> (</xsl:text>
+			<xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]]">
+				<xsl:choose>
+					<xsl:when test="$mirador = true()">
+						<xsl:variable name="canvas" select="concat($url, 'manifest/', $recordId, '/canvas/', @xml:id)"/>
+						<a href="#{@xml:id}" class="page-image" canvas="{$canvas}">
+							<xsl:choose>
+								<xsl:when test="string(tei:media/@n)">
+									<xsl:value-of select="tei:media/@n"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="tei:media/@url"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<a href="{$include_path}ui/media/archive/{tei:graphic/@url}.jpg" class="page-image" facs="{@xml:id}">
+							<xsl:choose>
+								<xsl:when test="string(tei:graphic/@n)">
+									<xsl:value-of select="tei:graphic/@n"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="tei:graphic/@url"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</a>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:if test="not(position() = last())">
+					<xsl:text>, </xsl:text>
+				</xsl:if>
+			</xsl:for-each>
+			<xsl:text>)</xsl:text>
+		</li>
 	</xsl:template>
 
 	<!-- ******************** FACSIMILE TEMPLATES *********************** -->
 	<xsl:template name="facsimiles">
 		<xsl:choose>
 			<xsl:when test="$mirador = true()">
-				<div style="width:100%;height:800px" id="mirador-div"/>				
+				<div style="width:100%;height:800px" id="mirador-div"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<div>
@@ -417,59 +576,47 @@
 	</xsl:template>
 
 	<!-- ******************** TEI TEMPLATES *********************** -->
-	<xsl:template match="tei:fileDesc">
-		<xsl:apply-templates select="tei:publicationStmt"/>		
-	</xsl:template>
-	
-	<xsl:template match="tei:profileDesc">
-		<xsl:apply-templates select="tei:abstract"/>		
-	</xsl:template>
+	<xsl:template match="tei:teiHeader">
+		<h3>About this Item</h3>
 
-	<xsl:template match="tei:author">
-		<xsl:value-of select="normalize-space(child::*)"/>
-		<xsl:if test="child::*/@ref">
-			<small>
-				<a href="{child::*/@ref}">
-					<span class="glyphicon glyphicon-new-window"/>
-				</a>
-			</small>
-		</xsl:if>
+		<dl class="dl-horizontal">
+			<xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author"/>
+			<xsl:apply-templates select="tei:fileDesc/tei:publicationStmt"/>
+			<xsl:apply-templates select="tei:profileDesc/tei:abstract"/>
+		</dl>
+
 	</xsl:template>
 
 	<xsl:template match="tei:publicationStmt">
-		<div>
-			<h3>Publication Statement</h3>
-			<dl class="dl-horizontal">
-				<xsl:if test="tei:publisher">
-					<dt>Publisher</dt>
-					<dd>
-						<xsl:value-of select="tei:publisher"/>
-					</dd>
-				</xsl:if>
-				<xsl:if test="tei:pubPlace">
-					<dt>Publication Place</dt>
-					<dd>
-						<xsl:value-of select="tei:pubPlace"/>
-					</dd>
-				</xsl:if>
-				<xsl:if test="tei:idno[@type = 'donum']">
-					<dt>Donum</dt>
-					<dd>
-						<a href="http://numismatics.org/library/{tei:idno[@type='donum']}">
-							<xsl:text>http://numismatics.org/library/</xsl:text>
-							<xsl:value-of select="tei:idno[@type = 'donum']"/>
-						</a>
-					</dd>
-				</xsl:if>
-			</dl>
-		</div>
+		<xsl:apply-templates select="tei:publisher | tei:pubPlace | tei:idno[@type = 'donum']"/>
+
 	</xsl:template>
 
-	<xsl:template match="tei:abstract">
-		<div>
-			<h3>Abstract</h3>
-			<xsl:apply-templates/>
-		</div>
+	<xsl:template match="tei:publisher | tei:pubPlace | tei:author | tei:abstract">
+		<dt>
+			<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
+		</dt>
+		<dd>
+			<xsl:value-of select="normalize-space(.)"/>
+			<xsl:if test="child::*/@ref">
+				<small>
+					<xsl:text> </xsl:text>
+					<a href="{child::*/@ref}">
+						<span class="glyphicon glyphicon-new-window"/>
+					</a>
+				</small>
+			</xsl:if>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="tei:idno[@type = 'donum']">
+		<dt>Donum</dt>
+		<dd>
+			<a href="http://numismatics.org/library/{.}">
+				<xsl:text>http://numismatics.org/library/</xsl:text>
+				<xsl:value-of select="."/>
+			</a>
+		</dd>
 	</xsl:template>
 
 	<xsl:template match="tei:p">

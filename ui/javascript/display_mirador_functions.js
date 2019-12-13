@@ -19,6 +19,7 @@ $(document).ready(function () {
             var windowID = myMiradorInstance.saveController.slots[0].window.id;
             var canvasID = $(this).attr('canvas');
             myMiradorInstance.eventEmitter.publish('SET_CURRENT_CANVAS_ID.' + windowID, canvasID);
+            myMiradorInstance.eventEmitter.publish('updateAnnotationList.' + windowId);
         }
         return false;
     });
