@@ -47,12 +47,21 @@
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<schema:Book rdf:about="{$objectUri}">
+				<xsl:variable name="element">
+					<xsl:choose>
+						<xsl:when test="descendant::tei:classCode = '300264354'">Book</xsl:when>
+						<xsl:otherwise>CreativeWork</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>	
+				
+				<xsl:element name="schema:{$element}" namespace="https://schema.org/">
+					<xsl:attribute name="rdf:about" select="$objectUri"/>
+					
 					<xsl:apply-templates select="tei:teiHeader/tei:fileDesc"/>
 					<xsl:apply-templates select="tei:teiHeader/tei:profileDesc"/>
 					<xsl:apply-templates select="descendant::tei:facsimile[@style = 'depiction']" mode="depiction"/>
 					<void:inDataset rdf:resource="{$url}"/>
-				</schema:Book>
+				</xsl:element>
 
 				<xsl:apply-templates select="descendant::tei:facsimile" mode="structure"/>
 				<xsl:apply-templates select="descendant::tei:facsimile[tei:surface]" mode="annotation"/>
@@ -61,10 +70,10 @@
 	</xsl:template>
 
 	<xsl:template match="tei:fileDesc">
-		<xsl:apply-templates select="tei:sourceDesc//tei:title"/>
+		<xsl:apply-templates select="tei:titleStmt//tei:title"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:author"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:extent"/>
-		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date[@when]"/>
+		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date[@when]|tei:sourceDesc/tei:msDesc/tei:history/tei:origin/tei:date[@when]"/>
 	</xsl:template>
 
 	<xsl:template match="tei:profileDesc">
@@ -72,6 +81,9 @@
 
 		<!-- genres -->
 		<xsl:apply-templates select="tei:textClass/tei:classCode"/>
+		
+		<!-- subjects -->
+		<xsl:apply-templates select="tei:particDesc//*[@ref]|descendant::tei:term[@ref]"/>
 	</xsl:template>
 
 	<xsl:template match="tei:title">
@@ -85,11 +97,20 @@
 			<xsl:value-of select="normalize-space(.)"/>
 		</dcterms:extent>
 	</xsl:template>
+	
+	<xsl:template match="tei:persName[@ref] | tei:orgName[@ref] | tei:term[@ref]">
+		<xsl:variable name="uri" select="@ref"/>
+		
+		<dcterms:subject rdf:resource="{@ref}"/>
+	</xsl:template>
 
 	<xsl:template match="tei:author">
 		<xsl:choose>
 			<xsl:when test="*/@ref">
 				<dcterms:creator rdf:resource="{*/@ref}"/>
+			</xsl:when>
+			<xsl:when test="tei:idno[@type='URI']">
+				<dcterms:creator rdf:resource="{tei:idno[@type='URI']}"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<dcterms:creator>

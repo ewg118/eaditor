@@ -344,6 +344,8 @@
 					</report>]]></query>
 					<query id="publish-ead">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='ead']]) then &lt;item> { data($foo//*[local-name()='eadid']) } &lt;/item>
 						else '' } &lt;/report></query>
+					<query id="publish-tei">&lt;report> { for $foo in collection() return if($foo[child::node()[local-name()='TEI']]) then &lt;item> { data($foo/*[local-name()='TEI']/@xml:id) } &lt;/item>
+						else '' } &lt;/report></query>
 					<query id="publish-mods">&lt;report xmlns:mods="http://www.loc.gov/mods/v3"> { for $foo in collection() return if($foo[child::node()[local-name()='modsCollection']]) then &lt;item>
 						{ $foo/*[local-name()='modsCollection']/*[local-name()='mods']/*[local-name()='recordInfo']/*[local-name()='recordIdentifier'] } &lt;/item> else '' } &lt;/report></query>
 					<query id="query-objects">declare namespace xlink="http://www.w3.org/1999/xlink"; &lt;report> { for $record in collection()[contains(descendant::*[local-name()='unittitle'], 'QUERY') or descendant::*[local-name()='eadid'] = 'QUERY' or
@@ -1484,10 +1486,13 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 											<li>
 												<xforms:trigger appearance="minimal">
 													<xforms:label>Publish All Finding Aids</xforms:label>
-													<xforms:dispatch target="publish-all" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
+													<xforms:dispatch target="publish-ead-dialog" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
 												</xforms:trigger> | <xforms:trigger appearance="minimal">
 													<xforms:label>Publish All MODS Records</xforms:label>
-													<xforms:dispatch target="publish-mods" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
+													<xforms:dispatch target="publish-mods-dialog" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
+												</xforms:trigger> | <xforms:trigger appearance="minimal">
+													<xforms:label>Publish All TEI Documents</xforms:label>
+													<xforms:dispatch target="publish-tei-dialog" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
 												</xforms:trigger> | <xforms:trigger appearance="minimal">
 													<xforms:label>Reindex Published Documents</xforms:label>
 													<xforms:dispatch target="republish-dialog" name="fr-show" ev:event="DOMActivate"></xforms:dispatch>
@@ -1832,7 +1837,7 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 			</fr:positive-choice>
 		</fr:alert-dialog>
 		<!-- publish all -->
-		<fr:alert-dialog id="publish-all">
+		<fr:alert-dialog id="publish-ead-dialog">
 			<fr:label>Publish All</fr:label>
 			<fr:message>Do you want to publish all finding aids? This may take several minutes.</fr:message>
 			<fr:negative-choice>
@@ -1847,8 +1852,18 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
 						
-						<!-- publish RDF if applicable -->
-						<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
+						<!-- update triplestore if applicable -->
+						<!-- set URI for object, execute SPARQL/Update query to purge triples -->						
+						<xforms:action if="string(instance('config')/sparql/update)">
+							<xforms:var name="uri"
+								select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', instance('control-instance')/id) else concat(instance('config')/url, 'id/', instance('control-instance')/id)"></xforms:var>
+							<xforms:setvalue ref="instance('sparqlUpdate')"
+								value="replace(instance('sparqlUpdate-template')/query[@id=instance('pagination-result')//record[id = instance('control-instance')/id]/type], 'URI', $uri)"></xforms:setvalue>
+							<xforms:send submission="delete-graph"></xforms:send>
+							
+							<!-- publish RDF if applicable -->
+							<xforms:send submission="get-rdf"></xforms:send>
+						</xforms:action>
 					</xforms:action>
 					<!-- commit index -->
 					<xforms:send submission="commit"></xforms:send>
@@ -1859,7 +1874,44 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 				</xforms:action>
 			</fr:positive-choice>
 		</fr:alert-dialog>
-		<fr:alert-dialog id="publish-mods">
+		<fr:alert-dialog id="publish-tei-dialog">
+			<fr:label>Publish TEI</fr:label>
+			<fr:message>Do you want to publish all TEI documents? This may take several minutes.</fr:message>
+			<fr:negative-choice>
+				<fr:label>No</fr:label>
+			</fr:negative-choice>
+			<fr:positive-choice>
+				<fr:label>Yes</fr:label>
+				<xforms:action ev:event="DOMActivate">
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="instance('xqueries')/query[@id='publish-tei']"></xforms:setvalue>
+					<xforms:send submission="xquery-collection"></xforms:send>
+					<xforms:action xxforms:iterate="instance('xquery-result')/report/item">
+						<xforms:setvalue ref="instance('control-instance')/id" value="context()"></xforms:setvalue>
+						<xforms:send submission="doc-to-solr"></xforms:send>
+						
+						<!-- update triplestore if applicable -->
+						<!-- set URI for object, execute SPARQL/Update query to purge triples -->						
+						<xforms:action if="string(instance('config')/sparql/update)">
+							<xforms:var name="uri"
+								select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', instance('control-instance')/id) else concat(instance('config')/url, 'id/', instance('control-instance')/id)"></xforms:var>
+							<xforms:setvalue ref="instance('sparqlUpdate')"
+								value="replace(instance('sparqlUpdate-template')/query[@id=instance('pagination-result')//record[id = instance('control-instance')/id]/type], 'URI', $uri)"></xforms:setvalue>
+							<xforms:send submission="delete-graph"></xforms:send>
+							
+							<!-- publish RDF if applicable -->
+							<xforms:send submission="get-rdf"></xforms:send>
+						</xforms:action>						
+					</xforms:action>
+					<!-- commit index -->
+					<xforms:send submission="commit"></xforms:send>
+					
+					<!-- reload table -->
+					<xforms:setvalue ref="instance('eXist-xquery')/exist:text" value="replace(instance('xqueries')/query[@id='get-objects'], 'START', '1')"></xforms:setvalue>
+					<xforms:send submission="xquery-pagination"></xforms:send>
+				</xforms:action>
+			</fr:positive-choice>
+		</fr:alert-dialog>
+		<fr:alert-dialog id="publish-mods-dialog">
 			<fr:label>Publish MODS</fr:label>
 			<fr:message>Do you want to publish all MODS records? This may take several minutes.</fr:message>
 			<fr:negative-choice>
@@ -1874,8 +1926,18 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 						<xforms:setvalue ref="instance('control-instance')/id" value="context()/*[local-name()='recordIdentifier']"></xforms:setvalue>
 						<xforms:send submission="doc-to-solr"></xforms:send>
 						
-						<!-- publish RDF if applicable -->
-						<xforms:send submission="get-rdf" if="string(instance('config')/sparql/update)"></xforms:send>
+						<!-- update triplestore if applicable -->
+						<!-- set URI for object, execute SPARQL/Update query to purge triples -->						
+						<xforms:action if="string(instance('config')/sparql/update)">
+							<xforms:var name="uri"
+								select="if (instance('config')/ark/@enabled='true') then concat(instance('config')/url, 'ark:/', instance('config')/ark/naan, '/', instance('control-instance')/id) else concat(instance('config')/url, 'id/', instance('control-instance')/id)"></xforms:var>
+							<xforms:setvalue ref="instance('sparqlUpdate')"
+								value="replace(instance('sparqlUpdate-template')/query[@id=instance('pagination-result')//record[id = instance('control-instance')/id]/type], 'URI', $uri)"></xforms:setvalue>
+							<xforms:send submission="delete-graph"></xforms:send>
+							
+							<!-- publish RDF if applicable -->
+							<xforms:send submission="get-rdf"></xforms:send>
+						</xforms:action>
 					</xforms:action>
 
 					<!-- commit index -->
