@@ -225,6 +225,8 @@
 						<xsl:variable name="type" select="$nomisma-rdf//*[@rdf:about = $uri]/name()"/>
 						<xsl:choose>
 							<xsl:when test="$type = 'nmo:Region' or $type = 'nmo:Mint'">geogname</xsl:when>
+							<xsl:when test="$type = 'foaf:Person'">persname</xsl:when>
+							<xsl:when test="$type = 'foaf:Organization' or $type = 'rdac:Family'">corpname</xsl:when>
 							<xsl:otherwise>subject</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
