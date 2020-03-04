@@ -108,19 +108,37 @@
 	</xsl:template>
 
 	<xsl:template match="tei:fileDesc">
-		<xsl:apply-templates select="tei:sourceDesc//tei:title"/>
+		<xsl:apply-templates select="tei:titleStmt//tei:title"/>
 		<xsl:apply-templates select="tei:sourceDesc//tei:author"/>
 		<xsl:apply-templates select="tei:publicationStmt/tei:publisher"/>
-		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date"/>
+		<xsl:apply-templates select="tei:sourceDesc//tei:imprint/tei:date|tei:sourceDesc/tei:msDesc/tei:history/tei:origin/tei:date"/>
 	</xsl:template>
 
 	<xsl:template match="tei:profileDesc">
 		<xsl:apply-templates select="descendant::tei:classCode"/>
+		<xsl:apply-templates select="tei:particDesc//*[@ref]|descendant::tei:term[@ref]"/>
 	</xsl:template>
 
 	<xsl:template match="tei:title">
 		<field name="unittitle_display">
 			<xsl:value-of select="."/>
+		</field>
+	</xsl:template>
+	
+	<xsl:template match="tei:persName[@ref] | tei:orgName[@ref] | tei:term[@ref]">
+		<xsl:variable name="facet">
+			<xsl:choose>
+				<xsl:when test="self::tei:persName">persname</xsl:when>
+				<xsl:when test="self::tei:orgName">corpname</xsl:when>
+				<xsl:when test="self::tei:term">subject</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<field name="{$facet}_facet">
+			<xsl:value-of select="."/>
+		</field>
+		<field name="{$facet}_uri">
+			<xsl:value-of select="@ref"/>
 		</field>
 	</xsl:template>
 
@@ -170,7 +188,7 @@
 
 	<xsl:template match="tei:publisher">
 		<field name="publisher_display">
-			<xsl:value-of select="."/>
+			<xsl:value-of select="if (tei:name) then tei:name else ."/>			
 		</field>
 	</xsl:template>
 
@@ -246,30 +264,16 @@
 
 	<xsl:template match="tei:classCode[matches(@scheme, 'https?://')]">
 		<xsl:variable name="uri" select="concat(@scheme, .)"/>
-		<xsl:variable name="file" select="concat('http://vocab.getty.edu/download/rdf?uri=', $uri, '.rdf')"/>
 		
-		<!--<field name="genreform_facet">
-			<xsl:value-of select="document($file)//skos:prefLabel[@xml:lang = 'en']"/>
-		</field>-->
-		
-		<!-- submit SPARQL query to getty -->
-		<!--<xsl:if test="contains($uri, 'getty.edu')">
-			<xsl:variable name="sparqlQuery"><![CDATA[PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
-SELECT * WHERE {
-  <URI> skos:prefLabel ?label FILTER langMatches(lang(?label), "en")
-}]]></xsl:variable>
-			
-			<xsl:variable name="service" select="concat('http://vocab.getty.edu/sparql.xml?query=', encode-for-uri(replace($sparqlQuery, 'URI', $uri)))"/>
-			<xsl:variable name="label">
-				<xsl:value-of select="document($service)//res:binding[@name='label']"/>
-			</xsl:variable>
-			
-			<field name="genre_facet">
-				<xsl:value-of select="$service"/>
-			</field>
-		</xsl:if>-->
-		
-		<field name="genre_facet">notebooks</field>
+		<field name="genreform_facet">
+			<xsl:choose>
+				<xsl:when test=". = '300264354'">notebooks</xsl:when>
+				<xsl:when test=". = '300026877'">correspondence</xsl:when>
+				<xsl:when test=". = '300265639'">research notes</xsl:when>
+				<xsl:when test=". = '300046300'">hoard photographs</xsl:when>
+				<xsl:when test=". = '300027568'">invoices</xsl:when>
+			</xsl:choose>
+		</field>
 
 		<field name="genreform_uri">
 			<xsl:value-of select="$uri"/>

@@ -320,21 +320,19 @@
 
 				</div>
 			</xsl:if>
-			
-			<xsl:if
-				test="$references//ref[contains(@uri, '/symbol/')]">
+
+			<xsl:if test="$references//ref[contains(@uri, '/symbol/')]">
 				<div>
 					<h4>Symbols and Monograms <small>
-						<a href="#" class="toggle-button" id="toggle-library" title="Click to hide or show the section">
-							<span class="glyphicon glyphicon-triangle-bottom"/>
-						</a>
-					</small></h4>
+							<a href="#" class="toggle-button" id="toggle-library" title="Click to hide or show the section">
+								<span class="glyphicon glyphicon-triangle-bottom"/>
+							</a>
+						</small></h4>
 					<div id="library">
 						<ul>
-							<xsl:apply-templates
-								select="$references//ref[contains(@uri, '/symbol/')]">
+							<xsl:apply-templates select="$references//ref[contains(@uri, '/symbol/')]">
 								<xsl:sort/>
-								
+
 								<xsl:with-param name="facs" select="$facs"/>
 								<xsl:with-param name="rdf" select="$rdf"/>
 							</xsl:apply-templates>
@@ -364,22 +362,22 @@
 					</div>
 
 				</div>
-			</xsl:if>			
-			
+			</xsl:if>
+
 			<xsl:if
 				test="$references//ref[contains(@uri, 'numismatics.org/library') or contains(@uri, 'numismatics.org/digitallibrary') or contains(@uri, 'numismatics.org/archives')]">
 				<div>
 					<h4>ANS Library and Archives <small>
-						<a href="#" class="toggle-button" id="toggle-library" title="Click to hide or show the section">
-							<span class="glyphicon glyphicon-triangle-bottom"/>
-						</a>
-					</small></h4>
+							<a href="#" class="toggle-button" id="toggle-library" title="Click to hide or show the section">
+								<span class="glyphicon glyphicon-triangle-bottom"/>
+							</a>
+						</small></h4>
 					<div id="library">
 						<ul>
 							<xsl:apply-templates
 								select="$references//ref[contains(@uri, 'numismatics.org/library') or contains(@uri, 'numismatics.org/digitallibrary') or contains(@uri, 'numismatics.org/archives')]">
 								<xsl:sort/>
-								
+
 								<xsl:with-param name="facs" select="$facs"/>
 								<xsl:with-param name="rdf" select="$rdf"/>
 							</xsl:apply-templates>
@@ -581,10 +579,74 @@
 
 		<dl class="dl-horizontal">
 			<xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author"/>
+			<xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:msDesc/tei:history/tei:origin/tei:date"/>
 			<xsl:apply-templates select="tei:fileDesc/tei:publicationStmt"/>
-			<xsl:apply-templates select="tei:profileDesc/tei:abstract"/>
+			<xsl:apply-templates select="tei:profileDesc/tei:abstract"/>			
 		</dl>
-
+		
+		<xsl:if test="tei:profileDesc/tei:particDesc//*[@ref] or tei:profileDesc//tei:term[@ref]">
+			<div>
+				<h4>Subjects</h4>
+				<ul>
+					<xsl:apply-templates select="tei:profileDesc/tei:particDesc//*[@ref]|tei:profileDesc//tei:term[@ref]"/>
+				</ul>				
+			</div>
+		</xsl:if>
+		
+		<xsl:if test="tei:profileDesc/tei:textClass">
+			<div>
+				<h4>Genre/Format</h4>
+				<ul>
+					<xsl:apply-templates select="tei:profileDesc/tei:textClass/tei:classCode"/>
+				</ul>				
+			</div>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="tei:classCode">
+		<xsl:variable name="label">
+			<xsl:choose>
+				<xsl:when test=". = '300264354'">notebooks</xsl:when>
+				<xsl:when test=". = '300026877'">correspondence</xsl:when>
+				<xsl:when test=". = '300265639'">research notes</xsl:when>
+				<xsl:when test=". = '300046300'">hoard photographs</xsl:when>
+				<xsl:when test=". = '300027568'">invoices</xsl:when>
+			</xsl:choose>
+		</xsl:variable>		
+		
+		<li>
+			<a href="{$display_path}results?q=genreform_facet:&#x022;{$label}&#x022;">
+				<xsl:value-of select="$label"/>
+			</a>
+			<small>
+				<xsl:text> </xsl:text>
+				<a href="{concat(@scheme, normalize-space(.))}">
+					<span class="glyphicon glyphicon-new-window"/>
+				</a>
+			</small>
+		</li>
+	</xsl:template>
+	
+	<xsl:template match="tei:persName[@ref] | tei:orgName[@ref] | tei:term[@ref]">
+		<xsl:variable name="facet">
+			<xsl:choose>
+				<xsl:when test="self::tei:persName">persname</xsl:when>
+				<xsl:when test="self::tei:orgName">corpname</xsl:when>
+				<xsl:when test="self::tei:term">subject</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		
+		<li>
+			<a href="{$display_path}results?q={$facet}_facet:&#x022;{normalize-space(.)}&#x022;">
+				<xsl:value-of select="normalize-space(.)"/>
+			</a>
+			<small>
+				<xsl:text> </xsl:text>
+				<a href="{@ref}">
+					<span class="glyphicon glyphicon-new-window"/>
+				</a>
+			</small>
+		</li>
 	</xsl:template>
 
 	<xsl:template match="tei:publicationStmt">
@@ -592,12 +654,44 @@
 
 	</xsl:template>
 
-	<xsl:template match="tei:publisher | tei:pubPlace | tei:author | tei:abstract">
+	<xsl:template match="tei:publisher">
 		<dt>
 			<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
 		</dt>
 		<dd>
-			<xsl:value-of select="normalize-space(.)"/>
+			<xsl:choose>
+				<xsl:when test="tei:name and tei:idno[@type = 'URI']">
+					<xsl:value-of select="normalize-space(tei:name)"/>
+					<small>
+						<xsl:text> </xsl:text>
+						<a href="{tei:idno[@type='URI']}">
+							<span class="glyphicon glyphicon-new-window"/>
+						</a>
+					</small>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(.)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="tei:pubPlace | tei:author | tei:abstract | tei:date">
+		<dt>
+			<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
+		</dt>
+		<dd>
+			<xsl:choose>
+				<xsl:when test="self::tei:author">
+					<a href="{$display_path}results?q={lower-case(child::*/name())}_facet:&#x022;{normalize-space(child::*)}&#x022;">
+						<xsl:value-of select="normalize-space(child::*)"/>
+					</a>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(.)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+
 			<xsl:if test="child::*/@ref">
 				<small>
 					<xsl:text> </xsl:text>

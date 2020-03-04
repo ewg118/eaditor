@@ -161,13 +161,24 @@
 	</xsl:template>
 
 	<!-- metadata elements -->
-	<xsl:template match="tei:author | tei:editor | tei:subtitle | tei:publisher | tei:pubPlace">
+	<xsl:template match="tei:author | tei:editor | tei:subtitle | tei:pubPlace">
 		<_object>
 			<label>
 				<xsl:value-of select="concat(upper-case(substring(local-name(), 1, 1)), substring(local-name(), 2))"/>
 			</label>
 			<value>
 				<xsl:value-of select="normalize-space(.)"/>
+			</value>
+		</_object>
+	</xsl:template>
+	
+	<xsl:template match="tei:publisher">
+		<_object>
+			<label>
+				<xsl:value-of select="concat(upper-case(substring(local-name(), 1, 1)), substring(local-name(), 2))"/>
+			</label>
+			<value>
+				<xsl:value-of select="if (tei:name) then normalize-space(tei:name) else normalize-space(.)"/>
 			</value>
 		</_object>
 	</xsl:template>
