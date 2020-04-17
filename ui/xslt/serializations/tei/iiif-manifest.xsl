@@ -323,7 +323,7 @@
 				<xsl:value-of select="concat('_:', @xml:id)"/>
 			</__id>
 			<__type>oa:Annotation</__type>
-			<motiviation>sc:painting</motiviation>
+			<motivation>sc:painting</motivation>
 			<resource>
 				<_object>
 					<__id>
