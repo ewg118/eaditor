@@ -130,7 +130,14 @@
 			<xsl:choose>
 				<xsl:when test="self::tei:persName">persname</xsl:when>
 				<xsl:when test="self::tei:orgName">corpname</xsl:when>
-				<xsl:when test="self::tei:term">subject</xsl:when>
+				<xsl:when test="self::tei:term">
+					<xsl:choose>
+						<xsl:when test="contains(@ref, 'numismatics.org/ocre') or contains(@ref, 'numismatics.org/crro') or contains(@ref, 'numismatics.org/pella') or contains(@ref, 'numismatics.org/pco')
+							or contains(@ref, 'numismatics.org/sco')">coinType</xsl:when>
+						<xsl:when test="contains(@ref, 'coinhoards.org')">hoard</xsl:when>
+						<xsl:otherwise>subject</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		
@@ -239,6 +246,10 @@
 								>persname</xsl:when>
 						</xsl:choose>
 					</xsl:when>
+					<xsl:when
+						test="contains($uri, 'numismatics.org/ocre') or contains($uri, 'numismatics.org/crro') or contains($uri, 'numismatics.org/pella') or contains($uri, 'numismatics.org/pco')
+						or contains($uri, 'numismatics.org/sco')">coinType</xsl:when>
+					<xsl:when test="contains($uri, 'coinhoards.org')">hoard</xsl:when>
 					<!-- ignore ANS coins; not useful as subject terms -->
 					<xsl:when test="contains($uri, 'numismatics.org/collection')"/>
 					<xsl:otherwise>subject</xsl:otherwise>
