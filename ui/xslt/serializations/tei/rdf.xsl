@@ -64,7 +64,21 @@
 				</xsl:element>
 
 				<xsl:apply-templates select="descendant::tei:facsimile" mode="structure"/>
-				<xsl:apply-templates select="descendant::tei:facsimile[tei:surface]" mode="annotation"/>
+				
+				<xsl:variable name="terms" as="node()*">
+					<terms>
+						<xsl:for-each select="descendant::tei:term[@facs]">
+							<facs>
+								<xsl:attribute name="uri" select="@ref"/>
+								<xsl:value-of select="substring-after(@facs, '#')"/>
+							</facs>							
+						</xsl:for-each>
+					</terms>
+				</xsl:variable>				
+				
+				<xsl:apply-templates select="descendant::tei:facsimile[tei:surface]|descendant::tei:facsimile[@xml:id = $terms//facs]" mode="annotation">
+					<xsl:with-param name="terms" select="$terms"/>
+				</xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -83,7 +97,7 @@
 		<xsl:apply-templates select="tei:textClass/tei:classCode"/>
 		
 		<!-- subjects -->
-		<xsl:apply-templates select="tei:particDesc//*[@ref]|descendant::tei:term[@ref]"/>
+		<xsl:apply-templates select="tei:particDesc//*[@ref]|descendant::tei:term[@ref and not(@facs)]"/>
 	</xsl:template>
 
 	<xsl:template match="tei:title">
@@ -201,16 +215,31 @@
 	</xsl:template>
 
 	<xsl:template match="tei:facsimile" mode="annotation">
+		<xsl:param name="terms"/>
+		
 		<xsl:variable name="id" select="@xml:id"/>
 		<xsl:variable name="itemUri" select="concat($objectUri, '#', $id)"/>
-
-		<xsl:for-each select="tei:surface/tei:desc/tei:ref[@target]">
-			<xsl:element name="oa:Annotation" namespace="http://www.w3.org/ns/oa#">
-				<xsl:attribute name="rdf:about" select="concat($objectUri, '.rdf#', $id, '/annotations/', format-number(position(), '0000'))"/>
-
-				<oa:hasBody rdf:resource="{@target}"/>
-				<oa:hasTarget rdf:resource="{$itemUri}"/>
-			</xsl:element>
-		</xsl:for-each>
+		
+		<xsl:choose>
+			<xsl:when test="tei:surface/tei:desc/tei:ref[@target]">
+				<xsl:for-each select="tei:surface/tei:desc/tei:ref[@target]">
+					<xsl:element name="oa:Annotation" namespace="http://www.w3.org/ns/oa#">
+						<xsl:attribute name="rdf:about" select="concat($objectUri, '.rdf#', $id, '/annotations/', format-number(position(), '0000'))"/>
+						
+						<oa:hasBody rdf:resource="{@target}"/>
+						<oa:hasTarget rdf:resource="{$itemUri}"/>
+					</xsl:element>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:when test="$terms//facs[. = $id]">
+				<xsl:for-each select="$terms//facs[. = $id]">
+					<xsl:element name="oa:Annotation" namespace="http://www.w3.org/ns/oa#">
+						<xsl:attribute name="rdf:about" select="concat($objectUri, '.rdf#', $id, '/annotations/', format-number(position(), '0000'))"/>
+						<oa:hasBody rdf:resource="{@uri}"/>
+						<oa:hasTarget rdf:resource="{$itemUri}"/>
+					</xsl:element>
+				</xsl:for-each>
+			</xsl:when>	
+		</xsl:choose>
 	</xsl:template>
 </xsl:stylesheet>

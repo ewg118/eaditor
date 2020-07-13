@@ -217,17 +217,43 @@
 
 	<!-- ******************** INDEX TEMPLATE *********************** -->
 	<xsl:template name="index">
+		<xsl:variable name="terms" as="element()*">
+			<xsl:element name="terms" namespace="http://www.tei-c.org/ns/1.0">
+				<xsl:copy-of select="descendant::tei:term[@facs]"/>
+			</xsl:element>
+		</xsl:variable>
+
 		<xsl:variable name="references" as="node()*">
 			<references>
-				<xsl:for-each select="descendant::tei:ref">
+				<xsl:for-each select="descendant::tei:ref | descendant::tei:term[@facs]">
 					<xsl:variable name="val" select="normalize-space(.)"/>
 
 					<xsl:if test="not(preceding::node()/text() = $val)">
 						<ref>
-							<xsl:if test="@target">
-								<xsl:attribute name="uri" select="@target"/>
+							<xsl:choose>
+								<xsl:when test="@target">
+									<xsl:attribute name="uri" select="@target"/>
+								</xsl:when>
+								<xsl:when test="@ref">
+									<xsl:attribute name="uri" select="@ref"/>
+								</xsl:when>
+							</xsl:choose>
+
+							<!-- create an XML element for each matching facsimile reference based on matching URI (subject term) 
+								These are a sequence that will match below-->
+							<xsl:if test="self::tei:term">
+								<xsl:variable name="ref" select="@ref"/>
+
+								<xsl:for-each select="$terms//tei:term[@ref = $ref]">
+									<facs>
+										<xsl:value-of select="substring-after(@facs, '#')"/>
+									</facs>
+								</xsl:for-each>
 							</xsl:if>
-							<xsl:value-of select="."/>
+
+							<label>
+								<xsl:value-of select="."/>
+							</label>
 						</ref>
 					</xsl:if>
 
@@ -413,8 +439,10 @@
 		<xsl:param name="facs"/>
 		<xsl:param name="rdf"/>
 
-		<xsl:variable name="label" select="."/>
+		<xsl:variable name="label" select="label"/>
 		<xsl:variable name="uri" select="@uri"/>
+		<xsl:variable name="id" select="facs"/>
+
 		<xsl:variable name="facet">
 			<xsl:choose>
 				<xsl:when test="contains($uri, 'nomisma.org')">
@@ -433,6 +461,10 @@
 						<xsl:when test="$rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Person'">persname</xsl:when>
 					</xsl:choose>
 				</xsl:when>
+				<xsl:when
+					test="contains($uri, 'numismatics.org/ocre') or contains($uri, 'numismatics.org/crro') or contains($uri, 'numismatics.org/pella') or contains($uri, 'numismatics.org/pco')
+					or contains($uri, 'numismatics.org/sco')">coinType</xsl:when>
+				<xsl:when test="contains($uri, 'coinhoards.org')">hoard</xsl:when>
 				<!-- wikipedia links cannot easily be parsed, ignore indexing -->
 				<xsl:when test="contains($uri, 'wikipedia') or contains($uri, 'wikidata.org')"/>
 				<!-- ignore ANS coins; not useful as subject terms -->
@@ -471,7 +503,7 @@
 
 			<!-- list of page numbers for the entity -->
 			<xsl:text> (</xsl:text>
-			<xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]]">
+			<xsl:for-each select="$facs//tei:facsimile[descendant::tei:ref[@target = $uri]] | $facs//tei:facsimile[@xml:id = $id]">
 				<xsl:choose>
 					<xsl:when test="$mirador = true()">
 						<xsl:variable name="canvas" select="concat($url, 'manifest/', $recordId, '/canvas/', @xml:id)"/>
@@ -581,28 +613,28 @@
 			<xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author"/>
 			<xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:msDesc/tei:history/tei:origin/tei:date"/>
 			<xsl:apply-templates select="tei:fileDesc/tei:publicationStmt"/>
-			<xsl:apply-templates select="tei:profileDesc/tei:abstract"/>			
+			<xsl:apply-templates select="tei:profileDesc/tei:abstract"/>
 		</dl>
-		
-		<xsl:if test="tei:profileDesc/tei:particDesc//*[@ref] or tei:profileDesc//tei:term[@ref]">
+
+		<xsl:if test="tei:profileDesc/tei:particDesc//*[@ref and not(@facs)] or tei:profileDesc//tei:term[@ref and not(@facs)]">
 			<div>
 				<h4>Subjects</h4>
 				<ul>
-					<xsl:apply-templates select="tei:profileDesc/tei:particDesc//*[@ref]|tei:profileDesc//tei:term[@ref]"/>
-				</ul>				
+					<xsl:apply-templates select="tei:profileDesc/tei:particDesc//*[@ref and not(@facs)] | tei:profileDesc//tei:term[@ref and not(@facs)]"/>
+				</ul>
 			</div>
 		</xsl:if>
-		
+
 		<xsl:if test="tei:profileDesc/tei:textClass">
 			<div>
 				<h4>Genre/Format</h4>
 				<ul>
 					<xsl:apply-templates select="tei:profileDesc/tei:textClass/tei:classCode"/>
-				</ul>				
+				</ul>
 			</div>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:classCode">
 		<xsl:variable name="label">
 			<xsl:choose>
@@ -612,8 +644,8 @@
 				<xsl:when test=". = '300046300'">hoard photographs</xsl:when>
 				<xsl:when test=". = '300027568'">invoices</xsl:when>
 			</xsl:choose>
-		</xsl:variable>		
-		
+		</xsl:variable>
+
 		<li>
 			<a href="{$display_path}results?q=genreform_facet:&#x022;{$label}&#x022;">
 				<xsl:value-of select="$label"/>
@@ -626,7 +658,7 @@
 			</small>
 		</li>
 	</xsl:template>
-	
+
 	<xsl:template match="tei:persName[@ref] | tei:orgName[@ref] | tei:term[@ref]">
 		<xsl:variable name="facet">
 			<xsl:choose>
@@ -635,7 +667,7 @@
 				<xsl:when test="self::tei:term">subject</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		
+
 		<li>
 			<a href="{$display_path}results?q={$facet}_facet:&#x022;{normalize-space(.)}&#x022;">
 				<xsl:value-of select="normalize-space(.)"/>

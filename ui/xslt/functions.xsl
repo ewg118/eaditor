@@ -183,6 +183,7 @@
 					<xsl:when test="$elem = 'bibliography'">Bibliography</xsl:when>
 					<xsl:when test="$elem = 'bioghist'">Biographical/Historical Commentary</xsl:when>
 					<xsl:when test="$elem = 'century'">Century</xsl:when>
+					<xsl:when test="$elem = 'coinType'">Coin Type</xsl:when>
 					<xsl:when test="$elem = 'container'">Container</xsl:when>
 					<xsl:when test="$elem = 'controlaccess'">Related Entities</xsl:when>
 					<xsl:when test="$elem = 'corpname'">Organization</xsl:when>
@@ -199,6 +200,7 @@
 					<xsl:when test="$elem = 'function'">Function</xsl:when>
 					<xsl:when test="$elem = 'genreform' or $elem = 'form' or $elem = 'genre'">Genre/Format</xsl:when>
 					<xsl:when test="$elem = 'geogname' or $elem = 'geographic'">Place</xsl:when>
+					<xsl:when test="$elem = 'hoard'">Hoard</xsl:when>
 					<xsl:when test="$elem = 'langmaterial'">Language</xsl:when>
 					<xsl:when test="$elem = 'language'">Language</xsl:when>
 					<xsl:when test="$elem = 'level'">Level</xsl:when>
