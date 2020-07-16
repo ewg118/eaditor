@@ -225,7 +225,7 @@
 
 		<xsl:variable name="references" as="node()*">
 			<references>
-				<xsl:for-each select="descendant::tei:ref | descendant::tei:term[@facs]">
+				<xsl:for-each select="tei:facsimile/descendant::tei:ref | descendant::tei:term[@facs]">
 					<xsl:variable name="val" select="normalize-space(.)"/>
 
 					<xsl:if test="not(preceding::node()/text() = $val)">
@@ -462,8 +462,10 @@
 					</xsl:choose>
 				</xsl:when>
 				<xsl:when
-					test="contains($uri, 'numismatics.org/ocre') or contains($uri, 'numismatics.org/crro') or contains($uri, 'numismatics.org/pella') or contains($uri, 'numismatics.org/pco')
-					or contains($uri, 'numismatics.org/sco')">coinType</xsl:when>
+					test="
+						contains($uri, 'numismatics.org/ocre') or contains($uri, 'numismatics.org/crro') or contains($uri, 'numismatics.org/pella') or contains($uri, 'numismatics.org/pco')
+						or contains($uri, 'numismatics.org/sco')"
+					>coinType</xsl:when>
 				<xsl:when test="contains($uri, 'coinhoards.org')">hoard</xsl:when>
 				<!-- wikipedia links cannot easily be parsed, ignore indexing -->
 				<xsl:when test="contains($uri, 'wikipedia') or contains($uri, 'wikidata.org')"/>
@@ -633,6 +635,8 @@
 				</ul>
 			</div>
 		</xsl:if>
+
+		<xsl:apply-templates select="tei:fileDesc/tei:notesStmt"/>
 	</xsl:template>
 
 	<xsl:template match="tei:classCode">
@@ -684,6 +688,12 @@
 	<xsl:template match="tei:publicationStmt">
 		<xsl:apply-templates select="tei:publisher | tei:pubPlace | tei:idno[@type = 'donum']"/>
 
+	</xsl:template>
+
+	<xsl:template match="tei:notesStmt">
+		<div>
+			<xsl:apply-templates/>
+		</div>
 	</xsl:template>
 
 	<xsl:template match="tei:publisher">
@@ -745,10 +755,21 @@
 		</dd>
 	</xsl:template>
 
+	<xsl:template match="tei:note">
+		<h4>Note</h4>
+		<xsl:apply-templates/>
+	</xsl:template>
+
 	<xsl:template match="tei:p">
 		<p>
 			<xsl:apply-templates/>
 		</p>
+	</xsl:template>
+
+	<xsl:template match="tei:ref[matches(@target, 'https?://')]">
+		<a href="{@target}" title="{.}">
+			<xsl:value-of select="."/>
+		</a>
 	</xsl:template>
 
 </xsl:stylesheet>
