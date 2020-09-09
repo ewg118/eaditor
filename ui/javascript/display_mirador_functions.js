@@ -5,6 +5,7 @@ $(document).ready(function () {
     //get necessary variables
     var publisher = encodeURI($('#publisher').text());
     var manifestURI = $('#manifestURI').text();
+    var hasAnnotations = ($('#hasAnnotations').text().toLowerCase() == 'true');
     
     //construct Mirador window objects dynamically
     var windowObjects =[];
@@ -33,9 +34,9 @@ $(document).ready(function () {
         "window": {
             "allowClose": false,
             "allowMaximize": false,
-            "defaultSideBarPanel": 'annotations',
+            "defaultSideBarPanel": ((hasAnnotations == true) ? 'annotations' : 'info'),
             "defaultView": 'gallery',
-            "sideBarOpenByDefault": true,
+            "sideBarOpenByDefault": hasAnnotations,
             "forceDrawAnnotations": true
         },
         "thumbnailNavigation": {
