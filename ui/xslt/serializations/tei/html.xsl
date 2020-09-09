@@ -161,6 +161,9 @@
 							<span id="publisher">
 								<xsl:value-of select="//config/publisher"/>
 							</span>
+							<span id="hasAnnotations">
+								<xsl:value-of select="boolean(descendant::tei:surface)"/>
+							</span>
 						</xsl:when>
 						<xsl:otherwise>
 							<span id="image-path">
