@@ -1,60 +1,67 @@
+/* Author: Ethan Gruber
+    Date: September 2020
+    Function: instantiate a Mirador 3.x viewer for IIIF manifests */
 $(document).ready(function () {
     //get necessary variables
     var publisher = encodeURI($('#publisher').text());
-    var miradorURI = $('#miradorURI').text();
     var manifestURI = $('#manifestURI').text();
     
-    if (window.location.hash) {
-        var id = window.location.hash.substring(1);
-        var canvasID = manifestURI + '/canvas/' + id;
-    } else {
-        var canvasID = '';
-    }
-    
-    myMiradorInstance = initialize(miradorURI, manifestURI, canvasID, publisher);
-    
-    //pagination for index
-    $('.page-image').click(function () {
-        if (myMiradorInstance.saveController.slots[0].window.id) {
-            var windowID = myMiradorInstance.saveController.slots[0].window.id;
-            var canvasID = $(this).attr('canvas');
-            myMiradorInstance.eventEmitter.publish('SET_CURRENT_CANVAS_ID.' + windowID, canvasID);
-            myMiradorInstance.eventEmitter.publish('updateAnnotationList.' + windowId);
-        }
-        return false;
-    });
-});
-
-function initialize (miradorURI, manifestURI, canvasID, publisher) {
+    //construct Mirador window objects dynamically
     var windowObjects =[];
     var windowOptions = {
     };
     
-    if (canvasID) {
-        windowOptions[ "canvasID"] = canvasID;
+    if (window.location.hash) {
+        var id = window.location.hash.substring(1);
+        var canvasID = manifestURI + '/canvas/' + id;
+        windowOptions[ "canvasId"] = canvasID;
     }
+    
     windowOptions[ "loadedManifest"] = manifestURI;
-    windowOptions[ "viewType"] = "ImageView";
-    windowOptions[ "displayLayout"] = false;
+    windowOptions[ "id"] = "default";
+    windowOptions[ "thumbnailNavigationPosition"] = "far-bottom";
     windowObjects.push(windowOptions);
     
-    return Mirador({
+    var miradorInstance = Mirador.viewer({
         "id": "mirador-div",
-        "buildPath": miradorURI + 'build/mirador/',
-        "layout": "1x1",
-        "mainMenuSettings.show": false,
-        "data":[ {
-            "manifestUri": manifestURI, "location": publisher
-        }],
-        "windowSettings": {
-            "canvasControls": {
-                "annotations": {
-                    "annotationLayer": true,
-                    "annotationState": "on"
-                }
+        "manifests": {
+            manifestURI: {
+                "provider": publisher
             }
         },
-        "windowObjects": windowObjects,
-        "sidePanelVisible": false
+        "windows": windowObjects,
+        "window": {
+            "allowClose": false,
+            "allowMaximize": false,
+            "defaultSideBarPanel": 'annotations',
+            "defaultView": 'gallery',
+            "sideBarOpenByDefault": true,
+            "forceDrawAnnotations": true
+        },
+        "thumbnailNavigation": {
+            "defaultPosition": 'off'
+        },
+        "workspace": {
+            "type": 'mosaic'
+        },
+        "workspaceControlPanel": {
+            "enabled": false
+        },
+        "theme": {
+            "palette": {
+                "annotations": {
+                    "hidden": {
+                        "globalAlpha": 1
+                    }
+                }
+            }
+        }
     });
-}
+    
+    //pagination for index
+    $('.page-image').click(function () {
+        var canvasID = $(this).attr('canvas');
+        var action = Mirador.actions.setCanvas('default', canvasID);
+        miradorInstance.store.dispatch(action);
+    });
+});
