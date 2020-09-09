@@ -110,7 +110,7 @@
 				<xsl:choose>
 					<xsl:when test="$mirador = true()">
 						<script type="text/javascript" src="{concat(//config/mirador, 'build/mirador/mirador.min.js')}"/>
-						<link type="text/css" rel="stylesheet" href="{concat(//config/mirador, 'build/mirador/css/mirador-combined.css')}"/>
+						<!--<link type="text/css" rel="stylesheet" href="{concat(//config/mirador, 'build/mirador/css/mirador-combined.css')}"/>-->
 
 						<!-- mirador -->
 						<script type="text/javascript" src="{$include_path}ui/javascript/display_mirador_functions.js"/>
