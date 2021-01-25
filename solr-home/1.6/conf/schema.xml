@@ -191,7 +191,6 @@
     <field name="oai_id" type="string" indexed="true" stored="true"/>
     
     <!-- ignored meta from Tika (document indexing) -->
-    <dynamicField name="ignored_*" type="ignored"/>
     <field name="title" type="ignored"/>
     <field name="author" type="ignored"/>
     <field name="date" type="ignored"/>
