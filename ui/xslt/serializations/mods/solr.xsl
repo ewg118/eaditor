@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:datetime="http://exslt.org/dates-and-times"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mods="http://www.loc.gov/mods/v3"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" exclude-result-prefixes="#all" version="2.0">
 
 	<xsl:include href="../../functions.xsl"/>
-	
+
 	<!-- config variables -->
 	<xsl:variable name="url" select="/content/config/url"/>
 	<xsl:variable name="geonames_api_key" select="/content/config/geonames_api_key"/>
@@ -12,9 +12,9 @@
 	<xsl:variable name="geonames-url">
 		<xsl:text>http://api.geonames.org</xsl:text>
 	</xsl:variable>
-	
+
 	<xsl:template match="/">
-		<xsl:apply-templates select="/content/*[not(local-name()='config')]"/>
+		<xsl:apply-templates select="/content/*[not(local-name() = 'config')]"/>
 	</xsl:template>
 
 	<xsl:template match="mods:modsCollection">
@@ -41,15 +41,7 @@
 					<xsl:value-of select="mods:recordInfo/mods:recordIdentifier"/>
 				</field>
 				<field name="timestamp">
-					<xsl:variable name="timestamp" select="datetime:dateTime()"/>
-					<xsl:choose>
-						<xsl:when test="contains($timestamp, 'Z')">
-							<xsl:value-of select="$timestamp"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="concat($timestamp, 'Z')"/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:value-of select="format-dateTime(current-dateTime(), '[Y0001]-[M01]-[D01]T[h01]:[m01]:[s01]Z')"/>
 				</field>
 				<field name="unittitle_display">
 					<xsl:value-of select="mods:titleInfo/mods:title"/>
@@ -60,10 +52,10 @@
 				<field name="unitid_display">
 					<xsl:value-of select="mods:identifier"/>
 				</field>
-				
+
 				<!-- process dates -->
-				<xsl:apply-templates select="mods:relatedItem[@type='original']/mods:originInfo/mods:dateCreated"/>
-				
+				<xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:originInfo/mods:dateCreated"/>
+
 				<field name="physdesc_display">
 					<xsl:if test="mods:relatedItem/mods:physicalDescription/mods:form">
 						<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:form"/>
@@ -71,29 +63,37 @@
 					</xsl:if>
 					<xsl:value-of select="mods:relatedItem/mods:physicalDescription/mods:extent"/>
 				</field>
-				<xsl:for-each select="mods:name|mods:subject/*|//mods:physicalDescription/mods:form">
+				<xsl:for-each select="mods:name | mods:subject/* | //mods:physicalDescription/mods:form">
 					<xsl:variable name="facet">
 						<xsl:choose>
-							<xsl:when test="local-name()='form'">genreform</xsl:when>
-							<xsl:when test="local-name()='genre'">genreform</xsl:when>
-							<xsl:when test="local-name()='geographic'">geogname</xsl:when>
-							<xsl:when test="local-name()='name'">
+							<xsl:when test="local-name() = 'form'">genreform</xsl:when>
+							<xsl:when test="local-name() = 'genre'">genreform</xsl:when>
+							<xsl:when test="local-name() = 'geographic'">geogname</xsl:when>
+							<xsl:when test="local-name() = 'name'">
 								<xsl:choose>
-									<xsl:when test="@type='personal'">persname</xsl:when>
-									<xsl:when test="@type='corporate'">corpname</xsl:when>
+									<xsl:when test="@type = 'personal'">persname</xsl:when>
+									<xsl:when test="@type = 'corporate'">corpname</xsl:when>
 									<xsl:otherwise>persname</xsl:otherwise>
 								</xsl:choose>
 							</xsl:when>
-							<xsl:when test="local-name()='occupation'">occupation</xsl:when>
-							<xsl:when test="local-name()='topic'">subject</xsl:when>
+							<xsl:when test="local-name() = 'occupation'">occupation</xsl:when>
+							<xsl:when test="local-name() = 'topic'">subject</xsl:when>
 						</xsl:choose>
 					</xsl:variable>
 
 					<field name="{$facet}_facet">
-						<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
+						<xsl:value-of select="
+								if (mods:namePart) then
+									mods:namePart
+								else
+									."/>
 					</field>
 					<field name="{$facet}_text">
-						<xsl:value-of select="if (mods:namePart) then mods:namePart else ."/>
+						<xsl:value-of select="
+								if (mods:namePart) then
+									mods:namePart
+								else
+									."/>
 					</field>
 					<xsl:if test="string(@valueURI)">
 						<field name="{$facet}_uri">
@@ -107,12 +107,12 @@
 						<xsl:text> </xsl:text>
 					</xsl:for-each>
 				</field>
-				
-				<xsl:apply-templates select="mods:location/mods:url[not(@note='IIIFService')]"/>
+
+				<xsl:apply-templates select="mods:location/mods:url[not(@note = 'IIIFService')]"/>
 			</doc>
 		</add>
 	</xsl:template>
-	
+
 	<xsl:template match="mods:dateCreated">
 		<field name="unitdate_display">
 			<xsl:value-of select="."/>
@@ -124,13 +124,13 @@
 			<xsl:with-param name="position" select="1"/>
 		</xsl:call-template>
 	</xsl:template>
-	
+
 	<!-- images -->
 	<xsl:template match="mods:url">
 		<field>
 			<xsl:attribute name="name">
 				<xsl:choose>
-					<xsl:when test="@access='preview'">collection_thumb</xsl:when>
+					<xsl:when test="@access = 'preview'">collection_thumb</xsl:when>
 					<xsl:when test="@usage = 'primary display'">collection_reference</xsl:when>
 				</xsl:choose>
 			</xsl:attribute>

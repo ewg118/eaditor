@@ -70,15 +70,7 @@
 					<xsl:value-of select="@xml:id"/>
 				</field>
 				<field name="timestamp">
-					<xsl:variable name="timestamp" select="datetime:dateTime()"/>
-					<xsl:choose>
-						<xsl:when test="contains($timestamp, 'Z')">
-							<xsl:value-of select="$timestamp"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="concat($timestamp, 'Z')"/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:value-of select="format-dateTime(current-dateTime(), '[Y0001]-[M01]-[D01]T[h01]:[m01]:[s01]Z')"/>
 				</field>
 
 				<!-- fileDesc metadata -->
