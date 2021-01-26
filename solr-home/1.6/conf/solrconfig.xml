@@ -502,6 +502,7 @@
        <str name="wt">xml</str>
        <str name="facet">true</str>
        <int name="facet.mincount">1</int>
+       <str name="q.op">AND</str>
      </lst>
 
     </requestHandler>
