@@ -609,7 +609,7 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 						<xforms:action if="string(instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name)">
 							<xforms:setvalue ref="instance('control-instance')/collection-name"
 								value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"></xforms:setvalue>
-							<xforms:insert context="." origin="xxforms:set-session-attribute('collection-name', instance('control-instance')/collection-name)"></xforms:insert>
+							<xforms:insert context="." origin="xxforms:set-session-attribute('collection-name', string(instance('control-instance')/collection-name))"></xforms:insert>
 							<!-- set interface -->
 							<xforms:setvalue ref="instance('control-instance')/interface">eaditor-editor</xforms:setvalue>
 							<!-- load config -->
@@ -1083,7 +1083,7 @@ UNION{<URI> ?p ?o . ?s ?p ?o . FILTER (?s = <URI>)}}]]>
 																			<!-- set session attribute of the selected collection name -->
 																			<xforms:setvalue ref="instance('control-instance')/collection-name" value="$name"></xforms:setvalue>
 																			<xforms:insert context="."
-																				origin="xxforms:set-session-attribute('collection-name', instance('control-instance')/collection-name)"></xforms:insert>
+																				origin="xxforms:set-session-attribute('collection-name', string(instance('control-instance')/collection-name))"></xforms:insert>
 																			<!-- load the associated config and display the EADitor editor interface -->
 																			<xforms:send submission="load-config"></xforms:send>
 																			<xforms:toggle case="eaditor-editor"></xforms:toggle>
