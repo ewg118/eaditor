@@ -6,7 +6,7 @@
 	Installation Location:
 	oxf:/xbl/eaditor/navigation/navigation.xbl
 -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
@@ -18,7 +18,7 @@
 						<!-- Start copying the variables over that we need -->
 
 						<xforms:var name="data" xxbl:scope="inner">
-							<xxforms:sequence select="." xxbl:scope="outer"/>
+							<xxf:sequence select="." xxbl:scope="outer"/>
 						</xforms:var>
 
 						<!-- end external variable copying -->
@@ -27,8 +27,8 @@
 						<xforms:group xxbl:scope="inner">
 							<!-- set instances with the value of current URL params -->
 							<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-								<xforms:setvalue ref="instance('ead-id')" value="xxforms:get-request-parameter('guide')"/>
-								<xforms:setvalue ref="instance('c-id')" value="xxforms:get-request-parameter('component')"/>
+								<xforms:setvalue ref="instance('ead-id')" value="xxf:get-request-parameter('guide')"/>
+								<xforms:setvalue ref="instance('c-id')" value="xxf:get-request-parameter('component')"/>
 							</xforms:action>
 							<xforms:group ref="$data">
 								<xforms:var name="guide_id" select="@id"/>

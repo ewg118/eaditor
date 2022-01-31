@@ -1,5 +1,5 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-date" element="eaditor|date">
 		<xbl:template>
@@ -7,7 +7,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
 
@@ -119,7 +119,7 @@
 																	value="format-date(xs:date(concat($value, '-01')), '[MNn], [Y]', 'en', (), ())"/>
 																<xforms:setvalue if="$value castable as xs:gYear" ref="$binding" value="$value"/>
 															</xforms:action>
-															<xforms:action if="not(xxforms:valid(.))">
+															<xforms:action if="not(xxf:valid(.))">
 																<xforms:setvalue ref="$binding/@normal"/>
 															</xforms:action>
 														</xforms:action>
@@ -133,7 +133,7 @@
 														<xforms:alert>Must conform to ISO date standard.</xforms:alert>
 														<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
 														<xforms:action ev:event="xforms-value-changed">
-															<xforms:action ev:event="xforms-valid" if="xxforms:valid(parent::node()/toDate)">
+															<xforms:action ev:event="xforms-valid" if="xxf:valid(parent::node()/toDate)">
 																<xforms:var name="fromDate" select="."/>
 																<xforms:var name="toDate" select="parent::node()/eaditor:toDate"/>
 																<xforms:var name="fromDateText"
@@ -143,7 +143,7 @@
 																<xforms:setvalue ref="$binding/@normal" value="concat($fromDate, '/', $toDate)"/>
 																<xforms:setvalue ref="$binding" value="concat($fromDateText, '/', $toDateText)"/>
 															</xforms:action>
-															<xforms:action if="not(xxforms:valid(.)) or not(xxforms:valid(parent::node()/toDate))">
+															<xforms:action if="not(xxf:valid(.)) or not(xxf:valid(parent::node()/toDate))">
 																<xforms:setvalue ref="$binding/@normal"/>
 															</xforms:action>
 														</xforms:action>
@@ -155,7 +155,7 @@
 														<xforms:alert>Must conform to ISO date standard.</xforms:alert>
 														<xforms:hint>Formats: yyyy-mm-dd, yyyy-mm, yyyy</xforms:hint>
 														<xforms:action ev:event="xforms-value-changed">
-															<xforms:action ev:event="xforms-valid" if="xxforms:valid(parent::node()/fromDate)">
+															<xforms:action ev:event="xforms-valid" if="xxf:valid(parent::node()/fromDate)">
 																<xforms:var name="fromDate" select="parent::node()/eaditor:fromDate"/>
 																<xforms:var name="toDate" select="."/>
 																<xforms:var name="fromDateText"
@@ -165,7 +165,7 @@
 																<xforms:setvalue ref="$binding/@normal" value="concat($fromDate, '/', $toDate)"/>
 																<xforms:setvalue ref="$binding" value="concat($fromDateText, ' - ', $toDateText)"/>
 															</xforms:action>
-															<xforms:action if="not(xxforms:valid(.)) or not(xxforms:valid(parent::node()/fromDate))">
+															<xforms:action if="not(xxf:valid(.)) or not(xxf:valid(parent::node()/fromDate))">
 																<xforms:setvalue ref="$binding/@normal"/>
 															</xforms:action>
 														</xforms:action>

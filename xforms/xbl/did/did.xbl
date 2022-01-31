@@ -1,5 +1,5 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:exist="http://exist.sourceforge.net/NS/exist"
 	xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -9,11 +9,11 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
 						<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
-							value="replace(instance('xqueries')/query[@id='get-containertypes'], '%COLLECTION%', xxforms:get-session-attribute('collection-name'))"/>
+							value="replace(instance('xqueries')/query[@id='get-containertypes'], '%COLLECTION%', xxf:get-session-attribute('collection-name'))"/>
 						<xforms:send submission="xquery-db"/>
 					</xforms:action>
 
@@ -26,10 +26,10 @@
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>
 								</xforms:label>
-								<xxforms:show ev:event="DOMActivate" dialog="did-objects"/>
+								<xxf:show ev:event="DOMActivate" dialog="did-objects"/>
 							</xforms:trigger>
 						</span>
-						<xxforms:dialog id="did-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+						<xxf:dialog id="did-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 							<xforms:label>Descriptive Identification Elements</xforms:label>
 							<ul class="list-unstyled">
 								<xforms:repeat nodeset="instance('did-elements')/element">
@@ -58,7 +58,7 @@
 									</xforms:group>
 								</xforms:repeat>
 							</ul>
-						</xxforms:dialog>
+						</xxf:dialog>
 
 						<!--<fr:xforms-inspector xmlns:fr="http://orbeon.org/oxf/xml/form-runner"/>-->
 
@@ -374,10 +374,10 @@
 										<xforms:label>
 											<span class="glyphicon glyphicon-plus"/>
 										</xforms:label>
-										<xxforms:show ev:event="DOMActivate" dialog="physdesc-objects"/>
+										<xxf:show ev:event="DOMActivate" dialog="physdesc-objects"/>
 									</xforms:trigger>
 								</span>
-								<xxforms:dialog id="physdesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+								<xxf:dialog id="physdesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 									<xforms:label>Physical Description Elements</xforms:label>
 									<ul class="list-unstyled">
 										<xforms:repeat nodeset="instance('physdesc-elements')/element">
@@ -407,7 +407,7 @@
 											</xforms:group>
 										</xforms:repeat>
 									</ul>
-								</xxforms:dialog>
+								</xxf:dialog>
 
 								<xforms:repeat nodeset="ead:dimensions">
 									<div>
@@ -576,95 +576,95 @@
 						</xforms:instance>
 
 						<!-- digital object elements -->
-						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="dao-template" xxf:exclude-result-prefixes="#all">
 							<dao xlink:label="" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="daogrp-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="daogrp-template" xxf:exclude-result-prefixes="#all">
 							<daogrp xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- did elements -->
-						<xforms:instance id="abstract-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="abstract-template" xxf:exclude-result-prefixes="#all">
 							<abstract xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="container-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="container-template" xxf:exclude-result-prefixes="#all">
 							<container type="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="langmaterial-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="langmaterial-template" xxf:exclude-result-prefixes="#all">
 							<langmaterial>
 								<language langcode="" xmlns="urn:isbn:1-931666-22-9"/>
 							</langmaterial>
 						</xforms:instance>
-						<xforms:instance id="language-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="language-template" xxf:exclude-result-prefixes="#all">
 							<language langcode="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="materialspec-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="materialspec-template" xxf:exclude-result-prefixes="#all">
 							<materialspec xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="origination-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="origination-template" xxf:exclude-result-prefixes="#all">
 							<origination xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="physdesc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="physdesc-template" xxf:exclude-result-prefixes="#all">
 							<physdesc xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="physfacet-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="physfacet-template" xxf:exclude-result-prefixes="#all">
 							<physfacet type="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="dimensions-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="dimensions-template" xxf:exclude-result-prefixes="#all">
 							<dimensions xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="genreform-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="genreform-template" xxf:exclude-result-prefixes="#all">
 							<genreform xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="extent-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="extent-template" xxf:exclude-result-prefixes="#all">
 							<extent xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="physloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="physloc-template" xxf:exclude-result-prefixes="#all">
 							<physloc xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="repository-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="repository-template" xxf:exclude-result-prefixes="#all">
 							<repository xmlns="urn:isbn:1-931666-22-9">
 								<corpname/>
 							</repository>
 						</xforms:instance>
-						<xforms:instance id="unitdate-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="unitdate-template" xxf:exclude-result-prefixes="#all">
 							<unitdate normal="" type="inclusive" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="unitid-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="unitid-template" xxf:exclude-result-prefixes="#all">
 							<unitid xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- repository templates -->
-						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="address-template" xxf:exclude-result-prefixes="#all">
 							<address xmlns="urn:isbn:1-931666-22-9">
 								<addressline/>
 							</address>
 						</xforms:instance>
 
-						<xforms:instance id="subarea-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="subarea-template" xxf:exclude-result-prefixes="#all">
 							<subarea xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="extptr-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="extptr-template" xxf:exclude-result-prefixes="#all">
 							<extptr xlink:type="simple" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- shared/generic instance -->
-						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="head-template" xxf:exclude-result-prefixes="#all">
 							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="note-template" xxf:exclude-result-prefixes="#all">
 							<note xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- origination templates -->
-						<xforms:instance id="corpname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="corpname-template" xxf:exclude-result-prefixes="#all">
 							<corpname xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="famname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="famname-template" xxf:exclude-result-prefixes="#all">
 							<famname xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="persname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="persname-template" xxf:exclude-result-prefixes="#all">
 							<persname xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
@@ -674,8 +674,8 @@
 
 						<!-- XQuery -->
 						<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post"
-							replace="instance" instance="containertypes" xxforms:username="{instance('exist-config')/username}"
-							xxforms:password="{instance('exist-config')/password}">
+							replace="instance" instance="containertypes" xxf:username="{instance('exist-config')/username}"
+							xxf:password="{instance('exist-config')/password}">
 							<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist
 								database.</xforms:setvalue>
 						</xforms:submission>

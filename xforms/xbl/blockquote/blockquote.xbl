@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-blockquote" element="eaditor|blockquote">
 		<xbl:template>
@@ -6,7 +6,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 					<div class="subsection">
@@ -22,10 +22,10 @@
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>
 								</xforms:label>
-								<xxforms:show ev:event="DOMActivate" dialog="blockquote-objects"/>
+								<xxf:show ev:event="DOMActivate" dialog="blockquote-objects"/>
 							</xforms:trigger>
 						</span>
-						<xxforms:dialog id="blockquote-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+						<xxf:dialog id="blockquote-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 							<xforms:label>Block Quote Elements</xforms:label>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
@@ -57,7 +57,7 @@
 									<span class="glyphicon glyphicon-plus"/>Table</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('table-template')"/>
 							</xforms:trigger>
-						</xxforms:dialog>
+						</xxf:dialog>
 
 						<xforms:group
 							ref="$binding[count(child::node()) &lt; 1]">
@@ -91,19 +91,19 @@
 					<!-- ********************************************************************** -->
 					<xforms:model id="blockquote-elements-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- generic instances -->
-						<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="address-template" xxf:exclude-result-prefixes="#all">
 							<address>
 								<addressline/>
 							</address>
 						</xforms:instance>
-						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="note-template" xxf:exclude-result-prefixes="#all">
 							<note/>
 						</xforms:instance>
-						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="p-template" xxf:exclude-result-prefixes="#all">
 							<p/>
 						</xforms:instance>
 						<!-- table -->
-						<xforms:instance id="table-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="table-template" xxf:exclude-result-prefixes="#all">
 							<table>
 								<tgroup cols="">
 									<thead/>
@@ -112,7 +112,7 @@
 							</table>
 						</xforms:instance>
 						<!-- lists -->
-						<xforms:instance id="list-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="list-template" xxf:exclude-result-prefixes="#all">
 							<list/>
 						</xforms:instance>
 						<xforms:instance id="chronlist-template">

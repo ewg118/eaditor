@@ -5,7 +5,7 @@
     Function: EAD core XForms editor (EAD Header, Archdesc)
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:exist="http://exist.sourceforge.net/NS/exist"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<head>
@@ -42,11 +42,11 @@
 				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
 
-			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="config" xxf:exclude-result-prefixes="#all">
 				<config></config>
 			</xforms:instance>
 			
-			<xforms:instance id="master-config" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="master-config" xxf:exclude-result-prefixes="#all">
 				<config></config>
 			</xforms:instance>
 
@@ -107,7 +107,7 @@
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
-			<xforms:instance id="rdf" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="rdf" xxf:exclude-result-prefixes="#all">
 				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>
 			</xforms:instance>
 
@@ -138,10 +138,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 
 			<!-- EAD ELEMENTS -->
 			<!-- eadheader -->
-			<xforms:instance id="profiledesc-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="profiledesc-template" xxf:exclude-result-prefixes="#all">
 				<profiledesc></profiledesc>
 			</xforms:instance>
-			<xforms:instance id="revisiondesc-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="revisiondesc-template" xxf:exclude-result-prefixes="#all">
 				<revisiondesc>
 					<change>
 						<date normal=""></date>
@@ -149,89 +149,89 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					</change>
 				</revisiondesc>
 			</xforms:instance>
-			<xforms:instance id="editionstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="editionstmt-template" xxf:exclude-result-prefixes="#all">
 				<editionstmt>
 					<edition></edition>
 				</editionstmt>
 			</xforms:instance>
-			<xforms:instance id="notestmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="notestmt-template" xxf:exclude-result-prefixes="#all">
 				<notestmt>
 					<note>
 						<p></p>
 					</note>
 				</notestmt>
 			</xforms:instance>
-			<xforms:instance id="publicationstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="publicationstmt-template" xxf:exclude-result-prefixes="#all">
 				<publicationstmt></publicationstmt>
 			</xforms:instance>
-			<xforms:instance id="seriesstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="seriesstmt-template" xxf:exclude-result-prefixes="#all">
 				<seriesstmt></seriesstmt>
 			</xforms:instance>
 
 			<!-- shared/generic -->
-			<xforms:instance id="author-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="author-template" xxf:exclude-result-prefixes="#all">
 				<author></author>
 			</xforms:instance>
-			<xforms:instance id="creation-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="creation-template" xxf:exclude-result-prefixes="#all">
 				<creation></creation>
 			</xforms:instance>
-			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="change-template" xxf:exclude-result-prefixes="#all">
 				<change>
 					<date normal=""></date>
 					<item></item>
 				</change>
 			</xforms:instance>
-			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="date-template" xxf:exclude-result-prefixes="#all">
 				<date normal=""></date>
 			</xforms:instance>
-			<xforms:instance id="descrules-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="descrules-template" xxf:exclude-result-prefixes="#all">
 				<descrules></descrules>
 			</xforms:instance>
-			<xforms:instance id="langusage-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="langusage-template" xxf:exclude-result-prefixes="#all">
 				<langusage></langusage>
 			</xforms:instance>
-			<xforms:instance id="num-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="num-template" xxf:exclude-result-prefixes="#all">
 				<num type=""></num>
 			</xforms:instance>
-			<xforms:instance id="publisher-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="publisher-template" xxf:exclude-result-prefixes="#all">
 				<publisher></publisher>
 			</xforms:instance>
-			<xforms:instance id="sponsor-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="sponsor-template" xxf:exclude-result-prefixes="#all">
 				<sponsor></sponsor>
 			</xforms:instance>
-			<xforms:instance id="subtitle-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="subtitle-template" xxf:exclude-result-prefixes="#all">
 				<subtitle></subtitle>
 			</xforms:instance>
-			<xforms:instance id="titleproper-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="titleproper-template" xxf:exclude-result-prefixes="#all">
 				<titleproper></titleproper>
 			</xforms:instance>
-			<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="address-template" xxf:exclude-result-prefixes="#all">
 				<address>
 					<addressline></addressline>
 				</address>
 			</xforms:instance>
-			<xforms:instance id="blockquote-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="blockquote-template" xxf:exclude-result-prefixes="#all">
 				<blockquote></blockquote>
 			</xforms:instance>
-			<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="head-template" xxf:exclude-result-prefixes="#all">
 				<head></head>
 			</xforms:instance>
-			<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="note-template" xxf:exclude-result-prefixes="#all">
 				<note>
 					<p></p>
 				</note>
 			</xforms:instance>
-			<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="p-template" xxf:exclude-result-prefixes="#all">
 				<p></p>
 			</xforms:instance>
 
 			<!-- archdesc instances -->
-			<xforms:instance id="dsc-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="dsc-template" xxf:exclude-result-prefixes="#all">
 				<dsc></dsc>
 			</xforms:instance>
 			
 			<!-- uploading a file into an otherfindaid -->
-			<xforms:instance id="upload-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="upload-template" xxf:exclude-result-prefixes="#all">
 				<otherfindaid type="eaditor_upload">
 					<bibref>
 						<extptr xlink:type="simple" xlink:href="" xlink:role=""/>
@@ -363,17 +363,17 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- ************** SUBMISSIONS ***************** -->
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 			
 			<xforms:submission id="load-master-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml"
-				replace="instance" instance="master-config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="master-config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading master config.</xforms:message>
 			</xforms:submission>
 
 			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
-				replace="instance" instance="guide" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="guide" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load EAD core template.</xforms:message>
 				<!-- set date on new document -->
 				<xforms:action ev:event="xforms-submit-done">
@@ -396,20 +396,20 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:filedesc/ead:publicationstmt/ead:date/@normal" value="substring(string(current-date()), 1, 10)"></xforms:setvalue>
 
 					<!-- set other values for new finding aids -->
-					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:profiledesc/ead:creation" value="concat('Finding aid created with EADitor by user ', xxforms:get-remote-user(), '.')"></xforms:setvalue>
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:profiledesc/ead:creation" value="concat('Finding aid created with EADitor by user ', xxf:get-remote-user(), '.')"></xforms:setvalue>
 					<xforms:insert context="instance('guide')/ead:archdesc/ead:did/ead:unitdate" origin="xforms:attribute('type', 'inclusive')"></xforms:insert>
 				</xforms:action>
 			</xforms:submission>
 
 			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
-				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="c-template" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load component template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-guide" serialization="none" method="get"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"></xforms:send>
 			</xforms:submission>
@@ -423,7 +423,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-guide" ref="instance('guide')"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
@@ -444,7 +444,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:var name="filename" select="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href"/>
 					<xforms:action if="string($filename)">
 						<!-- set the document URL -->
-						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+						<xforms:insert nodeset="instance('request')" origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
 						<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', instance('control-instance')/collection-name, '/', $filename)"/>
 						<xforms:setvalue ref="instance('control-instance')/content-type" value="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
 						
@@ -536,19 +536,19 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<!-- load id parameter from url into @id attribute for EAD guide -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
+				<xforms:action if="string(xxf:get-session-attribute('collection-name'))">
 					<xforms:send submission="load-master-config"></xforms:send>
 					
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"></xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxf:get-session-attribute('collection-name')"></xforms:setvalue>
 					<xforms:send submission="load-config"></xforms:send>
 					<xforms:send submission="load-c-template"></xforms:send>
 					<!-- if there is a guide parameter, load existing finding aid -->
-					<xforms:action if="string(xxforms:get-request-parameter('guide'))">
-						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="xxforms:get-request-parameter('guide')"></xforms:setvalue>
+					<xforms:action if="string(xxf:get-request-parameter('guide'))">
+						<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="xxf:get-request-parameter('guide')"></xforms:setvalue>
 						<xforms:send submission="load-guide"></xforms:send>
 					</xforms:action>
 					<!-- if not, load ead template -->
-					<xforms:action if="not(string(xxforms:get-request-parameter('guide')))">
+					<xforms:action if="not(string(xxf:get-request-parameter('guide')))">
 						<xforms:send submission="load-ead-template"></xforms:send>
 					</xforms:action>
 					
@@ -642,11 +642,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 							<xforms:output ref="instance('control-instance')/status"></xforms:output>
 						</div>
 					</xforms:group>
-					<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
+					<xforms:group ref=".[string(xxf:get-session-attribute('flickr_username'))]">
 						<!-- show username if there are already session parameters -->
 						<div style="float:right">
 							<b>
-								<xforms:output value="xxforms:get-session-attribute('flickr_username')">
+								<xforms:output value="xxf:get-session-attribute('flickr_username')">
 									<xforms:label>Flickr User</xforms:label>
 								</xforms:output>
 							</b>
@@ -688,11 +688,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 											<xforms:label>
 												<span class="glyphicon glyphicon-plus"></span>
 											</xforms:label>
-											<xxforms:show ev:event="DOMActivate" dialog="eadheader-objects"></xxforms:show>
+											<xxf:show ev:event="DOMActivate" dialog="eadheader-objects"></xxf:show>
 										</xforms:trigger>
 									</span>
 									<p>Information about the creation, revision, and publication of the finding aid.</p>
-									<xxforms:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+									<xxf:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 										<xforms:label>Available Elements</xforms:label>
 										<xforms:group ref=".[count(ead:profiledesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
@@ -709,7 +709,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 													origin="instance('revisiondesc-template')"></xforms:insert>
 											</xforms:trigger>
 										</xforms:group>
-									</xxforms:dialog>
+									</xxf:dialog>
 									<div class="section">
 										<xforms:group ref=".[count(ead:eadid/@mainagencycode) &lt; 1]">
 											<xforms:trigger appearance="minimal">
@@ -729,10 +729,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 												<xforms:label>
 													<span class="glyphicon glyphicon-plus"></span>
 												</xforms:label>
-												<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"></xxforms:show>
+												<xxf:show ev:event="DOMActivate" dialog="filedesc-objects"></xxf:show>
 											</xforms:trigger>
 										</span>
-										<xxforms:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+										<xxf:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 											<xforms:label>File Description Elements</xforms:label>
 											<xforms:group ref=".[count(//ead:editionstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
@@ -759,7 +759,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 													></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
-										</xxforms:dialog>
+										</xxf:dialog>
 										<xforms:group ref="ead:filedesc">
 											<xforms:group ref="ead:titlestmt">
 												<div class="subsection">
@@ -769,10 +769,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 															<xforms:label>
 																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"></xxforms:show>
+															<xxf:show ev:event="DOMActivate" dialog="titlestmt-objects"></xxf:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxf:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Title Statement Elements</xforms:label>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
@@ -795,7 +795,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 																	origin="instance('sponsor-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
-													</xxforms:dialog>
+													</xxf:dialog>
 													<div>
 														<xforms:input ref="ead:titleproper">
 															<xforms:label>Finding Aid Title</xforms:label>
@@ -889,10 +889,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 															<xforms:label>
 																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"></xxforms:show>
+															<xxf:show ev:event="DOMActivate" dialog="publicationstmt-objects"></xxf:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxf:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Publication Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:address) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -927,7 +927,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 																<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
-													</xxforms:dialog>
+													</xxf:dialog>
 													<xforms:group ref=".[count(child::node()) &lt; 1]">
 														<div class="warning"><b>Warning:</b> Element must contain content.</div>
 													</xforms:group>
@@ -973,10 +973,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 															<xforms:label>
 																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"></xxforms:show>
+															<xxf:show ev:event="DOMActivate" dialog="seriesstmt-objects"></xxf:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxf:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Series Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:num) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -997,7 +997,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 																<xforms:insert ev:event="DOMActivate" context="." origin="instance('titleproper-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
-													</xxforms:dialog>
+													</xxf:dialog>
 													<xforms:group ref=".[count(child::node()) &lt; 1]">
 														<div class="warning"><b>Warning:</b> Element must contain content.</div>
 													</xforms:group>
@@ -1050,10 +1050,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 													<xforms:label>
 														<span class="glyphicon glyphicon-plus"></span>
 													</xforms:label>
-													<xxforms:show ev:event="DOMActivate" dialog="profiledesc-objects"></xxforms:show>
+													<xxf:show ev:event="DOMActivate" dialog="profiledesc-objects"></xxf:show>
 												</xforms:trigger>
 											</span>
-											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+											<xxf:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 												<xforms:label>Profile Description Elements</xforms:label>
 												<xforms:group ref=".[count(ead:descrules) &lt; 1]">
 													<xforms:trigger appearance="minimal">
@@ -1073,7 +1073,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 															origin="instance('langusage-template')"></xforms:insert>
 													</xforms:trigger>
 												</xforms:group>
-											</xxforms:dialog>
+											</xxf:dialog>
 											<xforms:group ref="ead:creation">
 												<div>
 													<xforms:input ref=".">

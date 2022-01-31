@@ -5,7 +5,7 @@
     Function: EAD component XForms editor
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<head>
 		<title>EADitor: Edit Component</title>
@@ -42,7 +42,7 @@
 				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
 
-			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="config" xxf:exclude-result-prefixes="#all">
 				<config></config>
 			</xforms:instance>
 
@@ -90,7 +90,7 @@
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
-			<xforms:instance id="rdf" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="rdf" xxf:exclude-result-prefixes="#all">
 				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>
 			</xforms:instance>
 
@@ -189,17 +189,17 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- ************** SUBMISSIONS ***************** -->
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
-				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"></xforms:submission>
+				replace="instance" instance="c-template" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}"></xforms:submission>
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-guide" serialization="none" method="get"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" replace="instance" instance="guide"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load finding aid</xforms:message>
 				<xforms:send submission="load-toc" ev:event="xforms-submit-done"></xforms:send>
 			</xforms:submission>
@@ -213,7 +213,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-guide" ref="instance('guide')"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('guide')/ead:eadheader/ead:eadid}.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">EAD guide saved.</xforms:setvalue>
@@ -233,7 +233,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:var name="filename" select="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:href"/>
 					<xforms:action if="string($filename)">
 						<!-- set the document URL -->
-						<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
+						<xforms:insert nodeset="instance('request')" origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('config'), 'data')"></xforms:insert>
 						<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', instance('control-instance')/collection-name, '/', $filename)"/>
 						<xforms:setvalue ref="instance('control-instance')/content-type" value="instance('guide')/ead:archdesc/ead:otherfindaid[@type='eaditor_upload']/ead:bibref/ead:extptr/@xlink:role"/>
 						
@@ -316,10 +316,10 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<!-- load ids from parameters and load the document -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
-					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="xxforms:get-request-parameter('guide')"></xforms:setvalue>
-					<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('component')"></xforms:setvalue>
+				<xforms:action if="string(xxf:get-session-attribute('collection-name'))">
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxf:get-session-attribute('collection-name')"/>
+					<xforms:setvalue ref="instance('guide')/ead:eadheader/ead:eadid" value="xxf:get-request-parameter('guide')"></xforms:setvalue>
+					<xforms:setvalue ref="instance('control-instance')/id" value="xxf:get-request-parameter('component')"></xforms:setvalue>
 					<xforms:send submission="load-config"></xforms:send>
 					<xforms:send submission="load-guide"></xforms:send>
 					<xforms:send submission="load-c-template"></xforms:send>
@@ -409,11 +409,11 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 						</div>
 					</xforms:group>
 					
-					<xforms:group ref=".[string(xxforms:get-session-attribute('flickr_username'))]">
+					<xforms:group ref=".[string(xxf:get-session-attribute('flickr_username'))]">
 						<!-- show username if there are already session parameters -->
 						<div style="float:right">
 							<b>
-								<xforms:output value="xxforms:get-session-attribute('flickr_username')">
+								<xforms:output value="xxf:get-session-attribute('flickr_username')">
 									<xforms:label>Flickr User</xforms:label>
 								</xforms:output>
 							</b>

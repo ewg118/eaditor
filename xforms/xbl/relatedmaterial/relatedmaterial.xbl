@@ -1,5 +1,5 @@
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-relatedmaterial" element="eaditor|relatedmaterial">
 		<xbl:template>
@@ -7,7 +7,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 
@@ -92,7 +92,7 @@
 					</fr:alert-dialog>
 
 					<xforms:model id="relatedmaterial-model" xmlns="urn:isbn:1-931666-22-9">
-						<xforms:instance id="extptr-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="extptr-template" xxf:exclude-result-prefixes="#all">
 							<extptr xlink:type="simple" xlink:href=""/>
 						</xforms:instance>
 					</xforms:model>

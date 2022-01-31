@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-namegrp" element="eaditor|namegrp">
 		<xbl:template>
@@ -6,7 +6,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 					<div class="subsection">
@@ -24,10 +24,10 @@
 								<xforms:label>
 									<span class="glyphicon glyphicon-plus"/>
 								</xforms:label>
-								<xxforms:show ev:event="DOMActivate" dialog="namegrp-objects"/>
+								<xxf:show ev:event="DOMActivate" dialog="namegrp-objects"/>
 							</xforms:trigger>
 						</span>
-						<xxforms:dialog id="namegrp-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+						<xxf:dialog id="namegrp-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 							<xforms:label>Access Elements</xforms:label>
 							<xforms:trigger appearance="minimal">
 								<xforms:label>
@@ -79,7 +79,7 @@
 									<span class="glyphicon glyphicon-plus"/>Title</xforms:label>
 								<xforms:insert ev:event="DOMActivate" context="$binding" nodeset="child::node()[last()]" origin="instance('title-template')"/>
 							</xforms:trigger>
-						</xxforms:dialog>
+						</xxf:dialog>
 						
 						<!-- ACCESS ELEMENTS -->
 						<!-- corpname -->
@@ -138,34 +138,34 @@
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="namegrp-model" xmlns="urn:isbn:1-931666-22-9">
 						<!-- access elements -->
-						<xforms:instance id="corpname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="corpname-template" xxf:exclude-result-prefixes="#all">
 							<corpname/>
 						</xforms:instance>
-						<xforms:instance id="famname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="famname-template" xxf:exclude-result-prefixes="#all">
 							<famname/>
 						</xforms:instance>
-						<xforms:instance id="function-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="function-template" xxf:exclude-result-prefixes="#all">
 							<function/>
 						</xforms:instance>
-						<xforms:instance id="genreform-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="genreform-template" xxf:exclude-result-prefixes="#all">
 							<genreform/>
 						</xforms:instance>
-						<xforms:instance id="geogname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="geogname-template" xxf:exclude-result-prefixes="#all">
 							<geogname/>
 						</xforms:instance>
-						<xforms:instance id="name-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="name-template" xxf:exclude-result-prefixes="#all">
 							<name/>
 						</xforms:instance>						
-						<xforms:instance id="occupation-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="occupation-template" xxf:exclude-result-prefixes="#all">
 							<occupation/>
 						</xforms:instance>
-						<xforms:instance id="persname-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="persname-template" xxf:exclude-result-prefixes="#all">
 							<persname/>
 						</xforms:instance>
-						<xforms:instance id="subject-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="subject-template" xxf:exclude-result-prefixes="#all">
 							<subject/>
 						</xforms:instance>
-						<xforms:instance id="title-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="title-template" xxf:exclude-result-prefixes="#all">
 							<title/>
 						</xforms:instance>					
 					</xforms:model>

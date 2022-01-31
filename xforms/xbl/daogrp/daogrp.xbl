@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-daogrp" element="eaditor|daogrp">
@@ -8,7 +8,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 
 					<xforms:group ref="$binding">
@@ -55,7 +55,7 @@
 
 
 											<!-- get nearest vocabulary terms, only if there are no terms listed -->
-											<xforms:action xxforms:iterate="ancestor::ead:c[1]/descendant::*[string(@source) and string(@authfilenumber)]">
+											<xforms:action xxf:iterate="ancestor::ead:c[1]/descendant::*[string(@source) and string(@authfilenumber)]">
 												<xforms:var name="source" select="context()/@source"/>
 												<xforms:var name="authfilenumber" select="context()/@authfilenumber"/>
 												<xforms:var name="predicate" select="substring-before(substring-after(instance('flickr-info')//tag[contains(., $source) and
@@ -73,12 +73,12 @@
 											</xforms:action>
 
 											<!-- add tags which are not already represented -->
-											<xforms:action xxforms:iterate="instance('flickr-info')//tag[not(text()=instance('terms')/term/@tag)]">
+											<xforms:action xxf:iterate="instance('flickr-info')//tag[not(text()=instance('terms')/term/@tag)]">
 												<xforms:insert context="instance('terms')" nodeset="./child::node()[last()]" origin="instance('tag-template')"/>
 												<xforms:setvalue ref="instance('terms')/tag[last()]/@tag" value="context()"/>
 											</xforms:action>
 
-											<xxforms:show dialog="tags-dialog"/>
+											<xxf:show dialog="tags-dialog"/>
 										</xforms:action>
 									</xforms:trigger>
 
@@ -93,7 +93,7 @@
 									<eaditor:daodesc/>
 								</xforms:group>
 
-								<xxforms:dialog id="tags-dialog" appearance="full" level="modal" close="false" draggable="true" visible="false">
+								<xxf:dialog id="tags-dialog" appearance="full" level="modal" close="false" draggable="true" visible="false">
 									<xforms:label>Flickr Machine Tags</xforms:label>
 									<xforms:trigger appearance="minimal">
 										<xforms:label>
@@ -190,9 +190,9 @@
 												<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
 												<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"/>
 												<xforms:setvalue ref="instance('flickr-control')/service">https://api.flickr.com/services/rest/</xforms:setvalue>
-												<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-session-attribute('oauth_token')"/>
+												<xforms:setvalue ref="instance('flickr-control')/token" value="xxf:get-session-attribute('oauth_token')"/>
 												<!-- generating signature -->
-												<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
+												<xforms:var name="key" select="concat(instance('config')/flickr_api_secret, '&amp;', xxf:get-session-attribute('oauth_token_secret'))"/>
 												<xforms:var name="base" select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;',
 													encode-for-uri(concat('method=flickr.photos.setTags&amp;oauth_consumer_key=', instance('config')/flickr_api_key, '&amp;oauth_nonce=',
 													instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=',
@@ -208,22 +208,22 @@
 													instance('flickr-control')/version, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_signature=',
 													instance('flickr-control')/signature)"/>
 												<xforms:send submission="flickr-setTags"/>
-												<xxforms:hide dialog="tags-dialog"/>
+												<xxf:hide dialog="tags-dialog"/>
 											</xforms:action>
 										</xforms:trigger>
 										<xforms:trigger>
 											<xforms:label>Close</xforms:label>
-											<xxforms:hide dialog="tags-dialog" ev:event="DOMActivate"/>
+											<xxf:hide dialog="tags-dialog" ev:event="DOMActivate"/>
 										</xforms:trigger>
 									</xforms:group>
 									<xforms:group ref=".[count(instance('terms')/term) = 0]">
 										<p>No potential tags present in parent component.</p>
 										<xforms:trigger>
 											<xforms:label>Close</xforms:label>
-											<xxforms:hide dialog="tags-dialog" ev:event="DOMActivate"/>
+											<xxf:hide dialog="tags-dialog" ev:event="DOMActivate"/>
 										</xforms:trigger>
 									</xforms:group>
-								</xxforms:dialog>
+								</xxf:dialog>
 							</div>
 						</xforms:group>
 						<!-- otherwise show controls -->
@@ -313,7 +313,7 @@
 																<xforms:dispatch target="flickr-error-dialog" name="fr-show"/>
 															</xforms:action>
 															<xforms:action if="instance('flickr-sizes')/@stat='ok'">
-																<xforms:action xxforms:iterate="instance('flickr-sizes')//size">
+																<xforms:action xxf:iterate="instance('flickr-sizes')//size">
 																	<xforms:var name="label" select="@label"/>
 																	<xforms:var name="href" select="@source"/>
 																	<xforms:insert origin="instance('daoloc-template')" context="$binding" nodeset="./child::node()[last()]"/>
@@ -462,19 +462,19 @@
 						</xforms:instance>
 
 						<!-- daodesc and associated elements -->
-						<xforms:instance id="daodesc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="daodesc-template" xxf:exclude-result-prefixes="#all">
 							<daodesc xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="head-template" xxf:exclude-result-prefixes="#all">
 							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="p-template" xxf:exclude-result-prefixes="#all">
 							<p xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
-						<xforms:instance id="daoloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="daoloc-template" xxf:exclude-result-prefixes="#all">
 							<daoloc xlink:type="locator" xlink:href="" xlink:label="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
@@ -482,7 +482,7 @@
 						<!--<xforms:bind nodeset="instance('interface-type')" readonly="instance('flickr-response')/@stat='ok'"/>-->
 
 						<!-- allow allow the add tags trigger to be activated when the flickr user has been authenticated -->
-						<xforms:bind id="authenticated" relevant="string(xxforms:get-session-attribute('oauth_token'))"/>
+						<xforms:bind id="authenticated" relevant="string(xxf:get-session-attribute('oauth_token'))"/>
 
 						<!-- require value for predicate -->
 						<xforms:bind nodeset="instance('terms')">
@@ -501,8 +501,8 @@
 						</xforms:bind>
 
 						<!-- submissions -->
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml"
-							replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{xxf:get-session-attribute('collection-name')}/config.xml"
+							replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 

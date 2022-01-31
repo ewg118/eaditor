@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-otherfindaid" element="eaditor|otherfindaid">
@@ -7,7 +7,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 
@@ -34,8 +34,8 @@
 										<xforms:trigger appearance="minimal">
 											<xforms:label><span class="glyphicon glyphicon-new-window"/></xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:insert nodeset="instance('request')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('dump'), 'data')"></xforms:insert>
-												<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', xxforms:get-session-attribute('collection-name'), '/', $binding/ead:bibref/ead:extptr/@xlink:href)"/>
+												<xforms:insert nodeset="instance('request')" origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-request.xpl', 'file', instance('dump'), 'data')"></xforms:insert>
+												<xforms:setvalue ref="instance('control-instance')/stream-url" value="concat('http://', instance('request')/server-name, ':', instance('request')/server-port, '/orbeon/eaditor/uploads/', xxf:get-session-attribute('collection-name'), '/', $binding/ead:bibref/ead:extptr/@xlink:href)"/>
 												<xforms:load ref="instance('control-instance')/stream-url"></xforms:load>
 											</xforms:action>
 										</xforms:trigger>
@@ -54,7 +54,7 @@
 										<xforms:upload ref="instance('file')">
 											<xforms:filename ref="@filename"/>
 											<xforms:mediatype ref="@mediatype"/>
-											<xxforms:size ref="@size"/>
+											<xxf:size ref="@size"/>
 										</xforms:upload>
 										<br/>
 										<xforms:trigger>
@@ -67,9 +67,9 @@
 													
 													<xforms:setvalue ref="instance('generator-config')/url" value="instance('file')"/>
 													<xforms:setvalue ref="instance('generator-config')/content-type" value="instance('file')/@mediatype"/>
-													<xforms:setvalue ref="instance('serializer-config')/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'),
+													<xforms:setvalue ref="instance('serializer-config')/url" value="concat('oxf:/apps/eaditor/uploads/', xxf:get-session-attribute('collection-name'),
 														'/', $filename)"/>
-													<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/move-file.xpl', ('generator-config',
+													<xforms:insert nodeset="instance('dump')" origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/xforms/move-file.xpl', ('generator-config',
 														'serializer-config'), (instance('generator-config'), instance('serializer-config')), 'data')"/>
 													<!-- set the data within the EAD document -->
 													<xforms:setvalue ref="$binding/ead:bibref/ead:extptr/@xlink:href" value="$filename"/>
@@ -202,9 +202,9 @@
 									<xforms:setvalue ref="instance('file')/@size"/>
 									
 									<!-- delete the file -->
-									<xforms:setvalue ref="instance('delete-config')/delete/url" value="concat('oxf:/apps/eaditor/uploads/', xxforms:get-session-attribute('collection-name'), '/',
+									<xforms:setvalue ref="instance('delete-config')/delete/url" value="concat('oxf:/apps/eaditor/uploads/', xxf:get-session-attribute('collection-name'), '/',
 										$binding/ead:bibref/ead:extptr/@xlink:href)"/>
-									<xforms:insert nodeset="instance('dump')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/delete-document.xpl', 'configuration', instance('delete-config'),
+									<xforms:insert nodeset="instance('dump')" origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/xforms/delete-document.xpl', 'configuration', instance('delete-config'),
 										'data')"/>
 									<xforms:delete nodeset="$binding"/>
 								</xforms:action>
@@ -218,21 +218,21 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="otherfindaid-model">
-						<xforms:instance id="bibref-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="bibref-template" xxf:exclude-result-prefixes="#all">
 							<bibref xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="extref-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="extref-template" xxf:exclude-result-prefixes="#all">
 							<extref linktype="simple" actuate="onrequest" xlink:href="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="linkgrp-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="linkgrp-template" xxf:exclude-result-prefixes="#all">
 							<linkgrp xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="ref-template" xxf:exclude-result-prefixes="#all">
 							<ref linktype="simple" actuate="onrequest" target="" xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
 
 						<!-- upload instances -->
-						<xforms:instance id="control-instance" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="control-instance" xxf:exclude-result-prefixes="#all">
 							<controls xmlns="">
 								<stream-url/>
 							</controls>
