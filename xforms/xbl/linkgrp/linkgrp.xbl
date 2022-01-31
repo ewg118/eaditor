@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:xlink="http://www.w3.org/1999/xlink">
 	<xbl:binding id="eaditor-linkgrp" element="eaditor|linkgrp">
@@ -7,7 +7,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 					<div class="subsection">
@@ -64,18 +64,18 @@
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="linkgrp-model" xmlns="urn:isbn:1-931666-22-9">
-						<xforms:instance id="extptrloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="extptrloc-template" xxf:exclude-result-prefixes="#all">
 							<extptrloc linktype="locator" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="extrefloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="extrefloc-template" xxf:exclude-result-prefixes="#all">
 							<extrefloc linktype="locator" xlink:href="">
 								<archref/>
 							</extrefloc>
 						</xforms:instance>
-						<xforms:instance id="ptrloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="ptrloc-template" xxf:exclude-result-prefixes="#all">
 							<ptrloc linktype="locator" target=""/>
 						</xforms:instance>
-						<xforms:instance id="refloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="refloc-template" xxf:exclude-result-prefixes="#all">
 							<refloc linktype="locator" target=""/>
 						</xforms:instance>
 					</xforms:model>

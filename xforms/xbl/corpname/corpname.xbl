@@ -3,7 +3,7 @@
 	function: EAD corpname component; user taps into VIAF APIs, xEAC or local vocabulary for personal names
 -->
 <xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	xmlns:srw="http://www.loc.gov/zing/srw/" xmlns:viaf="http://viaf.org/viaf/terms#">
@@ -13,7 +13,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
@@ -463,8 +463,8 @@
 
 						<!-- ***** SUBMISSIONS ***** -->
 						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance"
-							instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+							action="{instance('exist-config')/url}eaditor/{xxf:get-session-attribute('collection-name')}/config.xml" replace="instance"
+							instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:action if="string-length(instance('config')/*:xeac) &gt; 0">

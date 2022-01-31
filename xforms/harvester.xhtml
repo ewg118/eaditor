@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:ead="urn:isbn:1-931666-22-9"
 	xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
 	<head>
 		<title>EADitor: Edit Settings</title>
@@ -28,11 +28,11 @@
 				<xi:include href="../exist-config.xml"></xi:include>
 			</xforms:instance>
 
-			<xforms:instance id="config" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="config" xxf:exclude-result-prefixes="#all">
 				<config xmlns=""></config>
 			</xforms:instance>
 
-			<xforms:instance id="control-instance" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="control-instance" xxf:exclude-result-prefixes="#all">
 				<controls xmlns="">
 					<status></status>
 					<error></error>
@@ -49,37 +49,37 @@
 				<test xmlns=""></test>
 			</xforms:instance>
 
-			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="collections-list" xxf:exclude-result-prefixes="#all">
 				<collections xmlns=""></collections>
 			</xforms:instance>
 
-			<xforms:instance id="harvesters" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="harvesters" xxf:exclude-result-prefixes="#all">
 				<harvesters xmlns=""></harvesters>
 			</xforms:instance>
 
-			<xforms:instance id="harvester-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="harvester-template" xxf:exclude-result-prefixes="#all">
 				<harvester collection="" type="oai" url="" date="" lastFile="" xmlns=""></harvester>
 			</xforms:instance>
 
 			<!-- file list -->
-			<xforms:instance id="files" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="files" xxf:exclude-result-prefixes="#all">
 				<files xmlns=""></files>
 			</xforms:instance>
 
-			<xforms:instance id="old-ead" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="old-ead" xxf:exclude-result-prefixes="#all">
 				<ead xmlns=""></ead>
 			</xforms:instance>
 
-			<xforms:instance id="new-ead" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="new-ead" xxf:exclude-result-prefixes="#all">
 				<ead xmlns=""></ead>
 			</xforms:instance>
 
-			<xforms:instance id="ead-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="ead-template" xxf:exclude-result-prefixes="#all">
 				<ead xmlns=""></ead>
 			</xforms:instance>
 
 			<!-- OAI-PMH -->
-			<xforms:instance id="oai-pmh" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="oai-pmh" xxf:exclude-result-prefixes="#all">
 				<OAI-PMH xmlns=""></OAI-PMH>
 			</xforms:instance>
 
@@ -167,22 +167,22 @@
 			<!-- ************* SUBMISSIONS ************* -->
 			<!-- load and save files from eXist -->
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml" replace="instance" instance="config"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<xforms:submission id="load-harvesters" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/harvesters.xml" replace="instance" instance="harvesters"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/status" ev:event="xforms-submit-error">No harvesters have been set up yet.</xforms:setvalue>
 			</xforms:submission>
 
 			<xforms:submission id="save-harvesters" ref="instance('harvesters')" action="{instance('exist-config')/url}eaditor/harvesters.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error saving harvester XML file.</xforms:message>
 			</xforms:submission>
 
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
-				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				instance="collections-list" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error loading collections list.</xforms:setvalue>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('eXist-xquery')/exist:text"
@@ -265,7 +265,7 @@
 
 			<!-- Load / Save EAD files -->
 			<xforms:submission id="load-ead-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
-				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}"> </xforms:submission>
+				replace="instance" instance="ead-template" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}"> </xforms:submission>
 
 			<xforms:submission id="load-ead" serialization="none" method="get" action="{instance('control-instance')/ead-file}" replace="instance" instance="old-ead">
 				<xforms:action ev:event="xforms-submit-error">
@@ -305,7 +305,7 @@
 					<xforms:action if="count(instance('files')/file[position() = instance('control-instance')/ead-file-pos]/error) = 0">
 						<!-- apply normalization tranformation -->
 						<xforms:insert nodeset="instance('new-ead')"
-							origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/normalize-ead.xpl', ('data', 'template'), (instance('old-ead'), instance('ead-template')), 'data')"></xforms:insert>
+							origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/normalize-ead.xpl', ('data', 'template'), (instance('old-ead'), instance('ead-template')), 'data')"></xforms:insert>
 						<xforms:send submission="save-ead"></xforms:send>
 					</xforms:action>
 				</xforms:action>
@@ -313,7 +313,7 @@
 
 			<xforms:submission id="save-ead" ref="instance('new-ead')"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('new-ead')//ead:eadid}.xml" method="put" replace="none"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to save XML file to eXist.</xforms:message>
 				<!-- if the EAD record successfully saves, then publish to Solr -->
 				<xforms:action ev:event="xforms-submit-done">
@@ -348,16 +348,16 @@
 
 			<!-- XQuery -->
 			<xforms:submission id="xquery-db" ref="instance('eXist-xquery')" resource="{instance('exist-config')/url}eaditor" method="post" replace="instance" instance="xquery-result"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:setvalue ref="instance('control-instance')/error" ev:event="xforms-submit-error">Error querying eXist database.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- ********** XFORMS-MODEL-CONSTRUCT-DONE ********** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:action if="not(xxforms:is-user-in-role('eaditor-admin'))">
+				<xforms:action if="not(xxf:is-user-in-role('eaditor-admin'))">
 					<xforms:setvalue ref="instance('control-instance')/interface">unauthorized-user</xforms:setvalue>
 				</xforms:action>
-				<xforms:action if="xxforms:is-user-in-role('eaditor-admin')">
+				<xforms:action if="xxf:is-user-in-role('eaditor-admin')">
 					<xforms:setvalue ref="instance('control-instance')/interface">harvester</xforms:setvalue>
 					<xforms:send submission="load-config"></xforms:send>
 					<xforms:send submission="load-collections"></xforms:send>
@@ -478,7 +478,7 @@
 													<!-- load template to gather standardized agency code, publisher, etc. -->
 													<xforms:send submission="load-ead-template"></xforms:send>
 													<!-- iterate through all the XML files in the list and perform validation. if validation passes, then process the file and publish to eXist. otherwise report errors -->
-													<xforms:action xxforms:iterate="instance('files')//file">
+													<xforms:action xxf:iterate="instance('files')//file">
 														<xforms:var name="position" select="position()"></xforms:var>
 														<xforms:var name="url" select="context()/url"></xforms:var>
 														<xforms:setvalue ref="instance('control-instance')/ead-file" value="$url"></xforms:setvalue>
@@ -495,7 +495,7 @@
 													
 													<!-- generate the CSV response -->
 													<xforms:insert nodeset="instance('csv')"
-														origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>
+														origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/xforms/harvest/files-to-csv.xpl', 'data', instance('files'), 'data')"></xforms:insert>
 													<xforms:setvalue ref="instance('csv-download')" value="saxon:string-to-base64Binary(saxon:serialize(instance('csv'), 'text'), 'UTF-8')"></xforms:setvalue>
 													<xforms:toggle case="validation-complete"></xforms:toggle>
 												</xforms:action>
@@ -511,7 +511,7 @@
 											<div class="alert-success alert alert-box">
 												<span class="glyphicon glyphicon-info-sign"></span> Files successfully imported into EADitor.</div>
 											<div>												
-												<xforms:output ref="instance('csv-download')" appearance="xxforms:download">
+												<xforms:output ref="instance('csv-download')" appearance="xxf:download">
 													<xforms:label>Download CSV</xforms:label>
 													<xforms:mediatype>text/csv</xforms:mediatype>
 													<xforms:filename ref="concat(instance('control-instance')/collection-name, '.csv')"></xforms:filename>													
@@ -533,7 +533,7 @@
 												</xforms:output>
 											</div>
 											<div>												
-												<xforms:output ref="instance('csv-download')" appearance="xxforms:download">
+												<xforms:output ref="instance('csv-download')" appearance="xxf:download">
 													<xforms:label>Download CSV</xforms:label>
 													<xforms:mediatype>text/csv</xforms:mediatype>
 													<xforms:filename ref="concat(instance('control-instance')/collection-name, '.csv')"></xforms:filename>													

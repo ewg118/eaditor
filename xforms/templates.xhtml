@@ -5,7 +5,7 @@
 	
 	Heavily modified from upload form developed by Orbeon	
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<head>
 		<title>EADitor: Upload EAD Finding Aid</title>
@@ -35,7 +35,7 @@
 			</xforms:instance>
 			
 			<!-- authentication -->
-			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="collections-list" xxf:exclude-result-prefixes="#all">
 				<collections xmlns=""/>
 			</xforms:instance>
 			
@@ -44,7 +44,7 @@
 			</xforms:instance>
 			
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/collection-name"
@@ -56,19 +56,19 @@
 			</xforms:submission>
 
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+				<xforms:action if="string(xxf:get-session-attribute('collection-name'))">
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxf:get-session-attribute('collection-name')"/>
 					<xforms:send submission="load-config"></xforms:send>
 				</xforms:action>
-				<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+				<xforms:action if="not(string(xxf:get-session-attribute('collection-name')))">
 					<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+						origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
 					<xforms:send submission="load-collections"></xforms:send>
 				</xforms:action>
 			</xforms:action>

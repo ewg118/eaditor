@@ -5,7 +5,7 @@
 	Installation Location:
 	oxf:/xbl/eaditor/permissions/permissions.xbl
 -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xbl="http://www.w3.org/ns/xbl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:dlcn="http://www.delcyon.com/xbl" xmlns:oxf="http://www.orbeon.com/oxf/processors"
 	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
@@ -23,7 +23,7 @@
 						<!-- Start copying the variables over that we need -->
 
 						<xforms:var name="data" xxbl:scope="inner">
-							<xxforms:sequence select="." xxbl:scope="outer"/>
+							<xxf:sequence select="." xxbl:scope="outer"/>
 						</xforms:var>
 
 						<!-- end external variable copying -->
@@ -31,7 +31,7 @@
 						<!-- START MAIN GROUP-->
 						<xforms:group xxbl:scope="inner">
 							<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-								<xforms:action xxforms:iterate="$data//ead:c" ev:event="xforms-enabled">
+								<xforms:action xxf:iterate="$data//ead:c" ev:event="xforms-enabled">
 									<xforms:var name="id" select="@id"/>
 									<xforms:var name="audience" select="@audience"/>
 									<xforms:setvalue ref="instance('c-template')/@id" value="$id"/>

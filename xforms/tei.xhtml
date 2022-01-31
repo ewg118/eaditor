@@ -5,7 +5,7 @@
     Date last modified: January 2019
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 	<head>
@@ -67,7 +67,7 @@
 					xsi:schemaLocation="http://www.tei-c.org/ns/1.0 http://www.tei-c.org/release/xml/tei/custom/schema/xsd/tei_all.xsd"/>
 			</xforms:instance>
 
-			<xforms:instance id="manifest" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="manifest" xxf:exclude-result-prefixes="#all">
 				<json/>
 			</xforms:instance>
 
@@ -80,12 +80,12 @@
 				<config xmlns=""/>
 			</xforms:instance>
 
-			<xforms:instance id="master-config" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="master-config" xxf:exclude-result-prefixes="#all">
 				<config/>
 			</xforms:instance>
 
 			<!-- authentication -->
-			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="collections-list" xxf:exclude-result-prefixes="#all">
 				<collections xmlns=""/>
 			</xforms:instance>
 
@@ -94,15 +94,15 @@
 			</xforms:instance>
 
 			<!-- TEI templates -->
-			<xforms:instance id="surface-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="surface-template" xxf:exclude-result-prefixes="#all">
 				<surface xml:id="" ulx="" uly="" lrx="" lry=""/>
 			</xforms:instance>
 
-			<xforms:instance id="keywords-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="keywords-template" xxf:exclude-result-prefixes="#all">
 				<keywords corresp=""/>
 			</xforms:instance>
 
-			<xforms:instance id="term-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="term-template" xxf:exclude-result-prefixes="#all">
 				<term target=""/>
 			</xforms:instance>
 
@@ -120,7 +120,7 @@
 			</xforms:instance>
 
 			<!-- linked data publication instances -->
-			<xforms:instance id="rdf" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="rdf" xxf:exclude-result-prefixes="#all">
 				<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
 			</xforms:instance>
 
@@ -134,7 +134,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 				</query>
 			</xforms:instance>
 
-			<xforms:instance id="sparqlUpdate" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="sparqlUpdate" xxf:exclude-result-prefixes="#all">
 				<query xmlns=""/>
 			</xforms:instance>
 
@@ -147,20 +147,20 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- ******************* EXIST CRUD OPERATIONS ************************ -->
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-master-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/config.xml"
-				replace="instance" instance="master-config" xxforms:username="{instance('exist-config')/username}"
-				xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="master-config" xxf:username="{instance('exist-config')/username}"
+				xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Unabled to load master config.</xforms:message>
 			</xforms:submission>
 
 			<xforms:submission id="load-config" serialization="none" method="get"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml" replace="instance" instance="config"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml"
-				replace="instance" instance="collections-list" xxforms:username="{instance('exist-config')/username}"
-				xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="collections-list" xxf:username="{instance('exist-config')/username}"
+				xxf:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/collection-name"
@@ -168,8 +168,8 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 					<xforms:send submission="load-master-config"/>
 					<xforms:send submission="load-config"/>
 					<!-- if there is an id parameter, load existing document -->
-					<xforms:action if="string(xxforms:get-request-parameter('id'))">
-						<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('id')"/>
+					<xforms:action if="string(xxf:get-request-parameter('id'))">
+						<xforms:setvalue ref="instance('control-instance')/id" value="xxf:get-request-parameter('id')"/>
 						<xforms:send submission="load-submission"/>
 					</xforms:action>
 				</xforms:action>
@@ -180,14 +180,14 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-submission" serialization="none" method="get"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml"
-				replace="instance" instance="doc" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="doc" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Unable to load TEI document</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-submission" ref="instance('doc')"
 				action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('control-instance')/id}.xml"
-				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				method="put" replace="none" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Document. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/status">TEI Document saved.</xforms:setvalue>
@@ -269,19 +269,19 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+				<xforms:action if="string(xxf:get-session-attribute('collection-name'))">
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxf:get-session-attribute('collection-name')"/>
 					<xforms:send submission="load-master-config"/>
 					<xforms:send submission="load-config"/>
 					<!-- if there is an id parameter, load existing document -->
-					<xforms:action if="string(xxforms:get-request-parameter('id'))">
-						<xforms:setvalue ref="instance('control-instance')/id" value="xxforms:get-request-parameter('id')"/>
+					<xforms:action if="string(xxf:get-request-parameter('id'))">
+						<xforms:setvalue ref="instance('control-instance')/id" value="xxf:get-request-parameter('id')"/>
 						<xforms:send submission="load-submission"/>
 					</xforms:action>
 				</xforms:action>
-				<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+				<xforms:action if="not(string(xxf:get-session-attribute('collection-name')))">
 					<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+						origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
 					<xforms:send submission="load-collections"/>
 				</xforms:action>
 
@@ -293,7 +293,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 
 			<!-- iniatialize Webanno on xforms-ready -->
 			<xforms:action ev:event="xforms-ready" if="string(instance('control-instance')/id)">
-				<xxforms:script> var manifest = ORBEON.xforms.Document.getValue("manifestURL"); Mia.setup(manifest, "", "");</xxforms:script>
+				<xxf:script> var manifest = ORBEON.xforms.Document.getValue("manifestURL"); Mia.setup(manifest, "", "");</xxf:script>
 			</xforms:action>
 		</xforms:model>
 	</head>
@@ -449,7 +449,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 							<!-- process the HTML from instance('annotation')/text into TEI XML -->
 							<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
 							<xforms:insert context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[last()]"
-								origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"
+								origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"
 							/>
 						</xforms:action>
 
@@ -491,7 +491,7 @@ UNION {<URI> ?p ?o . ?s ?p ?o FILTER (?s = <URI>)}}]]>
 							<xforms:setvalue ref="instance('annotation')/text" value="concat('&lt;body&gt;', instance('annotation')/text, '&lt;/body&gt;')"/>
 							<xforms:insert
 								context="instance('doc')//tei:facsimile[@xml:id=instance('control-instance')/image/id]/tei:surface[@xml:id = instance('annotation')/id]"
-								origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"
+								origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/xforms/html-to-tei.xpl', 'data', saxon:parse(instance('annotation')/text), 'data')"
 							/>
 						</xforms:action>
 					</xforms:action>

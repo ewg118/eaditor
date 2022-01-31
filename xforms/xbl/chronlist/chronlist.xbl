@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-chronlist" element="eaditor|chronlist">
 		<xbl:template>
@@ -6,7 +6,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 					<div class="subsection">
@@ -136,24 +136,24 @@
 					</div>
 					<!-- ********************************************************************** -->
 					<xforms:model id="chronlist-model">
-						<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="head-template" xxf:exclude-result-prefixes="#all">
 							<head xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="listhead-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="listhead-template" xxf:exclude-result-prefixes="#all">
 							<listhead xmlns="urn:isbn:1-931666-22-9">
 								<head01/>
 								<head02/>
 							</listhead>
 						</xforms:instance>
-						<xforms:instance id="chronitem-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="chronitem-template" xxf:exclude-result-prefixes="#all">
 							<chronitem xmlns="urn:isbn:1-931666-22-9">
 								<date normal=""/>
 							</chronitem>
 						</xforms:instance>
-						<xforms:instance id="event-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="event-template" xxf:exclude-result-prefixes="#all">
 							<event xmlns="urn:isbn:1-931666-22-9"/>
 						</xforms:instance>
-						<xforms:instance id="eventgrp-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="eventgrp-template" xxf:exclude-result-prefixes="#all">
 							<eventgrp xmlns="urn:isbn:1-931666-22-9">
 								<event/>
 								<event/>

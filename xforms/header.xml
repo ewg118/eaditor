@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div class="navbar navbar-default navbar-static-top" role="navigation" xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms">
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -19,12 +19,12 @@
 				<li>
 					<a href="{$display_path}templates/">Edit Templates</a>
 				</li>
-				<xforms:group ref=".[xxforms:is-user-in-role('eaditor-admin')]">
+				<xforms:group ref=".[xxf:is-user-in-role('eaditor-admin')]">
 					<li>
 						<a href="{$display_path}settings/">Modify Settings</a>
 					</li>
 				</xforms:group>
-				<xforms:group ref=".[xxforms:is-user-in-role('eaditor-admin') and instance('master-config')/aggregator = true()]">
+				<xforms:group ref=".[xxf:is-user-in-role('eaditor-admin') and instance('master-config')/aggregator = true()]">
 					<li>
 						<a href="{$display_path}harvester/">EAD Harvester</a>
 					</li>

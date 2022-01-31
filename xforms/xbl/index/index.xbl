@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-index" element="eaditor|index">
 		<xbl:template>
@@ -6,7 +6,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 						
@@ -195,19 +195,19 @@
 					<!-- ********************************************************************** -->		
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
 					<xforms:model id="index-model" xmlns="urn:isbn:1-931666-22-9">
-						<xforms:instance id="ptr-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="ptr-template" xxf:exclude-result-prefixes="#all">
 							<ptr linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
-						<xforms:instance id="ptrgrp-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="ptrgrp-template" xxf:exclude-result-prefixes="#all">
 							<ptrgrp/>
 						</xforms:instance>
-						<xforms:instance id="ref-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="ref-template" xxf:exclude-result-prefixes="#all">
 							<ref linktype="simple" actuate="onrequest" target=""/>
 						</xforms:instance>
-						<xforms:instance id="indexentry-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="indexentry-template" xxf:exclude-result-prefixes="#all">
 							<indexentry/>
 						</xforms:instance>
-						<xforms:instance id="namegrp-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="namegrp-template" xxf:exclude-result-prefixes="#all">
 							<namegrp/>
 						</xforms:instance>
 					</xforms:model>					

@@ -6,7 +6,7 @@
 	Heavily modified from upload form developed by Orbeon	
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:ead="urn:isbn:1-931666-22-9">
 	<head>
@@ -22,7 +22,7 @@
 		<link rel="stylesheet" href="/apps/eaditor/xforms/css/xforms.css"/>
 
 		<xforms:model xmlns="urn:isbn:1-931666-22-9">
-			<xforms:instance id="guide" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="guide" xxf:exclude-result-prefixes="#all">
 				<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink">
 					<control>
 						<recordid/>
@@ -57,19 +57,19 @@
 			</xforms:instance>
 
 			<!-- new -->
-			<xforms:instance id="otherrecordid-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="otherrecordid-template" xxf:exclude-result-prefixes="#all">
 				<otherrecordid/>
 			</xforms:instance>
 
-			<xforms:instance id="otheragencycode-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="otheragencycode-template" xxf:exclude-result-prefixes="#all">
 				<otheragencycode/>
 			</xforms:instance>
 
-			<xforms:instance id="agencycode-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="agencycode-template" xxf:exclude-result-prefixes="#all">
 				<agencycode/>
 			</xforms:instance>
 
-			<xforms:instance id="maintenanceevent-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="maintenanceevent-template" xxf:exclude-result-prefixes="#all">
 				<maintenanceevent>
 					<eventtype/>
 					<eventdatetime standarddatetime=""/>
@@ -78,47 +78,47 @@
 				</maintenanceevent>
 			</xforms:instance>
 
-			<xforms:instance id="eventdescription-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="eventdescription-template" xxf:exclude-result-prefixes="#all">
 				<eventdescription/>
 			</xforms:instance>
 
-			<xforms:instance id="conventiondeclaration-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="conventiondeclaration-template" xxf:exclude-result-prefixes="#all">
 				<conventiondeclaration>
 					<citation/>
 				</conventiondeclaration>
 			</xforms:instance>
 
-			<xforms:instance id="localtypedeclaration-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="localtypedeclaration-template" xxf:exclude-result-prefixes="#all">
 				<localtypedeclaration>
 					<citation/>
 				</localtypedeclaration>
 			</xforms:instance>
 
-			<xforms:instance id="languagedeclaration-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="languagedeclaration-template" xxf:exclude-result-prefixes="#all">
 				<languagedeclaration>
 					<language languagecode=""/>
 					<script scriptcode=""/>
 				</languagedeclaration>
 			</xforms:instance>
 
-			<xforms:instance id="localcontrol-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="localcontrol-template" xxf:exclude-result-prefixes="#all">
 				<localcontrol>
 					<term/>
 				</localcontrol>
 			</xforms:instance>
 
-			<xforms:instance id="datesingle-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="datesingle-template" xxf:exclude-result-prefixes="#all">
 				<datesingle/>
 			</xforms:instance>
 
-			<xforms:instance id="daterange-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="daterange-template" xxf:exclude-result-prefixes="#all">
 				<daterange>
 					<fromdate/>
 					<todate/>
 				</daterange>
 			</xforms:instance>
 
-			<xforms:instance id="sources-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="sources-template" xxf:exclude-result-prefixes="#all">
 				<sources>
 					<source>
 						<sourceentry/>
@@ -126,92 +126,92 @@
 				</sources>
 			</xforms:instance>
 
-			<xforms:instance id="source-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="source-template" xxf:exclude-result-prefixes="#all">
 				<source>
 					<sourceentry/>
 				</source>s </xforms:instance>
 
 			<!-- generic templates -->
-			<xforms:instance id="descriptivenote-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="descriptivenote-template" xxf:exclude-result-prefixes="#all">
 				<descriptivenote>
 					<p/>
 				</descriptivenote>
 			</xforms:instance>
 
-			<xforms:instance id="controlnote-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="controlnote-template" xxf:exclude-result-prefixes="#all">
 				<controlnote>
 					<p/>
 				</controlnote>
 			</xforms:instance>
 
 			<!-- old -->
-			<xforms:instance id="editionstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="editionstmt-template" xxf:exclude-result-prefixes="#all">
 				<editionstmt>
 					<edition/>
 				</editionstmt>
 			</xforms:instance>
-			<xforms:instance id="notestmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="notestmt-template" xxf:exclude-result-prefixes="#all">
 				<notestmt>
 					<note>
 						<p/>
 					</note>
 				</notestmt>
 			</xforms:instance>
-			<xforms:instance id="publicationstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="publicationstmt-template" xxf:exclude-result-prefixes="#all">
 				<publicationstmt/>
 			</xforms:instance>
-			<xforms:instance id="seriesstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="seriesstmt-template" xxf:exclude-result-prefixes="#all">
 				<seriesstmt/>
 			</xforms:instance>
 
 			<!-- shared/generic -->
-			<xforms:instance id="author-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="author-template" xxf:exclude-result-prefixes="#all">
 				<author/>
 			</xforms:instance>
-			<xforms:instance id="creation-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="creation-template" xxf:exclude-result-prefixes="#all">
 				<creation/>
 			</xforms:instance>
-			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="change-template" xxf:exclude-result-prefixes="#all">
 				<change>
 					<date standardDateTime=""/>
 					<item/>
 				</change>
 			</xforms:instance>
-			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="date-template" xxf:exclude-result-prefixes="#all">
 				<date standardDate=""/>
 			</xforms:instance>
-			<xforms:instance id="num-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="num-template" xxf:exclude-result-prefixes="#all">
 				<num type=""/>
 			</xforms:instance>
-			<xforms:instance id="publisher-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="publisher-template" xxf:exclude-result-prefixes="#all">
 				<publisher/>
 			</xforms:instance>
-			<xforms:instance id="sponsor-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="sponsor-template" xxf:exclude-result-prefixes="#all">
 				<sponsor/>
 			</xforms:instance>
-			<xforms:instance id="subtitle-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="subtitle-template" xxf:exclude-result-prefixes="#all">
 				<subtitle/>
 			</xforms:instance>
-			<xforms:instance id="titleproper-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="titleproper-template" xxf:exclude-result-prefixes="#all">
 				<titleproper/>
 			</xforms:instance>
-			<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="address-template" xxf:exclude-result-prefixes="#all">
 				<address>
 					<addressline/>
 				</address>
 			</xforms:instance>
-			<xforms:instance id="blockquote-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="blockquote-template" xxf:exclude-result-prefixes="#all">
 				<blockquote/>
 			</xforms:instance>
-			<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="head-template" xxf:exclude-result-prefixes="#all">
 				<head/>
 			</xforms:instance>
-			<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="note-template" xxf:exclude-result-prefixes="#all">
 				<note>
 					<p/>
 				</note>
 			</xforms:instance>
-			<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="p-template" xxf:exclude-result-prefixes="#all">
 				<p/>
 			</xforms:instance>
 
@@ -310,8 +310,8 @@
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:send submission="load-config"/>
 
-				<xforms:action if="string(xxforms:get-request-parameter('guide'))">
-					<xforms:setvalue ref="instance('guide')/ead:control/ead:recordid" value="xxforms:get-request-parameter('guide')"/>
+				<xforms:action if="string(xxf:get-request-parameter('guide'))">
+					<xforms:setvalue ref="instance('guide')/ead:control/ead:recordid" value="xxf:get-request-parameter('guide')"/>
 
 					<!-- insert new maintenance event and set event type -->
 					<xforms:insert context="instance('guide')/ead:control/ead:maintenancehistory" nodeset="./child::node()[last()]"
@@ -327,7 +327,7 @@
 						value="format-dateTime(xs:dateTime($dateTime), '[MNn] [D], [Y]: [H]:[m]', 'en', (), ())"/>
 
 				</xforms:action>
-				<xforms:action if="not(string(xxforms:get-request-parameter('guide')))">
+				<xforms:action if="not(string(xxf:get-request-parameter('guide')))">
 					<!-- set datetime on new record -->
 					<xforms:var name="dateTime" select="current-dateTime()"/>
 					<xforms:setvalue ref="instance('guide')/ead:control/ead:maintenancehistory/ead:maintenanceevent/ead:eventdatetime/@standarddatetime"
@@ -404,10 +404,10 @@
 									<xforms:label>
 										<span class="glyphicon glyphicon-plus"/>
 									</xforms:label>
-									<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"/>
+									<xxf:show ev:event="DOMActivate" dialog="filedesc-objects"/>
 								</xforms:trigger>
 							</span>
-							<xxforms:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+							<xxf:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 								<xforms:label>File Description Elements</xforms:label>
 								<xforms:group ref=".[count(//ead:editionstmt) &lt; 1]">
 									<xforms:trigger appearance="minimal">
@@ -443,7 +443,7 @@
 											origin="instance('notestmt-template')"/>
 									</xforms:trigger>
 								</xforms:group>
-							</xxforms:dialog>
+							</xxf:dialog>
 							<xforms:group ref="ead:filedesc">
 								<xforms:group ref="ead:titlestmt">
 									<div class="subsection">
@@ -453,10 +453,10 @@
 												<xforms:label>
 													<span class="glyphicon glyphicon-plus"/>
 												</xforms:label>
-												<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"/>
+												<xxf:show ev:event="DOMActivate" dialog="titlestmt-objects"/>
 											</xforms:trigger>
 										</span>
-										<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+										<xxf:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 											<xforms:label>Title Statement Elements</xforms:label>
 											<xforms:group ref=".[count(ead:subtitle) &lt; 1]">
 												<xforms:trigger appearance="minimal">
@@ -482,7 +482,7 @@
 														origin="instance('sponsor-template')"/>
 												</xforms:trigger>
 											</xforms:group>
-										</xxforms:dialog>
+										</xxf:dialog>
 										<div>
 											<xforms:input ref="ead:titleproper">
 												<xforms:label>Proper Title</xforms:label>
@@ -579,10 +579,10 @@
 												<xforms:label>
 													<span class="glyphicon glyphicon-plus"/>
 												</xforms:label>
-												<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"/>
+												<xxf:show ev:event="DOMActivate" dialog="publicationstmt-objects"/>
 											</xforms:trigger>
 										</span>
-										<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true"
+										<xxf:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true"
 											visible="false">
 											<xforms:label>Publication Statement Elements</xforms:label>
 											<xforms:group ref=".[count(ead:address) &lt; 1]">
@@ -618,7 +618,7 @@
 													<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"/>
 												</xforms:trigger>
 											</xforms:group>
-										</xxforms:dialog>
+										</xxf:dialog>
 										<xforms:group ref=".[count(child::node()) &lt; 1]">
 											<div class="warning"><b>Warning:</b> Element must contain content.</div>
 										</xforms:group>
@@ -670,10 +670,10 @@
 												<xforms:label>
 													<span class="glyphicon glyphicon-plus"/>
 												</xforms:label>
-												<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"/>
+												<xxf:show ev:event="DOMActivate" dialog="seriesstmt-objects"/>
 											</xforms:trigger>
 										</span>
-										<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+										<xxf:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 											<xforms:label>Series Statement Elements</xforms:label>
 											<p>The Series Statement may include titleproper/num or paragraphs.</p>
 											<xforms:group ref=".[count(ead:titleproper) = 0 and count(ead:p) = 0]">
@@ -698,7 +698,7 @@
 														origin="instance('p-template')"/>
 												</xforms:trigger>
 											</xforms:group>
-										</xxforms:dialog>
+										</xxf:dialog>
 										<xforms:group ref=".[count(child::node()) &lt; 1]">
 											<div class="warning"><b>Warning:</b> Element must contain content.</div>
 										</xforms:group>

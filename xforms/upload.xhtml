@@ -5,7 +5,7 @@
 	
 	Heavily modified from upload form developed by Orbeon	
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<head>
 		<title>EADitor: Upload EAD Finding Aid</title>
@@ -66,14 +66,14 @@
 			</xforms:submission>
 
 			<xforms:submission id="get-temp" method="get" replace="instance" instance="guide" serialization="none" action="{instance('files')/file}">
-				<xforms:insert ev:event="xforms-submit-done" nodeset="instance('new-guide')" origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/preprocess.xpl', 'source', instance('guide'), 'finalized')"/>
+				<xforms:insert ev:event="xforms-submit-done" nodeset="instance('new-guide')" origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/preprocess.xpl', 'source', instance('guide'), 'finalized')"/>
 				<!--get the temp file written to disk-->
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error preprocessing file in XSLT. Check validation.</xforms:message>
 				<xforms:send ev:event="xforms-submit-done" submission="put-to-exist"/>
 			</xforms:submission>
 
 			<xforms:submission id="put-to-exist" method="put" replace="none" ref="instance('new-guide')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/guides/{instance('new-guide')/@id}.xml"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error in writing file to eXist. Preprocessing XSLT transformation was successful, but resulting document is
 					invalid.</xforms:message>
 				<xforms:action ev:event="xforms-submit-done">
@@ -82,7 +82,7 @@
 			</xforms:submission>
 			
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance" instance="collections-list"
-				xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/collection-name"
@@ -94,14 +94,14 @@
 			</xforms:submission>
 
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 			
 			<!-- ************************ XFORMS-MODEL-CONSTRUCT-DONE ****************************** -->			
 			<xforms:action ev:event="xforms-model-construct-done">
 				<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-					origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
+					origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"/>
 				<xforms:send submission="load-collections"/>
 			</xforms:action>
 		</xforms:model>
@@ -138,10 +138,10 @@
 						</ol>
 						<p> Please select the files to upload: </p>
 						<div class="section">
-							<fr:upload ref="instance('files')/file" xxforms:size="240">
+							<fr:upload ref="instance('files')/file" xxf:size="240">
 								<xforms:filename ref="@filename"/>
 								<xforms:mediatype ref="@mediatype"/>
-								<xxforms:size ref="@size"/>
+								<xxf:size ref="@size"/>
 							</fr:upload>
 							<div style="margin:20px 0;">
 								<fr:button>

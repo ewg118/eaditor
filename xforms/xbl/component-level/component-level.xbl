@@ -1,4 +1,4 @@
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:ead="urn:isbn:1-931666-22-9">
 	<xbl:binding id="eaditor-component-level" element="eaditor|component-level">
@@ -7,7 +7,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<!--<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>-->
 					<h2>Component-level Information</h2>
@@ -16,10 +16,10 @@
 							<xforms:label>
 								<span class="glyphicon glyphicon-plus"/>
 							</xforms:label>
-							<xxforms:show ev:event="DOMActivate" dialog="clevel-objects"/>
+							<xxf:show ev:event="DOMActivate" dialog="clevel-objects"/>
 						</xforms:trigger>
 					</span>
-					<xxforms:dialog id="clevel-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+					<xxf:dialog id="clevel-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 						<xforms:label>Component-Level Elements</xforms:label>
 						<ul class="list-unstyled">
 							<xforms:repeat nodeset="instance('elements')/element">
@@ -43,7 +43,7 @@
 								</xforms:group>							
 							</xforms:repeat>
 						</ul>						
-					</xxforms:dialog>
+					</xxf:dialog>
 
 					<xforms:group ref="$binding/ead:accessrestrict">
 						<eaditor:accessrestrict/>
@@ -155,82 +155,82 @@
 						</xforms:instance>						
 						
 						<!-- ead instances -->
-						<xforms:instance id="accessrestrict-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="accessrestrict-template" xxf:exclude-result-prefixes="#all">
 							<accessrestrict/>
 						</xforms:instance>
-						<xforms:instance id="accruals-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="accruals-template" xxf:exclude-result-prefixes="#all">
 							<accruals/>
 						</xforms:instance>
-						<xforms:instance id="acqinfo-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="acqinfo-template" xxf:exclude-result-prefixes="#all">
 							<acqinfo/>
 						</xforms:instance>
-						<xforms:instance id="altformavail-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="altformavail-template" xxf:exclude-result-prefixes="#all">
 							<altformavail/>
 						</xforms:instance>
-						<xforms:instance id="appraisal-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="appraisal-template" xxf:exclude-result-prefixes="#all">
 							<appraisal/>
 						</xforms:instance>
-						<xforms:instance id="arrangement-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="arrangement-template" xxf:exclude-result-prefixes="#all">
 							<arrangement/>
 						</xforms:instance>
-						<xforms:instance id="bioghist-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="bioghist-template" xxf:exclude-result-prefixes="#all">
 							<bioghist/>
 						</xforms:instance>
-						<xforms:instance id="bibliography-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="bibliography-template" xxf:exclude-result-prefixes="#all">
 							<bibliography/>
 						</xforms:instance>
-						<xforms:instance id="controlaccess-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="controlaccess-template" xxf:exclude-result-prefixes="#all">
 							<controlaccess/>
 						</xforms:instance>
-						<xforms:instance id="custodhist-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="custodhist-template" xxf:exclude-result-prefixes="#all">
 							<custodhist/>
 						</xforms:instance>
-						<xforms:instance id="dao-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="dao-template" xxf:exclude-result-prefixes="#all">
 							<dao xlink:linktype="simple" xlink:href=""/>
 						</xforms:instance>
-						<xforms:instance id="daogrp-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="daogrp-template" xxf:exclude-result-prefixes="#all">
 							<daogrp/>
 						</xforms:instance>
-						<xforms:instance id="fileplan-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="fileplan-template" xxf:exclude-result-prefixes="#all">
 							<fileplan/>
 						</xforms:instance>
-						<xforms:instance id="index-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="index-template" xxf:exclude-result-prefixes="#all">
 							<index/>
 						</xforms:instance>
-						<xforms:instance id="indexentry-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="indexentry-template" xxf:exclude-result-prefixes="#all">
 							<indexentry/>
 						</xforms:instance>
-						<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="note-template" xxf:exclude-result-prefixes="#all">
 							<note/>
 						</xforms:instance>
-						<xforms:instance id="odd-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="odd-template" xxf:exclude-result-prefixes="#all">
 							<odd/>
 						</xforms:instance>
-						<xforms:instance id="originalsloc-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="originalsloc-template" xxf:exclude-result-prefixes="#all">
 							<originalsloc/>
 						</xforms:instance>
-						<xforms:instance id="otherfindaid-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="otherfindaid-template" xxf:exclude-result-prefixes="#all">
 							<otherfindaid/>
 						</xforms:instance>
-						<xforms:instance id="phystech-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="phystech-template" xxf:exclude-result-prefixes="#all">
 							<phystech/>
 						</xforms:instance>
-						<xforms:instance id="prefercite-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="prefercite-template" xxf:exclude-result-prefixes="#all">
 							<prefercite/>
 						</xforms:instance>
-						<xforms:instance id="processinfo-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="processinfo-template" xxf:exclude-result-prefixes="#all">
 							<processinfo/>
 						</xforms:instance>
-						<xforms:instance id="relatedmaterial-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="relatedmaterial-template" xxf:exclude-result-prefixes="#all">
 							<relatedmaterial/>
 						</xforms:instance>
-						<xforms:instance id="scopecontent-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="scopecontent-template" xxf:exclude-result-prefixes="#all">
 							<scopecontent/>
 						</xforms:instance>
-						<xforms:instance id="separatedmaterial-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="separatedmaterial-template" xxf:exclude-result-prefixes="#all">
 							<separatedmaterial/>
 						</xforms:instance>
-						<xforms:instance id="userestrict-template" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="userestrict-template" xxf:exclude-result-prefixes="#all">
 							<userestrict/>
 						</xforms:instance>
 					</xforms:model>

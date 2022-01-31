@@ -4,7 +4,7 @@
 	or geonames (refers to geonames.org APIs)
 -->
 
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:rss="http://purl.org/rss/1.0/"
 	xmlns:res="http://www.w3.org/2005/sparql-results#">
@@ -14,7 +14,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
@@ -344,7 +344,7 @@
 							<config xmlns=""/>
 						</xforms:instance>
 						<!-- authentication -->
-						<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="collections-list" xxf:exclude-result-prefixes="#all">
 							<collections xmlns=""/>
 						</xforms:instance>
 
@@ -519,8 +519,8 @@ luc:term "SEARCH_QUERY"} LIMIT 20]]>
 
 						<!-- ********* SUBMISSIONS ***********-->
 						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
-							xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+							action="{instance('exist-config')/url}eaditor/{xxf:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
+							xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
@@ -535,7 +535,7 @@ luc:term "SEARCH_QUERY"} LIMIT 20]]>
 								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
 								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
 								<!-- construct AACR2 label -->
-								<xforms:action xxforms:iterate="instance('geoname-temp')//geoname">
+								<xforms:action xxf:iterate="instance('geoname-temp')//geoname">
 									<xforms:var name="countryCode" select="countryCode"/>
 									<xforms:var name="countryName" select="countryName"/>
 									<xforms:var name="name" select="name"/>

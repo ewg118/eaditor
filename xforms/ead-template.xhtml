@@ -5,7 +5,7 @@
     Function: EAD core XForms template editor (EAD Header, Archdesc)  
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:xxi="http://orbeon.org/oxf/xml/xinclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner">
 	<head>
 		<title>EADitor: Edit Core Template</title>
@@ -46,7 +46,7 @@
 			</xforms:instance>
 
 			<!-- authentication -->
-			<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="collections-list" xxf:exclude-result-prefixes="#all">
 				<collections xmlns=""></collections>
 			</xforms:instance>
 
@@ -65,10 +65,10 @@
 
 			<!-- EAD ELEMENTS -->
 			<!-- eadheader -->
-			<xforms:instance id="profiledesc-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="profiledesc-template" xxf:exclude-result-prefixes="#all">
 				<profiledesc></profiledesc>
 			</xforms:instance>
-			<xforms:instance id="revisiondesc-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="revisiondesc-template" xxf:exclude-result-prefixes="#all">
 				<revisiondesc>
 					<change>
 						<date normal=""></date>
@@ -76,84 +76,84 @@
 					</change>
 				</revisiondesc>
 			</xforms:instance>
-			<xforms:instance id="editionstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="editionstmt-template" xxf:exclude-result-prefixes="#all">
 				<editionstmt>
 					<edition></edition>
 				</editionstmt>
 			</xforms:instance>
-			<xforms:instance id="notestmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="notestmt-template" xxf:exclude-result-prefixes="#all">
 				<notestmt>
 					<note>
 						<p></p>
 					</note>
 				</notestmt>
 			</xforms:instance>
-			<xforms:instance id="publicationstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="publicationstmt-template" xxf:exclude-result-prefixes="#all">
 				<publicationstmt></publicationstmt>
 			</xforms:instance>
-			<xforms:instance id="seriesstmt-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="seriesstmt-template" xxf:exclude-result-prefixes="#all">
 				<seriesstmt></seriesstmt>
 			</xforms:instance>
 
 			<!-- shared/generic -->
-			<xforms:instance id="author-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="author-template" xxf:exclude-result-prefixes="#all">
 				<author></author>
 			</xforms:instance>
-			<xforms:instance id="creation-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="creation-template" xxf:exclude-result-prefixes="#all">
 				<creation></creation>
 			</xforms:instance>
-			<xforms:instance id="change-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="change-template" xxf:exclude-result-prefixes="#all">
 				<change>
 					<date normal=""></date>
 					<item></item>
 				</change>
 			</xforms:instance>
-			<xforms:instance id="date-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="date-template" xxf:exclude-result-prefixes="#all">
 				<date normal=""></date>
 			</xforms:instance>
-			<xforms:instance id="descrules-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="descrules-template" xxf:exclude-result-prefixes="#all">
 				<descrules></descrules>
 			</xforms:instance>
-			<xforms:instance id="langusage-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="langusage-template" xxf:exclude-result-prefixes="#all">
 				<langusage></langusage>
 			</xforms:instance>
-			<xforms:instance id="num-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="num-template" xxf:exclude-result-prefixes="#all">
 				<num type=""></num>
 			</xforms:instance>
-			<xforms:instance id="publisher-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="publisher-template" xxf:exclude-result-prefixes="#all">
 				<publisher></publisher>
 			</xforms:instance>
-			<xforms:instance id="sponsor-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="sponsor-template" xxf:exclude-result-prefixes="#all">
 				<sponsor></sponsor>
 			</xforms:instance>
-			<xforms:instance id="subtitle-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="subtitle-template" xxf:exclude-result-prefixes="#all">
 				<subtitle></subtitle>
 			</xforms:instance>
-			<xforms:instance id="titleproper-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="titleproper-template" xxf:exclude-result-prefixes="#all">
 				<titleproper></titleproper>
 			</xforms:instance>
-			<xforms:instance id="address-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="address-template" xxf:exclude-result-prefixes="#all">
 				<address>
 					<addressline></addressline>
 				</address>
 			</xforms:instance>
-			<xforms:instance id="blockquote-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="blockquote-template" xxf:exclude-result-prefixes="#all">
 				<blockquote></blockquote>
 			</xforms:instance>
-			<xforms:instance id="head-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="head-template" xxf:exclude-result-prefixes="#all">
 				<head></head>
 			</xforms:instance>
-			<xforms:instance id="note-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="note-template" xxf:exclude-result-prefixes="#all">
 				<note>
 					<p></p>
 				</note>
 			</xforms:instance>
-			<xforms:instance id="p-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="p-template" xxf:exclude-result-prefixes="#all">
 				<p></p>
 			</xforms:instance>
 
 			<!-- archdesc instances -->
-			<xforms:instance id="dsc-template" xxforms:exclude-result-prefixes="#all">
+			<xforms:instance id="dsc-template" xxf:exclude-result-prefixes="#all">
 				<dsc></dsc>
 			</xforms:instance>
 
@@ -179,7 +179,7 @@
 
 			<!-- ************** SUBMISSIONS ***************** -->
 			<xforms:submission id="load-collections" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/collections-list.xml" replace="instance"
-				instance="collections-list" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				instance="collections-list" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<!-- if the config loads successfully, set the collection names based on authentication -->
 				<xforms:action ev:event="xforms-submit-done">
 					<xforms:setvalue ref="instance('control-instance')/collection-name" value="instance('collections-list')/collection[@role=instance('control-instance')/request-security/role]/@name"></xforms:setvalue>
@@ -192,40 +192,40 @@
 			</xforms:submission>
 
 			<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/config.xml"
-				replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message level="modal" ev:event="xforms-submit-error">Error loading config.</xforms:message>
 			</xforms:submission>
 
 			<!-- load preliminary instances -->
 			<xforms:submission id="load-c-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/c-template.xml"
-				replace="instance" instance="c-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="c-template" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading component template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to get the document -->
 			<xforms:submission id="load-core-template" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
-				replace="instance" instance="ead-template" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				replace="instance" instance="ead-template" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error loading core template.</xforms:message>
 			</xforms:submission>
 
 			<!-- Submission to save the document -->
 			<xforms:submission id="save-core-template" ref="instance('ead-template')" action="{instance('exist-config')/url}eaditor/{instance('control-instance')/collection-name}/ead-template.xml"
-				method="put" replace="none" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+				method="put" replace="none" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 				<xforms:message ev:event="xforms-submit-error" level="modal">Error Saving Documents. Be sure all required inputs are filled in.</xforms:message>
 				<xforms:setvalue ev:event="xforms-submit-done" ref="instance('status')">Template saved.</xforms:setvalue>
 			</xforms:submission>
 
 			<!-- ************************ xforms-model-construct-done ****************************** -->
 			<xforms:action ev:event="xforms-model-construct-done">
-				<xforms:action if="string(xxforms:get-session-attribute('collection-name'))">
-					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxforms:get-session-attribute('collection-name')"/>
+				<xforms:action if="string(xxf:get-session-attribute('collection-name'))">
+					<xforms:setvalue ref="instance('control-instance')/collection-name" value="xxf:get-session-attribute('collection-name')"/>
 					<xforms:send submission="load-config"></xforms:send>
 					<xforms:send submission="load-core-template"></xforms:send>
 					<xforms:send submission="load-c-template"></xforms:send>
 				</xforms:action>
-				<xforms:action if="not(string(xxforms:get-session-attribute('collection-name')))">
+				<xforms:action if="not(string(xxf:get-session-attribute('collection-name')))">
 					<xforms:insert context="instance('control-instance')" nodeset="collection-name" position="after"
-						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
+						origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/get-authentication.xpl', 'dump', instance('dump'), 'data')"></xforms:insert>
 					<xforms:send submission="load-collections"></xforms:send>
 				</xforms:action>
 			</xforms:action>
@@ -335,10 +335,10 @@
 											<xforms:label>
 												<span class="glyphicon glyphicon-plus"></span>
 											</xforms:label>
-											<xxforms:show ev:event="DOMActivate" dialog="eadheader-objects"></xxforms:show>
+											<xxf:show ev:event="DOMActivate" dialog="eadheader-objects"></xxf:show>
 										</xforms:trigger>
 									</span>
-									<xxforms:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+									<xxf:dialog id="eadheader-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 										<xforms:label>Available Elements</xforms:label>
 										<xforms:group ref=".[count(ead:profiledesc) &lt; 1]">
 											<xforms:trigger appearance="minimal">
@@ -355,7 +355,7 @@
 													origin="instance('revisiondesc-template')"></xforms:insert>
 											</xforms:trigger>
 										</xforms:group>
-									</xxforms:dialog>
+									</xxf:dialog>
 									<div class="section">
 										<div>
 											<xforms:input ref="ead:eadid">
@@ -398,10 +398,10 @@
 												<xforms:label>
 													<span class="glyphicon glyphicon-plus"></span>
 												</xforms:label>
-												<xxforms:show ev:event="DOMActivate" dialog="filedesc-objects"></xxforms:show>
+												<xxf:show ev:event="DOMActivate" dialog="filedesc-objects"></xxf:show>
 											</xforms:trigger>
 										</span>
-										<xxforms:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+										<xxf:dialog id="filedesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 											<xforms:label>File Description Elements</xforms:label>
 											<xforms:group ref=".[count(//ead:editionstmt) &lt; 1]">
 												<xforms:trigger appearance="minimal">
@@ -436,7 +436,7 @@
 													></xforms:insert>
 												</xforms:trigger>
 											</xforms:group>
-										</xxforms:dialog>
+										</xxf:dialog>
 										<xforms:group ref="ead:filedesc">
 											<xforms:group ref="ead:titlestmt">
 												<div class="subsection">
@@ -446,10 +446,10 @@
 															<xforms:label>
 																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="titlestmt-objects"></xxforms:show>
+															<xxf:show ev:event="DOMActivate" dialog="titlestmt-objects"></xxf:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxf:dialog id="titlestmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Title Statement Elements</xforms:label>
 														<xforms:trigger appearance="minimal">
 															<xforms:label>
@@ -472,7 +472,7 @@
 																	origin="instance('sponsor-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
-													</xxforms:dialog>
+													</xxf:dialog>
 													<div>
 														<xforms:input ref="ead:titleproper">
 															<xforms:label>Proper Title</xforms:label>
@@ -569,10 +569,10 @@
 															<xforms:label>
 																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="publicationstmt-objects"></xxforms:show>
+															<xxf:show ev:event="DOMActivate" dialog="publicationstmt-objects"></xxf:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxf:dialog id="publicationstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Publication Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:address) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -607,7 +607,7 @@
 																<xforms:insert ev:event="DOMActivate" context="." origin="instance('publisher-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
-													</xxforms:dialog>
+													</xxf:dialog>
 													<xforms:group ref=".[count(child::node()) &lt; 1]">
 														<div class="warning"><b>Warning:</b> Element must contain content.</div>
 													</xforms:group>
@@ -659,10 +659,10 @@
 															<xforms:label>
 																<span class="glyphicon glyphicon-plus"></span>
 															</xforms:label>
-															<xxforms:show ev:event="DOMActivate" dialog="seriesstmt-objects"></xxforms:show>
+															<xxf:show ev:event="DOMActivate" dialog="seriesstmt-objects"></xxf:show>
 														</xforms:trigger>
 													</span>
-													<xxforms:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+													<xxf:dialog id="seriesstmt-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 														<xforms:label>Series Statement Elements</xforms:label>
 														<xforms:group ref=".[count(ead:num) &lt; 1]">
 															<xforms:trigger appearance="minimal">
@@ -683,7 +683,7 @@
 																<xforms:insert ev:event="DOMActivate" context="." origin="instance('titleproper-template')"></xforms:insert>
 															</xforms:trigger>
 														</xforms:group>
-													</xxforms:dialog>
+													</xxf:dialog>
 													<xforms:group ref=".[count(child::node()) &lt; 1]">
 														<div class="warning"><b>Warning:</b> Element must contain content.</div>
 													</xforms:group>
@@ -742,10 +742,10 @@
 													<xforms:label>
 														<span class="glyphicon glyphicon-plus"></span>
 													</xforms:label>
-													<xxforms:show ev:event="DOMActivate" dialog="profiledesc-objects"></xxforms:show>
+													<xxf:show ev:event="DOMActivate" dialog="profiledesc-objects"></xxf:show>
 												</xforms:trigger>
 											</span>
-											<xxforms:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
+											<xxf:dialog id="profiledesc-objects" appearance="full" level="modal" close="true" draggable="true" visible="false">
 												<xforms:label>Profile Description Elements</xforms:label>
 												<xforms:group ref=".[count(ead:descrules) &lt; 1]">
 													<xforms:trigger appearance="minimal">
@@ -765,7 +765,7 @@
 															origin="instance('langusage-template')"></xforms:insert>
 													</xforms:trigger>
 												</xforms:group>
-											</xxforms:dialog>
+											</xxf:dialog>
 											<xforms:group ref="ead:creation">
 												<div>
 													<xforms:input ref=".">

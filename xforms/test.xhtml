@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ev="http://www.w3.org/2001/xml-events"
-	xmlns:xxforms="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
+	xmlns:xxf="http://orbeon.org/oxf/xml/xforms" xmlns:widget="http://orbeon.org/oxf/xml/widget" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:fr="http://orbeon.org/oxf/xml/form-runner"
 	xmlns:eaditor="https://github.com/ewg118/eaditor" xmlns:exist="http://exist.sourceforge.net/NS/exist" xmlns:saxon="http://saxon.sf.net/">
 	<head>
 		<title>EADitor: Conformance Testing</title>
@@ -161,16 +161,16 @@
 				<xforms:setvalue ref="instance('flickr-control')/api_secret" value="instance('config')/flickr_api_secret"/>
 
 				<!-- get a request token after loggin in -->
-				<xforms:action if="string(xxforms:get-request-parameter('oauth_token')) and string(xxforms:get-request-parameter('oauth_verifier'))">
-					<xforms:setvalue ref="instance('flickr-control')/token" value="xxforms:get-request-parameter('oauth_token')"/>
-					<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxforms:get-request-parameter('oauth_verifier')"/>
+				<xforms:action if="string(xxf:get-request-parameter('oauth_token')) and string(xxf:get-request-parameter('oauth_verifier'))">
+					<xforms:setvalue ref="instance('flickr-control')/token" value="xxf:get-request-parameter('oauth_token')"/>
+					<xforms:setvalue ref="instance('flickr-control')/verifier" value="xxf:get-request-parameter('oauth_verifier')"/>
 
 					<!-- get access token -->
 					<xforms:setvalue ref="instance('flickr-control')/timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
 					<xforms:setvalue ref="instance('flickr-control')/nonce" value="string(digest( string(instance('flickr-control')/timestamp), 'MD5', 'hex' ))"/>
 					<xforms:setvalue ref="instance('flickr-control')/service">http://www.flickr.com/services/oauth/access_token</xforms:setvalue>
 					<!-- generating signature -->
-					<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
+					<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;', xxf:get-session-attribute('oauth_token_secret'))"/>
 					<xforms:var name="base"
 						select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('oauth_consumer_key=', instance('flickr-control')/api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_verifier=', instance('flickr-control')/verifier, '&amp;oauth_version=', instance('flickr-control')/version)))"/>
 					<xforms:setvalue ref="instance('flickr-control')/auth/key" value="$key"/>
@@ -182,17 +182,17 @@
 					<!-- get response -->
 					<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"/>
 					<xforms:insert nodeset="instance('flickr-auth-response')"
-						origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
+						origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
 
 					<!-- set session attributes after flickr authentication -->
 					<xforms:var name="pieces" select="tokenize(instance('flickr-auth-response'), '&amp;')"/>
-					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"/>
-					<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
-					<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
-					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"/>
-					<xforms:insert context="." origin="xxforms:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"/>
+					<xforms:insert context="." origin="xxf:set-session-attribute('flickr_fullname', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[1], '='))"/>
+					<xforms:insert context="." origin="xxf:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
+					<xforms:insert context="." origin="xxf:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
+					<xforms:insert context="." origin="xxf:set-session-attribute('flickr_nsid', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[4], '='))"/>
+					<xforms:insert context="." origin="xxf:set-session-attribute('flickr_username', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[5], '='))"/>
 				</xforms:action>
-				<!--<xforms:action if="string(xxforms:get-session-attribute('oauth_token'))">
+				<!--<xforms:action if="string(xxf:get-session-attribute('oauth_token'))">
 					
 				</xforms:action>-->
 			</xforms:action>
@@ -262,24 +262,24 @@
 									<!-\- get response -\->
 									<xforms:setvalue ref="instance('flickr-auth-config')/url" value="instance('flickr-control')/request"/>
 									<xforms:insert nodeset="instance('flickr-auth-response')"
-										origin="xxforms:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
+										origin="xxf:call-xpl('oxf:/apps/eaditor/xpl/flickr-auth-response.xpl', 'file', instance('flickr-auth-config'), 'data')"/>
 									<!-\- STEP 2: Redirect to Authorization URL -\->
 									<!-\- set session attributes -\->
-									<xforms:insert context="." origin="xxforms:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
+									<xforms:insert context="." origin="xxf:set-session-attribute('oauth_token', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[2], '='))"/>
 									<xforms:insert context="."
-										origin="xxforms:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
-									<xforms:load resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxforms:get-session-attribute('oauth_token')}"/>
+										origin="xxf:set-session-attribute('oauth_token_secret', substring-after(tokenize(instance('flickr-auth-response'), '&amp;')[3], '='))"/>
+									<xforms:load resource="http://www.flickr.com/services/oauth/authorize?oauth_token={xxf:get-session-attribute('oauth_token')}"/>
 								</xforms:action>
-							</xforms:trigger> <xforms:group ref=".[string(xxforms:get-session-attribute('oauth_token'))]">
+							</xforms:trigger> <xforms:group ref=".[string(xxf:get-session-attribute('oauth_token'))]">
 								<xforms:trigger>
 									<xforms:label>Check Authentication</xforms:label>
 									<xforms:action ev:event="DOMActivate">
 										<xforms:setvalue ref="timestamp" value="ceiling(xforms:seconds-from-dateTime(string(current-dateTime())))"/>
 										<xforms:setvalue ref="nonce" value="string(digest( string(timestamp), 'MD5', 'hex' ))"/>
 										<xforms:setvalue ref="service">https://api.flickr.com/services/rest/</xforms:setvalue>
-										<xforms:setvalue ref="token" value="xxforms:get-session-attribute('oauth_token')"/>
+										<xforms:setvalue ref="token" value="xxf:get-session-attribute('oauth_token')"/>
 										<!-\- generating signature -\->
-										<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;', xxforms:get-session-attribute('oauth_token_secret'))"/>
+										<xforms:var name="key" select="concat(instance('flickr-control')/api_secret, '&amp;', xxf:get-session-attribute('oauth_token_secret'))"/>
 										<xforms:var name="base"
 											select="concat('GET&amp;', encode-for-uri(instance('flickr-control')/service), '&amp;', encode-for-uri(concat('method=flickr.test.login&amp;oauth_consumer_key=', instance('flickr-control')/api_key, '&amp;oauth_nonce=', instance('flickr-control')/nonce, '&amp;oauth_signature_method=', instance('flickr-control')/method, '&amp;oauth_timestamp=', instance('flickr-control')/timestamp, '&amp;oauth_token=', instance('flickr-control')/token, '&amp;oauth_version=', instance('flickr-control')/version)))"/>
 										<xforms:setvalue ref="auth/key" value="$key"/>
@@ -291,7 +291,7 @@
 							</xforms:group>-->
 						
 						
-						<xforms:output value="xxforms:get-request-path()">
+						<xforms:output value="xxf:get-request-path()">
 							<xforms:label>URL</xforms:label>
 						</xforms:output>
 						<fr:xforms-inspector id="orbeon-xforms-inspector"/>

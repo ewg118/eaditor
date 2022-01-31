@@ -2,7 +2,7 @@
 	last modified: March, 2014
 	function: query Getty AAT SPARQL endpoint or use local vocabulary
 -->
-<xbl:xbl  xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxforms="http://orbeon.org/oxf/xml/xforms"
+<xbl:xbl  xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
 	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor"
 	xmlns:res="http://www.w3.org/2005/sparql-results#">
@@ -12,7 +12,7 @@
 				<xbl:content includes="xforms|label,xforms|help,xforms|hint,xforms|alert"/>
 				<xforms:group xxbl:scope="inner">
 					<xforms:var name="binding" as="node()?">
-						<xxforms:sequence select="." xxbl:scope="outer"/>
+						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
 						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">aat</xforms:setvalue>						
@@ -202,7 +202,7 @@
 						</xforms:instance>
 
 						<!-- authentication -->
-						<xforms:instance id="collections-list" xxforms:exclude-result-prefixes="#all">
+						<xforms:instance id="collections-list" xxf:exclude-result-prefixes="#all">
 							<collections xmlns=""/>
 						</xforms:instance>
 
@@ -287,8 +287,8 @@ OPTIONAL {?c skos:scopeNote ?note .
 						</xforms:submission>
 
 						<!-- submissions -->
-						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{xxforms:get-session-attribute('collection-name')}/config.xml"
-							replace="instance" instance="config" xxforms:username="{instance('exist-config')/username}" xxforms:password="{instance('exist-config')/password}">
+						<xforms:submission id="load-config" serialization="none" method="get" action="{instance('exist-config')/url}eaditor/{xxf:get-session-attribute('collection-name')}/config.xml"
+							replace="instance" instance="config" xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
 							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
 						</xforms:submission>
 
