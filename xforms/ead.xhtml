@@ -80,8 +80,22 @@
 
 			<xforms:instance id="xqueries">
 				<queries xmlns="">
-					<query id="get-ids">&lt;report> { for $foo in collection() where $foo[descendant::ead:eadid/@mainagencycode='AGENCYCODE'] order by $foo//ead:eadid return &lt;item> {
-						data($foo//*[local-name()='eadid']) } &lt;/item> } &lt;/report></query>
+					<query id="get-ids">
+					<![CDATA[xquery version "3.0";
+						declare namespace ead = "urn:isbn:1-931666-22-9";
+						<report>
+						    {
+						        for $foo in collection()
+						        where $foo[data(descendant::ead:eadid/@mainagencycode) = 'AGENCYCODE']
+						        order by $foo//ead:eadid
+						        return
+						            <item>
+						                {
+						                    data($foo//ead:eadid)
+						                }
+						            </item>
+						    }
+						</report>]]></query>
 				</queries>
 			</xforms:instance>
 
