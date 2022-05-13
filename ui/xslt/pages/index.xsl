@@ -54,28 +54,25 @@
 					<h3>Navigation</h3>
 					<ul>
 						<li>
-							<a href="http://numismatics.org/archive/">Archive Overview</a>
+							<a href="https://numismatics.org/governance/awards/">Awards</a>
 						</li>
 						<li>
-							<a href="http://numismatics.org/archive/awards/">Awards</a>
+							<a href="https://numismatics.org/proper-citation-format/">Citation Format</a>
 						</li>
 						<li>
-							<a href="http://numismatics.org/archive/citationformat/">Citation Format</a>
+							<a href="https://numismatics.org/conducting-research-in-the-ans-archives/">Conducting Research</a>
 						</li>
 						<li>
-							<a href="http://numismatics.org/archive/research/">Conducting Research</a>
+							<a href="https://numismatics.org/seminar/">Graduate Seminar</a>
 						</li>
 						<li>
-							<a href="http://numismatics.org/seminar/">Graduate Seminar</a>
+							<a href="https://numismatics.org/pastofficers/">Past Officers</a>
 						</li>
 						<li>
-							<a href="http://numismatics.org/pastofficers/">Past Officers</a>
+							<a href="https://numismatics.org/about-us/publications/">Publications Program</a>
 						</li>
 						<li>
-							<a href="http://numismatics.org/publications/history/">Publications Program</a>
-						</li>
-						<li>
-							<a href="http://numismatics.org/archive/visitingscholarhistory/">Visiting Scholar </a>
+							<a href="https://numismatics.org/visiting-scholar/">Visiting Scholar </a>
 						</li>
 					</ul>
 				</div>
@@ -83,18 +80,6 @@
 					<xsl:copy-of select="/config/content/index/*"/>
 				</div>
 				<div class="col-md-3">
-					<div class="highlight">
-						<h3>Share</h3>
-						<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
-							<a class="addthis_button_preferred_1"/>
-							<a class="addthis_button_preferred_2"/>
-							<a class="addthis_button_preferred_3"/>
-							<a class="addthis_button_preferred_4"/>
-							<a class="addthis_button_compact"/>
-							<a class="addthis_counter addthis_bubble_style"/>
-						</div>
-						<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4da715d011c943c2"/>
-					</div>
 					<div class="highlight">
 						<h3>Export Options</h3>
 						<a href="feed/?q=*:*" style="margin:5px">
