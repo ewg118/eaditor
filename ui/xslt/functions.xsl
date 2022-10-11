@@ -193,6 +193,7 @@
 					<xsl:when test="$elem = 'descgrp'">Descriptive Group</xsl:when>
 					<xsl:when test="$elem = 'dimensions'">Dimensions</xsl:when>
 					<xsl:when test="$elem = 'dsc'">Collection Hierarchy</xsl:when>
+					<xsl:when test="$elem = 'editorialDecl'">Editorial Notes</xsl:when>
 					<xsl:when test="$elem = 'extent'">Extent</xsl:when>
 					<xsl:when test="$elem = 'famname'">Family</xsl:when>
 					<xsl:when test="$elem = 'fileplan'">Fileplan</xsl:when>

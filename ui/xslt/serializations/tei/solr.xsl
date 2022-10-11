@@ -277,6 +277,7 @@
 				<xsl:when test=". = '300265639'">research notes</xsl:when>
 				<xsl:when test=". = '300046300'">hoard photographs</xsl:when>
 				<xsl:when test=". = '300027568'">invoices</xsl:when>
+				<xsl:when test=". = '300417667'">seals (marks)</xsl:when>
 			</xsl:choose>
 		</field>
 
