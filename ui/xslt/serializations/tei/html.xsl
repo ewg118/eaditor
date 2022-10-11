@@ -617,8 +617,10 @@
 		<dl class="dl-horizontal">
 			<xsl:apply-templates select="tei:fileDesc/tei:titleStmt/tei:author"/>
 			<xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:msDesc/tei:history/tei:origin/tei:date"/>
+			<xsl:apply-templates select="tei:fileDesc/tei:sourceDesc/tei:biblStruct/tei:monogr/tei:imprint/tei:date"/>
 			<xsl:apply-templates select="tei:fileDesc/tei:publicationStmt"/>
 			<xsl:apply-templates select="tei:profileDesc/tei:abstract"/>
+			<xsl:apply-templates select="tei:encodingDesc/tei:editorialDecl"/>
 		</dl>
 
 		<xsl:if test="tei:profileDesc/tei:particDesc//*[@ref and not(@facs)] or tei:profileDesc//tei:term[@ref and not(@facs)]">
@@ -650,6 +652,7 @@
 				<xsl:when test=". = '300265639'">research notes</xsl:when>
 				<xsl:when test=". = '300046300'">hoard photographs</xsl:when>
 				<xsl:when test=". = '300027568'">invoices</xsl:when>
+				<xsl:when test=". = '300417667'">seals (marks)</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 
@@ -721,7 +724,7 @@
 		</dd>
 	</xsl:template>
 
-	<xsl:template match="tei:pubPlace | tei:author | tei:abstract | tei:date">
+	<xsl:template match="tei:pubPlace | tei:author | tei:abstract | tei:editorialDecl| tei:date">
 		<dt>
 			<xsl:value-of select="eaditor:normalize_fields(local-name(), $lang)"/>
 		</dt>
