@@ -2,10 +2,14 @@
 	last modified: March, 2014
 	function: query Getty AAT SPARQL endpoint or use local vocabulary
 -->
-<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
-	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl" xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors" xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor"
-	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:res="http://www.w3.org/2005/sparql-results#">
+<xbl:xbl xmlns="http://www.w3.org/1999/xhtml" xmlns:xforms="http://www.w3.org/2002/xforms"
+	xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xxf="http://orbeon.org/oxf/xml/xforms"
+	xmlns:fr="http://orbeon.org/oxf/xml/form-runner" xmlns:xbl="http://www.w3.org/ns/xbl"
+	xmlns:xxbl="http://orbeon.org/oxf/xml/xbl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:atom="http://www.w3.org/2005/Atom" xmlns:oxf="http://www.orbeon.com/oxf/processors"
+	xmlns:ead="urn:isbn:1-931666-22-9" xmlns:eaditor="https://github.com/ewg118/eaditor"
+	xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+	xmlns:res="http://www.w3.org/2005/sparql-results#">
 	<xbl:binding id="eaditor-genreform" element="eaditor|genreform">
 		<xbl:template>
 			<xforms:group xbl:attr="model context ref bind" xxbl:scope="outer">
@@ -15,7 +19,8 @@
 						<xxf:sequence select="." xxbl:scope="outer"/>
 					</xforms:var>
 					<xforms:action ev:event="xforms-enabled" ev:target="#observer">
-						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))">aat</xforms:setvalue>						
+						<xforms:setvalue ref="instance('interface-type')" if="not(string($binding))"
+							>aat</xforms:setvalue>
 					</xforms:action>
 
 					<xforms:group ref=".[string($binding)]">
@@ -47,11 +52,14 @@
 									<span class="glyphicon glyphicon-remove"/>
 								</xforms:label>
 							</xforms:trigger>
-							<div class="alert-warning alert alert-box"><span class="glyphicon glyphicon-exclamation-sign"/><strong>Warning:</strong> Element must contain content.</div>
+							<div class="alert-warning alert alert-box"><span
+									class="glyphicon glyphicon-exclamation-sign"
+									/><strong>Warning:</strong> Element must contain content.</div>
 
 							<div>
 								<radiogroup>
-									<xforms:select1 ref="instance('interface-type')" appearance="full">
+									<xforms:select1 ref="instance('interface-type')"
+										appearance="full">
 										<xforms:label>Interface Type</xforms:label>
 										<xforms:item>
 											<xforms:label>Getty AAT</xforms:label>
@@ -72,9 +80,14 @@
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<xforms:setvalue ref="instance('search-query')"/>
 												<!-- add attributes -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', '')"/>
-												<xforms:setvalue ref="$binding/@source">aat</xforms:setvalue>
+												<xforms:insert if="not($binding/@authfilenumber)"
+												context="$binding"
+												origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)"
+												context="$binding"
+												origin="xforms:attribute('source', '')"/>
+												<xforms:setvalue ref="$binding/@source"
+												>aat</xforms:setvalue>
 												<xforms:toggle case="aat-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'lcgft'">
@@ -83,9 +96,14 @@
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<xforms:setvalue ref="instance('search-query')"/>
 												<!-- add attributes -->
-												<xforms:insert if="not($binding/@authfilenumber)" context="$binding" origin="xforms:attribute('authfilenumber', '')"/>
-												<xforms:insert if="not($binding/@source)" context="$binding" origin="xforms:attribute('source', '')"/>
-												<xforms:setvalue ref="$binding/@source">lcgft</xforms:setvalue>
+												<xforms:insert if="not($binding/@authfilenumber)"
+												context="$binding"
+												origin="xforms:attribute('authfilenumber', '')"/>
+												<xforms:insert if="not($binding/@source)"
+												context="$binding"
+												origin="xforms:attribute('source', '')"/>
+												<xforms:setvalue ref="$binding/@source"
+												>lcgft</xforms:setvalue>
 												<xforms:toggle case="lcgft-search"/>
 											</xforms:action>
 											<xforms:action if=". = 'local'">
@@ -93,11 +111,14 @@
 												<xforms:setvalue ref="instance('temp')"/>
 												<xforms:setvalue ref="instance('temp')/@href"/>
 												<!-- remove attributes -->
-												<xforms:delete if="$binding/@authfilenumber" context="$binding/@authfilenumber"/>
-												<xforms:delete if="$binding/@source" context="$binding/@source"/>
+												<xforms:delete if="$binding/@authfilenumber"
+												context="$binding/@authfilenumber"/>
+												<xforms:delete if="$binding/@source"
+												context="$binding/@source"/>
 												<!-- load config if it hasn't been loaded -->
-												<xforms:action if="not(string(instance('config')/url))">
-													<xforms:send submission="load-config"/>
+												<xforms:action
+												if="not(string(instance('config')/url))">
+												<xforms:send submission="load-config"/>
 												</xforms:action>
 												<xforms:toggle case="local-autosuggest"/>
 											</xforms:action>
@@ -113,8 +134,10 @@
 										</xforms:input>
 										<xforms:trigger>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:var name="search_query" select="string-join(tokenize(instance('search-query'), ' '), ' AND ')"/>
-												<xforms:setvalue ref="instance('sparqlQuery')" value="normalize-space(replace(instance('sparqlQueryTemplate'), 'SEARCH_QUERY', $search_query))"/>
+												<xforms:var name="search_query"
+												select="string-join(tokenize(instance('search-query'), ' '), ' AND ')"/>
+												<xforms:setvalue ref="instance('sparqlQuery')"
+												value="normalize-space(replace(instance('sparqlQueryTemplate'), 'SEARCH_QUERY', $search_query))"/>
 												<xforms:send submission="query-getty"/>
 											</xforms:action>
 											<xforms:label>Search</xforms:label>
@@ -127,22 +150,31 @@
 										</p>
 									</xforms:group>
 
-									<xforms:group ref=".[count(instance('getty-response')//res:result) &gt; 0]">
-										<xforms:select1 ref="instance('temp')/@href" appearance="compact" length="20">
+									<xforms:group
+										ref=".[count(instance('getty-response')//res:result) &gt; 0]">
+										<xforms:select1 ref="instance('temp')/@href"
+											appearance="compact" length="20">
 											<xforms:label>Term</xforms:label>
-											<xforms:itemset nodeset="instance('getty-response')//res:result">
-												<xforms:label ref="res:binding[@name='label']/res:literal"/>
+											<xforms:itemset
+												nodeset="instance('getty-response')//res:result">
+												<xforms:label
+												ref="res:binding[@name='label']/res:literal"/>
 												<xforms:value ref="res:binding[@name='c']/res:uri"/>
 											</xforms:itemset>
-											<xforms:setvalue ref="instance('temp')" value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
-												instance('temp')/@href]/res:binding[@name='def']/res:literal" ev:event="xforms-value-changed"/>
+											<xforms:setvalue ref="instance('temp')"
+												value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
+												instance('temp')/@href]/res:binding[@name='def']/res:literal"
+												ev:event="xforms-value-changed"/>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
-												<xforms:setvalue ref="$binding" value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
-													instance('temp')/@href]/res:binding[@name='label']/res:literal"/>
+												<xforms:setvalue ref="$binding/@authfilenumber"
+												value="tokenize(instance('temp')/@href, '/')[last()]"/>
+												<xforms:setvalue ref="$binding"
+												value="instance('getty-response')//res:result[res:binding[@name='c']/res:uri =
+													instance('temp')/@href]/res:binding[@name='label']/res:literal"
+												/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
@@ -167,22 +199,31 @@
 										</p>
 									</xforms:group>
 
-									<xforms:group ref=".[count(instance('lc-response')//atom:entry) &gt; 0]">
-										<xforms:select1 ref="instance('temp')/@href" appearance="compact" length="20">
+									<xforms:group
+										ref=".[count(instance('lc-response')//atom:entry) &gt; 0]">
+										<xforms:select1 ref="instance('temp')/@href"
+											appearance="compact" length="20">
 											<xforms:label>Term</xforms:label>
-											<xforms:itemset nodeset="instance('lc-response')//atom:entry">
+											<xforms:itemset
+												nodeset="instance('lc-response')//atom:entry">
 												<xforms:label ref="atom:title"/>
-												<xforms:value ref="atom:link[@rel='alternate' and not(@type)]/@href"/>
+												<xforms:value
+												ref="atom:link[@rel='alternate' and not(@type)]/@href"
+												/>
 											</xforms:itemset>
-											<xforms:setvalue ref="instance('temp')" value="instance('lc-response')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href =
-												instance('temp')/@href]/atom:title" ev:event="xforms-value-changed"/>
+											<xforms:setvalue ref="instance('temp')"
+												value="instance('lc-response')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href =
+												instance('temp')/@href]/atom:title"
+												ev:event="xforms-value-changed"/>
 										</xforms:select1>
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="$binding/@authfilenumber" value="tokenize(instance('temp')/@href, '/')[last()]"/>
+												<xforms:setvalue ref="$binding/@authfilenumber"
+												value="tokenize(instance('temp')/@href, '/')[last()]"/>
 												<!--<xforms:setvalue ref="$binding/@identifier" value="instance('temp')/@identifier"/>-->
-												<xforms:setvalue ref="$binding" value="instance('lc-response')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href =
+												<xforms:setvalue ref="$binding"
+												value="instance('lc-response')//atom:entry[atom:link[@rel='alternate' and not(@type)]/@href =
 													instance('temp')/@href]/atom:title"/>
 											</xforms:action>
 										</xforms:trigger>
@@ -202,14 +243,18 @@
 										<xforms:trigger>
 											<xforms:label>Add New</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="$binding" value="instance('search-query')"/>
+												<xforms:setvalue ref="$binding"
+												value="instance('search-query')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</div>
-									<xforms:group ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
-										<xforms:select1 ref="instance('temp')" appearance="compact" size="10">
+									<xforms:group
+										ref=".[count(instance('solr-response')/lst[@name='terms']//int) &gt; 0]">
+										<xforms:select1 ref="instance('temp')" appearance="compact"
+											size="10">
 											<xforms:label>Term</xforms:label>
-											<xforms:itemset nodeset="instance('solr-response')/lst[@name='terms']//int">
+											<xforms:itemset
+												nodeset="instance('solr-response')/lst[@name='terms']//int">
 												<xforms:label ref="@name"/>
 												<xforms:value ref="@name"/>
 											</xforms:itemset>
@@ -217,13 +262,16 @@
 										<xforms:trigger>
 											<xforms:label>Select</xforms:label>
 											<xforms:action ev:event="DOMActivate">
-												<xforms:setvalue ref="$binding" value="instance('temp')"/>
+												<xforms:setvalue ref="$binding"
+												value="instance('temp')"/>
 											</xforms:action>
 										</xforms:trigger>
 									</xforms:group>
-									<xforms:group ref=".[string-length(instance('control-instance')/local-message) &gt; 0]">
+									<xforms:group
+										ref=".[string-length(instance('control-instance')/local-message) &gt; 0]">
 										<p>
-											<xforms:output ref="instance('control-instance')/local-message"/>
+											<xforms:output
+												ref="instance('control-instance')/local-message"/>
 										</p>
 									</xforms:group>
 								</xforms:case>
@@ -239,7 +287,8 @@
 											<span class="glyphicon glyphicon-new-window"/>
 										</xforms:label>
 										<xforms:hint ref="@href"/>
-										<xforms:load ev:event="DOMActivate" resource="{@href}" show="new"/>
+										<xforms:load ev:event="DOMActivate" resource="{@href}"
+											show="new"/>
 									</xforms:trigger>
 								</div>
 							</xforms:group>
@@ -248,7 +297,8 @@
 					</xforms:group>
 					<!-- ********************************************************************** -->
 					<!-- ***********************  DIALOG INTERNAL MODEL *********************** -->
-					<xforms:model id="genreform-authorities-model" xmlns:xi="http://www.w3.org/2001/XInclude">
+					<xforms:model id="genreform-authorities-model"
+						xmlns:xi="http://www.w3.org/2001/XInclude">
 						<xforms:instance id="exist-config">
 							<xi:include href="../../../exist-config.xml"/>
 						</xforms:instance>
@@ -327,20 +377,34 @@ OPTIONAL {?c skos:scopeNote ?note .
 						</xforms:instance>
 
 						<!-- ************* SUBMISSIONS **********************-->
-						<xforms:submission id="query-lc" serialization="none" method="get" action="http://id.loc.gov/search/?q={instance('search-query')}
-							cs:http://id.loc.gov/authorities/genreForms&amp;start=1&amp;format=atom" instance="lc-response" replace="instance">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with id.loc.gov Atom feed.</xforms:message>
+						<xforms:submission id="query-lc" serialization="none" method="get"
+							action="https://id.loc.gov/search/?q={instance('search-query')}%20scheme:http://id.loc.gov/authorities/genreForms&amp;start=1&amp;format=atom"
+							instance="lc-response" replace="instance">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to
+								communicate with id.loc.gov Atom feed.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:var name="total" select="number(instance('lc-response')//opensearch:totalResults)"/>
-								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
-								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
-								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+								<xforms:var name="total"
+									select="number(instance('lc-response')//opensearch:totalResults)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No
+									results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20"
+									ref="instance('search-results')"
+									value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20"
+									ref="instance('search-results')"
+									value="concat('Displaying first 20 of ', $total, ' result(s).')"
+								/>
 							</xforms:action>
 						</xforms:submission>
 
 						<!-- SPARQL queries -->
-						<xforms:submission id="query-getty" action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}" ref="instance('getty-response')" replace="instance"
-							method="get">
+						<xforms:submission id="query-getty"
+							action="http://vocab.getty.edu/sparql?query={encode-for-uri(instance('sparqlQuery'))}"
+							ref="instance('getty-response')" replace="instance" method="get">
 							<xforms:header>
 								<xforms:name>User-Agent</xforms:name>
 								<xforms:value>XForms/EADitor</xforms:value>
@@ -349,31 +413,46 @@ OPTIONAL {?c skos:scopeNote ?note .
 								<xforms:name>Accept</xforms:name>
 								<xforms:value>application/sparql-results+xml</xforms:value>
 							</xforms:header>
-							<xforms:message ev:event="xforms-submit-error" level="modal">SPARQL query failed.</xforms:message>
+							<xforms:message ev:event="xforms-submit-error" level="modal">SPARQL
+								query failed.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
-								<xforms:var name="total" select="count(instance('getty-response')//res:result)"/>
-								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No results found for query.</xforms:setvalue>
-								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20" ref="instance('search-results')" value="concat('Displaying ', $total, ' result(s).')"/>
-								<xforms:setvalue if="$total &gt; 20" ref="instance('search-results')" value="concat('Displaying first 20 of ', $total, ' result(s).')"/>
+								<xforms:var name="total"
+									select="count(instance('getty-response')//res:result)"/>
+								<xforms:setvalue if="$total = 0" ref="instance('search-results')">No
+									results found for query.</xforms:setvalue>
+								<xforms:setvalue if="$total &gt; 0 and $total &lt;= 20"
+									ref="instance('search-results')"
+									value="concat('Displaying ', $total, ' result(s).')"/>
+								<xforms:setvalue if="$total &gt; 20"
+									ref="instance('search-results')"
+									value="concat('Displaying first 20 of ', $total, ' result(s).')"
+								/>
 							</xforms:action>
 						</xforms:submission>
 
 						<!-- submissions -->
 						<xforms:submission id="load-config" serialization="none" method="get"
-							action="{instance('exist-config')/url}eaditor/{xxf:get-session-attribute('collection-name')}/config.xml" replace="instance" instance="config"
-							xxf:username="{instance('exist-config')/username}" xxf:password="{instance('exist-config')/password}">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Error Loading Config.</xforms:message>
+							action="{instance('exist-config')/url}eaditor/{xxf:get-session-attribute('collection-name')}/config.xml"
+							replace="instance" instance="config"
+							xxf:username="{instance('exist-config')/username}"
+							xxf:password="{instance('exist-config')/password}">
+							<xforms:message ev:event="xforms-submit-error" level="modal">Error
+								Loading Config.</xforms:message>
 						</xforms:submission>
 
 						<xforms:submission id="suggest-term" serialization="none" method="get"
 							action="{instance('config')/solr_published}terms?terms.fl=genreform_facet&amp;terms.limit=25&amp;terms.sort=index&amp;terms.regex.flag=case_insensitive&amp;terms.regex=.*{instance('search-query')}.*"
 							instance="solr-response" replace="instance">
-							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to query Solr.</xforms:message>
+							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to
+								query Solr.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<!-- set or clear message based on number of results found -->
-								<xforms:setvalue ref="instance('control-instance')/local-message" if="count(instance('solr-response')/lst[@name='terms']//int) = 0">No matching terms
-									found.</xforms:setvalue>
-								<xforms:setvalue ref="instance('control-instance')/local-message" if="count(instance('solr-response')/lst[@name='terms']//int) &gt; 0"/>
+								<xforms:setvalue ref="instance('control-instance')/local-message"
+									if="count(instance('solr-response')/lst[@name='terms']//int) = 0"
+									>No matching terms found.</xforms:setvalue>
+								<xforms:setvalue ref="instance('control-instance')/local-message"
+									if="count(instance('solr-response')/lst[@name='terms']//int) &gt; 0"
+								/>
 							</xforms:action>
 						</xforms:submission>
 					</xforms:model>

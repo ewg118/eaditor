@@ -504,7 +504,7 @@
 						</xforms:submission>
 
 						<xforms:submission id="query-lc" serialization="none" method="get"
-							action="http://id.loc.gov/search/?q={instance('search-query')}%20scheme:http://id.loc.gov/authorities/names%20rdftype:PersonalName&amp;start=1&amp;format=atom"
+							action="https://id.loc.gov/search/?q={instance('search-query')}%20scheme:http://id.loc.gov/authorities/names%20rdftype:PersonalName&amp;start=1&amp;format=atom"
 							instance="lc-response" replace="instance">
 							<xforms:header>
 								<xforms:name>User-Agent</xforms:name>
