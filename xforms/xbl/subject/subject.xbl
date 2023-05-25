@@ -318,9 +318,12 @@
 						<!-- *** SUBMISSIONS *** -->
 						<!-- query LCSH -->
 						<xforms:submission id="query-lc" serialization="none" method="get"
-							action="http://id.loc.gov/search/?q={instance('search-query')}
-							memberOf:http://id.loc.gov/authorities/subjects/collection_LCSHAuthorizedHeadings&amp;start=1&amp;format=atom"
+							action="https://id.loc.gov/search/?q={instance('search-query')}%20memberOf:http://id.loc.gov/authorities/subjects/collection_LCSHAuthorizedHeadings&amp;start=1&amp;format=atom"
 							instance="lc-response" replace="instance">
+							<xforms:header>
+								<xforms:name>User-Agent</xforms:name>
+								<xforms:value>XForms/EADitor</xforms:value>
+							</xforms:header>
 							<xforms:message ev:event="xforms-submit-error" level="modal">Unable to communicate with id.loc.gov Atom feed.</xforms:message>
 							<xforms:action ev:event="xforms-submit-done">
 								<xforms:var name="total" select="number(instance('lc-response')//opensearch:totalResults)"/>
