@@ -393,19 +393,46 @@
 					</xsl:if>
 				</xsl:for-each>
 			</field>
-
-			<xsl:for-each select="ead:unitdate">
-				<xsl:variable name="multiDate" select="contains(@normal, '/')"/>
-				
-				<xsl:for-each select="tokenize(@normal, '/')">					
-					<xsl:call-template name="eaditor:get_date_hierarchy">
-						<xsl:with-param name="date" select="."/>
-						<xsl:with-param name="upload" select="$upload"/>
-						<xsl:with-param name="multiDate" select="$multiDate"/>
-						<xsl:with-param name="position" select="position()"/>
-					</xsl:call-template>					
-				</xsl:for-each>
+			
+			<xsl:variable name="dates" as="element()*">
+				<dates>
+					<xsl:for-each select="ead:unitdate/@normal">
+						<xsl:for-each select="tokenize(., '/')">
+							<date>
+								<xsl:choose>
+									<xsl:when test=". castable as xs:gYear">
+										<xsl:value-of select="."/>
+									</xsl:when>
+									<xsl:when test=". castable as xs:date or . castable as xs:gYearMonth">
+										<xsl:value-of select="substring(., 1, 4)"/>
+									</xsl:when>
+								</xsl:choose>
+							</date>
+						</xsl:for-each>
+					</xsl:for-each>
+				</dates>
+			</xsl:variable>
+			
+			<xsl:for-each select="$dates//date">
+				<xsl:call-template name="eaditor:get_date_hierarchy">
+					<xsl:with-param name="date" select="."/>
+					<xsl:with-param name="upload" select="$upload"/>
+				</xsl:call-template>
 			</xsl:for-each>
+			
+			<!-- set minimum and maximum dates -->
+			<field name="year_minint">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="min($dates//date)"/>
+			</field>
+			<field name="year_maxint">
+				<xsl:if test="$upload = true()">
+					<xsl:attribute name="update">set</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="max($dates//date)"/>
+			</field>
 		</xsl:if>
 		<xsl:if test="string(ead:unitid)">
 			<field name="unitid_display">

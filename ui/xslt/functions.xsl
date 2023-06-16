@@ -68,30 +68,18 @@
 
 	<xsl:template name="eaditor:get_date_hierarchy">
 		<xsl:param name="date"/>
-		<xsl:param name="upload"/>
-		<xsl:param name="multiDate"/>
-		<xsl:param name="position"/>
+		<xsl:param name="upload"/>		
 		
-		<xsl:variable name="gYear">
-			<xsl:choose>
-				<xsl:when test="$date castable as xs:gYear">
-					<xsl:value-of select="$date"/>
-				</xsl:when>
-				<xsl:when test="$date castable as xs:date or $date castable as xs:gYearMonth">
-					<xsl:value-of select="substring($date, 1, 4)"/>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
 
-		<xsl:if test="$gYear castable as xs:gYear">
-			<xsl:variable name="year_string" select="string(abs(number($gYear)))"/>
+		<xsl:if test="$date castable as xs:gYear">
+			<xsl:variable name="year_string" select="string(abs(number($date)))"/>
 			<xsl:variable name="century"
 				select="
-					if (number($gYear) &gt; 0) then
-						ceiling(number($gYear) div 100)
+					if (number($date) &gt; 0) then
+						ceiling(number($date) div 100)
 					else
-						floor(number($gYear) div 100)"/>
-			<xsl:variable name="decade" select="floor(abs(number($gYear)) div 10) * 10"/>
+						floor(number($date) div 100)"/>
+			<xsl:variable name="decade" select="floor(abs(number($date)) div 10) * 10"/>
 
 			<xsl:if test="number($century)">
 				<field name="century_num">
@@ -107,52 +95,14 @@
 				</xsl:if>
 				<xsl:value-of select="$decade"/>
 			</field>
-			<xsl:if test="number($gYear)">
+			<xsl:if test="number($date)">
 				<field name="year_num">
 					<xsl:if test="$upload = true()">
 						<xsl:attribute name="update">set</xsl:attribute>
 					</xsl:if>
-					<xsl:value-of select="number($gYear)"/>
+					<xsl:value-of select="number($date)"/>
 				</field>
-
-				<xsl:choose>
-					<xsl:when test="$multiDate = true()">
-						<xsl:choose>
-							<xsl:when test="$position = 1">
-								<field name="year_minint">
-									<xsl:if test="$upload = true()">
-										<xsl:attribute name="update">set</xsl:attribute>
-									</xsl:if>
-									<xsl:value-of select="number($gYear)"/>
-								</field>
-							</xsl:when>
-							<xsl:when test="$position = 2">
-								<field name="year_maxint">
-									<xsl:if test="$upload = true()">
-										<xsl:attribute name="update">set</xsl:attribute>
-									</xsl:if>
-									<xsl:value-of select="number($gYear)"/>
-								</field>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:when>
-					<xsl:otherwise>
-						<field name="year_minint">
-							<xsl:if test="$upload = true()">
-								<xsl:attribute name="update">set</xsl:attribute>
-							</xsl:if>
-							<xsl:value-of select="number($gYear)"/>
-						</field>
-						<field name="year_maxint">
-							<xsl:if test="$upload = true()">
-								<xsl:attribute name="update">set</xsl:attribute>
-							</xsl:if>
-							<xsl:value-of select="number($gYear)"/>
-						</field>
-					</xsl:otherwise>
-				</xsl:choose>
 			</xsl:if>
-
 		</xsl:if>
 	</xsl:template>
 
