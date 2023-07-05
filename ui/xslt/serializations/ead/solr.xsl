@@ -421,18 +421,20 @@
 			</xsl:for-each>
 			
 			<!-- set minimum and maximum dates -->
-			<field name="year_minint">
-				<xsl:if test="$upload = true()">
-					<xsl:attribute name="update">set</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="min($dates//date)"/>
-			</field>
-			<field name="year_maxint">
-				<xsl:if test="$upload = true()">
-					<xsl:attribute name="update">set</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="max($dates//date)"/>
-			</field>
+			<xsl:if test="$dates//date">
+				<field name="year_minint">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="min($dates//date)"/>
+				</field>
+				<field name="year_maxint">
+					<xsl:if test="$upload = true()">
+						<xsl:attribute name="update">set</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="max($dates//date)"/>
+				</field>
+			</xsl:if>
 		</xsl:if>
 		<xsl:if test="string(ead:unitid)">
 			<field name="unitid_display">
