@@ -159,30 +159,61 @@
 		<field name="unitdate_display">
 			<xsl:value-of select="."/>
 		</field>
-		<xsl:choose>
-			<xsl:when test="@when">
-				<xsl:call-template name="eaditor:get_date_hierarchy">
-					<xsl:with-param name="date" select="@when"/>
-					<xsl:with-param name="upload" select="false()"/>
-					<xsl:with-param name="multiDate" select="false()"/>
-					<xsl:with-param name="position" select="1"/>
-				</xsl:call-template>
-			</xsl:when>
-			<xsl:when test="@from and @to">
-				<xsl:call-template name="eaditor:get_date_hierarchy">
-					<xsl:with-param name="date" select="@from"/>
-					<xsl:with-param name="upload" select="false()"/>
-					<xsl:with-param name="multiDate" select="true()"/>
-					<xsl:with-param name="position" select="1"/>
-				</xsl:call-template>
-				<xsl:call-template name="eaditor:get_date_hierarchy">
-					<xsl:with-param name="date" select="@to"/>
-					<xsl:with-param name="upload" select="false()"/>
-					<xsl:with-param name="multiDate" select="true()"/>
-					<xsl:with-param name="position" select="2"/>
-				</xsl:call-template>
-			</xsl:when>
-		</xsl:choose>
+		
+		<xsl:variable name="dates" as="element()*">
+			<dates>
+				<xsl:choose>
+					<xsl:when test="@when">
+						<date>
+							<xsl:choose>
+								<xsl:when test="@when castable as xs:gYear">
+									<xsl:value-of select="@when"/>
+								</xsl:when>
+								<xsl:when test="@when castable as xs:date or . castable as xs:gYearMonth">
+									<xsl:value-of select="substring(@when, 1, 4)"/>
+								</xsl:when>
+							</xsl:choose>
+						</date>
+					</xsl:when>
+					<xsl:when test="@from and @to">
+						<xsl:choose>
+							<xsl:when test="@from castable as xs:gYear">
+								<xsl:value-of select="@from"/>
+							</xsl:when>
+							<xsl:when test="@from castable as xs:date or . castable as xs:gYearMonth">
+								<xsl:value-of select="substring(@from, 1, 4)"/>
+							</xsl:when>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="@to castable as xs:gYear">
+								<xsl:value-of select="@to"/>
+							</xsl:when>
+							<xsl:when test="@to castable as xs:date or . castable as xs:gYearMonth">
+								<xsl:value-of select="substring(@to, 1, 4)"/>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:when>
+				</xsl:choose>
+			</dates>
+		</xsl:variable>
+		
+		<xsl:for-each select="$dates//date">
+			<xsl:call-template name="eaditor:get_date_hierarchy">
+				<xsl:with-param name="date" select="."/>
+				<xsl:with-param name="upload" select="false()"/>
+			</xsl:call-template>
+		</xsl:for-each>
+		
+		<!-- set minimum and maximum dates -->
+		<xsl:if test="$dates//date">
+			<field name="year_minint">
+				<xsl:value-of select="min($dates//date)"/>				
+			</field>
+			<field name="year_maxint">
+				<xsl:value-of select="max($dates//date)"/>				
+			</field>
+		</xsl:if>
+		
 	</xsl:template>
 
 	<xsl:template match="tei:publisher">
