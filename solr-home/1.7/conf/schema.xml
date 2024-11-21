@@ -144,11 +144,11 @@
   
   <!--sortable int -->
   <!--sorting -->
-  <dynamicField name="*_maxint" sortMissingLast="true" type="int" indexed="true" stored="true"/>
-  <dynamicField name="*_minint" sortMissingLast="true" type="int" indexed="true" stored="true"/>
+  <dynamicField name="*_maxint" sortMissingLast="true" type="pint" indexed="true" stored="true"/>
+  <dynamicField name="*_minint" sortMissingLast="true" type="pint" indexed="true" stored="true"/>
   
   <!-- date-related fields -->
-  <dynamicField name="*_num" type="int" indexed="true" stored="true" multiValued="true"/>
+  <dynamicField name="*_num" type="pint" indexed="true" stored="true" multiValued="true"/>
   
   <!-- images -->
   <field name="collection_thumb" type="string" indexed="true" stored="true" multiValued="true"/>
