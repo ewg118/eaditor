@@ -148,7 +148,7 @@
   <dynamicField name="*_minint" sortMissingLast="true" type="pint" indexed="true" stored="true"/>
   
   <!-- date-related fields -->
-  <dynamicField name="*_num" type="pint" indexed="true" stored="true" multiValued="true"/>
+  <dynamicField name="*_num" type="pints" indexed="true" stored="true" multiValued="true"/>
   
   <!-- images -->
   <field name="collection_thumb" type="string" indexed="true" stored="true" multiValued="true"/>
