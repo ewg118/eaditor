@@ -413,12 +413,12 @@
 				</dates>
 			</xsl:variable>
 			
-			<xsl:for-each select="$dates//date">
+			<!--<xsl:for-each select="$dates//date">
 				<xsl:call-template name="eaditor:get_date_hierarchy">
 					<xsl:with-param name="date" select="."/>
 					<xsl:with-param name="upload" select="$upload"/>
 				</xsl:call-template>
-			</xsl:for-each>
+			</xsl:for-each>-->
 			
 			<!-- set minimum and maximum dates -->
 			<xsl:if test="$dates//date">
