@@ -291,13 +291,13 @@
 				</xsl:if>
 
 				<!-- get viaf RDF -->
-				<xsl:for-each select="distinct-values(descendant::tei:ref[contains(@target, 'viaf.org')]/@target)">
+				<!--<xsl:for-each select="distinct-values(descendant::tei:ref[contains(@target, 'viaf.org')]/@target)">
 					<xsl:variable name="pieces" select="tokenize(., '/')"/>
 					<xsl:variable name="uri" select="concat('http://viaf.org/viaf/', $pieces[5])"/>
 					<xsl:if test="doc-available(concat($uri, '/rdf'))">
 						<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about = $uri]"/>
 					</xsl:if>
-				</xsl:for-each>
+				</xsl:for-each>-->
 			</rdf:RDF>
 		</xsl:variable>
 

@@ -34,7 +34,7 @@
 		</rdf:RDF>
 	</xsl:variable>
 	
-	<xsl:variable name="viaf-rdf" as="element()*">
+	<!--<xsl:variable name="viaf-rdf" as="element()*">
 		<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:nm="http://nomisma.org/id/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 			xmlns:rdfa="http://www.w3.org/ns/rdfa#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 			
@@ -44,7 +44,7 @@
 				<xsl:copy-of select="document(concat($uri, '/rdf'))/descendant::*[@rdf:about = $uri]"/>
 			</xsl:for-each>
 		</rdf:RDF>
-	</xsl:variable>
+	</xsl:variable>-->
 
 	<xsl:template match="/">
 		<xsl:apply-templates select="/content/*[not(local-name() = 'config')]"/>
@@ -262,12 +262,13 @@
 					</xsl:when>
 					<xsl:when test="contains($uri, 'geonames.org')">geogname</xsl:when>
 					<xsl:when test="contains($uri, 'viaf.org')">
-						<xsl:choose>
+						<xsl:text>persname</xsl:text>
+						<!--<xsl:choose>
 							<xsl:when test="$viaf-rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Organization'"
 								>corpname</xsl:when>
 							<xsl:when test="$viaf-rdf//*[@rdf:about = $uri]/rdf:type/@rdf:resource = 'http://xmlns.com/foaf/0.1/Person'"
 								>persname</xsl:when>
-						</xsl:choose>
+						</xsl:choose>-->
 					</xsl:when>
 					<xsl:when
 						test="contains($uri, 'numismatics.org/ocre') or contains($uri, 'numismatics.org/crro') or contains($uri, 'numismatics.org/pella') or contains($uri, 'numismatics.org/pco')
