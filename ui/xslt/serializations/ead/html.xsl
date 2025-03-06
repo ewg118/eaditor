@@ -198,8 +198,14 @@
 				<!-- render some biographical information from EAC-CPF if the creator a xeac:entity -->
 				<xsl:when test="ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']">
 					<xsl:variable name="eac-cpf" as="element()*">
-						<xsl:copy-of
-							select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
+						<xsl:variable name="eac-cpf" as="element()*">
+							<xml>
+								<xsl:if test="doc-available(concat(ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']/@authfilenumber, '.xml'))">
+									<xsl:copy-of
+										select="document(concat(ead:archdesc/ead:did/ead:origination/*[@role = 'xeac:entity']/@authfilenumber, '.xml'))/eac:eac-cpf"/>
+								</xsl:if>
+							</xml>							
+						</xsl:variable>
 					</xsl:variable>
 
 					<xsl:call-template name="did"/>
