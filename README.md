@@ -34,8 +34,8 @@ EADitor optionally allows connection to an RDF triplestore and SPARQL endpoints 
 
 Architecture
 ------------
-xEAC is comprised of three server-side application which run in Apache Tomcat: [Orbeon](http://www.orbeon.com) (XForms processor and public user interface), [Solr](http://lucene.apache.org/solr/) (search index used for publication), and [eXist](http://exist-db.org/exist/apps/homepage/index.html) (XML database).  XForms submissions allow these three applications to communicate through REST.
+EADitor is comprised of three server-side application which run in Apache Tomcat: [Orbeon](http://www.orbeon.com) (XForms processor and public user interface), [Solr](http://lucene.apache.org/solr/) (search index used for publication), and [eXist](http://exist-db.org/exist/apps/homepage/index.html) (XML database).  XForms submissions allow these three applications to communicate through REST.
 
 Installation and Use
 --------------------
-Installation and usage instructions may be found in the xEAC wiki, hosted by the American Numismatic Society: [http://wiki.numismatics.org/eaditor:eaditor](http://wiki.numismatics.org/eaditor:eaditor)
+Installation and usage instructions may be found in the EADitor Github wiki.
